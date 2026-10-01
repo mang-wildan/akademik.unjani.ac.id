@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
-const { fileError, DOCUMENT_LIMITS, enforceImageLimit } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, DOCUMENT_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const rplDocumentController = require('../controllers/rplDocumentController');
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const timestamp = Date.now();
-    const safeName = file.originalname.replace(/\s+/g, '_');
+    const safeName = safeFilename(file.originalname);
     cb(null, `${timestamp}-${safeName}`);
   },
 });
@@ -34,9 +34,9 @@ const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, rplDocumentController.list);
 router.get('/new', requireAuth, requireAdmin, rplDocumentController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), enforceImageLimit, rplDocumentController.create);
+router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), checkUploads, rplDocumentController.create);
 router.get('/:id/edit', requireAuth, requireAdmin, rplDocumentController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), enforceImageLimit, rplDocumentController.update);
+router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), checkUploads, rplDocumentController.update);
 router.post('/:id/delete', requireAuth, requireAdmin, rplDocumentController.destroy);
 
 module.exports = router;

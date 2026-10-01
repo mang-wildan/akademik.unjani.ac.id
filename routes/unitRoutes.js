@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { fileError, IMAGE_LIMITS } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, IMAGE_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const unitController = require('../controllers/unitController');
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const timestamp = Date.now();
-    const safe = file.originalname.replace(/\s+/g, '_');
+    const safe = safeFilename(file.originalname);
     cb(null, `${timestamp}-${safe}`);
   },
 });
@@ -32,9 +32,9 @@ const upload = multer({ storage, fileFilter, limits: IMAGE_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, unitController.list);
 router.get('/new', requireAuth, requireAdmin, unitController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.single('img'), unitController.create);
+router.post('/', requireAuth, requireAdmin, upload.single('img'), checkUploads, unitController.create);
 router.get('/:id/edit', requireAuth, requireAdmin, unitController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.single('img'), unitController.update);
+router.post('/:id', requireAuth, requireAdmin, upload.single('img'), checkUploads, unitController.update);
 router.post('/:id/delete', requireAuth, requireAdmin, unitController.destroy);
 
 module.exports = router;

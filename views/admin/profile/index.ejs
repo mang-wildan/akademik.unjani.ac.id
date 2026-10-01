@@ -232,7 +232,7 @@
               const fullName = (data.name || 'Pengguna').trim();
               const email = data.email || '-';
               const role = data.role || 'user';
-              const roleLabel = role === 'admin' ? 'Administrator' : 'Pengguna';
+              const roleLabel = locals.roleLabel(role);
               const initials = fullName
                 .split(/\s+/)
                 .filter(Boolean)
@@ -252,8 +252,8 @@
               const accountAgeDays = joinDateObj ? Math.max(1, Math.floor((now - joinDateObj.getTime()) / 86400000)) : 0;
               const lastUpdatedDays = updateDateObj ? Math.max(0, Math.floor((now - updateDateObj.getTime()) / 86400000)) : 0;
               const completionScore = Math.round(([data.name, data.email, data.role].filter(Boolean).length / 3) * 100);
-              const dashboardUrl = role === 'admin' ? '/admin/dashboard' : '/dashboard';
-              const roleBadgeClass = role === 'admin' ? 'bg-label-primary' : 'bg-label-secondary';
+              const dashboardUrl = isStaff(role) ? '/admin/dashboard' : '/dashboard';
+              const roleBadgeClass = isStaff(role) ? 'bg-label-primary' : 'bg-label-secondary';
               const passwordRefreshStatus = lastUpdatedDays > 90 ? 'Perlu pembaruan' : 'Aman';
               const passwordRefreshClass = lastUpdatedDays > 90 ? 'text-warning' : 'text-success';
               const profilePhoto = data && data.profilePhoto ? data.profilePhoto : '';

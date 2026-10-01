@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { safeFilename, checkUploads } = require('../utils/upload');
 const authController = require('../controllers/authController');
 const { requireAuth } = require('../middleware/authMiddleware');
 
@@ -13,7 +14,7 @@ fs.mkdirSync(uploadDir, { recursive: true });
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
-    const safe = file.originalname.replace(/\s+/g, '_');
+    const safe = safeFilename(file.originalname);
     cb(null, `${Date.now()}-${safe}`);
   },
 });
@@ -34,7 +35,7 @@ const upload = multer({
 
 const profilePhotoUpload = (req, res, next) => {
   upload.single('profilePhoto')(req, res, err => {
-    if (!err) return next();
+    if (!err) return checkUploads(req, res, next);
 
     return res.status(400).render('admin/profile/edit', {
       title: 'Edit Profil',

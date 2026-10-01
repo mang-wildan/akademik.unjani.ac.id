@@ -10,7 +10,8 @@
     "build:assets": "node scripts/build-assets.js",
     "build:css": "tailwindcss -i assets/css/app.css -o public/css/app.css --minify",
     "build": "npm run build:assets && npm run build:css",
-    "dev:css": "tailwindcss -i assets/css/app.css -o public/css/app.css --watch"
+    "dev:css": "tailwindcss -i assets/css/app.css -o public/css/app.css --watch",
+    "migrate": "node scripts/migrate"
   },
   "keywords": [
     "express",
@@ -33,7 +34,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.1",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "sanitize-html": "^2.18.0",
+    "sharp": "^0.35.5",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@alpinejs/csp": "^3.17.4",

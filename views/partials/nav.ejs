@@ -367,7 +367,7 @@
             <!-- navbar button: Start -->
             <li>
               <% if (typeof user !== 'undefined' && user) { %>
-              <a href="<%= user.role === 'admin' ? '/admin/dashboard' : '/dashboard' %>" class="btn btn-primary px-2 px-sm-4 px-lg-2 px-xl-4">
+              <a href="<%= isStaff(user) ? '/admin/dashboard' : '/dashboard' %>" class="btn btn-primary px-2 px-sm-4 px-lg-2 px-xl-4">
                 <span class="icon-base ri ri-dashboard-line me-md-1"></span>
                 <span class="d-none d-md-block">Dashboard</span>
               </a>

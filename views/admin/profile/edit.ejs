@@ -158,7 +158,7 @@
                 .map(part => part.charAt(0))
                 .join('')
                 .toUpperCase() || 'U';
-              const roleLabel = data.role === 'admin' ? 'Administrator' : 'Pengguna';
+              const roleLabel = locals.roleLabel(data.role);
               const joinedDate = data.createdAt
                 ? new Date(data.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
                 : '-';

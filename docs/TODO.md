@@ -11,7 +11,7 @@ Label di setiap kelompok tugas: `[Model · effort]`. Kelompok tugas yang labelny
 - [x] K-01 diputuskan: **"Bidang Akademik"**
 - [x] K-02: role Editor **dibutuhkan** · K-05: NIP/NID **tidak tampil** di publik (sudah dihapus dari halaman Pimpinan & Staf)
 - [x] K-04: tim **sanggup** input kalender per kegiatan; tambah unggahan PDF surat edaran selain SK Rektor
-- [ ] Jawab K-03, K-06, K-07 (SRS §10)
+- [x] K-03: tanpa persetujuan berjenjang · K-06: peringkat ditampilkan apa adanya · K-07: data lulusan resmi — **semua keputusan terbuka terjawab**
 - [x] Database pengembangan = salinan database lama (bukan live)
 - [x] `git init` dan push awal ke `github.com/mang-wildan/baa.unjani.ac.id`
 - [ ] Ganti password admin sementara yang diatur saat audit
@@ -107,38 +107,48 @@ Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.
 
 ## F2 — Model data, migrasi, aturan bisnis `[Opus 5.5 · xhigh]`
 
+> Perubahan skema bersifat **menambah**: field lama tetap ada agar halaman & form lama berjalan sampai F3/F4; dibuang di akhir (F5).
+
 ### Skema — SRS §5
-- [ ] `User`: role `superadmin`/`editor`, `isActive`, `lastLoginAt`
-- [ ] `Accreditation`: `peringkat` enum, `lembaga` ref, `nomorSK`, `unitRef`, `catatanPerpanjangan`; hapus `tahun` dan `isActive`
-- [ ] `AcademicCalendar`: `nomorSK`, `events[]`
-- [ ] `AcademicDocument`/`RplDocument`: `kategori`, `fileSize`, `mimeType`
-- [ ] `Pengumuman`/`News`: `kategori`, `excerpt`, `attachments[]`
-- [ ] `Kurikulum.programStudi` menjadi ref
-- [ ] `GraduationBook.periode` menjadi enum
-- [ ] `Staff`: `kelompok`, `gelar`, `email`, `tampilkanNip`
-- [ ] `SiteSetting`: `jamLayanan`, `socialInstagram`, `heroImage`
-- [ ] Master baru: `KategoriPengumuman`, `KategoriDokumen`, `LembagaAkreditasi`
-- [ ] `AuditLog` (Sebaiknya)
+- [x] `User`: role `superadmin`/`editor` (+ `admin` lama selama transisi), `isActive`, `lastLoginAt`; login menolak akun nonaktif
+- [x] `Accreditation`: `jenis`, `programStudi` (ref), `namaUnit`, `peringkat` (enum), `lembaga` (ref), `nomorSK`, `catatanPerpanjangan`
+- [ ] (F5) `Accreditation`: hapus `institusi`, `unit`, `tahun`, `akreditasi`, `isActive` setelah form F4 dipakai
+- [x] `AcademicCalendar`: `nomorSK`, `events[]` {semester, nama, mulai, selesai}, `lampiran[]` surat edaran (K-04)
+- [x] `AcademicDocument`/`RplDocument`: `kategori`, `fileSize`, `mimeType`; `cover` tidak wajib lagi
+- [x] `Pengumuman`/`News`: `kategori`, `excerpt` (otomatis lewat `save` **dan** `findByIdAndUpdate`), `attachments[]` — `models/plugins/content.js`
+- [x] `Kurikulum.prodi` (ref Program Studi) di samping teks lama
+- [x] `GraduationBook.periode` enum I/II/III
+- [x] `Staff`: `kelompok`, `gelar`, `email`; `nip` tidak wajib dan tidak pernah tampil publik (K-05)
+- [x] `SiteSetting`: `jamLayanan`, `socialInstagram`, `heroImage`
+- [x] Master baru: `Kategori` (jenis pengumuman/dokumen) dan `LembagaAkreditasi`
+- [ ] `AuditLog` (Sebaiknya) — **dipindah ke F4**. Catatan: database salinan sudah memuat koleksi kosong `auditlogs`, `fileassets`, `revisions`, `constraintlocks`, `fakultas` dari versi aplikasi sebelumnya; `auditlogs` punya indeks TTL 366 hari. Tidak disentuh.
+
+### Role & akses
+- [x] `utils/roles.js`; `requireAdmin` (Super Admin + Editor), `requireSuperadmin` untuk Pengaturan Situs, Fakultas, Program Studi
+- [x] Pengecekan `role === 'admin'` di controller & view lama diganti `isStaff()` / `roleLabel()`
+- [x] Middleware auth memuat user sekali per request (sebelumnya dua kali)
 
 ### Aturan bisnis + tes
-- [ ] `accreditationStatus(berlakuSampai, today)` menghasilkan Aktif, Segera berakhir (≤ 90 hari), atau Kedaluwarsa — FR-A-03
-- [ ] `calendarEventStatus(mulai, selesai, today)` menghasilkan Selesai, Berlangsung, atau Akan datang — FR-K-02
-- [ ] `makeExcerpt(html, length)` membuang tag dan men-decode entity — FR-P-05
-- [ ] Sanitasi HTML rich text (`sanitize-html`) — NFR-S-06
-- [ ] Tes unit `node:test` untuk ketiga fungsi di atas, termasuk kasus batas (hari ini = tanggal berakhir, zona waktu WIB)
+- [x] `accreditationStatus()` — Berlaku / Segera berakhir (≤ 90 hari) / Kedaluwarsa, per hari WIB, masih berlaku di hari terakhir — FR-A-03; dipakai halaman `/akreditasi`
+- [x] `calendarEventStatus()` + `currentAndNext()` — Selesai / Berlangsung / Akan datang — FR-K-02
+- [x] `makeExcerpt()` — buang tag, decode entity sekali — FR-P-05
+- [x] `sanitizeHtml()` — tanpa skrip/atribut event/`javascript:`; gambar hanya dari `/uploads/` — NFR-S-06
+- [x] Impor kalender CSV (`utils/calendarImport.js`): pemisah `;` atau `,` (Excel Indonesia), BOM, sel berkutip, tanggal `DD/MM/YYYY` atau ISO, galat per baris; template unduhan
 
-### Validasi & unggah `[Sonnet 5.5 · high]`
-- [ ] Skema `zod` per form admin
-- [ ] Pipeline `sharp`: WebP dengan lebar maks 1600 px + thumbnail 400 px, simpan `fileSize` — NFR-P-04
-- [ ] Validasi MIME + ekstensi, sanitasi nama file — NFR-S-04
+### Validasi & unggah
+- [x] Skema `zod` (`validators/index.js`): akreditasi, kalender, kegiatan, lampiran, konten, dokumen, kurikulum, staf, akun, ubah password — galat per kolom berbahasa Indonesia, aturan lintas kolom tampil sekaligus
+- [x] Pipeline `sharp` (`utils/image.js`): WebP maks 1600 px + thumbnail 400 px, orientasi EXIF — NFR-P-04 (dipasang ke form di F4)
+- [x] **Celah path traversal** ditutup: nama file unggahan disanitasi (`safeFilename`) di 15 rute — NFR-S-04
+- [x] Isi file dicek dari byte awal (PDF/PNG/JPEG/WEBP/GIF/CSV) di semua rute (`checkUploads`) — NFR-S-04
+- [x] 42 tes otomatis lulus (`npm test`)
 
-### Migrasi
-- [ ] `scripts/migrate/001-accreditation.js`: teks peringkat → enum, unit → ref; `--dry-run` menghasilkan laporan CSV
-- [ ] `002-kurikulum-prodi.js`: teks prodi → ref Program Studi
-- [ ] `003-content-excerpt.js`: buat `excerpt` dari `body`
-- [ ] `004-users-role.js`: `admin` → `superadmin`
-- [ ] Jalankan semua migrasi dengan `--dry-run` pada salinan database produksi, lalu minta BAA meninjau laporannya
-- [ ] Seed dev: master data + konten contoh yang realistis (tanpa "test" atau "lorem")
+### Migrasi (`npm run migrate` = dry-run, `npm run migrate -- --apply`)
+- [x] Runner dengan backup otomatis ke `backups/` dan catatan di koleksi `schemamigrations`
+- [x] `001-users-role` · `002-master-seed` · `003-accreditation` · `004-kurikulum-prodi` · `005-content-excerpt` · `006-files-meta` · `007-readiness` (laporan)
+- [x] Dry-run di database salinan: tanpa error; 25 hal perlu ditinjau — lihat `docs/MIGRASI-F2.md`
+- [ ] **Tinjau laporan, lalu jalankan `--apply`** di database salinan *(menunggu persetujuan)*
+- [ ] Jalankan di database produksi saat rilis (F6)
+- [x] Seed dev: hanya data master (002). Konten contoh tidak dibuat — konten nyata diisi tim di F6
 
 ---
 

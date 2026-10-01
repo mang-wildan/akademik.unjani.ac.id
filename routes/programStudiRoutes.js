@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const { fileError } = require('../utils/upload');
-const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { checkUploads, fileError } = require('../utils/upload');
+const { requireAuth, requireSuperadmin } = require('../middleware/authMiddleware');
 const programStudiController = require('../controllers/programStudiController');
 
 const router = express.Router();
@@ -17,12 +17,12 @@ const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024 },
 });
 
-router.get('/', requireAuth, requireAdmin, programStudiController.list);
-router.get('/new', requireAuth, requireAdmin, programStudiController.showCreate);
-router.post('/', requireAuth, requireAdmin, programStudiController.create);
-router.post('/import', requireAuth, requireAdmin, upload.single('file'), programStudiController.importCsv);
-router.get('/:id/edit', requireAuth, requireAdmin, programStudiController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, programStudiController.update);
-router.post('/:id/delete', requireAuth, requireAdmin, programStudiController.destroy);
+router.get('/', requireAuth, requireSuperadmin, programStudiController.list);
+router.get('/new', requireAuth, requireSuperadmin, programStudiController.showCreate);
+router.post('/', requireAuth, requireSuperadmin, programStudiController.create);
+router.post('/import', requireAuth, requireSuperadmin, upload.single('file'), checkUploads, programStudiController.importCsv);
+router.get('/:id/edit', requireAuth, requireSuperadmin, programStudiController.showEdit);
+router.post('/:id', requireAuth, requireSuperadmin, programStudiController.update);
+router.post('/:id/delete', requireAuth, requireSuperadmin, programStudiController.destroy);
 
 module.exports = router;

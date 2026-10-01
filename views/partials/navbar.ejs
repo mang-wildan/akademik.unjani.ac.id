@@ -313,7 +313,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="<%= user && user.role === 'admin' ? '/admin/dashboard' : '/dashboard' %>">
+                      <a class="dropdown-item" href="<%= isStaff(user) ? '/admin/dashboard' : '/dashboard' %>">
                         <i class="icon-base ri ri-dashboard-line icon-22px me-3"></i
                         ><span class="align-middle">Dashboard</span>
                       </a>

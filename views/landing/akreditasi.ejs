@@ -358,15 +358,9 @@
                           <% group.activeRows.forEach(function(item, idx){ %>
                             <tr>
                               <td data-label="No"><%= idx + 1 %></td>
-                              <% const sisaHari = item.berlakuSampai ? Math.floor((new Date(item.berlakuSampai) - Date.now()) / 86400000) : null; %>
+                              <% const status = accreditationStatus(item.berlakuSampai); %>
                               <td data-label="Status">
-                                <% if (sisaHari !== null && sisaHari < 0) { %>
-                                  <span class="ac-pill expired">Kedaluwarsa</span>
-                                <% } else if (sisaHari !== null && sisaHari <= 90) { %>
-                                  <span class="ac-pill expiring">Segera berakhir</span>
-                                <% } else { %>
-                                  <span class="ac-pill active">Berlaku</span>
-                                <% } %>
+                                <span class="ac-pill <%= { berlaku: 'active', 'segera-berakhir': 'expiring', kedaluwarsa: 'expired' }[status.key] || 'inactive' %>"><%= status.label %></span>
                               </td>
                               <td data-label="Tahun"><span class="ac-pill year"><i class="fa-solid fa-calendar"></i> <%= item.tahun || '-' %></span></td>
                               <td data-label="Akreditasi"><span class="ac-pill rank"><i class="fa-solid fa-award"></i> <%= item.akreditasi %></span></td>

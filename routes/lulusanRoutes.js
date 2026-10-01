@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { fileError } = require('../utils/upload');
+const { checkUploads, fileError } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const lulusanController = require('../controllers/lulusanController');
 
@@ -20,7 +20,7 @@ const upload = multer({
 router.get('/', requireAuth, requireAdmin, lulusanController.list);
 router.get('/new', requireAuth, requireAdmin, lulusanController.showCreate);
 router.post('/', requireAuth, requireAdmin, lulusanController.create);
-router.post('/import', requireAuth, requireAdmin, upload.single('file'), lulusanController.importCsv);
+router.post('/import', requireAuth, requireAdmin, upload.single('file'), checkUploads, lulusanController.importCsv);
 router.get('/:id/edit', requireAuth, requireAdmin, lulusanController.showEdit);
 router.post('/:id', requireAuth, requireAdmin, lulusanController.update);
 router.post('/:id/delete', requireAuth, requireAdmin, lulusanController.destroy);

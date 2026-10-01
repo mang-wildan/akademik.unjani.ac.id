@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { fileError, DOCUMENT_LIMITS } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, DOCUMENT_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const accreditationController = require('../controllers/accreditationController');
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const timestamp = Date.now();
-    const safeName = file.originalname.replace(/\s+/g, '_');
+    const safeName = safeFilename(file.originalname);
     cb(null, `${timestamp}-${safeName}`);
   },
 });
@@ -31,10 +31,10 @@ const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, accreditationController.list);
 router.get('/new', requireAuth, requireAdmin, accreditationController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'sertifikat', maxCount: 1 }]), accreditationController.create);
+router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'sertifikat', maxCount: 1 }]), checkUploads, accreditationController.create);
 router.post('/:id/toggle-active', requireAuth, requireAdmin, accreditationController.toggleActive);
 router.get('/:id/edit', requireAuth, requireAdmin, accreditationController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'sertifikat', maxCount: 1 }]), accreditationController.update);
+router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'sertifikat', maxCount: 1 }]), checkUploads, accreditationController.update);
 router.post('/:id/delete', requireAuth, requireAdmin, accreditationController.destroy);
 
 module.exports = router;

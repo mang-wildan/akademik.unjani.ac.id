@@ -39,9 +39,13 @@ const Pengumuman = require('./models/Pengumuman');
 const AcademicDocument = require('./models/AcademicDocument');
 const AcademicCalendar = require('./models/AcademicCalendar');
 const { uploadErrorMessage } = require('./utils/upload');
+const roles = require('./utils/roles');
+const { isStaff } = roles;
 const icon = require('./utils/icons');
 const format = require('./utils/format');
 const navigation = require('./utils/navigation');
+const { accreditationStatus } = require('./utils/accreditation');
+const { calendarEventStatus } = require('./utils/calendar');
 const renderPage = require('./middleware/renderPage');
 const verifyOrigin = require('./middleware/verifyOrigin');
 
@@ -49,7 +53,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Helpers available in every view (new layouts & components).
-Object.assign(app.locals, { icon, ...format, ...navigation });
+Object.assign(app.locals, { icon, ...format, ...navigation, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus });
 
 // Behind a reverse proxy (Nginx, cPanel, etc.) set TRUST_PROXY to the number of
 // proxy hops so req.ip is the visitor's address; login attempt limits rely on it.
@@ -160,7 +164,7 @@ app.use((req, res, next) => {
 
 // Load topbar notifications for admin pages
 app.use(async (req, res, next) => {
-  if (!(req.path.startsWith('/admin') && res.locals.user && res.locals.user.role === 'admin')) {
+  if (!(req.path.startsWith('/admin') && res.locals.user && isStaff(res.locals.user))) {
     res.locals.topNotifications = [];
     res.locals.topNotificationCount = 0;
     return next();

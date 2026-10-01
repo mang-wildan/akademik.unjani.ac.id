@@ -19,11 +19,15 @@ const UserSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    // superadmin | editor (SRS §2.2). 'admin' = role lama, diganti migrasi 001.
+    // 'user' tidak dipakai lagi sejak registrasi publik dihapus.
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ['superadmin', 'editor', 'admin', 'user'],
+      default: 'editor',
     },
+    isActive: { type: Boolean, default: true },
+    lastLoginAt: { type: Date },
     profilePhoto: {
       type: String,
       trim: true,

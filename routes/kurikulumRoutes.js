@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { fileError, DOCUMENT_LIMITS, enforceImageLimit } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, DOCUMENT_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const kurikulumController = require('../controllers/kurikulumController');
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const timestamp = Date.now();
-    const safe = file.originalname.replace(/\s+/g, '_');
+    const safe = safeFilename(file.originalname);
     cb(null, `${timestamp}-${safe}`);
   },
 });
@@ -42,7 +42,7 @@ router.post(
   upload.fields([
     { name: 'cover', maxCount: 1 },
     { name: 'file', maxCount: 1 },
-  ]), enforceImageLimit,
+  ]), checkUploads,
   kurikulumController.create
 );
 router.get('/:id/edit', requireAuth, requireAdmin, kurikulumController.showEdit);
@@ -53,7 +53,7 @@ router.post(
   upload.fields([
     { name: 'cover', maxCount: 1 },
     { name: 'file', maxCount: 1 },
-  ]), enforceImageLimit,
+  ]), checkUploads,
   kurikulumController.update
 );
 router.post('/:id/delete', requireAuth, requireAdmin, kurikulumController.destroy);

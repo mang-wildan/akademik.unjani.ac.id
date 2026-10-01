@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { fileError, isAllowedImage, DOCUMENT_LIMITS, enforceImageLimit } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, isAllowedImage, DOCUMENT_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const academicDocumentController = require('../controllers/academicDocumentController');
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const timestamp = Date.now();
-    const safeName = file.originalname.replace(/\s+/g, '_');
+    const safeName = safeFilename(file.originalname);
     cb(null, `${timestamp}-${safeName}`);
   },
 });
@@ -41,7 +41,7 @@ router.post(
   upload.fields([
     { name: 'cover', maxCount: 1 },
     { name: 'file', maxCount: 1 },
-  ]), enforceImageLimit,
+  ]), checkUploads,
   academicDocumentController.create
 );
 router.get('/:id/edit', requireAuth, requireAdmin, academicDocumentController.showEdit);
@@ -52,7 +52,7 @@ router.post(
   upload.fields([
     { name: 'cover', maxCount: 1 },
     { name: 'file', maxCount: 1 },
-  ]), enforceImageLimit,
+  ]), checkUploads,
   academicDocumentController.update
 );
 router.post('/:id/pin', requireAuth, requireAdmin, academicDocumentController.togglePin);

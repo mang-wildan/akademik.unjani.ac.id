@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { fileError, isAllowedImage, IMAGE_LIMITS } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, isAllowedImage, IMAGE_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const pengumumanController = require('../controllers/pengumumanController');
 
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const timestamp = Date.now();
-    const safeName = file.originalname.replace(/\s+/g, '_');
+    const safeName = safeFilename(file.originalname);
     cb(null, `${timestamp}-${safeName}`);
   },
 });
@@ -29,9 +29,9 @@ router.use(requireAuth, requireAdmin);
 
 router.get('/', pengumumanController.list);
 router.get('/new', pengumumanController.newForm);
-router.post('/', upload.single('featuredImage'), pengumumanController.create);
+router.post('/', upload.single('featuredImage'), checkUploads, pengumumanController.create);
 router.get('/:id/edit', pengumumanController.editForm);
-router.post('/:id', upload.single('featuredImage'), pengumumanController.update);
+router.post('/:id', upload.single('featuredImage'), checkUploads, pengumumanController.update);
 router.post('/:id/pin', pengumumanController.togglePin);
 router.post('/:id/delete', pengumumanController.remove);
 

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const User = require('../models/User');
 const loginAttempts = require('../utils/loginAttempts');
+const { isStaff } = require('../utils/roles');
 
 const recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY;
 const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
@@ -111,14 +112,14 @@ const sendTokenResponse = (user, req, res, statusCode = 200, message = 'OK') => 
     return res.status(statusCode).json({ token, user: safeUser, message });
   }
   // Option 2: rely on secure HTTP-only cookie for browser flows
-  const redirectPath = user.role === 'admin' ? '/admin/dashboard' : '/dashboard';
+  const redirectPath = isStaff(user) ? '/admin/dashboard' : '/dashboard';
   return res.redirect(redirectPath);
 };
 
 exports.getLogin = (req, res) => {
   const targetUser = req.user || res.locals.user;
   if (targetUser) {
-    return res.redirect(targetUser.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+    return res.redirect(isStaff(targetUser) ? '/admin/dashboard' : '/dashboard');
   }
   return renderLogin(res, 200, { requireCaptcha: loginAttempts.captchaRequired({ ip: req.ip }) });
 };
@@ -161,6 +162,11 @@ exports.login = async (req, res) => {
   }
 
   loginAttempts.reset(who);
+  // Checked after the password so a wrong guess can't tell an inactive account apart.
+  if (user.isActive === false) {
+    return fail('Akun ini dinonaktifkan. Hubungi Super Admin Bidang Akademik.');
+  }
+  await User.updateOne({ _id: user._id }, { $set: { lastLoginAt: new Date() } });
   return sendTokenResponse(user, req, res, 200, 'Login berhasil');
 };
 

@@ -19,6 +19,57 @@ exports.isAllowedImage = file => IMAGE_TYPES.includes(file.mimetype);
 // Rejection shown to the admin as-is by the central error handler.
 exports.fileError = message => Object.assign(new Error(message), { status: 400, expose: true });
 
+// Name the file is stored under: never the client's path, only a plain base
+// name ("../../server.js" would otherwise escape the upload folder).
+exports.safeFilename = originalname => {
+  const base = String(originalname || '').split(/[\\/]/).pop();
+  const dot = base.lastIndexOf('.');
+  const ext = dot > 0 ? base.slice(dot + 1).toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8) : '';
+  const stem = (dot > 0 ? base.slice(0, dot) : base)
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^\w.-]+/g, '_')
+    .replace(/^[._-]+|[._-]+$/g, '')
+    .slice(0, 80) || 'file';
+  return ext ? `${stem}.${ext}` : stem;
+};
+
+// First bytes of each accepted format; the browser-sent MIME type is only a claim.
+const SIGNATURES = {
+  'application/pdf': [[0x25, 0x50, 0x44, 0x46, 0x2d]], // %PDF-
+  'image/png': [[0x89, 0x50, 0x4e, 0x47]],
+  'image/jpeg': [[0xff, 0xd8, 0xff]],
+  'image/jpg': [[0xff, 0xd8, 0xff]],
+  'image/gif': [[0x47, 0x49, 0x46, 0x38]],
+  'image/webp': [[0x52, 0x49, 0x46, 0x46]], // RIFF....WEBP (checked below)
+};
+
+const readHead = (filePath, length = 16) => {
+  const fd = fs.openSync(filePath, 'r');
+  try {
+    const buffer = Buffer.alloc(length);
+    const read = fs.readSync(fd, buffer, 0, length, 0);
+    return buffer.subarray(0, read);
+  } finally {
+    fs.closeSync(fd);
+  }
+};
+
+const isCsvMime = mime => /csv|text\/plain|vnd\.ms-excel/.test(mime);
+
+// Does the file content match the type it was uploaded as?
+exports.matchesSignature = file => {
+  if (!file.path) return true;
+  const head = readHead(file.path);
+  const isCsv = isCsvMime(file.mimetype) || /\.csv$/i.test(file.originalname || '');
+  if (isCsv) return !head.includes(0); // plain text, no NUL bytes
+  const options = SIGNATURES[file.mimetype];
+  if (!options) return false;
+  const ok = options.some(sig => sig.every((byte, i) => head[i] === byte));
+  if (ok && file.mimetype === 'image/webp') return head.subarray(8, 12).toString('ascii') === 'WEBP';
+  return ok;
+};
+
 const uploadedFiles = req => {
   const files = [];
   if (req.file) files.push(req.file);
@@ -27,13 +78,26 @@ const uploadedFiles = req => {
   return files;
 };
 
-exports.enforceImageLimit = (req, _res, next) => {
+const discard = files => files.forEach(f => f.path && fs.unlink(f.path, () => {}));
+
+// Runs after multer on every upload route: rejects files whose content does
+// not match their type, and holds images to 5 MB on forms that also take PDFs.
+exports.checkUploads = (req, _res, next) => {
   const files = uploadedFiles(req);
+  const forged = files.find(f => !exports.matchesSignature(f));
+  if (forged) {
+    discard(files);
+    return next(exports.fileError(`Isi file "${forged.originalname}" tidak sesuai dengan jenisnya.`));
+  }
   const oversized = files.find(f => f.mimetype.startsWith('image/') && f.size > IMAGE_MAX_BYTES);
-  if (!oversized) return next();
-  files.forEach(f => f.path && fs.unlink(f.path, () => {}));
-  return next(new multer.MulterError('LIMIT_FILE_SIZE', oversized.fieldname));
+  if (oversized) {
+    discard(files);
+    return next(new multer.MulterError('LIMIT_FILE_SIZE', oversized.fieldname));
+  }
+  return next();
 };
+
+exports.enforceImageLimit = exports.checkUploads;
 
 exports.uploadErrorMessage = err => {
   switch (err.code) {

@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { fileError } = require('../utils/upload');
-const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
+const { safeFilename, checkUploads, fileError } = require('../utils/upload');
+const { requireAuth, requireSuperadmin } = require('../middleware/authMiddleware');
 const siteSettingController = require('../controllers/siteSettingController');
 
 const router = express.Router();
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const ts = Date.now();
-    const safe = file.originalname.replace(/\s+/g, '_');
+    const safe = safeFilename(file.originalname);
     cb(null, `${ts}-${safe}`);
   },
 });
@@ -28,12 +28,12 @@ const fileFilter = (_req, file, cb) => {
 
 const upload = multer({ storage, fileFilter, limits: { fileSize: 3 * 1024 * 1024 } });
 
-router.get('/', requireAuth, requireAdmin, siteSettingController.show);
-router.get('/edit', requireAuth, requireAdmin, siteSettingController.editForm);
+router.get('/', requireAuth, requireSuperadmin, siteSettingController.show);
+router.get('/edit', requireAuth, requireSuperadmin, siteSettingController.editForm);
 router.post(
   '/',
   requireAuth,
-  requireAdmin,
+  requireSuperadmin,
   upload.fields([
     { name: 'bannerRpl', maxCount: 1 },
     { name: 'slideshowImages', maxCount: 10 },
@@ -41,6 +41,7 @@ router.post(
     { name: 'favicon', maxCount: 1 },
     { name: 'strukturOrganisasiImage', maxCount: 1 },
   ]),
+  checkUploads,
   siteSettingController.update
 );
 

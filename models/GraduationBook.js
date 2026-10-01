@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const GraduationBookSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
-    periode: { type: String, required: true, trim: true },
+    periode: { type: String, required: true, trim: true, enum: ['I', 'II', 'III'] },
     year: { type: Number, required: true },
     src: { type: String, required: true, trim: true }, // pdf path
     cover: { type: String, required: true, trim: true }, // image path

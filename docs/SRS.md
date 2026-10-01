@@ -347,11 +347,11 @@ Elemen berikut muncul di desain Stitch tetapi **tidak** dibangun: sinkronisasi F
 |---|---|---|
 | K-01 | ~~Nama resmi yang dipakai~~ | **Diputuskan 1 Okt 2026: "Bidang Akademik".** Ganti "BAA", "Biro Administrasi Akademik", "Admin BAA", dan "Admin Akademik — Biro Administrasi Akademik" (desain Stitch) |
 | K-02 | ~~Apakah role Editor dibutuhkan?~~ | **Diputuskan 1 Okt 2026: Editor dibutuhkan.** Hak akses Editor di §2.2 perlu dikonfirmasi pemilik produk |
-| K-03 | Apakah konten perlu disetujui pimpinan sebelum terbit? | Tidak (A-02) |
+| K-03 | ~~Apakah konten perlu disetujui pimpinan sebelum terbit?~~ | **Diputuskan 1 Okt 2026: tidak.** Status cukup Draf → Terbit (A-02) |
 | K-04 | ~~Apakah tim sanggup menginput kalender per kegiatan?~~ | **Diputuskan 1 Okt 2026: sanggup.** Kegiatan diinput per baris (dengan impor CSV/Excel), **dan** tetap tersedia unggahan PDF untuk SK Rektor serta surat edaran terkait kalender (FR-M-03) |
 | K-05 | ~~Apakah NIP/NID staf boleh tampil di publik?~~ | **Diputuskan 1 Okt 2026: tidak boleh.** Sudah dihapus dari halaman Pimpinan & Staf |
-| K-06 | Apakah peringkat lama (A/B/C) dan baru (Unggul/Baik Sekali/Baik) ditampilkan apa adanya? | Ya, apa adanya sesuai sertifikat |
-| K-07 | Apakah data lulusan sudah resmi untuk dipublikasikan? | Ya, sesuai data saat ini |
+| K-06 | ~~Peringkat lama dan baru ditampilkan apa adanya?~~ | **Diputuskan 1 Okt 2026: ya**, sesuai sertifikat |
+| K-07 | ~~Data lulusan sudah resmi untuk dipublikasikan?~~ | **Diputuskan 1 Okt 2026: ya** |
 
 ---
 

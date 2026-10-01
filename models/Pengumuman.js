@@ -15,4 +15,6 @@ const PengumumanSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+PengumumanSchema.plugin(require('./plugins/content'));
+
 module.exports = mongoose.model('Pengumuman', PengumumanSchema);
