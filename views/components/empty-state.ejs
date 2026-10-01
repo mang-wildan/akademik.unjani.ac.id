@@ -1,0 +1,15 @@
+<%#
+  Keadaan kosong selalu menjelaskan dan memberi langkah berikutnya (FR-G-08).
+  include('../components/empty-state', {
+    emptyIcon: 'search', emptyTitle: 'Dokumen tidak ditemukan',
+    emptyText: 'Coba kata kunci lain.', emptyAction: { label: 'Hapus pencarian', href: '/dokumen-akademik' },
+  })
+%>
+<div class="flex flex-col items-center rounded-card border border-dashed border-line-strong bg-surface px-6 py-12 text-center">
+  <span class="flex size-14 items-center justify-center rounded-full bg-sunken text-muted"><%- icon(locals.emptyIcon || 'info', 'size-7') %></span>
+  <h2 class="mt-4 text-lg font-semibold"><%= locals.emptyTitle %></h2>
+  <% if (locals.emptyText) { %><p class="mt-1 max-w-md text-muted"><%= locals.emptyText %></p><% } %>
+  <% if (locals.emptyAction) { %>
+    <a href="<%= locals.emptyAction.href %>" class="btn btn-secondary mt-5"><%= locals.emptyAction.label %></a>
+  <% } %>
+</div>

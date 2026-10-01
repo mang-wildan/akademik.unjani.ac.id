@@ -22,10 +22,25 @@ Starter template dengan Express, MongoDB (Mongoose), EJS, JWT, dan bcrypt. Layou
 
 ## Menjalankan aplikasi
 
-- Development: `npm run dev`
+- Development: `npm run dev`, dan di terminal lain `npm run dev:css` (Tailwind mode watch)
 - Production: `npm start`
+- Tes: `npm test`
 
 Server akan mem-baca `PORT` dari `.env` (default 3000).
+
+### Aset frontend (design system baru)
+
+Hasil build **di-commit**, sehingga server produksi tidak perlu menjalankan build atau menginstal devDependencies.
+
+| Perintah | Hasil |
+|---|---|
+| `npm run build:css` | `assets/css/app.css` → `public/css/app.css` |
+| `npm run build:assets` | font Plus Jakarta Sans → `public/fonts/`, Alpine (build CSP) → `public/js/vendor/`, ikon → `utils/icons.json` |
+| `npm run build` | keduanya |
+
+Jalankan `npm run build:css` sebelum commit jika mengubah view atau `assets/css/app.css`. Untuk menambah ikon, tambahkan namanya di `scripts/build-assets.js` lalu jalankan `npm run build:assets`.
+
+Halaman baru memakai `res.renderPage(view, locals, 'layouts/public' | 'layouts/admin')` dan komponen di `views/components/`. Di mode development, katalog komponen tersedia di `/dev/komponen` dan `/dev/admin`.
 
 ## Struktur folder
 
@@ -111,6 +126,7 @@ curl http://localhost:3000/dashboard \
 ## Catatan pengembangan
 
 - Jangan pernah commit `.env` yang berisi secret.
-- Layout EJS menggunakan partial `_layout-start` dan `_layout-end` untuk membungkus konten halaman (tanpa `express-ejs-layouts`).
-- Tambahkan validasi/flash lebih lanjut atau CSRF protection sesuai kebutuhan produksi.
-- Halaman register memakai wizard multi-step dengan validasi client-side, dilanjut verifikasi reCAPTCHA v2 sebelum submit.
+- Halaman lama (template) masih memakai `res.render` dan aset di `public/assets/`; keduanya diganti bertahap per halaman (lihat `docs/PLAN.md`).
+- Proteksi CSRF: semua POST/PUT/DELETE dari origin lain ditolak (`middleware/verifyOrigin.js`). Di belakang reverse proxy, isi `APP_ORIGIN`.
+- Halaman baru dilindungi CSP ketat (`middleware/strictCsp.js`): tanpa skrip/gaya inline; perilaku UI ada di `public/js/app.js` (komponen Alpine).
+- Registrasi publik sudah dihapus; akun admin dibuat oleh Super Admin. reCAPTCHA hanya diminta setelah 3× login gagal.

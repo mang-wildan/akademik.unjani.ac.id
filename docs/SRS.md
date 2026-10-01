@@ -121,7 +121,7 @@ Diringkas dari audit:
 | FR-K-01 | Kalender ditampilkan sebagai **tabel HTML** per semester (Ganjil, Genap, Pendek) dengan kolom No · Kegiatan · Waktu · Status. Tidak boleh berupa gambar | Wajib |
 | FR-K-02 | Status per kegiatan dihitung otomatis dari tanggal hari ini: Selesai, Berlangsung, atau Akan datang. Baris yang sedang berlangsung disorot | Wajib |
 | FR-K-03 | Kartu "Sedang berlangsung" dan "Berikutnya" ditampilkan di atas tabel | Wajib |
-| FR-K-04 | Pemilih tahun ajaran (arsip tahun sebelumnya) dan tombol "Unduh PDF resmi" (SK Rektor) | Wajib |
+| FR-K-04 | Pemilih tahun ajaran (arsip tahun sebelumnya), tombol "Unduh PDF resmi" (SK Rektor), dan daftar surat edaran terkait (judul, nomor, tanggal, unduh) | Wajib |
 | FR-K-05 | Di HP, tabel berubah menjadi timeline vertikal dengan blok tanggal | Wajib |
 | FR-K-06 | Tombol "+ Kalender" per kegiatan untuk mengunduh file `.ics` | Bisa |
 
@@ -207,7 +207,7 @@ Semua modul memiliki fungsi daftar, tambah, ubah, dan hapus (CRUD) dengan pola F
 |---|---|---|---|
 | FR-M-01 | Pengumuman | judul, slug (otomatis), kategori (master), isi (rich text), lampiran[], disematkan, status Draf/Terbit, tanggal terbit | Wajib |
 | FR-M-02 | Berita | seperti pengumuman + gambar sampul (wajib saat Terbit) | Wajib |
-| FR-M-03 | Kalender Akademik | tahun ajaran, PDF SK, nomor SK; kegiatan[]: semester, nama, tanggal mulai, tanggal selesai (opsional). **Impor CSV** untuk mempercepat input | Wajib |
+| FR-M-03 | Kalender Akademik | tahun ajaran, PDF SK Rektor, nomor SK; **lampiran PDF tambahan** (surat edaran perubahan jadwal, dsb.: judul, nomor surat, tanggal, file) yang tampil di halaman publik; kegiatan[]: semester, nama, tanggal mulai, tanggal selesai (opsional). **Impor CSV/Excel** untuk mempercepat input | Wajib |
 | FR-M-04 | Akreditasi | unit/prodi (pilih dari master), peringkat (**pilihan tetap**), lembaga (master), nomor SK, tanggal berlaku, berlaku sampai, sertifikat PDF, catatan perpanjangan. Validasi: `berlakuSampai > tanggalBerlaku`. Field "Tahun" dan tombol "Aktif" manual **dihapus** | Wajib |
 | FR-M-05 | Kurikulum | prodi (master), tahun kurikulum, PDF | Wajib |
 | FR-M-06 | Dokumen Akademik & RPL | judul, deskripsi, kategori, PDF, disematkan. Ukuran file disimpan otomatis | Wajib |
@@ -230,7 +230,7 @@ Perubahan model dibandingkan kondisi sekarang:
 |---|---|
 | `User` | role: `superadmin` \| `editor`. Tambah `isActive`, `lastLoginAt`. Hapus role `user` |
 | `Accreditation` | `peringkat` menjadi enum, ditambah `lembaga` (ref), `nomorSK`, `unitRef` (ref Prodi/Unit), dan `catatanPerpanjangan`. Hapus `tahun` dan `isActive`. Status **tidak disimpan**, melainkan dihitung |
-| `AcademicCalendar` | tambah `nomorSK` dan `events[]` {semester, nama, mulai, selesai} |
+| `AcademicCalendar` | tambah `nomorSK`, `events[]` {semester, nama, mulai, selesai}, dan `lampiran[]` {judul, nomorSurat, tanggal, file} untuk surat edaran |
 | `AcademicDocument`, `RplDocument` | tambah `kategori` (ref), `fileSize`, `mimeType` |
 | `Pengumuman`, `News` | tambah `kategori` (ref), `excerpt`, `attachments[]`. Status: `draft` \| `published` |
 | `Kurikulum` | `programStudi` menjadi ref (bukan teks) |
@@ -348,7 +348,7 @@ Elemen berikut muncul di desain Stitch tetapi **tidak** dibangun: sinkronisasi F
 | K-01 | ~~Nama resmi yang dipakai~~ | **Diputuskan 1 Okt 2026: "Bidang Akademik".** Ganti "BAA", "Biro Administrasi Akademik", "Admin BAA", dan "Admin Akademik — Biro Administrasi Akademik" (desain Stitch) |
 | K-02 | ~~Apakah role Editor dibutuhkan?~~ | **Diputuskan 1 Okt 2026: Editor dibutuhkan.** Hak akses Editor di §2.2 perlu dikonfirmasi pemilik produk |
 | K-03 | Apakah konten perlu disetujui pimpinan sebelum terbit? | Tidak (A-02) |
-| K-04 | Apakah tim sanggup menginput kalender per kegiatan? | Ya, dibantu impor CSV (A-03) |
+| K-04 | ~~Apakah tim sanggup menginput kalender per kegiatan?~~ | **Diputuskan 1 Okt 2026: sanggup.** Kegiatan diinput per baris (dengan impor CSV/Excel), **dan** tetap tersedia unggahan PDF untuk SK Rektor serta surat edaran terkait kalender (FR-M-03) |
 | K-05 | ~~Apakah NIP/NID staf boleh tampil di publik?~~ | **Diputuskan 1 Okt 2026: tidak boleh.** Sudah dihapus dari halaman Pimpinan & Staf |
 | K-06 | Apakah peringkat lama (A/B/C) dan baru (Unggul/Baik Sekali/Baik) ditampilkan apa adanya? | Ya, apa adanya sesuai sertifikat |
 | K-07 | Apakah data lulusan sudah resmi untuk dipublikasikan? | Ya, sesuai data saat ini |

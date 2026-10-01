@@ -1,0 +1,16 @@
+<%#
+  include('../components/stat-tile', { statLabel: 'Lulusan 2025', statValue: formatAngka(6289), statHint: '+14,8% dibanding 2024', statIcon: 'school', statTone: 'danger', statHref: '/admin/...' })
+  statTone 'danger' menandai angka yang perlu ditindaklanjuti.
+%>
+<% const danger = locals.statTone === 'danger'; %>
+<div class="card card-body flex items-start justify-between gap-4 <%= danger ? 'border-danger-solid' : '' %>">
+  <div>
+    <p class="text-sm font-medium text-muted"><%= locals.statLabel %></p>
+    <p class="mt-1 text-3xl font-bold tabular-nums <%= danger ? 'text-danger' : 'text-ink' %>"><%= locals.statValue %></p>
+    <% if (locals.statHint) { %><p class="mt-1 text-sm text-muted"><%= locals.statHint %></p><% } %>
+    <% if (locals.statHref) { %><a href="<%= locals.statHref %>" class="mt-2 inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%= locals.statLinkLabel || 'Kelola' %><%- icon('arrow_forward', 'size-4') %></a><% } %>
+  </div>
+  <% if (locals.statIcon) { %>
+    <span class="flex size-11 items-center justify-center rounded-control <%= danger ? 'bg-danger-soft text-danger' : 'bg-primary-soft text-primary' %>"><%- icon(locals.statIcon, 'size-6') %></span>
+  <% } %>
+</div>

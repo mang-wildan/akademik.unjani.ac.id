@@ -1,0 +1,41 @@
+<%#
+  Satu kolom isian lengkap: label, tanda wajib, teks bantuan, pesan galat (FR-AD-06).
+  include('../components/form-field', {
+    name: 'judul', label: 'Judul', value: values.judul, required: true,
+    help: 'Maksimal 150 karakter.', error: errors.judul,
+    type: 'text',               // text | email | password | number | date | url | textarea | select
+    options: [{ value: 'a', label: 'A' }],   // untuk select
+    placeholder: '', rows: 4, autocomplete: '', min: '', max: '',
+  })
+%>
+<%
+  const id = `f-${locals.name}`;
+  const type = locals.type || 'text';
+  const describedBy = [locals.help && `${id}-help`, locals.error && `${id}-error`].filter(Boolean).join(' ');
+  const value = locals.value === undefined || locals.value === null ? '' : locals.value;
+  const attrs = [
+    `id="${id}"`, `name="${locals.name}"`, 'class="field-control"',
+    locals.required ? 'required' : '',
+    describedBy ? `aria-describedby="${describedBy}"` : '',
+    locals.error ? 'aria-invalid="true"' : '',
+  ].filter(Boolean).join(' ');
+%>
+<div>
+  <label for="<%= id %>" class="field-label">
+    <%= locals.label %><% if (locals.required) { %> <span class="text-danger" aria-hidden="true">*</span><span class="sr-only">(wajib)</span><% } %>
+  </label>
+  <% if (type === 'textarea') { %>
+    <textarea <%- attrs %> rows="<%= locals.rows || 4 %>"<% if (locals.placeholder) { %> placeholder="<%= locals.placeholder %>"<% } %>><%= value %></textarea>
+  <% } else if (type === 'select') { %>
+    <select <%- attrs %>>
+      <% if (locals.placeholder) { %><option value=""><%= locals.placeholder %></option><% } %>
+      <% (locals.options || []).forEach(opt => { %>
+        <option value="<%= opt.value %>"<%= String(opt.value) === String(value) ? ' selected' : '' %>><%= opt.label %></option>
+      <% }) %>
+    </select>
+  <% } else { %>
+    <input type="<%= type %>" <%- attrs %> value="<%= value %>"<% if (locals.placeholder) { %> placeholder="<%= locals.placeholder %>"<% } %><% if (locals.autocomplete) { %> autocomplete="<%= locals.autocomplete %>"<% } %><% if (locals.min !== undefined && locals.min !== '') { %> min="<%= locals.min %>"<% } %><% if (locals.max !== undefined && locals.max !== '') { %> max="<%= locals.max %>"<% } %>>
+  <% } %>
+  <% if (locals.help) { %><p id="<%= id %>-help" class="field-help"><%= locals.help %></p><% } %>
+  <% if (locals.error) { %><p id="<%= id %>-error" class="field-error"><%= locals.error %></p><% } %>
+</div>

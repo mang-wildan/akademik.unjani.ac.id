@@ -1,0 +1,42 @@
+<%#
+  include('../components/pagination', {
+    page: 2, totalPages: 5, total: 48, from: 11, to: 20, noun: 'pengumuman',
+    path: '/pengumuman', query: { kategori: 'wisuda' },   // query lain dipertahankan
+  })
+%>
+<%
+  const current = Number(locals.page) || 1;
+  const last = Number(locals.totalPages) || 1;
+  const hrefFor = p => `${locals.path}?${new URLSearchParams({ ...(locals.query || {}), page: p })}`;
+  // First, last, and current ±1, with gaps marked by null.
+  const pages = [];
+  for (let p = 1; p <= last; p += 1) {
+    if (p === 1 || p === last || Math.abs(p - current) <= 1) pages.push(p);
+    else if (pages[pages.length - 1] !== null) pages.push(null);
+  }
+  const linkClass = 'inline-flex min-h-11 min-w-11 items-center justify-center rounded-control px-3 text-sm font-semibold no-underline';
+%>
+<div class="flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
+  <p class="text-sm text-muted">Menampilkan <%= formatAngka(locals.from) %>–<%= formatAngka(locals.to) %> dari <%= formatAngka(locals.total) %> <%= locals.noun || 'data' %></p>
+  <% if (last > 1) { %>
+    <nav aria-label="Halaman">
+      <ul class="flex items-center gap-1">
+        <li>
+          <% if (current > 1) { %><a href="<%= hrefFor(current - 1) %>" class="<%= linkClass %> text-ink hover:bg-sunken" aria-label="Halaman sebelumnya"><%- icon('chevron_left') %></a>
+          <% } else { %><span class="<%= linkClass %> text-line-strong" aria-hidden="true"><%- icon('chevron_left') %></span><% } %>
+        </li>
+        <% pages.forEach(p => { %>
+          <li>
+            <% if (p === null) { %><span class="px-1 text-muted" aria-hidden="true">…</span>
+            <% } else if (p === current) { %><span class="<%= linkClass %> bg-primary text-white" aria-current="page"><%= p %></span>
+            <% } else { %><a href="<%= hrefFor(p) %>" class="<%= linkClass %> text-ink hover:bg-sunken"><%= p %></a><% } %>
+          </li>
+        <% }) %>
+        <li>
+          <% if (current < last) { %><a href="<%= hrefFor(current + 1) %>" class="<%= linkClass %> text-ink hover:bg-sunken" aria-label="Halaman berikutnya"><%- icon('chevron_right') %></a>
+          <% } else { %><span class="<%= linkClass %> text-line-strong" aria-hidden="true"><%- icon('chevron_right') %></span><% } %>
+        </li>
+      </ul>
+    </nav>
+  <% } %>
+</div>

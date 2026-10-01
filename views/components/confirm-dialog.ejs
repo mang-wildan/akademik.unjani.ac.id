@@ -1,0 +1,24 @@
+<%#
+  Konfirmasi sebelum aksi yang tidak bisa dibatalkan (FR-AD-05).
+  Pemicu: <button type="button" data-dialog-open="hapus-<id>">Hapus</button>
+  include('../components/confirm-dialog', {
+    dialogId: 'hapus-123', dialogTitle: 'Hapus pengumuman?',
+    dialogText: '"Judul" akan dihapus permanen.', action: '/admin/pengumuman/123/delete', confirmLabel: 'Hapus',
+  })
+%>
+<dialog id="<%= locals.dialogId %>" aria-labelledby="<%= locals.dialogId %>-judul"
+        class="m-auto w-[calc(100%-2rem)] max-w-md rounded-card border border-line bg-surface p-0 text-ink shadow-modal backdrop:bg-ink/50">
+  <form method="POST" action="<%= locals.action %>" class="p-6">
+    <div class="flex items-start gap-4">
+      <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-danger-soft text-danger"><%- icon('warning', 'size-6') %></span>
+      <div>
+        <h2 id="<%= locals.dialogId %>-judul" class="text-lg font-semibold"><%= locals.dialogTitle %></h2>
+        <p class="mt-1 text-sm text-muted"><%= locals.dialogText %></p>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button type="button" class="btn btn-secondary" data-dialog-close autofocus>Batal</button>
+      <button type="submit" class="btn btn-danger"><%= locals.confirmLabel || 'Hapus' %></button>
+    </div>
+  </form>
+</dialog>

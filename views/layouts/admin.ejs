@@ -1,0 +1,93 @@
+<%
+  const currentPath = locals.path || '/';
+  const me = locals.user || {};
+  const roleLabel = { superadmin: 'Super Admin', admin: 'Super Admin', editor: 'Editor' }[me.role] || 'Admin';
+  const sidebar = adminNav
+    .map(group => ({ ...group, items: group.items.filter(item => canSee(item, me)) }))
+    .filter(group => group.items.length);
+%>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title><%= locals.title ? `${locals.title} | Admin Bidang Akademik` : 'Admin Bidang Akademik' %></title>
+  <link rel="icon" href="/assets/landing-page/images/favicon.ico">
+  <link rel="stylesheet" href="/css/app.css">
+  <script src="/js/app.js" defer></script>
+  <script src="/js/vendor/alpine-csp.min.js" defer></script>
+</head>
+<body class="text-[15px]" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
+  <a class="skip-link" href="#konten">Langsung ke konten utama</a>
+
+  <!-- Sidebar: fixed on desktop, overlay on mobile -->
+  <div x-show="open" x-cloak x-on:click="close" class="fixed inset-0 z-40 bg-ink/50 lg:hidden"></div>
+  <aside id="sidebar-admin" class="fixed inset-y-0 left-0 z-50 w-72 -translate-x-full overflow-y-auto border-r border-line bg-surface transition-transform data-open:translate-x-0 lg:translate-x-0"
+         x-bind:data-open="open" aria-label="Navigasi admin">
+    <div class="flex h-16 items-center justify-between gap-3 border-b border-line px-5">
+      <a href="/admin/dashboard" class="flex items-center gap-3 no-underline">
+        <img src="/img/lambang-unjani.png" alt="" width="36" height="35" class="size-9 object-contain">
+        <span class="leading-tight">
+          <span class="block font-bold text-brand">Admin Akademik</span>
+          <span class="block text-xs text-muted">Bidang Akademik UNJANI</span>
+        </span>
+      </a>
+      <button type="button" class="btn-icon lg:hidden" x-on:click="close" aria-label="Tutup menu"><%- icon('close', 'size-6') %></button>
+    </div>
+    <nav class="px-3 py-4">
+      <% sidebar.forEach(group => { %>
+        <p class="px-3 pt-4 pb-1 text-xs font-semibold tracking-wide text-muted uppercase first:pt-0"><%= group.group %></p>
+        <ul>
+          <% group.items.forEach(item => { const active = isActive(item.href, currentPath); %>
+            <li>
+              <a href="<%= item.href %>" class="flex min-h-11 items-center gap-3 rounded-control px-3 font-medium no-underline <%= active ? 'bg-primary text-white' : 'text-ink hover:bg-sunken' %>"<%- active ? ' aria-current="page"' : '' %>>
+                <%- icon(item.icon, 'size-5') %><%= item.label %>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      <% }) %>
+      <a href="/" class="mt-6 flex min-h-11 items-center gap-3 rounded-control px-3 font-semibold no-underline hover:bg-primary-soft">
+        <%- icon('arrow_back', 'size-5') %>Kembali ke situs
+      </a>
+    </nav>
+  </aside>
+
+  <div class="lg:pl-72">
+    <header class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-surface px-4 md:px-6">
+      <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="sidebar-admin" aria-label="Buka menu">
+        <%- icon('menu', 'size-6') %>
+      </button>
+      <p class="truncate text-lg font-semibold"><%= locals.title || 'Admin' %></p>
+
+      <div class="relative ml-auto" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape.stop="closeAndFocus">
+        <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true"
+                class="flex min-h-11 items-center gap-3 rounded-control px-2 hover:bg-sunken">
+          <span class="flex size-9 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon('person', 'size-5') %></span>
+          <span class="hidden text-left leading-tight sm:block">
+            <span class="block text-sm font-semibold"><%= me.name || me.email || 'Admin' %></span>
+            <span class="block text-xs text-muted"><%= roleLabel %></span>
+          </span>
+          <%- icon('keyboard_arrow_down', 'size-5 text-muted') %>
+        </button>
+        <div x-show="open" x-cloak class="absolute right-0 mt-1 w-56 rounded-card border border-line bg-surface p-2 shadow-raised">
+          <a href="/profile" class="flex min-h-11 items-center gap-3 rounded-control px-3 text-sm font-medium text-ink no-underline hover:bg-sunken"><%- icon('person', 'size-5') %>Profil saya</a>
+          <a href="/profile/password" class="flex min-h-11 items-center gap-3 rounded-control px-3 text-sm font-medium text-ink no-underline hover:bg-sunken"><%- icon('settings', 'size-5') %>Ubah password</a>
+          <form action="/logout" method="POST">
+            <button type="submit" class="flex min-h-11 w-full items-center gap-3 rounded-control px-3 text-sm font-medium text-danger hover:bg-danger-soft"><%- icon('logout', 'size-5') %>Keluar</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <% if (locals.alertSuccess || locals.alertError) { %>
+      <%- include('../components/toast', { success: locals.alertSuccess, error: locals.alertError }) %>
+    <% } %>
+
+    <main id="konten" class="px-4 py-6 md:px-6 lg:px-8" tabindex="-1">
+      <%- body %>
+    </main>
+  </div>
+</body>
+</html>

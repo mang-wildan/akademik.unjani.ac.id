@@ -1,0 +1,23 @@
+<%#
+  Unggah file dengan batas ukuran yang terlihat (FR-AD-07).
+  include('../components/file-upload', {
+    name: 'sertifikat', label: 'Sertifikat (PDF)', accept: 'application/pdf',
+    limitText: 'PDF, maks. 10 MB', required: true, error: errors.sertifikat,
+    current: { label: 'sertifikat-2021.pdf', href: '/uploads/...' },   // file yang sudah ada (form ubah)
+  })
+%>
+<% const id = `f-${locals.name}`; %>
+<div>
+  <label for="<%= id %>" class="field-label">
+    <%= locals.label %><% if (locals.required) { %> <span class="text-danger" aria-hidden="true">*</span><span class="sr-only">(wajib)</span><% } %>
+  </label>
+  <% if (locals.current) { %>
+    <p class="mb-2 flex items-center gap-2 text-sm text-muted"><%- icon('description', 'size-5') %>File saat ini:
+      <a href="<%= locals.current.href %>" target="_blank" rel="noopener"><%= locals.current.label %></a></p>
+  <% } %>
+  <input type="file" id="<%= id %>" name="<%= locals.name %>"<% if (locals.accept) { %> accept="<%= locals.accept %>"<% } %><%= locals.required && !locals.current ? ' required' : '' %>
+         aria-describedby="<%= id %>-help<%= locals.error ? ` ${id}-error` : '' %>"<%- locals.error ? ' aria-invalid="true"' : '' %>
+         class="block w-full rounded-control border border-dashed border-control bg-surface p-2 text-sm text-muted file:mr-3 file:min-h-10 file:cursor-pointer file:rounded-control file:border-0 file:bg-primary-soft file:px-4 file:font-semibold file:text-primary hover:file:bg-success-soft">
+  <p id="<%= id %>-help" class="field-help"><%= locals.limitText || 'Gambar maks. 5 MB, PDF maks. 10 MB' %><%= locals.current ? '. Biarkan kosong jika tidak diganti.' : '' %></p>
+  <% if (locals.error) { %><p id="<%= id %>-error" class="field-error"><%= locals.error %></p><% } %>
+</div>

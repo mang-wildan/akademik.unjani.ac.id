@@ -1,0 +1,152 @@
+<%
+  const s = locals.siteSetting || {};
+  const pageTitle = locals.title ? `${locals.title} | Bidang Akademik UNJANI` : 'Bidang Akademik UNJANI';
+  const pageDescription = locals.description || 'Kalender akademik, kurikulum, dokumen, akreditasi, dan informasi akademik resmi Universitas Jenderal Achmad Yani.';
+  const currentPath = locals.path || '/';
+  const phone = s.kontakTelepon || '+62 (022) 6656190';
+  const email = s.kontakEmail || 'akademik@unjani.ac.id';
+  const socials = [
+    { label: 'Facebook', url: s.socialFacebook },
+    { label: 'Instagram', url: s.socialInstagram },
+    { label: 'YouTube', url: s.socialYoutube },
+    { label: 'TikTok', url: s.socialTiktok },
+    { label: 'X', url: s.socialTwitter },
+    { label: 'LinkedIn', url: s.socialLinkedin },
+  ].filter(item => item.url);
+%>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= pageTitle %></title>
+  <meta name="description" content="<%= pageDescription %>">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Bidang Akademik UNJANI">
+  <meta property="og:title" content="<%= pageTitle %>">
+  <meta property="og:description" content="<%= pageDescription %>">
+  <meta property="og:image" content="/img/lambang-unjani.png">
+  <link rel="icon" href="<%= s.favicon || '/assets/landing-page/images/favicon.ico' %>">
+  <link rel="preload" href="/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/app.css">
+  <script src="/js/app.js" defer></script>
+  <script src="/js/vendor/alpine-csp.min.js" defer></script>
+</head>
+<body class="flex min-h-screen flex-col">
+  <a class="skip-link" href="#konten">Langsung ke konten utama</a>
+
+  <header class="sticky top-0 z-40 border-b border-line bg-surface" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
+    <div class="container-content flex h-18 items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 no-underline">
+        <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-11 object-contain">
+        <span class="leading-tight">
+          <span class="block font-bold text-brand">Bidang Akademik</span>
+          <span class="block text-xs font-medium tracking-wide text-muted uppercase">Universitas Jenderal Achmad Yani</span>
+        </span>
+      </a>
+
+      <nav class="hidden lg:block" aria-label="Menu utama">
+        <ul class="flex items-center gap-1">
+          <% publicNav.forEach(item => { %>
+            <% if (item.children) { const groupActive = item.children.some(c => isActive(c.href, currentPath)); %>
+              <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
+                <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true"
+                        class="btn btn-tertiary px-3 <%= groupActive ? 'text-primary' : 'text-ink' %>">
+                  <%= item.label %> <%- icon('keyboard_arrow_down', 'size-5') %>
+                </button>
+                <ul x-show="open" x-cloak class="absolute left-0 mt-1 min-w-64 rounded-card border border-line bg-surface p-2 shadow-raised">
+                  <% item.children.forEach(child => { %>
+                    <li><a href="<%= child.href %>" class="flex min-h-11 items-center rounded-control px-3 text-sm font-medium no-underline hover:bg-sunken <%= isActive(child.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
+                  <% }) %>
+                </ul>
+              </li>
+            <% } else { %>
+              <li><a href="<%= item.href %>" class="btn btn-tertiary px-3 <%= isActive(item.href, currentPath) ? 'text-primary' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
+            <% } %>
+          <% }) %>
+        </ul>
+      </nav>
+
+      <%# Tombol pencarian global (FR-G-06) ditambahkan bersama rute /cari di F3. %>
+      <div class="flex items-center gap-1">
+        <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="menu-hp" aria-label="Buka menu">
+          <%- icon('menu', 'size-6') %>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu HP: panel penuh di bawah header (FR-G-02) -->
+    <nav id="menu-hp" x-show="open" x-cloak class="max-h-[calc(100vh-4.5rem)] overflow-y-auto border-t border-line bg-surface lg:hidden" aria-label="Menu utama">
+      <ul class="container-content py-3">
+        <% publicNav.forEach(item => { %>
+          <% if (item.children) { %>
+            <li class="pt-3">
+              <p class="px-3 pb-1 text-xs font-semibold tracking-wide text-muted uppercase"><%= item.label %></p>
+              <ul>
+                <% item.children.forEach(child => { %>
+                  <li><a href="<%= child.href %>" class="flex min-h-11 items-center rounded-control px-3 font-medium no-underline <%= isActive(child.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
+                <% }) %>
+              </ul>
+            </li>
+          <% } else { %>
+            <li><a href="<%= item.href %>" class="flex min-h-11 items-center rounded-control px-3 font-semibold no-underline <%= isActive(item.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
+          <% } %>
+        <% }) %>
+      </ul>
+    </nav>
+  </header>
+
+  <% if (locals.alertSuccess || locals.alertError) { %>
+    <%- include('../components/toast', { success: locals.alertSuccess, error: locals.alertError }) %>
+  <% } %>
+
+  <main id="konten" class="flex-1" tabindex="-1">
+    <%- body %>
+  </main>
+
+  <footer class="on-dark mt-16 bg-brand text-white">
+    <div class="container-content grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-11 object-contain">
+          <p class="font-bold">Bidang Akademik<br><span class="text-sm font-medium text-on-dark-muted">Universitas Jenderal Achmad Yani</span></p>
+        </div>
+        <p class="mt-4 text-sm text-on-dark-muted"><%= s.landingFooterDescription || 'Mengelola kurikulum, kalender akademik, dan layanan administrasi akademik agar proses belajar berjalan tertib dan bermutu.' %></p>
+        <% if (socials.length) { %>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            <% socials.forEach(item => { %>
+              <li><a href="<%= item.url %>" class="inline-flex min-h-11 items-center rounded-control px-3 text-sm font-semibold text-white underline-offset-2 hover:underline" target="_blank" rel="noopener noreferrer"><%= item.label %></a></li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+
+      <div>
+        <h2 class="text-base font-semibold text-white">Kontak &amp; Alamat</h2>
+        <ul class="mt-4 space-y-3 text-sm text-on-dark-muted">
+          <li class="flex gap-3"><%- icon('location_on', 'size-5 text-accent') %><span><%= s.alamat || 'Jl. Terusan Jend. Sudirman, Cibeber, Cimahi Selatan, Kota Cimahi, Jawa Barat' %></span></li>
+          <li class="flex items-center gap-3"><%- icon('call', 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="tel:<%= phone.replace(/[^\d+]/g, '') %>"><%= phone %></a></li>
+          <li class="flex items-center gap-3"><%- icon('mail', 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="mailto:<%= email %>"><%= email %></a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-base font-semibold text-white">Jam Layanan</h2>
+        <p class="mt-4 flex gap-3 text-sm text-on-dark-muted"><%- icon('schedule', 'size-5 text-accent') %><span><%= s.jamLayanan || 'Senin–Jumat, 08.00–15.30 WIB' %></span></p>
+      </div>
+
+      <div>
+        <h2 class="text-base font-semibold text-white">Tautan Cepat</h2>
+        <ul class="mt-2">
+          <% ((s.quickLinks && s.quickLinks.length) ? s.quickLinks : [{ label: 'Portal UNJANI', url: 'https://unjani.ac.id', target: '_blank' }]).forEach(link => { %>
+            <li><a href="<%= link.url %>" class="flex min-h-11 items-center gap-2 text-sm text-white no-underline hover:underline"<%- link.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '' %>><%- icon('chevron_right', 'size-4 text-accent') %><%= link.label %></a></li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/15">
+      <p class="container-content py-5 text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Bidang Akademik Universitas Jenderal Achmad Yani</p>
+    </div>
+  </footer>
+</body>
+</html>

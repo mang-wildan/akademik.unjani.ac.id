@@ -1,5 +1,8 @@
 const path = require('path');
 const express = require('express');
+// Express 4 ignores rejected promises from async handlers; this routes them to
+// the error handler instead of crashing the process. Must load before routes.
+require('express-async-errors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -36,9 +39,17 @@ const Pengumuman = require('./models/Pengumuman');
 const AcademicDocument = require('./models/AcademicDocument');
 const AcademicCalendar = require('./models/AcademicCalendar');
 const { uploadErrorMessage } = require('./utils/upload');
+const icon = require('./utils/icons');
+const format = require('./utils/format');
+const navigation = require('./utils/navigation');
+const renderPage = require('./middleware/renderPage');
+const verifyOrigin = require('./middleware/verifyOrigin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Helpers available in every view (new layouts & components).
+Object.assign(app.locals, { icon, ...format, ...navigation });
 
 // Behind a reverse proxy (Nginx, cPanel, etc.) set TRUST_PROXY to the number of
 // proxy hops so req.ip is the visitor's address; login attempt limits rely on it.
@@ -88,6 +99,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(verifyOrigin);
+app.use(renderPage);
 app.use(
   cors({
     origin: true,
@@ -216,6 +229,9 @@ app.use(async (req, res, next) => {
 });
 
 // Routes
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/dev', require('./routes/devRoutes'));
+}
 app.get('/admin', (_req, res) => res.redirect('/admin/dashboard'));
 app.use('/admin/books', bookRoutes);
 app.use('/admin/graduation-books', graduationBookRoutes);

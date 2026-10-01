@@ -1,0 +1,143 @@
+<%# Katalog komponen publik (hanya di development). Data contoh di sini fiktif. %>
+<div class="container-content py-8">
+  <%- include('../components/page-header', {
+    heading: 'Katalog Komponen',
+    lead: 'Semua komponen design system dalam satu halaman, untuk diuji kontras, fokus, dan tampilan HP.',
+    breadcrumb: [{ label: 'Pengembangan' }, { label: 'Komponen' }],
+    actions: [{ label: 'Unduh PDF resmi', href: '#tombol', icon: 'download', variant: 'secondary' }, { label: 'Contoh admin', href: '/dev/admin', icon: 'dashboard' }],
+  }) %>
+
+  <section class="space-y-10">
+    <div id="tombol">
+      <h2 class="mb-3 text-xl">Tombol</h2>
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" class="btn btn-primary"><%- icon('add') %>Tambah Pengumuman</button>
+        <button type="button" class="btn btn-secondary">Batal</button>
+        <button type="button" class="btn btn-tertiary">Selengkapnya <%- icon('arrow_forward') %></button>
+        <button type="button" class="btn btn-danger"><%- icon('delete') %>Hapus</button>
+        <button type="button" class="btn btn-primary" disabled>Nonaktif</button>
+        <button type="button" class="btn-icon" aria-label="Tutup"><%- icon('close', 'size-6') %></button>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-xl">Badge status</h2>
+      <div class="flex flex-wrap gap-2">
+        <%- include('../components/badge', { text: 'Berlaku', tone: 'success', badgeIcon: 'check_circle' }) %>
+        <%- include('../components/badge', { text: 'Segera berakhir', tone: 'warning' }) %>
+        <%- include('../components/badge', { text: 'Kedaluwarsa', tone: 'danger' }) %>
+        <%- include('../components/badge', { text: 'Unggul', tone: 'gold', badgeIcon: 'workspace_premium' }) %>
+        <%- include('../components/badge', { text: 'Pengumuman', tone: 'info' }) %>
+        <%- include('../components/badge', { text: 'Selesai', tone: 'neutral' }) %>
+      </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <%- include('../components/alert', { alertTone: 'info', alertTitle: 'Informasi', alertText: 'Kalender ditetapkan dengan SK Rektor No. 179/2025.' }) %>
+      <%- include('../components/alert', { alertTone: 'warning', alertTitle: 'Perpanjangan sedang diproses', alertText: 'Sertifikat akreditasi sedang dalam proses perpanjangan.' }) %>
+      <%- include('../components/alert', { alertTone: 'danger', alertTitle: 'Gagal menyimpan', alertText: 'Ukuran file melebihi batas 10 MB.' }) %>
+      <%- include('../components/alert', { alertTone: 'success', alertTitle: 'Tersimpan', alertText: 'Pengumuman berhasil diterbitkan.' }) %>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-xl">Angka ringkas</h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <%- include('../components/stat-tile', { statLabel: 'Lulusan tahun 2025', statValue: formatAngka(6289), statHint: '+14,8% dibanding 2024', statIcon: 'school' }) %>
+        <%- include('../components/stat-tile', { statLabel: 'Lulusan 2024–2025', statValue: formatAngka(11769), statIcon: 'groups' }) %>
+        <%- include('../components/stat-tile', { statLabel: 'Akreditasi kedaluwarsa', statValue: 4, statTone: 'danger', statIcon: 'warning', statHref: '#', statLinkLabel: 'Perbarui' }) %>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-xl">Daftar dengan blok tanggal</h2>
+      <ul class="card divide-y divide-line">
+        <% [
+          { d: '2026-02-03', cat: 'Wisuda', t: 'Pendaftaran Wisuda Periode I Tahun 2026 dibuka', fresh: true },
+          { d: '2026-01-28', cat: 'Perkuliahan', t: 'Jadwal Perwalian dan Heregistrasi Semester Genap 2025/2026' },
+        ].forEach(item => { %>
+          <li class="flex gap-4 p-4">
+            <%- include('../components/date-block', { date: item.d }) %>
+            <div>
+              <div class="flex flex-wrap gap-2">
+                <%- include('../components/badge', { text: item.cat, tone: 'info' }) %>
+                <% if (item.fresh) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
+              </div>
+              <a href="#" class="mt-1 block font-semibold text-ink hover:text-primary"><%= item.t %></a>
+              <p class="mt-1 text-sm text-muted"><%= formatTanggal(item.d, { long: true }) %></p>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-xl">Tab + tabel (berubah jadi kartu di HP)</h2>
+      <div x-data="tabs" data-active="1" class="card">
+        <div role="tablist" aria-label="Semester" class="flex gap-1 overflow-x-auto border-b border-line p-2">
+          <% ['Semester Ganjil', 'Semester Genap', 'Semester Pendek'].forEach((label, i) => { %>
+            <button type="button" role="tab" id="tab-<%= i %>" aria-controls="panel-<%= i %>" data-index="<%= i %>"
+                    x-on:click="select" x-on:keydown="move" x-bind:aria-selected="isActive" x-bind:tabindex="tabIndex"
+                    class="btn whitespace-nowrap text-muted hover:bg-sunken aria-selected:bg-primary aria-selected:text-white"><%= label %></button>
+          <% }) %>
+        </div>
+        <% ['Semester Ganjil', 'Semester Genap', 'Semester Pendek'].forEach((label, i) => { %>
+          <div role="tabpanel" id="panel-<%= i %>" aria-labelledby="tab-<%= i %>" data-index="<%= i %>" x-show="isActive" tabindex="0">
+            <table class="data-table data-table--stack">
+              <caption class="sr-only">Kegiatan <%= label %></caption>
+              <thead><tr><th scope="col">No</th><th scope="col">Kegiatan</th><th scope="col">Waktu</th><th scope="col">Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td data-label="No">1</td>
+                  <td data-label="Kegiatan">Ujian Tengah Semester (UTS)</td>
+                  <td data-label="Waktu"><%= formatRentangTanggal('2026-04-27', '2026-05-08') %></td>
+                  <td data-label="Status"><%- include('../components/badge', { text: 'Selesai', tone: 'neutral' }) %></td>
+                </tr>
+                <tr class="bg-primary-soft">
+                  <td data-label="No">2</td>
+                  <td data-label="Kegiatan" class="font-semibold">Ujian Akhir Semester (UAS)</td>
+                  <td data-label="Waktu"><%= formatRentangTanggal('2026-06-29', '2026-07-10') %></td>
+                  <td data-label="Status"><%- include('../components/badge', { text: 'Berlangsung', tone: 'success' }) %></td>
+                </tr>
+                <tr>
+                  <td data-label="No">3</td>
+                  <td data-label="Kegiatan">Batas Akhir Pengumuman Nilai</td>
+                  <td data-label="Waktu"><%= formatRentangTanggal('2026-07-17') %></td>
+                  <td data-label="Status"><%- include('../components/badge', { text: 'Akan datang', tone: 'warning' }) %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        <% }) %>
+      </div>
+      <%- include('../components/pagination', { page: 2, totalPages: 5, total: 48, from: 11, to: 20, noun: 'kegiatan', path: '/dev/komponen', query: {} }) %>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-xl">Keadaan kosong</h2>
+      <%- include('../components/empty-state', { emptyIcon: 'search', emptyTitle: 'Dokumen tidak ditemukan', emptyText: 'Tidak ada dokumen yang cocok dengan "transkrip". Coba kata kunci lain.', emptyAction: { label: 'Hapus pencarian', href: '/dev/komponen' } }) %>
+    </div>
+
+    <div>
+      <h2 class="mb-3 text-xl">Formulir</h2>
+      <form class="card card-body grid gap-5 md:grid-cols-2" action="#" method="get" novalidate>
+        <%- include('../components/form-field', { name: 'judul', label: 'Judul pengumuman', required: true, help: 'Maksimal 150 karakter.', value: 'Pendaftaran Wisuda Periode I' }) %>
+        <%- include('../components/form-field', { name: 'email', label: 'Email', type: 'email', required: true, value: 'akademik@', error: 'Format email tidak valid.', autocomplete: 'email' }) %>
+        <%- include('../components/form-field', { name: 'peringkat', label: 'Peringkat', type: 'select', required: true, placeholder: 'Pilih peringkat', options: ['Unggul', 'Baik Sekali', 'Baik', 'A', 'B', 'C'].map(v => ({ value: v, label: v })) }) %>
+        <%- include('../components/form-field', { name: 'berlaku', label: 'Berlaku sampai', type: 'date', required: true }) %>
+        <div class="md:col-span-2">
+          <%- include('../components/form-field', { name: 'isi', label: 'Isi', type: 'textarea', rows: 4, placeholder: 'Tulis isi pengumuman…' }) %>
+        </div>
+        <div class="md:col-span-2">
+          <%- include('../components/file-upload', { name: 'sertifikat', label: 'Sertifikat (PDF)', accept: 'application/pdf', limitText: 'PDF, maks. 10 MB', required: true }) %>
+        </div>
+        <div class="flex justify-end gap-2 md:col-span-2">
+          <a href="/dev/komponen" class="btn btn-secondary">Batal</a>
+          <button type="button" class="btn btn-danger" data-dialog-open="hapus-contoh"><%- icon('delete') %>Hapus</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+      <%- include('../components/confirm-dialog', { dialogId: 'hapus-contoh', dialogTitle: 'Hapus pengumuman?', dialogText: '"Pendaftaran Wisuda Periode I" akan dihapus permanen.', action: '/dev/komponen', confirmLabel: 'Hapus' }) %>
+      <p class="mt-3 text-sm text-muted">Pesan toast: <a href="/dev/komponen?success=Pengumuman%20berhasil%20disimpan">sukses</a> · <a href="/dev/komponen?error=Ukuran%20file%20terlalu%20besar">gagal</a></p>
+    </div>
+  </section>
+</div>

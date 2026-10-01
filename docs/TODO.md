@@ -10,7 +10,8 @@ Label di setiap kelompok tugas: `[Model · effort]`. Kelompok tugas yang labelny
 
 - [x] K-01 diputuskan: **"Bidang Akademik"**
 - [x] K-02: role Editor **dibutuhkan** · K-05: NIP/NID **tidak tampil** di publik (sudah dihapus dari halaman Pimpinan & Staf)
-- [ ] Jawab K-03, K-04, K-06, K-07 (SRS §10) — K-04 wajib sebelum F2
+- [x] K-04: tim **sanggup** input kalender per kegiatan; tambah unggahan PDF surat edaran selain SK Rektor
+- [ ] Jawab K-03, K-06, K-07 (SRS §10)
 - [x] Database pengembangan = salinan database lama (bukan live)
 - [x] `git init` dan push awal ke `github.com/mang-wildan/baa.unjani.ac.id`
 - [ ] Ganti password admin sementara yang diatur saat audit
@@ -65,29 +66,36 @@ Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.
 ## F1 — Fondasi `[Opus 5.5 · high]`
 
 ### Repo & lingkungan
-- [ ] `git init`, `.gitignore` (`node_modules`, `.env`, `public/uploads`), dan commit kondisi awal
-- [ ] Branch `redesign`
-- [ ] `.env.example` diperbarui; database dev, staging, dan produksi terpisah — NFR-M-04
-- [ ] Hapus `tempk.ejs` dan `temp_cal.ejs` di root
+- [x] `git init`, `.gitignore`, commit awal, push ke GitHub (dikerjakan di F0)
+- [x] Branch `fase-1-fondasi` (satu branch per fase)
+- [x] `.env.example`: `NODE_ENV`, `TRUST_PROXY`, `APP_ORIGIN`; database dev = salinan — NFR-M-04
+- [x] Hapus `tempk.ejs` dan `temp_cal.ejs`
 
 ### Design system
-- [ ] Pasang Tailwind CLI; `tailwind.config.js` hanya berisi token inti dari DESIGN.md (tanpa palet Material otomatis) — SRS §7.2
-- [ ] Skrip `npm run build:css` dan `npm run dev` (watch CSS + nodemon)
-- [ ] Self-host Plus Jakarta Sans dan subset Material Symbols
-- [ ] Pasang Alpine.js (self-host)
-- [ ] Siapkan aset lambang UNJANI resmi dalam format SVG atau PNG teroptimasi
+- [x] Tailwind CSS v4 (CLI). Token inti DESIGN.md di `assets/css/app.css` (`@theme`, palet bawaan Tailwind dimatikan) — SRS §7.2
+- [x] Koreksi kontras token: placeholder & border kolom isian `#64748B` (4,8:1)
+- [x] Skrip `build:css`, `dev:css`, `build:assets`, `build`; hasil build di-commit (produksi tanpa build)
+- [x] Self-host Plus Jakarta Sans (400–700) dan 47 ikon Material Symbols sebagai SVG inline (`icon()`)
+- [x] Alpine.js **build CSP** (self-host), komponen di `public/js/app.js`
+- [x] Lambang UNJANI teroptimasi `public/img/lambang-unjani.png` (25 KB)
+- [ ] Ganti lambang dengan SVG resmi bila tersedia
 
 ### Layout & komponen
-- [ ] `views/layouts/public.ejs`: header, menu HP, breadcrumb slot, footer — FR-G-01..04, FR-G-07
-- [ ] `views/layouts/admin.ejs`: sidebar berkelompok, topbar — FR-AD-02, FR-AD-03
-- [ ] Partial komponen: `button`, `badge`, `card`, `table`, `form-field`, `file-upload`, `empty-state`, `pagination`, `date-block`, `alert`, `stat-tile`, `confirm-dialog`, `toast`
-- [ ] Gaya `:focus-visible` global dan target sentuh 44 px — NFR-A-02, NFR-A-03
-- [ ] Halaman `/dev/komponen` (khusus dev) yang menampilkan semua komponen
+- [x] `views/layouts/public.ejs`: header, dropdown, menu HP layar penuh, footer dari Pengaturan Situs — FR-G-01..04
+- [x] `views/layouts/admin.ejs`: sidebar berkelompok sesuai role, topbar + menu akun, tanpa sisa template — FR-AD-02, FR-AD-03
+- [x] Komponen: `page-header` (breadcrumb), `badge`, `alert`, `stat-tile`, `date-block`, `empty-state`, `pagination`, `form-field`, `file-upload`, `confirm-dialog`, `toast`; kelas `.btn-*`, `.card`, `.data-table--stack` (tabel → kartu di HP)
+- [x] `:focus-visible` global, target sentuh 44 px, `prefers-reduced-motion` — NFR-A-02, NFR-A-03, NFR-A-06
+- [x] `/dev/komponen` dan `/dev/admin` (khusus development)
+- [x] Verifikasi 390 & 1440 px: 0 error CSP/JS, 0 gagal kontras, 0 kontrol tanpa nama, tanpa overflow, 1 H1, fokus terlihat; tab (termasuk tombol panah), dialog, menu HP + Escape, dropdown, sidebar admin, toast berfungsi
 
 ### Infrastruktur
-- [ ] Error handler terpusat, plus halaman 404/500 dengan layout baru — FR-G-05
-- [ ] Helmet + CSP, CSRF (`csrf-sync` atau sejenisnya), rate limit login — NFR-S-05
-- [ ] Helper format: `formatTanggal()` dan `formatAngka()` dengan `id-ID` — NFR-C-02
+- [x] Error handler terpusat (F0) + `express-async-errors`: error async tidak lagi membuat server crash
+- [x] `res.renderPage(view, locals, layout)` untuk halaman baru
+- [x] CSRF: cek Origin/Referer untuk semua POST (`middleware/verifyOrigin.js`), melindungi juga form lama termasuk dari subdomain *.unjani.ac.id — NFR-S-05
+- [x] CSP ketat untuk halaman baru (`middleware/strictCsp.js`); halaman lama menyusul saat dibangun ulang
+- [x] Batas percobaan login: reCAPTCHA setelah 3× gagal (F0)
+- [x] Helper `formatTanggal`, `formatRentangTanggal`, `tanggalBlok`, `formatAngka`, `formatUkuranFile` (WIB, `id-ID`) + 6 tes — NFR-C-02
+- [ ] Halaman 404/500 memakai layout baru (sekarang mandiri; dipindah saat CSP diterapkan global di F5)
 
 ### Bersih-bersih template lama — **ditunda ke akhir F3/F4** `[Sonnet 5.5 · low]`
 > Aset template lama (`public/assets/vendor`, `landing-page`, `json`, `js/app-*`) masih dipakai halaman yang berjalan. Hapus per halaman setelah halaman itu dibangun ulang, dan terakhir di F5 setelah tidak ada view yang merujuknya (cek dengan `grep`).
@@ -173,7 +181,7 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Tera
 ### Modul (salin pola)
 - [ ] Dasbor: kartu angka, Perlu Perhatian (otomatis), aksi cepat, aktivitas terbaru — FR-DS-01..04 · `dasbor_admin_*`
 - [ ] Berita — FR-M-02
-- [ ] Kalender Akademik + **impor CSV** + template unduhan `[Sonnet 5.5 · high]` — FR-M-03
+- [ ] Kalender Akademik + **impor CSV/Excel** + template unduhan + **lampiran PDF surat edaran** `[Sonnet 5.5 · high]` — FR-M-03
 - [ ] Akreditasi: pilihan peringkat tetap, lembaga, validasi tanggal, riwayat — FR-M-04 · `tambah_akreditasi_*`
 - [ ] Dokumen Akademik & RPL — FR-M-06
 - [ ] Kurikulum — FR-M-05

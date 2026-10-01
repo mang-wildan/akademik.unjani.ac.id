@@ -1,0 +1,5 @@
+<%#
+  include('../components/badge', { text: 'Berlaku', tone: 'success', badgeIcon: 'check_circle' })
+  tone: neutral | success | warning | danger | gold | info
+%>
+<span class="badge badge-<%= locals.tone || 'neutral' %>"><% if (locals.badgeIcon) { %><%- icon(locals.badgeIcon, 'size-4') %><% } %><%= locals.text %></span>
