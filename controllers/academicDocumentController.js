@@ -1,156 +1,120 @@
+// Admin CRUD untuk Dokumen Akademik (FR-M-06). `cover` di skema lama tidak
+// dipakai desain F3 (lihat views/landing/dokumen-akademik.ejs) jadi tidak
+// lagi diminta di form ini; kategori (dipakai untuk filter publik, FR-D-02)
+// sebelumnya tidak pernah bisa diisi admin sama sekali -- celah itu ditutup di sini.
+const fs = require('fs/promises');
 const path = require('path');
 const AcademicDocument = require('../models/AcademicDocument');
+const Kategori = require('../models/Kategori');
+const { validate, schemas } = require('../validators');
 
-const publicPath = path.join(__dirname, '..', 'public');
-const toPublicUrl = (filePath) => {
-  if (!filePath) return '';
-  const relative = path.relative(publicPath, filePath).replace(/\\/g, '/');
-  return `/${relative}`;
+const PIN_LIMIT = 4;
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
+const removeUploaded = async req => {
+  const file = req.files?.file?.[0];
+  if (file) await fs.unlink(file.path).catch(() => {});
 };
+const kategoriList = () => Kategori.find({ jenis: 'dokumen', isActive: true }).sort({ urutan: 1 }).lean();
 
 exports.list = async (req, res) => {
-  const documents = await AcademicDocument.find()
-    .populate('createdBy', 'name email')
-    .populate('updatedBy', 'name email')
-    .sort({ pinned: -1, createdAt: -1 });
-
-  res.render('admin/academic-documents/list', {
-    title: 'Dokumen Akademik',
-    user: req.user,
-    documents,
-  });
+  const items = await AcademicDocument.find().populate('kategori', 'nama').sort({ pinned: -1, createdAt: -1 }).lean();
+  res.renderPage(
+    'admin/academic-documents/list',
+    { title: 'Dokumen Akademik', items, counts: { total: items.length, totalPinned: items.filter(d => d.pinned).length } },
+    'layouts/admin'
+  );
 };
 
-exports.showCreate = (req, res) =>
-  res.render('admin/academic-documents/create', {
-    title: 'Tambah Dokumen Akademik',
-    user: req.user,
-    values: {},
-  });
+exports.showCreate = async (req, res) => {
+  res.renderPage('admin/academic-documents/form', { title: 'Tambah Dokumen Akademik', mode: 'create', values: {}, errors: {}, kategoriList: await kategoriList() }, 'layouts/admin');
+};
 
 exports.create = async (req, res) => {
-  const { name, keterangan } = req.body;
-  const pinned = req.body.pinned === 'on' || req.body.pinned === 'true';
-  const pdfFile = req.files && req.files.file && req.files.file[0];
-  const coverFile = req.files && req.files.cover && req.files.cover[0];
-  const values = { name, keterangan, pinned };
-
-  if (!name || !pdfFile || !coverFile) {
-    return res.status(400).render('admin/academic-documents/create', {
-      title: 'Tambah Dokumen Akademik',
-      user: req.user,
-      error: 'Nama, cover, dan file PDF wajib diisi.',
-      values,
-    });
+  const { data, errors, ok } = validate(schemas.academicDocument, req.body);
+  const fieldErrors = errors || {};
+  const file = req.files?.file?.[0];
+  if (!file) fieldErrors.file = 'File PDF wajib diisi.';
+  if (!ok || fieldErrors.file) {
+    await removeUploaded(req);
+    return res.renderPage('admin/academic-documents/form', { title: 'Tambah Dokumen Akademik', mode: 'create', values: req.body, errors: fieldErrors, kategoriList: await kategoriList() }, 'layouts/admin');
   }
-
-  if (pinned) {
+  if (data.pinned) {
     const pinnedCount = await AcademicDocument.countDocuments({ pinned: true });
-    if (pinnedCount >= 4) {
-      return res.status(400).render('admin/academic-documents/create', {
-        title: 'Tambah Dokumen Akademik',
-        user: req.user,
-        error: 'Pin maksimal 4 dokumen. Unpin dokumen lain terlebih dahulu.',
-        values,
-      });
+    if (pinnedCount >= PIN_LIMIT) {
+      await removeUploaded(req);
+      return res.renderPage(
+        'admin/academic-documents/form',
+        { title: 'Tambah Dokumen Akademik', mode: 'create', values: req.body, errors: { _form: `Maksimal ${PIN_LIMIT} dokumen disematkan. Lepas sematan lain terlebih dahulu.` }, kategoriList: await kategoriList() },
+        'layouts/admin'
+      );
     }
   }
+  await AcademicDocument.create({ ...data, file: toPublicUrl(file.path), fileSize: file.size, mimeType: file.mimetype, createdBy: req.user._id, updatedBy: req.user._id });
+  res.redirect(`/admin/academic-documents?success=${encodeURIComponent('Dokumen akademik berhasil ditambahkan.')}`);
+};
 
-  const doc = new AcademicDocument({
-    name,
-    keterangan,
-    cover: toPublicUrl(coverFile.path),
-    file: toPublicUrl(pdfFile.path),
-    pinned,
-    createdBy: req.user ? req.user._id : undefined,
-    updatedBy: req.user ? req.user._id : undefined,
-  });
-  await doc.save();
-  return res.redirect('/admin/academic-documents?success=Dokumen akademik berhasil ditambahkan');
+const findOrThrow = async id => {
+  const item = await AcademicDocument.findById(id);
+  if (!item) {
+    const err = new Error('Dokumen akademik tidak ditemukan.');
+    err.status = 404;
+    err.expose = true;
+    throw err;
+  }
+  return item;
 };
 
 exports.showEdit = async (req, res) => {
-  const doc = await AcademicDocument.findById(req.params.id);
-  if (!doc) return res.redirect('/admin/academic-documents?error=Data tidak ditemukan');
-  return res.render('admin/academic-documents/edit', {
-    title: 'Edit Dokumen Akademik',
-    user: req.user,
-    values: doc,
-  });
+  const item = await findOrThrow(req.params.id);
+  res.renderPage('admin/academic-documents/form', { title: 'Ubah Dokumen Akademik', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, kategoriList: await kategoriList() }, 'layouts/admin');
 };
 
 exports.update = async (req, res) => {
-  const { name, keterangan } = req.body;
-  const pinned = req.body.pinned === 'on' || req.body.pinned === 'true';
-  const pdfFile = req.files && req.files.file && req.files.file[0];
-  const coverFile = req.files && req.files.cover && req.files.cover[0];
-
-  const doc = await AcademicDocument.findById(req.params.id);
-  if (!doc) return res.redirect('/admin/academic-documents?error=Data tidak ditemukan');
-
-  if (!name) {
-    return res.status(400).render('admin/academic-documents/edit', {
-      title: 'Edit Dokumen Akademik',
-      user: req.user,
-      error: 'Nama wajib diisi.',
-      values: { ...doc.toObject(), name, keterangan, pinned },
-    });
+  const item = await findOrThrow(req.params.id);
+  const { data, errors, ok } = validate(schemas.academicDocument, req.body);
+  if (!ok) {
+    await removeUploaded(req);
+    return res.renderPage('admin/academic-documents/form', { title: 'Ubah Dokumen Akademik', mode: 'edit', item: item.toObject(), values: req.body, errors, kategoriList: await kategoriList() }, 'layouts/admin');
   }
-
-  if (pinned && !doc.pinned) {
-    const pinnedCount = await AcademicDocument.countDocuments({ pinned: true, _id: { $ne: doc._id } });
-    if (pinnedCount >= 4) {
-      return res.status(400).render('admin/academic-documents/edit', {
-        title: 'Edit Dokumen Akademik',
-        user: req.user,
-        error: 'Pin maksimal 4 dokumen. Unpin dokumen lain terlebih dahulu.',
-        values: { ...doc.toObject(), name, keterangan, pinned },
-      });
+  if (data.pinned && !item.pinned) {
+    const pinnedCount = await AcademicDocument.countDocuments({ pinned: true, _id: { $ne: item._id } });
+    if (pinnedCount >= PIN_LIMIT) {
+      await removeUploaded(req);
+      return res.renderPage(
+        'admin/academic-documents/form',
+        { title: 'Ubah Dokumen Akademik', mode: 'edit', item: item.toObject(), values: req.body, errors: { _form: `Maksimal ${PIN_LIMIT} dokumen disematkan. Lepas sematan lain terlebih dahulu.` }, kategoriList: await kategoriList() },
+        'layouts/admin'
+      );
     }
   }
-
-  doc.name = name;
-  doc.keterangan = keterangan;
-  if (pdfFile) doc.file = toPublicUrl(pdfFile.path);
-  if (coverFile) doc.cover = toPublicUrl(coverFile.path);
-  doc.pinned = pinned;
-  doc.updatedBy = req.user ? req.user._id : doc.updatedBy;
-  await doc.save();
-  return res.redirect('/admin/academic-documents?success=Dokumen akademik berhasil diperbarui');
+  const file = req.files?.file?.[0];
+  if (file) {
+    item.file = toPublicUrl(file.path);
+    item.fileSize = file.size;
+    item.mimeType = file.mimetype;
+  }
+  Object.assign(item, data, { updatedBy: req.user._id });
+  await item.save();
+  res.redirect(`/admin/academic-documents?success=${encodeURIComponent('Dokumen akademik berhasil diperbarui.')}`);
 };
 
 exports.togglePin = async (req, res) => {
-  try {
-    const doc = await AcademicDocument.findById(req.params.id);
-    if (!doc) return res.status(404).json({ success: false, message: 'Data tidak ditemukan' });
-
-    const pinned = req.body.pinned === true || req.body.pinned === 'true' || req.body.pinned === 'on';
-    if (pinned && !doc.pinned) {
-      const pinnedCount = await AcademicDocument.countDocuments({ pinned: true, _id: { $ne: doc._id } });
-      if (pinnedCount >= 4) {
-        return res.status(400).json({
-          success: false,
-          message: 'Pin maksimal 4 dokumen. Unpin dokumen lain terlebih dahulu.',
-        });
-      }
+  const item = await findOrThrow(req.params.id);
+  const pin = !item.pinned;
+  if (pin) {
+    const pinnedCount = await AcademicDocument.countDocuments({ pinned: true, _id: { $ne: item._id } });
+    if (pinnedCount >= PIN_LIMIT) {
+      return res.redirect(`/admin/academic-documents?error=${encodeURIComponent(`Maksimal ${PIN_LIMIT} dokumen disematkan.`)}`);
     }
-
-    doc.pinned = pinned;
-    doc.updatedBy = req.user ? req.user._id : doc.updatedBy;
-    await doc.save();
-
-    return res.json({
-      success: true,
-      pinned: doc.pinned,
-      message: pinned ? 'Dokumen berhasil di-pin.' : 'Pin dokumen dilepas.',
-    });
-  } catch (err) {
-    console.error('Toggle pin dokumen error:', err);
-    return res.status(500).json({ success: false, message: 'Gagal memperbarui pin dokumen.' });
   }
+  item.pinned = pin;
+  item.updatedBy = req.user._id;
+  await item.save();
+  res.redirect(`/admin/academic-documents?success=${encodeURIComponent(pin ? 'Disematkan.' : 'Sematan dilepas.')}`);
 };
 
 exports.destroy = async (req, res) => {
   await AcademicDocument.findByIdAndDelete(req.params.id);
-  return res.redirect('/admin/academic-documents?success=Dokumen akademik berhasil dihapus');
+  res.redirect(`/admin/academic-documents?success=${encodeURIComponent('Dokumen akademik berhasil dihapus.')}`);
 };

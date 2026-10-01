@@ -85,6 +85,10 @@ Dokumen lama di database (disalin dari skema sebelum field baru ditambahkan) bis
 
 Modul yang skemanya sudah ditambah field baru di F2 tapi field LAMA-nya masih `required: true` di Mongoose (bukan cuma di Zod) akan gagal disimpan begitu form F4 berhenti mengisi field lama itu — error-nya `ValidationError` dari Mongoose, bukan dari `validate()` kita, jadi tidak tertangkap oleh pola render-ulang-dengan-errors biasa (muncul sebagai 500, bukan form dengan pesan galat). Ditemukan di `models/Accreditation.js`: `institusi`/`unit`/`tahun`/`akreditasi` v1 masih `required: true` padahal form F4 menulis `jenis`/`namaUnit`/`programStudi`/`peringkat`. **Sebelum menulis form F4 untuk modul lama, periksa field mana di skema Mongoose yang masih `required: true` tapi tidak lagi diisi oleh form baru — longgarkan ke optional (jangan hapus, data lama tetap butuh field itu).**
 
+### Jebakan lain: checkbox butuh `shrink-0`, bukan cuma `min-w-0` di teks
+
+Pola sebelumnya ("Jebakan CSS" di atas) menyebutkan teks di sebelah elemen `shrink-0` butuh `min-w-0`. Kebalikannya juga berlaku: elemen yang **harus tetap berukuran tetap** (checkbox `size-6`, ikon) butuh `shrink-0` eksplisit, bukan hanya mengandalkan class ukuran. Ditemukan pada checkbox "Aktif" di form Dokumen RPL (390px): labelnya cukup panjang ("Aktif (nonaktifkan untuk menandai sebagai arsip)") sehingga flexbox menyusutkan checkbox dari 24px ke 21px lebar sebelum menyusutkan teks. **Setiap checkbox/ikon berukuran tetap dalam flex row harus punya `shrink-0`**, diperbaiki sekaligus di keempat form yang memakai pola `flex items-center gap-2` + checkbox sematkan/status (Pengumuman, Berita, Dokumen Akademik, RPL).
+
 ## Bug kritis yang ditemukan saat menguji alur CRUD pertama kali (F4)
 
 **`helmet()` tanpa konfigurasi `referrerPolicy` mematikan SEMUA form POST di seluruh situs, termasuk login.**
