@@ -146,7 +146,8 @@ Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.
 - [x] Runner dengan backup otomatis ke `backups/` dan catatan di koleksi `schemamigrations`
 - [x] `001-users-role` · `002-master-seed` · `003-accreditation` · `004-kurikulum-prodi` · `005-content-excerpt` · `006-files-meta` · `007-readiness` (laporan)
 - [x] Dry-run di database salinan: tanpa error; 25 hal perlu ditinjau — lihat `docs/MIGRASI-F2.md`
-- [ ] **Tinjau laporan, lalu jalankan `--apply`** di database salinan *(menunggu persetujuan)*
+- [x] **Diterapkan** (`--apply`) di database salinan 1 Okt 2026, 14:38 WIB — backup `backups/migrate-2026-10-01T14-38-42-777Z.json`, dicatat di koleksi `schemamigrations`; diverifikasi: role `superadmin`, 10 kategori, 7 lembaga, 5/5 akreditasi terisi, 1/1 kurikulum tertaut, 13/13 berita punya excerpt, 42 tes tetap lulus
+- [ ] 25 hal di `docs/MIGRASI-F2.md` masih perlu ditinjau manual (lihat F0 "Konten" dan daftar di bawah) — **tidak diubah otomatis**
 - [ ] Jalankan di database produksi saat rilis (F6)
 - [x] Seed dev: hanya data master (002). Konten contoh tidak dibuat — konten nyata diisi tim di F6
 
