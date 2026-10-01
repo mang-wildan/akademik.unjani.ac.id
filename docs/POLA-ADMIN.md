@@ -44,6 +44,20 @@ module.exports = require('./adminContentController')({
 - Lampiran saat edit: checkbox "keep" per lampiran + **sentinel tersembunyi** `attachmentsEditable=1`. Tanpa sentinel ini, server tidak bisa membedakan "semua lampiran sengaja dihapus (tidak ada checkbox tercentang)" dari "form ini memang tidak replace lampiran" — keduanya sama-sama mengirim field `keepAttachment` kosong.
 - Checkbox "Sematkan" harus `size-6` (24px), bukan `size-5` (20px) — WCAG 2.5.8 minimum tap target.
 
+## Opsi factory untuk aturan khusus modul
+
+`adminContentController.js` menerima opsi tambahan untuk aturan yang beda tipis antar-modul berskema sama, tanpa menduplikasi seluruh kontroler. Contoh nyata — Berita (FR-M-02: "seperti Pengumuman + gambar sampul wajib saat Terbit"):
+
+```js
+module.exports = require('./adminContentController')({
+  Model: require('../models/News'), jenis: 'berita', basePath: 'news',
+  listLabel: 'Berita', singularLabel: 'Berita',
+  requireFeaturedImageOnPublish: true, // menolak status 'published' tanpa featuredImage (create & update)
+});
+```
+
+Kalau modul berikutnya butuh aturan serupa yang tidak cocok sebagai boolean sederhana, tambahkan opsi baru dengan pola yang sama (default aman, eksplisit di-set oleh modul yang butuh) — jangan fork seluruh factory.
+
 ## Jebakan CSS yang sudah ditemukan (`assets/css/app.css`)
 
 Dua kelas masalah terpisah, keduanya menyebabkan overflow horizontal di mobile (390px) pada tabel admin — jangan anggap satu fix menyelesaikan keduanya:

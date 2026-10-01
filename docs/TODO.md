@@ -205,7 +205,7 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 
 ### Modul (salin pola)
 - [x] Dasbor: kartu angka, Perlu Perhatian (otomatis), aksi cepat, aktivitas terbaru — FR-DS-01..04 (`controllers/homeController.js#getDashboard`, `views/admin/dashboard.ejs`)
-- [ ] Berita — FR-M-02
+- [x] Berita — FR-M-02 (`controllers/newsController.js` delegasi ke `adminContentController.js`; beda dari Pengumuman: `requireFeaturedImageOnPublish` menolak status Terbit tanpa gambar sampul, diuji otomatis untuk kasus ditolak **dan** diterima)
 - [ ] Kalender Akademik + **impor CSV/Excel** + template unduhan + **lampiran PDF surat edaran** `[Sonnet 5.5 · high]` — FR-M-03
 - [ ] Akreditasi: pilihan peringkat tetap, lembaga, validasi tanggal, riwayat — FR-M-04 · `tambah_akreditasi_*`
 - [ ] Dokumen Akademik & RPL — FR-M-06

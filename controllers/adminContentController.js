@@ -13,7 +13,7 @@ const PIN_LIMIT = 4;
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
 
-module.exports = ({ Model, jenis, basePath, listLabel, singularLabel }) => {
+module.exports = ({ Model, jenis, basePath, listLabel, singularLabel, requireFeaturedImageOnPublish = false }) => {
   const populateOpts = [{ path: 'kategori', select: 'nama' }];
 
   const list = async (req, res) => {
@@ -126,6 +126,14 @@ module.exports = ({ Model, jenis, basePath, listLabel, singularLabel }) => {
     }
 
     const featuredImageFile = req.files?.featuredImage?.[0];
+    if (requireFeaturedImageOnPublish && data.status === 'published' && !featuredImageFile) {
+      await removeUploadedOnError(req);
+      return res.renderPage(
+        `admin/${basePath}/form`,
+        await formLocals({ title: `Tambah ${singularLabel}`, mode: 'create', values: req.body, errors: { featuredImage: 'Gambar sampul wajib diisi saat status Terbit.' } }),
+        'layouts/admin'
+      );
+    }
     let featuredImage;
     if (featuredImageFile) {
       const processed = await processImage(featuredImageFile.path);
@@ -171,6 +179,14 @@ module.exports = ({ Model, jenis, basePath, listLabel, singularLabel }) => {
     }
 
     const featuredImageFile = req.files?.featuredImage?.[0];
+    if (requireFeaturedImageOnPublish && data.status === 'published' && !featuredImageFile && !existing.featuredImage) {
+      await removeUploadedOnError(req);
+      return res.renderPage(
+        `admin/${basePath}/form`,
+        await formLocals({ title: `Ubah ${singularLabel}`, mode: 'edit', item: existing.toObject(), values: req.body, errors: { featuredImage: 'Gambar sampul wajib diisi saat status Terbit.' } }),
+        'layouts/admin'
+      );
+    }
     if (featuredImageFile) {
       const processed = await processImage(featuredImageFile.path);
       existing.featuredImage = toPublicUrl(processed.file);
