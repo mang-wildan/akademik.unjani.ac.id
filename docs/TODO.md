@@ -193,16 +193,18 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 ## F4 — Panel admin `[Sonnet 5.5 · medium]`
 
 ### Autentikasi `[Opus 5.5 · xhigh]`
-- [ ] `/admin/login` dengan reCAPTCHA, rate limit, dan cookie `httpOnly; secure; sameSite=lax` — FR-AD-01
-- [ ] Middleware role (`superadmin`, `editor`); rute pengaturan dan akun khusus `superadmin`
-- [ ] Logout, ubah password, dan reset password oleh Super Admin
+- [x] `/admin/login` dengan reCAPTCHA (hanya setelah 3 kali gagal), rate limit, dan cookie `httpOnly; secure (prod); sameSite=lax` — FR-AD-01 (`middleware/authMiddleware.js`, `utils/loginAttempts.js`, `controllers/authController.js`); tampilan login dirombak total di F4 (`views/auth/login.ejs`)
+- [x] Middleware role (`superadmin`, `editor`, legacy `admin`) — `requireAuth`/`requireAdmin`/`requireSuperadmin` di `middleware/authMiddleware.js`
+- [x] Logout dan ubah password (pemilik akun sendiri) — rute pre-existing `/logout`, `/profile/password`
+- [ ] Reset password akun lain oleh Super Admin — **belum dibangun**, dipindah ke item "Akun Admin" (FR-M-13) di bawah
+- [x] **Bug kritis ditemukan & diperbaiki saat uji CRUD**: `helmet()` default menyetel header `Referrer-Policy: no-referrer` pada setiap respons; menurut spesifikasi Fetch, itu membuat browser mengirim `Origin: null` pada setiap navigasi POST form, lalu `verifyOrigin` (F1) menolaknya 403 — **ini mematikan login dan SEMUA form di seluruh situs**, bukan cuma modul admin baru. Diperbaiki dengan menyetel `referrerPolicy: { policy: 'strict-origin-when-cross-origin' }` secara eksplisit di `server.js`. Diverifikasi ulang: login dan form Pengumuman sama-sama 200/302 setelah perbaikan.
 
 ### Pola acuan `[Sonnet 5.5 · high]`
-- [ ] **Pengumuman** (lengkap): daftar dengan tab status, filter, pencarian, thumbnail, tombol "Edit" berlabel, menu "⋯ → Hapus" dengan konfirmasi; form dengan validasi inline, rich text tersanitasi, lampiran, sematkan, dan toast — FR-M-01, FR-AD-05, FR-AD-06 · `kelola_pengumuman_*`
-- [ ] Dokumentasikan pola ini di `docs/POLA-ADMIN.md` sebagai acuan modul berikutnya
+- [x] **Pengumuman** (lengkap): daftar dengan tab status, filter, pencarian, thumbnail, tombol "Edit" berlabel, menu "⋯ → Hapus" dengan konfirmasi; form dengan validasi inline (klien via `required` + server via Zod, keduanya diverifikasi), rich text tersanitasi, lampiran, sematkan, dan pesan sukses — FR-M-01, FR-AD-05, FR-AD-06. Alur CRUD penuh (buat/validasi/ubah/sematkan/hapus) diuji otomatis lewat Playwright dan lolos.
+- [x] Dokumentasikan pola ini di `docs/POLA-ADMIN.md` sebagai acuan modul berikutnya
 
 ### Modul (salin pola)
-- [ ] Dasbor: kartu angka, Perlu Perhatian (otomatis), aksi cepat, aktivitas terbaru — FR-DS-01..04 · `dasbor_admin_*`
+- [x] Dasbor: kartu angka, Perlu Perhatian (otomatis), aksi cepat, aktivitas terbaru — FR-DS-01..04 (`controllers/homeController.js#getDashboard`, `views/admin/dashboard.ejs`)
 - [ ] Berita — FR-M-02
 - [ ] Kalender Akademik + **impor CSV/Excel** + template unduhan + **lampiran PDF surat edaran** `[Sonnet 5.5 · high]` — FR-M-03
 - [ ] Akreditasi: pilihan peringkat tetap, lembaga, validasi tanggal, riwayat — FR-M-04 · `tambah_akreditasi_*`

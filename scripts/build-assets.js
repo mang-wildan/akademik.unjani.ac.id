@@ -13,9 +13,9 @@ const NM = path.join(ROOT, 'node_modules');
 const ICONS = [
   'add', 'apartment', 'arrow_back', 'arrow_forward', 'article', 'call', 'campaign', 'check', 'check_circle',
   'chevron_left', 'chevron_right', 'close', 'dashboard', 'delete', 'description', 'download', 'edit', 'error',
-  'event', 'filter_list', 'groups', 'history', 'home', 'info', 'keep', 'keyboard_arrow_down', 'library_books', 'location_on',
+  'event', 'filter_list', 'groups', 'history', 'home', 'image', 'info', 'keep', 'keyboard_arrow_down', 'library_books', 'location_on',
   'logout', 'mail', 'menu', 'menu_book', 'more_vert', 'newspaper', 'notifications', 'open_in_new', 'person',
-  'picture_as_pdf', 'schedule', 'school', 'search', 'settings', 'upload', 'verified', 'visibility',
+  'picture_as_pdf', 'schedule', 'school', 'search', 'settings', 'upload', 'verified', 'visibility', 'visibility_off',
   'warning', 'workspace_premium',
 ];
 

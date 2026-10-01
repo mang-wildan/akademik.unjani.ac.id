@@ -1,0 +1,32 @@
+<%#
+  Editor isi (HTML) tanpa dependensi: contenteditable + toolbar dasar.
+  Disanitasi di server sebelum disimpan (utils/html.js sanitizeHtml) — ini
+  hanya untuk kenyamanan menulis, bukan lapisan keamanan.
+  include('../components/richtext-field', { name: 'body', label: 'Isi', required: true, value: values.body, error: errors.body })
+%>
+<% const id = `f-${locals.name}`; %>
+<div x-data="richtext">
+  <label for="<%= id %>-editor" class="field-label">
+    <%= locals.label %><% if (locals.required) { %> <span class="text-danger" aria-hidden="true">*</span><span class="sr-only">(wajib)</span><% } %>
+  </label>
+  <div class="flex flex-wrap gap-1 rounded-t-control border border-b-0 border-control bg-sunken p-1.5" role="toolbar" aria-label="Format teks">
+    <% [
+      { cmd: 'bold', label: 'Tebal', icon: 'B', class: 'font-bold' },
+      { cmd: 'italic', label: 'Miring', icon: 'I', class: 'italic' },
+      { cmd: 'insertUnorderedList', label: 'Daftar poin', icon: '•' },
+      { cmd: 'insertOrderedList', label: 'Daftar bernomor', icon: '1.' },
+      { cmd: 'formatBlock', value: 'h3', label: 'Subjudul', icon: 'H' },
+      { cmd: 'formatBlock', value: 'p', label: 'Paragraf normal', icon: 'P' },
+    ].forEach(btn => { %>
+      <button type="button" data-cmd="<%= btn.cmd %>"<% if (btn.value) { %> data-value="<%= btn.value %>"<% } %> x-on:click="exec"
+              class="btn-icon <%= btn.class || '' %>" aria-label="<%= btn.label %>" title="<%= btn.label %>"><%= btn.icon %></button>
+    <% }) %>
+  </div>
+  <div id="<%= id %>-editor" x-ref="editor" contenteditable="true" x-on:input="sync" x-on:blur="sync"
+       class="field-control min-h-48 rounded-t-none [&_h3]:text-lg [&_h3]:font-semibold [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6"
+       aria-describedby="<%= id %>-help<%= locals.error ? ` ${id}-error` : '' %>"<%- locals.error ? ' aria-invalid="true"' : '' %>
+       role="textbox" aria-multiline="true"></div>
+  <input type="hidden" id="<%= id %>" name="<%= locals.name %>" x-ref="hidden" value="<%= locals.value || '' %>">
+  <p id="<%= id %>-help" class="field-help">Pilih teks lalu klik tombol format. Tautan dan gambar bisa ditempel langsung.</p>
+  <% if (locals.error) { %><p id="<%= id %>-error" class="field-error"><%= locals.error %></p><% } %>
+</div>

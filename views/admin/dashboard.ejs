@@ -1,0 +1,61 @@
+<%# Dasbor admin (FR-DS-01..04). "Perlu Perhatian" tampil lebih dulu di HP. %>
+<div class="mx-auto max-w-6xl">
+  <h1 class="text-2xl font-bold">Dasbor</h1>
+  <p class="mb-6 text-muted">Selamat datang, <%= user.name || user.email %>.</p>
+
+  <% if (issues.length) { %>
+  <section class="order-first mb-6 card card-body border-l-4 border-warning">
+    <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold"><%- icon('warning', 'size-5 text-warning') %>Perlu Perhatian</h2>
+    <ul class="divide-y divide-line">
+      <% issues.forEach(iss => { %>
+        <li class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+          <div class="flex items-start gap-3">
+            <%- icon(iss.icon, 'size-5 shrink-0 text-warning mt-0.5') %>
+            <div>
+              <p class="font-medium text-ink"><%= iss.title %></p>
+              <% if (iss.text) { %><p class="line-clamp-1 text-sm text-muted"><%= iss.text %></p><% } %>
+            </div>
+          </div>
+          <a href="<%= iss.href %>" class="btn btn-secondary shrink-0 px-3 py-1.5 text-sm"><%= iss.label %></a>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+  <% } %>
+
+  <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <%- include('../components/stat-tile', { statLabel: 'Berita Terbit', statValue: formatAngka(stats.beritaTerbit), statIcon: 'newspaper', statHref: '/admin/news' }) %>
+    <%- include('../components/stat-tile', { statLabel: 'Pengumuman Aktif', statValue: formatAngka(stats.pengumumanAktif), statIcon: 'campaign', statHref: '/admin/pengumuman' }) %>
+    <%- include('../components/stat-tile', { statLabel: 'Dokumen Akademik', statValue: formatAngka(stats.dokCount), statIcon: 'description', statHref: '/admin/academic-documents' }) %>
+    <%- include('../components/stat-tile', {
+      statLabel: 'Akreditasi Kedaluwarsa', statValue: formatAngka(stats.akreditasiKedaluwarsa),
+      statIcon: 'workspace_premium', statHref: '/admin/accreditations', statLinkLabel: 'Perbarui',
+      statTone: stats.akreditasiKedaluwarsa > 0 ? 'danger' : undefined,
+    }) %>
+  </div>
+
+  <div class="mb-6 flex flex-wrap gap-2">
+    <a href="/admin/pengumuman/new" class="btn btn-primary"><%- icon('add') %>Pengumuman</a>
+    <a href="/admin/news/new" class="btn btn-secondary"><%- icon('add') %>Berita</a>
+    <a href="/admin/academic-documents/new" class="btn btn-secondary"><%- icon('add') %>Dokumen</a>
+  </div>
+
+  <section>
+    <h2 class="mb-3 text-lg font-semibold">Aktivitas Terbaru</h2>
+    <% if (!recentActivities.length) { %>
+      <p class="text-sm text-muted">Belum ada aktivitas.</p>
+    <% } else { %>
+    <ul class="card divide-y divide-line">
+      <% recentActivities.forEach(a => { %>
+        <li class="flex items-center gap-3 p-4">
+          <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon(a.icon, 'size-5') %></span>
+          <div class="min-w-0 flex-1">
+            <a href="<%= a.href %>" class="line-clamp-1 font-medium text-ink hover:text-primary"><%= a.title %></a>
+            <p class="text-xs text-muted"><%= a.label %> · <%= formatTanggal(a.date) %></p>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+</div>

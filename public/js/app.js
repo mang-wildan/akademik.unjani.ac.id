@@ -46,6 +46,27 @@ document.addEventListener('alpine:init', () => {
     },
   }));
 
+  // Minimal rich-text editor: contenteditable + toolbar, no dependency.
+  // Server-side sanitizeHtml() is the real guard (NFR-S-06); this is only
+  // for the admin's writing experience.
+  window.Alpine.data('richtext', () => ({
+    // Alpine's CSP build blocks property assignment (e.g. `.innerHTML = …`)
+    // from template expressions like x-init; doing it here, inside a real
+    // method, is unrestricted and runs once when the component mounts.
+    init() {
+      this.$refs.editor.innerHTML = this.$refs.hidden.value;
+    },
+    exec(event) {
+      const btn = event.currentTarget;
+      document.execCommand(btn.dataset.cmd, false, btn.dataset.value || null);
+      this.sync();
+      this.$refs.editor.focus();
+    },
+    sync() {
+      this.$refs.hidden.value = this.$refs.editor.innerHTML;
+    },
+  }));
+
   // Flash message that disappears on its own.
   window.Alpine.data('toast', () => ({
     visible: true,

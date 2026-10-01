@@ -115,6 +115,12 @@ app.use(
 app.use(
   helmet({
     contentSecurityPolicy: false, // keep simple for starter template; adjust for stricter CSP as needed
+    // Helmet's default "no-referrer" makes browsers send `Origin: null` on
+    // every form POST navigation (Fetch spec ties the Origin header to the
+    // referrer policy for navigations), which verifyOrigin then rejects as
+    // cross-site. This is the browser's own modern default and still sends a
+    // real Origin on same-origin navigations.
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   })
 );
 if (process.env.NODE_ENV !== 'test') {

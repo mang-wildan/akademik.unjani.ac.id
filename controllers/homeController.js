@@ -117,9 +117,6 @@ exports.getProfil = async (req, res) => {
   });
 };
 
-// Redirect /admin or other legacy home calls to the dashboard renderer so stats is always defined
-exports.getHome = async (req, res) => exports.getDashboard(req, res);
-
 exports.getBuku = async (req, res) => {
   const tahunFilter = parseInt(req.query.tahun, 10) || null;
   const filter = tahunFilter ? { year: tahunFilter } : {};
@@ -500,79 +497,89 @@ exports.getPengumumanDetail = async (req, res) => {
   });
 };
 
-exports.getDashboard = async (req, res) => {
+// Dasbor (FR-DS-01..04). "Perlu Perhatian" dihitung dari data saat ini, tidak
+// pernah disimpan — konsisten dengan status akreditasi/kalender di publik.
+const isValidHttpUrl = value => {
+  if (!value) return true; // kosong = tidak ditampilkan (lihat Beranda), bukan "tidak valid"
   try {
-    const [
-      bookCount, gradBookCount, lulusanCount, accCount, calCount, docCount, kurCount,
-      newsCount, pengumumanCount, staffCount, programStudiCount, rplDocCount
-    ] = await Promise.all([
-      Book.countDocuments(),
-      GraduationBook.countDocuments(),
-      Lulusan.countDocuments(),
-      Accreditation.countDocuments(),
-      AcademicCalendar.countDocuments(),
-      AcademicDocument.countDocuments(),
-      Kurikulum.countDocuments(),
-      News.countDocuments({ status: 'published' }),
-      Pengumuman.countDocuments({ status: 'published' }),
-      Staff.countDocuments(),
-      ProgramStudi.countDocuments ? ProgramStudi.countDocuments() : Promise.resolve(0),
-      RplDocument.countDocuments(),
-    ]);
+    return ['http:', 'https:'].includes(new URL(value).protocol);
+  } catch (_err) {
+    return false;
+  }
+};
 
-    const [
-      latestBooks, latestGradBooks, latestLulusan, latestAccreditations, latestCalendars, latestDocuments, latestKurikulum,
-      latestNews, latestPengumuman, latestStaff, latestPrograms, latestRplDocs
-    ] = await Promise.all([
-      Book.find().sort({ createdAt: -1 }).limit(5),
-      GraduationBook.find().sort({ createdAt: -1 }).limit(5),
-      Lulusan.find().sort({ createdAt: -1 }).limit(5).populate('programStudi', 'nama'),
-      Accreditation.find().sort({ createdAt: -1 }).limit(5),
-      AcademicCalendar.find().sort({ createdAt: -1 }).limit(5),
-      AcademicDocument.find().sort({ pinned: -1, createdAt: -1 }).limit(5),
-      Kurikulum.find().sort({ createdAt: -1 }).limit(5),
-      News.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(5),
-      Pengumuman.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(5),
-      Staff.find().sort({ createdAt: -1 }).limit(5),
-      ProgramStudi.find ? ProgramStudi.find().sort({ createdAt: -1 }).limit(5) : [],
-      RplDocument.find().sort({ createdAt: -1 }).limit(5),
-    ]);
+exports.getDashboard = async (req, res) => {
+  const now = new Date();
+  const [
+    beritaTerbit, pengumumanAktif, dokCount,
+    akreditasiAll, beritaTanpaGambar, pengumumanTanpaGambar,
+    kalenderTerbaru, setting, aktivitas,
+  ] = await Promise.all([
+    News.countDocuments({ status: 'published' }),
+    Pengumuman.countDocuments({ status: 'published' }),
+    AcademicDocument.countDocuments(),
+    Accreditation.find({ berlakuSampai: { $exists: true } }, 'namaUnit unit institusi berlakuSampai jenis').lean(),
+    News.find({ status: 'published', $or: [{ featuredImage: '' }, { featuredImage: { $exists: false } }] }, 'title').lean(),
+    Pengumuman.find({ status: 'published', $or: [{ featuredImage: '' }, { featuredImage: { $exists: false } }] }, 'title').lean(),
+    AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
+    SiteSetting.findOne().lean(),
+    Promise.all([
+      News.find({ status: 'published' }, 'title createdAt').sort({ createdAt: -1 }).limit(4).lean(),
+      Pengumuman.find({ status: 'published' }, 'title createdAt').sort({ createdAt: -1 }).limit(4).lean(),
+      AcademicDocument.find({}, 'name createdAt').sort({ createdAt: -1 }).limit(4).lean(),
+    ]),
+  ]);
 
-    const recentActivities = [
-      ...(latestNews || []).map(item => ({ label: 'Berita', title: item.title, date: item.createdAt, icon: 'ri-newspaper-line', color: 'primary' })),
-      ...(latestPengumuman || []).map(item => ({ label: 'Pengumuman', title: item.title, date: item.createdAt, icon: 'ri-megaphone-line', color: 'warning' })),
-      ...(latestDocuments || []).map(item => ({ label: 'Dokumen', title: item.name, date: item.createdAt, icon: 'ri-file-list-3-line', color: 'danger' })),
-      ...(latestCalendars || []).map(item => ({ label: 'Kalender', title: item.tahunAjaran, date: item.createdAt, icon: 'ri-calendar-event-line', color: 'info' })),
-      ...(latestAccreditations || []).map(item => ({ label: 'Akreditasi', title: item.institusi || 'Akreditasi', date: item.createdAt, icon: 'ri-medal-2-line', color: 'success' })),
-      ...(latestLulusan || []).map(item => ({ label: 'Lulusan', title: `${item.periode || ''} ${item.tahun || ''}`.trim() || 'Lulusan', date: item.createdAt, icon: 'ri-bar-chart-2-line', color: 'primary' })),
-      ...(latestStaff || []).map(item => ({ label: 'Staff', title: item.name, date: item.createdAt, icon: 'ri-team-line', color: 'secondary' })),
-      ...(latestPrograms || []).map(item => ({ label: 'Prodi', title: item.name, date: item.createdAt, icon: 'ri-book-mark-line', color: 'primary' })),
-      ...(latestRplDocs || []).map(item => ({ label: 'RPL', title: item.name, date: item.createdAt, icon: 'ri-stack-line', color: 'info' })),
-    ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)).slice(0, 10);
+  const akreditasiKedaluwarsa = akreditasiAll.filter(a => accreditationStatus(a.berlakuSampai).key !== 'berlaku');
 
-    res.render('admin/index', {
-      title: 'Dashboard',
-      user: res.locals.user || req.user,
-      stats: {
-        bookCount, gradBookCount, lulusanCount, accCount, calCount, docCount, kurCount,
-        newsCount, pengumumanCount, staffCount, programStudiCount, rplDocCount,
-      },
-      latest: {
-        latestBooks, latestGradBooks, latestLulusan, latestAccreditations, latestCalendars, latestDocuments, latestKurikulum,
-        latestNews, latestPengumuman, latestStaff, latestPrograms, latestRplDocs,
-      },
-      recentActivities,
-    });
-  } catch (err) {
-    console.error('Dashboard error:', err);
-    res.render('admin/index', {
-      title: 'Dashboard',
-      user: res.locals.user || req.user,
-      stats: null,
-      latest: null,
-      error: 'Gagal memuat data dashboard. Coba lagi nanti.',
+  const issues = [];
+  if (akreditasiKedaluwarsa.length) {
+    issues.push({
+      icon: 'warning', title: `${akreditasiKedaluwarsa.length} akreditasi kedaluwarsa atau segera berakhir`,
+      text: akreditasiKedaluwarsa.slice(0, 3).map(a => a.namaUnit || a.unit || a.institusi).join(', '),
+      href: '/admin/accreditations', label: 'Tinjau',
     });
   }
+  const tanpaGambar = [...beritaTanpaGambar.map(b => b.title), ...pengumumanTanpaGambar.map(p => p.title)];
+  if (tanpaGambar.length) {
+    issues.push({
+      icon: 'image', title: `${tanpaGambar.length} konten terbit tanpa gambar sampul`,
+      text: tanpaGambar.slice(0, 3).join(', '), href: '/admin/news', label: 'Lihat',
+    });
+  }
+  if (!isValidHttpUrl(setting?.landingVideoUrl)) {
+    issues.push({ icon: 'error', title: 'URL video profil tidak valid', text: setting.landingVideoUrl, href: '/admin/settings/edit', label: 'Perbaiki' });
+  }
+  const tahunBerjalan = `${now.getFullYear()}/${now.getFullYear() + 1}`;
+  const tahunLalu = `${now.getFullYear() - 1}/${now.getFullYear()}`;
+  if (!kalenderTerbaru || ![tahunBerjalan, tahunLalu].includes(kalenderTerbaru.tahunAjaran) || !(kalenderTerbaru.events || []).length) {
+    issues.push({
+      icon: 'event', title: `Kalender akademik ${tahunBerjalan} belum lengkap`,
+      text: kalenderTerbaru ? `Kalender terbaru: ${kalenderTerbaru.tahunAjaran}` : 'Belum ada kalender diunggah',
+      href: '/admin/academic-calendars', label: 'Kelola',
+    });
+  }
+
+  const [latestBerita, latestPengumuman, latestDokumen] = aktivitas;
+  const recentActivities = [
+    ...latestBerita.map(b => ({ label: 'Berita', title: b.title, date: b.createdAt, icon: 'newspaper', href: '/admin/news' })),
+    ...latestPengumuman.map(p => ({ label: 'Pengumuman', title: p.title, date: p.createdAt, icon: 'campaign', href: '/admin/pengumuman' })),
+    ...latestDokumen.map(d => ({ label: 'Dokumen', title: d.name, date: d.createdAt, icon: 'description', href: '/admin/academic-documents' })),
+  ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+
+  res.renderPage(
+    'admin/dashboard',
+    {
+      title: 'Dasbor',
+      stats: {
+        beritaTerbit, pengumumanAktif, dokCount,
+        akreditasiKedaluwarsa: akreditasiKedaluwarsa.length,
+      },
+      issues,
+      recentActivities,
+    },
+    'layouts/admin'
+  );
 };
 
 // Pencarian global (FR-G-06): pengumuman, berita, dokumen, kurikulum.

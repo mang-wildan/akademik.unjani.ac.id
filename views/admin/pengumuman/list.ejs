@@ -1,269 +1,89 @@
-<!doctype html>
-<html lang="id" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
-  data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><%= title || 'Pengumuman' %></title>
-  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
-  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
-  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
-  <link rel="stylesheet" href="/assets/css/demo.css" />
-  <script src="/assets/vendor/js/helpers.js"></script>
-  <script src="/assets/js/config.js"></script>
-  <style>
-      .table-card-header { padding: 1rem 1.25rem 0.5rem 1.25rem; }
-      .table-card-toolbar { gap: .5rem; }
-      .dataTables_filter input { min-width: 220px; }
-      tr.table-empty td:not(:first-child) { display: none !important; }
-      tr.table-empty td:first-child { width: 100%; text-align: center; padding: 1.25rem; color: var(--bs-secondary-color); background: var(--bs-body-bg); }
-      .pin-btn { min-width: 92px; display: inline-flex; align-items: center; justify-content: center; gap: .35rem; }
-      .pin-btn.btn-warning { background-color: #fef3c7; border-color: #facc15; }
-    </style>
-</head>
-
-<body>
-  <div class="layout-wrapper layout-content-navbar">
-    <div class="layout-container">
-      <%- include("../../partials/menu") %>
-      <div class="layout-page">
-        <%- include("../../partials/navbar") %>
-        <div class="content-wrapper">
-          <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-              <div>
-                <h4 class="mb-1">Pengumuman</h4>
-                <p class="text-muted mb-0">Kelola pengumuman resmi.</p>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <span class="badge bg-label-primary px-3 py-2">Total: <%= pengumuman ? pengumuman.length : 0 %></span>
-                <a class="btn btn-primary" href="/admin/pengumuman/new"><i class="ri ri-add-line me-1"></i>Tambah</a>
-              </div>
-            </div>
-
-            <div class="card shadow-sm">
-              <div class="table-responsive  p-4">
-                <table id="pengumumanTable" class="table align-middle">
-                  <thead class="table-dark">
-                    <tr>
-                      <th style="width:50px" class="text-center">No.</th>
-                      <th>Judul</th>
-                      <th style="width:90px" class="text-center">Pin</th>
-                      <th>Status</th>
-                      <th>Tags</th>
-                      <th>Featured</th>
-                      <th>Dibuat</th>
-                      <th>Diperbarui</th>
-                      <th class="text-end">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% if (pengumuman && pengumuman.length) { %>
-                    <% pengumuman.forEach(function(item, idx){ %>
-                    <tr>
-                      <td class="text-center"><%= idx + 1 %></td>
-                      <td class="fw-semibold"><%= item.title %></td>
-                      <td class="text-center pin-cell" data-order="<%= item.pinned ? 1 : 0 %>">
-                        <button
-                          type="button"
-                          class="btn btn-sm pin-btn <%= item.pinned ? 'btn-warning text-dark' : 'btn-outline-secondary' %> pin-toggle"
-                          data-url="/admin/pengumuman/<%= item._id %>/pin"
-                          data-title="<%= item.title %>"
-                          data-pinned="<%= !!item.pinned %>">
-                          <i class="ri <%= item.pinned ? 'ri-pushpin-2-fill' : 'ri-pushpin-line' %> pin-icon"></i>
-                          <span class="pin-label"><%= item.pinned ? 'Pinned' : 'Pin' %></span>
-                        </button>
-                      </td>
-                      <td><span
-                          class="badge bg-label-<%= item.status === 'published' ? 'success' : 'secondary' %>"><%= item.status %></span>
-                      </td>
-                      <td>
-                        <% const cleanTags = (() => {
-                             const out = [];
-                             (item.tags || []).forEach(t => {
-                               if (t && typeof t === 'object') {
-                                 const val = String(t.value || t.val || '').trim();
-                                 if (val) out.push(val);
-                                 return;
-                               }
-                               if (typeof t === 'string') {
-                                 const text = t.trim();
-                                 const matches = text.match(/\"?value\"?\s*:\s*\"([^\"]*)\"/gi);
-                                 if (matches && matches.length) {
-                                   matches.forEach(m => {
-                                     const v = m.replace(/.*\"?value\"?\s*:\s*\"([^\"]*)\".*/, '$1').trim();
-                                     if (v) out.push(v);
-                                   });
-                                   return;
-                                 }
-                                 text
-                                   .replace(/[\[\]{}"]/g, ' ')
-                                   .split(/[\s,]+/)
-                                   .map(v => v.trim())
-                                   .filter(Boolean)
-                                   .forEach(v => out.push(v));
-                               }
-                             });
-                             return out.filter(Boolean);
-                           })(); %>
-                        <% if (cleanTags.length) { %>
-                        <% cleanTags.slice(0,3).forEach(function(t){ %>
-                        <span class="badge bg-label-primary me-1"><%= t %></span>
-                        <% }); %>
-                        <% if (cleanTags.length > 3) { %><small
-                          class="text-muted">+<%= cleanTags.length - 3 %></small><% } %>
-                        <% } else { %>
-                        <span class="text-muted">-</span>
-                        <% } %>
-                      </td>
-                      <td>
-                        <% if (item.featuredImage) { %>
-                        <img src="<%= item.featuredImage %>" alt="thumb" class="rounded"
-                          style="width:70px;height:50px;object-fit:cover;">
-                        <% } else { %>
-                        <span class="text-muted">-</span>
-                        <% } %>
-                      </td>
-                      <td data-order="<%= item.createdAt ? item.createdAt.getTime() : 0 %>">
-                        <div><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></div>
-                        <small
-                          class="text-muted"><%= item.createdBy ? (item.createdBy.name || item.createdBy.email || '') : '' %></small>
-                      </td>
-                      <td>
-                        <div><%= item.updatedAt ? item.updatedAt.toLocaleDateString() : '-' %></div>
-                        <small
-                          class="text-muted"><%= item.updatedBy ? (item.updatedBy.name || item.updatedBy.email || '') : '' %></small>
-                      </td>
-                      <td class="text-end">
-                        <a class="btn btn-sm btn-outline-primary me-2" href="/admin/pengumuman/<%= item._id %>/edit">
-                          <i class="ri ri-pencil-line"></i>
-                        </a>
-                        <form action="/admin/pengumuman/<%= item._id %>/delete" method="POST" class="d-inline"
-                          data-disable-submit>
-                          <button class="btn btn-sm btn-outline-danger" type="submit">
-                            <i class="ri ri-delete-bin-line"></i>
-                          </button>
-                        </form>
-                      </td>
-                    </tr>
-                    <% }); %>
-                    <% } %>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="content-backdrop fade"></div>
-        </div>
-      </div>
-    </div>
+<%# Pola acuan daftar admin (docs/POLA-ADMIN.md): tab status, filter, pencarian, thumbnail, Edit berlabel, ⋯ → Hapus. %>
+<div class="mb-6 flex flex-wrap items-start justify-between gap-3">
+  <div>
+    <h1 class="text-2xl font-bold"><%= listLabel %></h1>
+    <p class="text-muted">Kelola <%= listLabel.toLowerCase() %> yang tampil di situs publik.</p>
   </div>
+  <a href="/admin/<%= basePath %>/new" class="btn btn-primary"><%- icon('add') %>Tambah <%= singularLabel %></a>
+</div>
 
-  <div class="layout-overlay layout-menu-toggle"></div>
-  <div class="drag-target"></div>
+<div class="mb-4 grid grid-cols-3 gap-3">
+  <%- include('../../components/stat-tile', { statLabel: 'Terbit', statValue: formatAngka(counts.totalPublished), statIcon: 'check_circle' }) %>
+  <%- include('../../components/stat-tile', { statLabel: 'Draf', statValue: formatAngka(counts.totalDraft), statIcon: 'edit' }) %>
+  <%- include('../../components/stat-tile', { statLabel: 'Disematkan', statValue: formatAngka(counts.totalPinned), statIcon: 'keep' }) %>
+</div>
 
-  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="/assets/vendor/libs/popper/popper.js"></script>
-  <script src="/assets/vendor/js/bootstrap.js"></script>
-  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
-  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-  <script src="/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
-  <script src="/assets/vendor/js/menu.js"></script>
-  <script src="/assets/js/main.js"></script>
-  <script>
-    $(function () {
-      const table = $('#pengumumanTable');
-      if (!table.length) return;
-      const dt = table.DataTable({
-        responsive: true,
-        pageLength: 10,
-        order: [[6, 'desc']],
-        orderFixed: [[2, 'desc']],
-        columnDefs: [{
-          targets: [0, 8],
-          orderable: false,
-          searchable: false
-        }, {
-          targets: [2],
-          searchable: false
-        }],
-        language: {
-          searchPlaceholder: 'Cari pengumuman...',
-          search: '',
-          lengthMenu: 'Tampilkan _MENU_',
-          emptyTable: 'Belum ada pengumuman.'
-        },
-        dom: '<"row align-items-center mb-3"<"col-md-6"l><"col-md-6 text-md-end"f>>t<"row align-items-center mt-3"<"col-md-6"i><"col-md-6 text-md-end"p>>'
-      });
-      dt.on('order.dt search.dt', function () {
-        let i = 1;
-        dt.column(0, {
-          search: 'applied',
-          order: 'applied'
-        }).nodes().each(function (cell) {
-          cell.innerHTML = i++;
-        });
-      }).draw();
-      const wrapper = table.closest('.dataTables_wrapper');
-      wrapper.find('.dataTables_filter input').addClass('form-control form-control-sm');
-      wrapper.find('.dataTables_length select').addClass('form-select form-select-sm');
+<div class="card">
+  <form method="get" class="flex flex-col gap-3 border-b border-line p-4 md:flex-row md:items-center">
+    <div role="tablist" aria-label="Status" class="flex gap-1">
+      <% [['', 'Semua'], ['published', 'Terbit'], ['draft', 'Draf']].forEach(([val, label]) => { %>
+        <a href="?status=<%= val %><%= filters.kategori ? '&kategori=' + filters.kategori : '' %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>"
+           class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"><%= label %></a>
+      <% }) %>
+    </div>
+    <% if (kategoriList.length) { %>
+    <select name="kategori" class="field-control md:w-48" onchange="this.form.submit()">
+      <option value="">Semua kategori</option>
+      <% kategoriList.forEach(k => { %><option value="<%= k._id %>"<%= filters.kategori === String(k._id) ? ' selected' : '' %>><%= k.nama %></option><% }) %>
+    </select>
+    <% } %>
+    <% if (filters.status) { %><input type="hidden" name="status" value="<%= filters.status %>"><% } %>
+    <label for="q" class="sr-only">Cari judul</label>
+    <input id="q" name="q" type="search" class="field-control md:ml-auto md:w-64" placeholder="Cari judul <%= listLabel.toLowerCase() %>…" value="<%= filters.q %>">
+    <button type="submit" class="btn btn-secondary"><%- icon('search') %><span class="sr-only">Cari</span></button>
+  </form>
 
-      table.on('click', '.pin-toggle', function () {
-        const btn = $(this);
-        const pinCell = btn.closest('.pin-cell');
-        const url = btn.data('url');
-        const title = btn.data('title') || 'Pengumuman';
-        const willPin = btn.data('pinned') !== true;
-        const previous = btn.data('pinned') === true;
-
-        const setVisual = pinned => {
-          btn.data('pinned', pinned);
-          pinCell.attr('data-order', pinned ? 1 : 0);
-          btn.toggleClass('btn-warning text-dark', pinned);
-          btn.toggleClass('btn-outline-secondary', !pinned);
-          btn.find('.pin-icon').toggleClass('ri-pushpin-2-fill', pinned).toggleClass('ri-pushpin-line', !pinned);
-          btn.find('.pin-label').text(pinned ? 'Pinned' : 'Pin');
-        };
-
-        btn.prop('disabled', true);
-        fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pinned: willPin })
-        })
-          .then(async res => {
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok || !data.success) {
-              throw new Error(data.message || 'Gagal memperbarui pin pengumuman.');
-            }
-            setVisual(willPin);
-            dt.order([[6, 'desc']]).draw(false);
-            Swal.fire({
-              icon: 'success',
-              title: 'Berhasil',
-              text: data.message || `${title} diperbarui.`,
-              timer: 1400,
-              showConfirmButton: false
-            });
-          })
-          .catch(err => {
-            setVisual(previous);
-            Swal.fire({
-              icon: 'error',
-              title: 'Gagal',
-              text: err.message || 'Gagal memperbarui pin pengumuman.'
-            });
-          })
-          .finally(() => btn.prop('disabled', false));
-      });
-    });
-  </script>
-</body>
-
-</html>
+  <% if (!items.length) { %>
+    <div class="p-6">
+      <%- include('../../components/empty-state', {
+        emptyIcon: 'campaign', emptyTitle: filters.q || filters.status || filters.kategori ? 'Tidak ada yang cocok' : `Belum ada ${listLabel.toLowerCase()}`,
+        emptyAction: (filters.q || filters.status || filters.kategori) ? { label: 'Hapus filter', href: `/admin/${basePath}` } : { label: `Tambah ${singularLabel}`, href: `/admin/${basePath}/new` },
+      }) %>
+    </div>
+  <% } else { %>
+  <table class="data-table data-table--stack">
+    <caption class="sr-only">Daftar <%= listLabel.toLowerCase() %></caption>
+    <thead><tr><th scope="col">Judul</th><th scope="col">Kategori</th><th scope="col">Status</th><th scope="col">Diperbarui</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+    <tbody>
+      <% items.forEach(item => { %>
+        <tr>
+          <td data-label="Judul">
+            <div class="flex items-center gap-3">
+              <% if (item.featuredImage) { %><img src="<%= item.featuredImage %>" alt="" class="size-10 shrink-0 rounded-control object-cover"><% } %>
+              <span class="flex items-center gap-1 font-medium">
+                <% if (item.pinned) { %><%- icon('keep', 'size-4 text-accent shrink-0') %><% } %>
+                <span class="line-clamp-1"><%= item.title %></span>
+              </span>
+            </div>
+          </td>
+          <td data-label="Kategori"><% if (item.kategori) { %><span class="badge badge-info"><%= item.kategori.nama %></span><% } else { %><span class="text-muted">—</span><% } %></td>
+          <td data-label="Status"><%- include('../../components/badge', { text: item.status === 'published' ? 'Terbit' : 'Draf', tone: item.status === 'published' ? 'success' : 'neutral' }) %></td>
+          <td data-label="Diperbarui"><%= formatTanggal(item.updatedAt) %></td>
+          <td data-label="Aksi">
+            <div class="flex items-center gap-1 md:justify-end">
+              <a href="/admin/<%= basePath %>/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah <%= item.title %>"><%- icon('edit') %>Ubah</a>
+              <div class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
+                <button type="button" class="btn-icon" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true" aria-label="Aksi lain untuk <%= item.title %>"><%- icon('more_vert') %></button>
+                <div x-show="open" x-cloak class="absolute right-0 z-10 mt-1 w-48 rounded-card border border-line bg-surface p-2 shadow-raised">
+                  <form action="/admin/<%= basePath %>/<%= item._id %>/pin" method="POST">
+                    <button type="submit" class="flex min-h-11 w-full items-center gap-2 rounded-control px-3 text-left text-sm font-medium text-ink hover:bg-sunken"><%- icon('keep', 'size-5') %><%= item.pinned ? 'Lepas sematan' : 'Sematkan' %></button>
+                  </form>
+                  <button type="button" class="flex min-h-11 w-full items-center gap-2 rounded-control px-3 text-sm font-medium text-danger hover:bg-danger-soft" data-dialog-open="hapus-<%= item._id %>"><%- icon('delete', 'size-5') %>Hapus</button>
+                </div>
+              </div>
+            </div>
+            <%- include('../../components/confirm-dialog', {
+              dialogId: `hapus-${item._id}`, dialogTitle: `Hapus ${singularLabel.toLowerCase()}?`,
+              dialogText: `"${item.title}" akan dihapus permanen dan tidak bisa dikembalikan.`,
+              action: `/admin/${basePath}/${item._id}/delete`, confirmLabel: 'Hapus',
+            }) %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <div class="px-4 pb-4">
+    <%- include('../../components/pagination', { ...pagination, noun: listLabel.toLowerCase(), path: `/admin/${basePath}`, query: filters }) %>
+  </div>
+  <% } %>
+</div>
