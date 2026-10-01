@@ -9,7 +9,8 @@ Label di setiap kelompok tugas: `[Model · effort]`. Kelompok tugas yang labelny
 ## Sebelum mulai
 
 - [x] K-01 diputuskan: **"Bidang Akademik"**
-- [ ] Jawab keputusan terbuka K-02 sampai K-07 (SRS §10)
+- [x] K-02: role Editor **dibutuhkan** · K-05: NIP/NID **tidak tampil** di publik (sudah dihapus dari halaman Pimpinan & Staf)
+- [ ] Jawab K-03, K-04, K-06, K-07 (SRS §10) — K-04 wajib sebelum F2
 - [x] Database pengembangan = salinan database lama (bukan live)
 - [x] `git init` dan push awal ke `github.com/mang-wildan/baa.unjani.ac.id`
 - [ ] Ganti password admin sementara yang diatur saat audit
@@ -88,9 +89,11 @@ Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.
 - [ ] Helmet + CSP, CSRF (`csrf-sync` atau sejenisnya), rate limit login — NFR-S-05
 - [ ] Helper format: `formatTanggal()` dan `formatAngka()` dengan `id-ID` — NFR-C-02
 
-### Bersih-bersih `[Sonnet 5.5 · low]`
-- [ ] Hapus `public/assets/vendor`, `public/assets/landing-page` (template), `public/assets/json` (demo), dan `public/assets/js/app-*`, `cards-*`, `charts-*`, dll.
-- [ ] Hapus `views/partials/template-customizer.ejs`, `settings.ejs`, dan bagian bahasa/shortcuts di `navbar.ejs`
+### Bersih-bersih template lama — **ditunda ke akhir F3/F4** `[Sonnet 5.5 · low]`
+> Aset template lama (`public/assets/vendor`, `landing-page`, `json`, `js/app-*`) masih dipakai halaman yang berjalan. Hapus per halaman setelah halaman itu dibangun ulang, dan terakhir di F5 setelah tidak ada view yang merujuknya (cek dengan `grep`).
+- [ ] (F3/F4) Setiap view yang selesai diganti: hapus aset yang hanya dipakai view itu
+- [ ] (F5) Hapus sisa `public/assets/vendor`, `landing-page`, `json`, `js/app-*`, `cards-*`, `charts-*`
+- [ ] (F4) Hapus `views/partials/template-customizer.ejs`, `settings.ejs`, dan bagian bahasa/shortcuts di `navbar.ejs`
 
 ---
 

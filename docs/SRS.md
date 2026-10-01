@@ -57,7 +57,7 @@ Diringkas dari audit:
 | Role | Hak akses | Prioritas |
 |---|---|---|
 | **Super Admin** | Semua hak, termasuk mengelola akun admin, pengaturan situs, dan master data | Wajib |
-| **Editor** | Membuat dan mengubah konten. Tidak bisa mengelola akun maupun pengaturan situs | Sebaiknya |
+| **Editor** | Membuat, mengubah, menerbitkan, dan menghapus konten (berita, pengumuman, dokumen, kalender, akreditasi, kurikulum, buku, staf). **Tidak bisa** mengelola akun admin, Pengaturan Situs, maupun Master Data | Wajib *(K-02, diputuskan 1 Okt 2026)* |
 
 **Role `user` (pengguna umum) dan registrasi publik dihapus.** Akun admin hanya dibuat oleh Super Admin. *(Asumsi A-01; lihat §10.)*
 
@@ -213,7 +213,7 @@ Semua modul memiliki fungsi daftar, tambah, ubah, dan hapus (CRUD) dengan pola F
 | FR-M-06 | Dokumen Akademik & RPL | judul, deskripsi, kategori, PDF, disematkan. Ukuran file disimpan otomatis | Wajib |
 | FR-M-07 | Buku & Buku Wisuda | judul, tahun, periode (buku wisuda), cover, PDF | Wajib |
 | FR-M-08 | Data Lulusan | tahun, periode (I/II/III), jumlah. Impor CSV | Wajib |
-| FR-M-09 | Pimpinan & Staf | nama, gelar, jabatan, kelompok (Pimpinan/Staf), foto, email (opsional), urutan. NIP/NID opsional dan **tidak ditampilkan publik** secara default | Wajib |
+| FR-M-09 | Pimpinan & Staf | nama, gelar, jabatan, kelompok (Pimpinan/Staf), foto, email (opsional), urutan. NIP/NID boleh disimpan untuk keperluan internal, tetapi **tidak pernah ditampilkan di situs publik** *(K-05)* | Wajib |
 | FR-M-10 | Unit, Profil Bidang | sesuai isi halaman Profil | Wajib |
 | FR-M-11 | Master Data | Fakultas, Program Studi (dengan jenjang), Kategori Pengumuman, Kategori Dokumen, Lembaga Akreditasi | Wajib |
 | FR-M-12 | Pengaturan Situs | identitas (nama, logo, favicon), kontak, jam layanan, media sosial, tautan cepat, URL video, foto hero | Wajib |
@@ -235,7 +235,7 @@ Perubahan model dibandingkan kondisi sekarang:
 | `Pengumuman`, `News` | tambah `kategori` (ref), `excerpt`, `attachments[]`. Status: `draft` \| `published` |
 | `Kurikulum` | `programStudi` menjadi ref (bukan teks) |
 | `GraduationBook` | `periode` menjadi enum I/II/III |
-| `Staff` | tambah `kelompok`, `gelar`, `email`, `tampilkanNip` |
+| `Staff` | tambah `kelompok`, `gelar`, `email` (NIP tidak pernah dirender di publik) |
 | `SiteSetting` | tambah `jamLayanan`, `socialInstagram`, `heroImage`. Di-cache di memori |
 | `AuditLog` *(baru, Sebaiknya)* | user, aksi, entitas, id, waktu |
 | Master *(baru)* | `KategoriPengumuman`, `KategoriDokumen`, `LembagaAkreditasi` |
@@ -346,10 +346,10 @@ Elemen berikut muncul di desain Stitch tetapi **tidak** dibangun: sinkronisasi F
 | ID | Pertanyaan | Default bila tidak dijawab |
 |---|---|---|
 | K-01 | ~~Nama resmi yang dipakai~~ | **Diputuskan 1 Okt 2026: "Bidang Akademik".** Ganti "BAA", "Biro Administrasi Akademik", "Admin BAA", dan "Admin Akademik — Biro Administrasi Akademik" (desain Stitch) |
-| K-02 | Apakah role Editor dibutuhkan, atau cukup Super Admin? | Keduanya dibuat (Editor berprioritas Sebaiknya) |
+| K-02 | ~~Apakah role Editor dibutuhkan?~~ | **Diputuskan 1 Okt 2026: Editor dibutuhkan.** Hak akses Editor di §2.2 perlu dikonfirmasi pemilik produk |
 | K-03 | Apakah konten perlu disetujui pimpinan sebelum terbit? | Tidak (A-02) |
 | K-04 | Apakah tim sanggup menginput kalender per kegiatan? | Ya, dibantu impor CSV (A-03) |
-| K-05 | Apakah NIP/NID staf boleh tampil di publik? | Tidak tampil |
+| K-05 | ~~Apakah NIP/NID staf boleh tampil di publik?~~ | **Diputuskan 1 Okt 2026: tidak boleh.** Sudah dihapus dari halaman Pimpinan & Staf |
 | K-06 | Apakah peringkat lama (A/B/C) dan baru (Unggul/Baik Sekali/Baik) ditampilkan apa adanya? | Ya, apa adanya sesuai sertifikat |
 | K-07 | Apakah data lulusan sudah resmi untuk dipublikasikan? | Ya, sesuai data saat ini |
 

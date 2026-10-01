@@ -63,7 +63,7 @@ Aturan praktis: **rancang dengan Opus, kerjakan massal dengan Sonnet, rapikan de
 |---|---|
 | Model | **Opus 5.5 · high** |
 | Alasan | Keputusan di fase ini (struktur folder, pola layout dan komponen, pipeline CSS, konfigurasi keamanan) akan diikuti oleh puluhan file berikutnya. Kesalahan di sini ikut tersalin ke semua halaman |
-| Keluaran | `git init` dan branch kerja; `.env` per lingkungan (dev/staging/prod); Tailwind CLI dengan token dari DESIGN.md; layout `public.ejs` dan `admin.ejs`; library komponen partial (button, badge, card, table, form-field, empty-state, pagination, date-block, alert); Alpine.js; font dan ikon self-host; error handler terpusat; Helmet + CSP; CSRF; penghapusan `public/assets/vendor`, `landing-page` template, dan `assets/json` demo |
+| Keluaran | `git init` dan branch kerja; `.env` per lingkungan (dev/staging/prod); Tailwind CLI dengan token dari DESIGN.md; layout `public.ejs` dan `admin.ejs`; library komponen partial (button, badge, card, table, form-field, empty-state, pagination, date-block, alert); Alpine.js; font dan ikon self-host; error handler terpusat; Helmet + CSP; CSRF. **Template lama tetap hidup** berdampingan dengan fondasi baru dan dihapus per halaman di F3/F4 (final di F5), supaya situs tidak rusak di tengah jalan |
 | Selesai bila | Halaman contoh "kitchen sink" (`/dev/komponen`, hanya di dev) menampilkan semua komponen dan lolos probe kontras serta fokus |
 
 **Catatan:** proyek ini **belum menjadi repositori git**. Lakukan `git init` dan commit kondisi saat ini sebelum mengubah apa pun, agar setiap fase bisa dibatalkan.
