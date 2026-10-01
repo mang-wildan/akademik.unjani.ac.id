@@ -13,27 +13,40 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const timestamp = Date.now();
-    const safeName = safeFilename(file.originalname);
-    cb(null, `${timestamp}-${safeName}`);
-  },
+  filename: (_req, file, cb) => cb(null, `${Date.now()}-${safeFilename(file.originalname)}`),
 });
 
-const fileFilter = (_req, file, cb) => {
-  if (file.fieldname === 'file' && file.mimetype !== 'application/pdf') {
-    return cb(fileError('File kalender harus berupa PDF.'));
-  }
+// CSV import writes its upload to the same disk storage (not memoryStorage)
+// so checkUploads' magic-byte check (which reads file.path) still runs; the
+// controller deletes the temp file right after reading it.
+const pdfFilter = fieldName => (_req, file, cb) => {
+  if (file.fieldname === fieldName && file.mimetype !== 'application/pdf') return cb(fileError('File harus berupa PDF.'));
+  cb(null, true);
+};
+const csvFilter = (_req, file, cb) => {
+  if (file.fieldname === 'csv' && !/\.csv$/i.test(file.originalname || '')) return cb(fileError('File harus berupa CSV.'));
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
+const uploadSK = multer({ storage, fileFilter: pdfFilter('file'), limits: DOCUMENT_LIMITS });
+const uploadLampiran = multer({ storage, fileFilter: pdfFilter('lampiran'), limits: DOCUMENT_LIMITS });
+const uploadCsv = multer({ storage, fileFilter: csvFilter, limits: DOCUMENT_LIMITS });
 
-router.get('/', requireAuth, requireAdmin, academicCalendarController.list);
-router.get('/new', requireAuth, requireAdmin, academicCalendarController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'file', maxCount: 1 }]), checkUploads, academicCalendarController.create);
-router.get('/:id/edit', requireAuth, requireAdmin, academicCalendarController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'file', maxCount: 1 }]), checkUploads, academicCalendarController.update);
-router.post('/:id/delete', requireAuth, requireAdmin, academicCalendarController.destroy);
+router.use(requireAuth, requireAdmin);
+
+router.get('/', academicCalendarController.list);
+router.get('/template.csv', academicCalendarController.downloadTemplate);
+router.get('/new', academicCalendarController.showCreate);
+router.post('/', uploadSK.fields([{ name: 'file', maxCount: 1 }]), checkUploads, academicCalendarController.create);
+router.get('/:id/edit', academicCalendarController.showEdit);
+router.post('/:id', uploadSK.fields([{ name: 'file', maxCount: 1 }]), checkUploads, academicCalendarController.update);
+router.post('/:id/delete', academicCalendarController.destroy);
+
+router.post('/:id/events', academicCalendarController.addEvent);
+router.post('/:id/events/import', uploadCsv.fields([{ name: 'csv', maxCount: 1 }]), checkUploads, academicCalendarController.importEvents);
+router.post('/:id/events/:eventId/delete', academicCalendarController.deleteEvent);
+
+router.post('/:id/lampiran', uploadLampiran.fields([{ name: 'lampiran', maxCount: 1 }]), checkUploads, academicCalendarController.addLampiran);
+router.post('/:id/lampiran/:lampiranId/delete', academicCalendarController.deleteLampiran);
 
 module.exports = router;

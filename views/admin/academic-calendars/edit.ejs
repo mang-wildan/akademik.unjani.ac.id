@@ -1,205 +1,123 @@
-<!doctype html>
-<html
-  lang="id"
-  class="layout-navbar-fixed layout-menu-fixed layout-compact"
-  dir="ltr"
-  data-skin="default"
-  data-bs-theme="light"
-  data-assets-path="/assets/"
-  data-template="vertical-menu-template">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><%= title || 'Edit Kalender Akademik' %></title>
-  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
-  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
-  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
-  <link rel="stylesheet" href="/assets/css/demo.css" />
-  <script src="/assets/vendor/js/helpers.js"></script>
-  <script src="/assets/js/config.js"></script>
-  <style>
-    .calendar-preview {
-      width: 100%;
-      max-height: 360px;
-      object-fit: contain;
-      border-radius: 12px;
-      background: #f8fafb;
-      border: 1px dashed var(--bs-border-color);
-      padding: 8px;
-    }
-  </style>
-</head>
+<%# Kalender akademik — tahap 2: kelola kegiatan (manual/CSV) & lampiran surat edaran untuk satu tahun ajaran. %>
+<div class="mb-6">
+  <a href="/admin/academic-calendars" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Kalender Akademik</a>
+  <h1 class="text-2xl font-bold">Kalender <%= item.tahunAjaran %></h1>
+</div>
 
-<body>
-  <div class="layout-wrapper layout-content-navbar">
-    <div class="layout-container">
-      <%- include("../../partials/menu") %>
-      <div class="layout-page">
-        <%- include("../../partials/navbar") %>
-        <div class="content-wrapper">
-          <div class="container-xxl flex-grow-1 container-p-y">
+<div class="grid gap-6 lg:grid-cols-3">
+  <%# --- Data tahun ajaran --- %>
+  <form method="POST" action="/admin/academic-calendars/<%= item._id %>" enctype="multipart/form-data" class="card card-body space-y-5 lg:col-span-1">
+    <h2 class="font-semibold">Data Tahun Ajaran</h2>
+    <%- include('../../components/form-field', { name: 'tahunAjaran', label: 'Tahun Ajaran', required: true, value: values.tahunAjaran, error: errors.tahunAjaran, help: 'Ditulis seperti 2026/2027.' }) %>
+    <%- include('../../components/form-field', { name: 'nomorSK', label: 'Nomor SK Rektor', value: values.nomorSK, error: errors.nomorSK }) %>
+    <%- include('../../components/file-upload', {
+      name: 'file', label: 'File SK Rektor (PDF)', accept: 'application/pdf', error: errors.file,
+      limitText: 'PDF, maks. 10 MB.', current: { label: 'SK saat ini', href: item.file },
+    }) %>
+    <div class="flex justify-end border-t border-line pt-5">
+      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </div>
+  </form>
 
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-              <div>
-                <h4 class="fw-bold mb-0">Edit Kalender Akademik</h4>
-                <p class="text-muted mb-0">Perbarui gambar kalender atau tahun ajaran.</p>
-              </div>
-              <a class="btn btn-label-secondary" href="/admin/academic-calendars">
-                <span class="iconify me-1" data-icon="ri:arrow-left-line"></span> Kembali
-              </a>
-            </div>
-
-            <% if (typeof error !== 'undefined' && error) { %>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              <div class="d-flex align-items-center">
-                <span class="iconify me-2 fs-4" data-icon="ri:error-warning-fill"></span>
-                <span><%= error %></span>
-              </div>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <% } %>
-
-            <form method="POST" action="/admin/academic-calendars/<%= values._id %>" enctype="multipart/form-data" data-disable-submit>
-              <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                  <h5 class="mb-0 card-title">Form Kalender Akademik</h5>
-                  <small class="text-muted"><span class="text-danger">*</span> Wajib diisi</small>
-                </div>
-                <div class="card-body">
-                  <div class="row g-4">
-                    <div class="col-md-6">
-                      <label class="form-label fw-medium" for="tahunAjaranInput">Tahun Ajaran <span class="text-danger">*</span></label>
-                      <% const nowY = new Date().getFullYear(); %>
-                      <select id="tahunAjaranInput" name="tahunAjaran" class="form-select" required>
-                        <% for (let y = nowY + 2; y >= nowY - 6; y--) { const label = `${y}/${y+1}`; %>
-                          <option value="<%= label %>"
-                            <%= (values && values.tahunAjaran === label) || (!values || !values.tahunAjaran) && y === nowY ? 'selected' : '' %>>
-                            <%= label %>
-                          </option>
-                        <% } %>
-                      </select>
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label fw-medium" for="fileInput">File Kalender (Gambar)</label>
-                      <input type="file" name="file" id="fileInput" accept="image/png,image/jpg,image/jpeg" class="form-control" />
-                      <% if (values && values.file) { %>
-                      <div class="form-text">
-                        <a href="<%= values.file %>" target="_blank"><i class="ri ri-image-line me-1"></i>Lihat file saat ini</a>
-                      </div>
-                      <% } %>
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label fw-medium">Pratinjau</label>
-                      <img id="filePreview" src="<%= values && values.file ? values.file : '' %>" alt="Preview kalender"
-                        data-initial="<%= values && values.file ? values.file : '' %>"
-                        class="calendar-preview <%= values && values.file ? '' : 'd-none' %>" />
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer d-flex justify-content-end gap-3">
-                  <a href="/admin/academic-calendars" class="btn btn-label-secondary">Batal</a>
-                  <button type="submit" class="btn btn-primary px-4">
-                    <span class="iconify me-1" data-icon="ri:save-line"></span> Simpan Perubahan
-                  </button>
-                </div>
-              </div>
-            </form>
-
-          </div>
-          <div class="content-backdrop fade"></div>
-        </div>
+  <div class="space-y-6 lg:col-span-2">
+    <%# --- Kegiatan: tabel + tambah manual + impor CSV --- %>
+    <div class="card card-body space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="font-semibold">Kegiatan (<%= formatAngka(item.events.length) %>)</h2>
+        <a href="/admin/academic-calendars/template.csv" class="inline-flex min-h-6 items-center gap-1 text-sm font-medium"><%- icon('download', 'size-4') %>Unduh template CSV</a>
       </div>
+
+      <% if (importErrors) { %>
+        <div class="rounded-control border border-danger-solid bg-danger-soft p-3 text-sm text-danger">
+          <p class="font-semibold">Impor gagal, tidak ada yang disimpan:</p>
+          <ul class="mt-1 list-disc space-y-0.5 pl-5">
+            <% importErrors.forEach(e => { %><li><%= e %></li><% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <% if (item.events.length) { %>
+      <table class="data-table data-table--stack">
+        <caption class="sr-only">Daftar kegiatan</caption>
+        <thead><tr><th scope="col">Semester</th><th scope="col">Nama</th><th scope="col">Mulai</th><th scope="col">Selesai</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+        <tbody>
+          <% item.events.slice().sort((a, b) => new Date(a.mulai) - new Date(b.mulai)).forEach(ev => { %>
+            <tr>
+              <td data-label="Semester"><%= (semesterOptions.find(s => s.value === ev.semester) || {}).label || ev.semester %></td>
+              <td data-label="Nama"><%= ev.nama %></td>
+              <td data-label="Mulai"><%= formatTanggal(ev.mulai) %></td>
+              <td data-label="Selesai"><%= ev.selesai ? formatTanggal(ev.selesai) : '—' %></td>
+              <td data-label="Aksi">
+                <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events/<%= ev._id %>/delete" data-confirm="Hapus kegiatan &quot;<%= ev.nama %>&quot;?">
+                  <button type="submit" class="btn-icon text-danger hover:bg-danger-soft" aria-label="Hapus kegiatan <%= ev.nama %>"><%- icon('delete', 'size-5') %></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p class="text-sm text-muted">Belum ada kegiatan untuk tahun ajaran ini.</p>
+      <% } %>
+
+      <details class="rounded-control border border-line">
+        <summary class="min-h-11 cursor-pointer select-none px-4 py-2.5 text-sm font-semibold">+ Tambah kegiatan manual</summary>
+        <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events" class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+          <%- include('../../components/form-field', {
+            name: 'semester', label: 'Semester', type: 'select', required: true, value: eventValues.semester, error: eventErrors.semester,
+            options: semesterOptions,
+          }) %>
+          <%- include('../../components/form-field', { name: 'nama', label: 'Nama Kegiatan', required: true, value: eventValues.nama, error: eventErrors.nama }) %>
+          <%- include('../../components/form-field', { name: 'mulai', label: 'Tanggal Mulai', type: 'date', required: true, value: eventValues.mulai, error: eventErrors.mulai }) %>
+          <%- include('../../components/form-field', { name: 'selesai', label: 'Tanggal Selesai', type: 'date', value: eventValues.selesai, error: eventErrors.selesai, help: 'Kosongkan untuk kegiatan satu hari.' }) %>
+          <div class="sm:col-span-2 flex justify-end"><button type="submit" class="btn btn-primary">Tambah Kegiatan</button></div>
+        </form>
+      </details>
+
+      <details class="rounded-control border border-line">
+        <summary class="min-h-11 cursor-pointer select-none px-4 py-2.5 text-sm font-semibold">+ Impor dari CSV/Excel</summary>
+        <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events/import" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
+          <p class="field-help">Mengimpor akan <strong>mengganti seluruh daftar kegiatan</strong> yang sudah ada untuk tahun ajaran ini. Gunakan template di atas.</p>
+          <%- include('../../components/file-upload', { name: 'csv', label: 'File CSV', accept: '.csv,text/csv', required: true, limitText: 'CSV sesuai template.' }) %>
+          <div class="flex justify-end"><button type="submit" class="btn btn-secondary">Impor &amp; Ganti Daftar Kegiatan</button></div>
+        </form>
+      </details>
+    </div>
+
+    <%# --- Lampiran: surat edaran PDF --- %>
+    <div class="card card-body space-y-4">
+      <h2 class="font-semibold">Lampiran Surat Edaran (<%= formatAngka(item.lampiran.length) %>)</h2>
+      <% if (item.lampiran.length) { %>
+        <ul class="space-y-2">
+          <% item.lampiran.forEach(l => { %>
+            <li class="flex items-center gap-3 rounded-control border border-line px-3 py-2">
+              <%- icon('picture_as_pdf', 'size-5 shrink-0 text-muted') %>
+              <div class="min-w-0 flex-1">
+                <a href="<%= l.file %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center line-clamp-1 font-medium"><%= l.judul %></a>
+                <p class="truncate text-xs text-muted"><%= l.nomorSurat || '—' %><% if (l.tanggal) { %> · <%= formatTanggal(l.tanggal) %><% } %></p>
+              </div>
+              <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran/<%= l._id %>/delete">
+                <button type="submit" class="btn-icon shrink-0 text-danger hover:bg-danger-soft" aria-label="Hapus lampiran <%= l.judul %>"><%- icon('delete', 'size-5') %></button>
+              </form>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p class="text-sm text-muted">Belum ada lampiran surat edaran.</p>
+      <% } %>
+
+      <details class="rounded-control border border-line">
+        <summary class="min-h-11 cursor-pointer select-none px-4 py-2.5 text-sm font-semibold">+ Tambah lampiran</summary>
+        <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran" enctype="multipart/form-data" class="grid gap-4 border-t border-line p-4 sm:grid-cols-2">
+          <%- include('../../components/form-field', { name: 'judul', label: 'Judul Surat', required: true, value: lampiranValues.judul, error: lampiranErrors.judul }) %>
+          <%- include('../../components/form-field', { name: 'nomorSurat', label: 'Nomor Surat', value: lampiranValues.nomorSurat, error: lampiranErrors.nomorSurat }) %>
+          <%- include('../../components/form-field', { name: 'tanggal', label: 'Tanggal Surat', type: 'date', value: lampiranValues.tanggal, error: lampiranErrors.tanggal }) %>
+          <div class="sm:col-span-2">
+            <%- include('../../components/file-upload', { name: 'lampiran', label: 'File (PDF)', accept: 'application/pdf', required: true, limitText: 'PDF, maks. 10 MB.', error: lampiranErrors.file }) %>
+          </div>
+          <div class="sm:col-span-2 flex justify-end"><button type="submit" class="btn btn-primary">Tambah Lampiran</button></div>
+        </form>
+      </details>
     </div>
   </div>
-
-  <div class="layout-overlay layout-menu-toggle"></div>
-  <div class="drag-target"></div>
-
-  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
-  <script src="/assets/vendor/libs/popper/popper.js"></script>
-  <script src="/assets/vendor/js/bootstrap.js"></script>
-  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
-  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-  <script src="/assets/vendor/js/menu.js"></script>
-  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-  <script src="/assets/js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const fileInput = document.getElementById('fileInput');
-      const preview = document.getElementById('filePreview');
-      const dropzone = document.getElementById('dropzone');
-      const pickBtn = document.getElementById('pickFileBtn');
-      const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-
-      if (fileInput && dropzone && !dropzone.dataset.bound) {
-        dropzone.dataset.bound = '1';
-      }
-
-      if (fileInput && preview) {
-        const setFileInput = (file) => {
-          const dt = new DataTransfer();
-          dt.items.add(file);
-          fileInput.files = dt.files;
-          fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-        };
-
-        fileInput.addEventListener('change', (e) => {
-          const [file] = e.target.files;
-          if (!file) {
-            if (!preview.getAttribute('data-initial')) {
-              preview.classList.add('d-none');
-              preview.src = '';
-            } else {
-              preview.src = preview.getAttribute('data-initial');
-              preview.classList.remove('d-none');
-            }
-            return;
-          }
-          if (!file.type.startsWith('image/')) {
-            alert('File harus berupa gambar JPG/PNG.');
-            fileInput.value = '';
-            return;
-          }
-          if (file.size > MAX_SIZE) {
-            alert('Ukuran file maksimal 5MB.');
-            fileInput.value = '';
-            return;
-          }
-          preview.src = URL.createObjectURL(file);
-          preview.classList.remove('d-none');
-        });
-
-        if (dropzone) {
-          ['dragenter', 'dragover'].forEach(evt => {
-            dropzone.addEventListener(evt, (e) => {
-              e.preventDefault(); e.stopPropagation();
-              dropzone.classList.add('hover');
-            });
-          });
-          ['dragleave', 'drop'].forEach(evt => {
-            dropzone.addEventListener(evt, (e) => {
-              e.preventDefault(); e.stopPropagation();
-              dropzone.classList.remove('hover');
-            });
-          });
-          dropzone.addEventListener('drop', (e) => {
-            const file = e.dataTransfer.files[0];
-            if (!file) return;
-            setFileInput(file);
-          });
-          dropzone.addEventListener('click', () => fileInput.click());
-        }
-
-        pickBtn?.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation(); // hindari bubble ke dropzone yang memicu click ganda
-          fileInput.click();
-        });
-      }
-    });
-  </script>
-</body>
-
-</html>
+</div>

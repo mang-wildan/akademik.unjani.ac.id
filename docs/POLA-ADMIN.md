@@ -67,6 +67,20 @@ Dua kelas masalah terpisah, keduanya menyebabkan overflow horizontal di mobile (
 
 Setelah mengubah `assets/css/app.css`, **wajib** `npm run build:css` sebelum menguji — kelas baru tidak otomatis muncul di `public/css/app.css`.
 
+## Modul dengan sub-koleksi bersarang (bukan skema datar)
+
+Pengumuman/Berita punya skema datar dan cocok dengan factory `adminContentController.js`. Modul dengan array tersarang yang masing-masing punya identitas sendiri (mis. Kalender Akademik: `events[]` kegiatan dan `lampiran[]` surat edaran per tahun ajaran) **tidak cocok dengan factory** — tulis kontroler sendiri (lihat `controllers/academicCalendarController.js`), tapi tetap ikuti konvensi ini:
+
+- Form utama (field datar milik dokumen induk) dan form sub-item dipisah: sub-item hanya bisa dikelola setelah dokumen induk tersimpan (halaman "ubah"), bukan dicoba digabung jadi satu submit raksasa.
+- Tiap mutasi sub-item (tambah satu kegiatan, hapus satu kegiatan, tambah satu lampiran) adalah **POST + redirect terpisah**, bukan dikumpulkan dalam array dinamis sisi klien — konsisten dengan filosofi "tiap mutasi adalah form biasa, berfungsi tanpa JS" di seluruh admin.
+- Gunakan `<details><summary>` native untuk menyembunyikan form "tambah" di balik satu baris judul yang bisa diklik — tidak perlu Alpine untuk sekadar show/hide non-kritis.
+- Untuk aksi hapus baris yang jumlahnya bisa banyak (kegiatan dalam satu tahun ajaran), `window.confirm()` native via atribut `data-confirm` pada `<form>` (lihat handler di `public/js/app.js`) lebih ringan daripada satu `<dialog>` per baris — dipakai untuk hapus kegiatan, sementara hapus dokumen induk (seluruh tahun ajaran) tetap pakai `<dialog>` `confirm-dialog.ejs` karena dampaknya jauh lebih besar.
+- Impor massal (CSV) yang **mengganti seluruh sub-koleksi** harus dinyatakan eksplisit di teks UI ("akan mengganti seluruh daftar...") dan tidak pernah menyimpan sebagian saat ada baris error — validasi seluruh file dulu, baru simpan semuanya sekaligus atau tidak sama sekali.
+
+### Jebakan: `.lean()` tidak menerapkan default skema Mongoose
+
+Dokumen lama di database (disalin dari skema sebelum field baru ditambahkan) bisa benar-benar tidak punya field itu sama sekali di MongoDB. Query dengan `.populate()`/hydrasi biasa menerapkan default skema (`events: { default: [] }`) saat dokumen di-instantiate, **tapi `.lean()` mengembalikan data mentah apa adanya** — field yang hilang di DB tetap `undefined`, bukan `[]`. Ini menyebabkan `item.events.length` di EJS melempar `TypeError` untuk dokumen lama, meski skema mendeklarasikan default. Perbaikan: normalisasi manual setelah `.lean()` untuk field array apa pun yang mungkin hilang pada data lama (`c.events || []`) — jangan andalkan default skema begitu saja saat memakai `.lean()`. `scripts/migrate/007-readiness.js` sudah mendeteksi kondisi ini sebelumnya tapi tidak memperbaikinya (read-only report), jadi kontroler tetap harus defensif.
+
 ## Bug kritis yang ditemukan saat menguji alur CRUD pertama kali (F4)
 
 **`helmet()` tanpa konfigurasi `referrerPolicy` mematikan SEMUA form POST di seluruh situs, termasuk login.**

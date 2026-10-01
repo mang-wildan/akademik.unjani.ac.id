@@ -92,3 +92,11 @@ document.addEventListener('click', event => {
   const closer = event.target.closest('[data-dialog-close]');
   if (closer) closer.closest('dialog')?.close();
 });
+
+// Lightweight native confirm for low-stakes row deletes where a per-row
+// <dialog> would be excessive (e.g. one calendar event among many). Degrades
+// to a plain submit without JS, same as every other mutation in the admin.
+document.addEventListener('submit', event => {
+  const message = event.target.dataset && event.target.dataset.confirm;
+  if (message && !window.confirm(message)) event.preventDefault();
+});
