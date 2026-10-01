@@ -1,0 +1,22 @@
+<div class="mb-6">
+  <a href="/admin/kurikulum" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Kurikulum</a>
+  <h1 class="text-2xl font-bold"><%= mode === 'edit' ? 'Ubah Kurikulum' : 'Tambah Kurikulum' %></h1>
+</div>
+
+<form method="POST" action="/admin/kurikulum<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" class="card card-body grid max-w-xl gap-5">
+  <%- include('../../components/form-field', {
+    name: 'prodi', label: 'Program Studi', type: 'select', required: true, value: values.prodi && String(values.prodi._id || values.prodi), error: errors.prodi,
+    placeholder: 'Pilih program studi', options: prodiList.map(p => ({ value: p._id, label: p.labelFakultas })),
+  }) %>
+  <%- include('../../components/form-field', {
+    name: 'tahun', label: 'Tahun Kurikulum', required: true, value: values.tahun, error: errors.tahun, placeholder: '2025/2026', help: 'Ditulis seperti 2021 atau 2025/2026.',
+  }) %>
+  <%- include('../../components/file-upload', {
+    name: 'file', label: 'File Kurikulum (PDF)', accept: 'application/pdf', error: errors.file,
+    limitText: 'PDF, maks. 10 MB.', current: (mode === 'edit' && item.file) ? { label: 'File saat ini', href: item.file } : null,
+  }) %>
+  <div class="flex justify-end gap-2 border-t border-line pt-5">
+    <a href="/admin/kurikulum" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary">Simpan</button>
+  </div>
+</form>

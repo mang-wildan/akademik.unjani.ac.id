@@ -13,49 +13,24 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const timestamp = Date.now();
-    const safe = safeFilename(file.originalname);
-    cb(null, `${timestamp}-${safe}`);
-  },
+  filename: (_req, file, cb) => cb(null, `${Date.now()}-${safeFilename(file.originalname)}`),
 });
 
 const fileFilter = (_req, file, cb) => {
-  const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-  if (file.fieldname === 'cover' && !imageTypes.includes(file.mimetype)) {
-    return cb(fileError('Cover harus berupa gambar JPG/PNG.'));
-  }
-  if (file.fieldname === 'file' && file.mimetype !== 'application/pdf') {
-    return cb(fileError('File kurikulum harus berupa PDF.'));
-  }
+  if (file.fieldname === 'file' && file.mimetype !== 'application/pdf') return cb(fileError('File kurikulum harus berupa PDF.'));
   cb(null, true);
 };
 
 const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
+const uploadFile = upload.fields([{ name: 'file', maxCount: 1 }]);
 
-router.get('/', requireAuth, requireAdmin, kurikulumController.list);
-router.get('/new', requireAuth, requireAdmin, kurikulumController.showCreate);
-router.post(
-  '/',
-  requireAuth,
-  requireAdmin,
-  upload.fields([
-    { name: 'cover', maxCount: 1 },
-    { name: 'file', maxCount: 1 },
-  ]), checkUploads,
-  kurikulumController.create
-);
-router.get('/:id/edit', requireAuth, requireAdmin, kurikulumController.showEdit);
-router.post(
-  '/:id',
-  requireAuth,
-  requireAdmin,
-  upload.fields([
-    { name: 'cover', maxCount: 1 },
-    { name: 'file', maxCount: 1 },
-  ]), checkUploads,
-  kurikulumController.update
-);
-router.post('/:id/delete', requireAuth, requireAdmin, kurikulumController.destroy);
+router.use(requireAuth, requireAdmin);
+
+router.get('/', kurikulumController.list);
+router.get('/new', kurikulumController.showCreate);
+router.post('/', uploadFile, checkUploads, kurikulumController.create);
+router.get('/:id/edit', kurikulumController.showEdit);
+router.post('/:id', uploadFile, checkUploads, kurikulumController.update);
+router.post('/:id/delete', kurikulumController.destroy);
 
 module.exports = router;

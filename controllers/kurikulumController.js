@@ -1,101 +1,98 @@
+// Admin CRUD untuk Kurikulum (FR-M-05). `nama`/`programStudi`/`fakultas`
+// (teks bebas) dan `cover` adalah field v1 yang tidak lagi dipakai desain F3
+// (lihat views/landing/kurikulum.ejs: hanya prodi/tahun/file) -- form ini
+// hanya menulis `prodi` (ref ke master Program Studi) dan `tahun`.
+const fs = require('fs/promises');
 const path = require('path');
 const Kurikulum = require('../models/Kurikulum');
+const ProgramStudi = require('../models/ProgramStudi');
+const { validate, schemas } = require('../validators');
 
-const publicPath = path.join(__dirname, '..', 'public');
-const toPublicUrl = (filePath) => {
-  if (!filePath) return '';
-  const relative = path.relative(publicPath, filePath).replace(/\\/g, '/');
-  return `/${relative}`;
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
+const removeUploaded = async req => {
+  const file = req.files?.file?.[0];
+  if (file) await fs.unlink(file.path).catch(() => {});
+};
+const prodiList = async () => {
+  const list = await ProgramStudi.find().populate('fakultas', 'nama').sort({ nama: 1 }).lean();
+  return list.map(p => ({ ...p, labelFakultas: p.fakultas ? `${p.nama} (${p.fakultas.nama})` : p.nama }));
 };
 
 exports.list = async (req, res) => {
-  const items = await Kurikulum.find()
-    .populate('createdBy', 'name email')
-    .populate('updatedBy', 'name email')
-    .sort({ tahun: -1, createdAt: -1 });
-
-  res.render('admin/kurikulum/list', {
-    title: 'Kurikulum',
-    user: req.user,
-    items,
-  });
+  const items = await Kurikulum.find().populate({ path: 'prodi', select: 'nama fakultas', populate: { path: 'fakultas', select: 'nama' } }).sort({ tahun: -1, createdAt: -1 }).lean();
+  res.renderPage('admin/kurikulum/list', { title: 'Kurikulum', items }, 'layouts/admin');
 };
 
-exports.showCreate = (req, res) =>
-  res.render('admin/kurikulum/create', {
-    title: 'Tambah Kurikulum',
-    user: req.user,
-    values: {},
-  });
+exports.showCreate = async (req, res) => {
+  res.renderPage('admin/kurikulum/form', { title: 'Tambah Kurikulum', mode: 'create', values: {}, errors: {}, prodiList: await prodiList() }, 'layouts/admin');
+};
 
 exports.create = async (req, res) => {
-  const { nama, programStudi, fakultas, tahun } = req.body;
-  const coverFile = req.files && req.files.cover && req.files.cover[0];
-  const pdfFile = req.files && req.files.file && req.files.file[0];
-  const values = { nama, programStudi, fakultas, tahun };
-
-  if (!nama || !programStudi || !fakultas || !tahun || !coverFile || !pdfFile) {
-    return res.status(400).render('admin/kurikulum/create', {
-      title: 'Tambah Kurikulum',
-      user: req.user,
-      error: 'Nama, Program Studi, Fakultas, Tahun, Cover, dan PDF wajib diisi.',
-      values,
-    });
+  const { data, errors, ok } = validate(schemas.kurikulum, req.body);
+  const fieldErrors = errors || {};
+  const file = req.files?.file?.[0];
+  if (!file) fieldErrors.file = 'File PDF wajib diisi.';
+  if (!ok || fieldErrors.file) {
+    await removeUploaded(req);
+    return res.renderPage('admin/kurikulum/form', { title: 'Tambah Kurikulum', mode: 'create', values: req.body, errors: fieldErrors, prodiList: await prodiList() }, 'layouts/admin');
   }
+  const existing = await Kurikulum.findOne({ prodi: data.prodi, tahun: data.tahun });
+  if (existing) {
+    await removeUploaded(req);
+    return res.renderPage(
+      'admin/kurikulum/form',
+      { title: 'Tambah Kurikulum', mode: 'create', values: req.body, errors: { tahun: `Kurikulum tahun ${data.tahun} untuk program studi ini sudah ada.` }, prodiList: await prodiList() },
+      'layouts/admin'
+    );
+  }
+  await Kurikulum.create({ ...data, file: toPublicUrl(file.path), fileSize: file.size, createdBy: req.user._id, updatedBy: req.user._id });
+  res.redirect(`/admin/kurikulum?success=${encodeURIComponent('Kurikulum berhasil ditambahkan.')}`);
+};
 
-  const kur = new Kurikulum({
-    nama,
-    programStudi,
-    fakultas,
-    tahun,
-    cover: toPublicUrl(coverFile.path),
-    file: toPublicUrl(pdfFile.path),
-    createdBy: req.user ? req.user._id : undefined,
-    updatedBy: req.user ? req.user._id : undefined,
-  });
-  await kur.save();
-  return res.redirect('/admin/kurikulum?success=Kurikulum berhasil ditambahkan');
+const findOrThrow = async id => {
+  const item = await Kurikulum.findById(id);
+  if (!item) {
+    const err = new Error('Kurikulum tidak ditemukan.');
+    err.status = 404;
+    err.expose = true;
+    throw err;
+  }
+  return item;
 };
 
 exports.showEdit = async (req, res) => {
-  const item = await Kurikulum.findById(req.params.id);
-  if (!item) return res.redirect('/admin/kurikulum?error=Data tidak ditemukan');
-  return res.render('admin/kurikulum/edit', {
-    title: 'Edit Kurikulum',
-    user: req.user,
-    values: item,
-  });
+  const item = await findOrThrow(req.params.id);
+  res.renderPage('admin/kurikulum/form', { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, prodiList: await prodiList() }, 'layouts/admin');
 };
 
 exports.update = async (req, res) => {
-  const { nama, programStudi, fakultas, tahun } = req.body;
-  const coverFile = req.files && req.files.cover && req.files.cover[0];
-  const pdfFile = req.files && req.files.file && req.files.file[0];
-
-  const item = await Kurikulum.findById(req.params.id);
-  if (!item) return res.redirect('/admin/kurikulum?error=Data tidak ditemukan');
-
-  if (!nama || !programStudi || !fakultas || !tahun) {
-    return res.status(400).render('admin/kurikulum/edit', {
-      title: 'Edit Kurikulum',
-      user: req.user,
-      error: 'Nama, Program Studi, Fakultas, dan Tahun wajib diisi.',
-      values: { ...item.toObject(), nama, programStudi, fakultas, tahun },
-    });
+  const item = await findOrThrow(req.params.id);
+  const { data, errors, ok } = validate(schemas.kurikulum, req.body);
+  if (!ok) {
+    await removeUploaded(req);
+    return res.renderPage('admin/kurikulum/form', { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: req.body, errors, prodiList: await prodiList() }, 'layouts/admin');
   }
-
-  item.nama = nama;
-  item.programStudi = programStudi;
-  item.fakultas = fakultas;
-  item.tahun = tahun;
-  if (coverFile) item.cover = toPublicUrl(coverFile.path);
-  if (pdfFile) item.file = toPublicUrl(pdfFile.path);
-  item.updatedBy = req.user ? req.user._id : item.updatedBy;
+  const dup = await Kurikulum.findOne({ prodi: data.prodi, tahun: data.tahun, _id: { $ne: item._id } });
+  if (dup) {
+    await removeUploaded(req);
+    return res.renderPage(
+      'admin/kurikulum/form',
+      { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: req.body, errors: { tahun: `Kurikulum tahun ${data.tahun} untuk program studi ini sudah ada.` }, prodiList: await prodiList() },
+      'layouts/admin'
+    );
+  }
+  const file = req.files?.file?.[0];
+  if (file) {
+    item.file = toPublicUrl(file.path);
+    item.fileSize = file.size;
+  }
+  Object.assign(item, data, { updatedBy: req.user._id });
   await item.save();
-  return res.redirect('/admin/kurikulum?success=Kurikulum berhasil diperbarui');
+  res.redirect(`/admin/kurikulum?success=${encodeURIComponent('Kurikulum berhasil diperbarui.')}`);
 };
 
 exports.destroy = async (req, res) => {
   await Kurikulum.findByIdAndDelete(req.params.id);
-  return res.redirect('/admin/kurikulum?success=Kurikulum berhasil dihapus');
+  res.redirect(`/admin/kurikulum?success=${encodeURIComponent('Kurikulum berhasil dihapus.')}`);
 };
