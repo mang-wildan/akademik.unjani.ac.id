@@ -152,6 +152,14 @@
       background: rgba(249,115,22,0.14);
       color: #9a3412;
     }
+    .ac-pill.expired {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+    .ac-pill.expiring {
+      background: #FEF3C7;
+      color: #92400E;
+    }
     .ac-pill.year {
       background: rgba(13,147,148,0.12);
       color: #0D9394;
@@ -350,7 +358,16 @@
                           <% group.activeRows.forEach(function(item, idx){ %>
                             <tr>
                               <td data-label="No"><%= idx + 1 %></td>
-                              <td data-label="Status"><span class="ac-pill active">Aktif</span></td>
+                              <% const sisaHari = item.berlakuSampai ? Math.floor((new Date(item.berlakuSampai) - Date.now()) / 86400000) : null; %>
+                              <td data-label="Status">
+                                <% if (sisaHari !== null && sisaHari < 0) { %>
+                                  <span class="ac-pill expired">Kedaluwarsa</span>
+                                <% } else if (sisaHari !== null && sisaHari <= 90) { %>
+                                  <span class="ac-pill expiring">Segera berakhir</span>
+                                <% } else { %>
+                                  <span class="ac-pill active">Berlaku</span>
+                                <% } %>
+                              </td>
                               <td data-label="Tahun"><span class="ac-pill year"><i class="fa-solid fa-calendar"></i> <%= item.tahun || '-' %></span></td>
                               <td data-label="Akreditasi"><span class="ac-pill rank"><i class="fa-solid fa-award"></i> <%= item.akreditasi %></span></td>
                               <td data-label="Berlaku" class="text-muted small">

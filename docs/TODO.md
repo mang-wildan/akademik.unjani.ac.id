@@ -38,13 +38,18 @@ Label di setiap kelompok tugas: `[Model · effort]`. Kelompok tugas yang labelny
 - [x] Bagian video profil disembunyikan bila URL kosong; video cadangan privat dihapus — Audit 18
 - [x] `<html lang="id">` di 72 view — Audit 09 · A4
 
-### Konten `[manual oleh admin BAA]`
-- [ ] Hapus atau draf-kan berita uji (rgwegewrg, test, pm, edtbed, ghrdb, fasfaf, gjgjgj, dst.) — Audit 05
-- [ ] Hapus pengumuman Lorem ipsum, "gnfn", "threhre", dan "Pengumuman Baru"
-- [ ] Hapus buku "test" dan "dgsge", serta buku wisuda "Tahun 2027"
-- [ ] Ganti staf "Test, S.Test." dengan data asli
-- [ ] Hapus file `uploads/news/…TERRA_INFINITA_MAP_15K…jpg` (128 MB)
-- [ ] Nonaktifkan atau tandai 4 akreditasi yang kedaluwarsa — Audit 06
+### Konten `[Opus 5.5 · high — skrip scripts/f0-cleanup-test-content.js]`
+Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.json`.
+- [x] 13 berita uji (semua berita) → draft + lepas sematan — Audit 05
+- [x] 8 pengumuman uji (Lorem ipsum ×5, "Test Pengumuman", "Pengumuman Baru", "threhre") → draft
+- [x] Hapus buku "test" dan "dgsge", serta buku wisuda "Tahun 2027"
+- [x] Hapus 2 staf "Test" — [ ] **isi data pimpinan & staf asli** *(manual, halaman kini kosong)*
+- [x] Hapus file `TERRA_INFINITA_MAP_15K…jpg` (128 MB), rujukan di 3 berita draft dikosongkan
+- [x] Status akreditasi publik dihitung dari tanggal: Berlaku / Segera berakhir (≤ 90 hari) / Kedaluwarsa — Audit 06
+- [ ] **Jalankan skrip yang sama di database produksi** (`--dry-run` dulu, lalu `--apply`) *(manual)*
+- [ ] **Tinjau 17 file unggahan yatim** (24,5 MB; tidak dirujuk database tapi bisa diunduh publik), termasuk dokumen pribadi: kartu akses pegawai dan lembar UAS mahasiswa. Daftar lengkap dicetak oleh skrip *(keputusan pemilik)*
+- [ ] **Periksa data akreditasi institusi:** record "Unggul" (aktif) sudah kedaluwarsa 11 Feb 2026, sedangkan record "B" (nonaktif) berlaku sampai 28 Des 2026. Kemungkinan status tampil/sembunyi tertukar *(manual)*
+- [ ] Berita "rgwegewrg" (draft) memakai gambar kartu akses berisi nama & NID dosen; hapus gambar atau beritanya
 
 ### Verifikasi `[Opus 5.5 · high]`
 - [x] Uji: `POST /register` dengan `role=admin` → 404, tidak ada akun baru
