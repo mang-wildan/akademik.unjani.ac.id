@@ -239,6 +239,19 @@ const userCreate = z.object({
   password,
 });
 
+// Super Admin menyetel password baru untuk akun lain tanpa tahu password
+// lama (beda dari passwordChange, yang dipakai pemilik akun sendiri).
+const resetPasswordByAdmin = z
+  .object({ newPassword: password, confirmPassword: z.string() })
+  .refine(v => v.newPassword === v.confirmPassword, { path: ['confirmPassword'], message: 'Konfirmasi password tidak sesuai.' });
+
+const userUpdate = z.object({
+  name: text('Nama', { max: 120 }),
+  email: z.preprocess(v => (typeof v === 'string' ? v.trim().toLowerCase() : v), z.email('Format email tidak valid.')),
+  role: choice('Role', ['superadmin', 'editor']),
+  isActive: checkbox,
+});
+
 const passwordChange = z
   .object({ currentPassword: z.string().min(1, req('Password saat ini')), newPassword: password, confirmPassword: z.string() })
   .refine(v => v.newPassword === v.confirmPassword, { path: ['confirmPassword'], message: 'Konfirmasi password tidak sesuai.' })
@@ -263,5 +276,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, siteSetting, quickLink, userCreate, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, siteSetting, quickLink, userCreate, userUpdate, resetPasswordByAdmin, passwordChange },
 };

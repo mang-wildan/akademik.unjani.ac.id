@@ -1,0 +1,31 @@
+<div class="mb-6">
+  <a href="/admin/users" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Akun Admin</a>
+  <h1 class="text-2xl font-bold"><%= mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun' %></h1>
+</div>
+
+<% if (errors._form) { %>
+  <div class="mb-6"><%- include('../../components/alert', { alertTone: 'danger', alertTitle: 'Tidak bisa disimpan', alertText: errors._form }) %></div>
+<% } %>
+
+<form method="POST" action="/admin/users<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid max-w-xl gap-5">
+  <%- include('../../components/form-field', { name: 'name', label: 'Nama', required: true, value: values.name, error: errors.name }) %>
+  <%- include('../../components/form-field', { name: 'email', label: 'Email', type: 'email', required: true, value: values.email, error: errors.email }) %>
+  <%- include('../../components/form-field', {
+    name: 'role', label: 'Peran', type: 'select', required: true, value: values.role, error: errors.role,
+    options: [{ value: 'superadmin', label: 'Super Admin' }, { value: 'editor', label: 'Editor' }],
+    help: locals.isSelf ? 'Mengubah peran diri sendiri bisa dibatasi jika Anda Super Admin aktif terakhir.' : '',
+  }) %>
+  <% if (mode === 'create') { %>
+    <%- include('../../components/form-field', { name: 'password', label: 'Password', type: 'password', required: true, error: errors.password, help: 'Minimal 8 karakter.', autocomplete: 'new-password' }) %>
+  <% } else { %>
+    <div class="flex min-h-11 items-center gap-2">
+      <input type="checkbox" id="f-isActive" name="isActive" value="on" <%= values.isActive === undefined || values.isActive ? 'checked' : '' %> class="size-6 shrink-0 rounded border-control text-primary focus:ring-primary">
+      <label for="f-isActive" class="text-sm font-medium">Aktif <span class="text-muted">(nonaktifkan untuk mencegah akun ini login)</span></label>
+    </div>
+    <p class="field-help -mt-3">Untuk mengubah password, gunakan "Reset Password" dari daftar akun.</p>
+  <% } %>
+  <div class="flex justify-end gap-2 border-t border-line pt-5">
+    <a href="/admin/users" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary">Simpan</button>
+  </div>
+</form>
