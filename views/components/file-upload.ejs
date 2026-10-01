@@ -13,7 +13,7 @@
   </label>
   <% if (locals.current) { %>
     <p class="mb-2 flex items-center gap-2 text-sm text-muted"><%- icon('description', 'size-5') %>File saat ini:
-      <a href="<%= locals.current.href %>" target="_blank" rel="noopener"><%= locals.current.label %></a></p>
+      <a href="<%= locals.current.href %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center"><%= locals.current.label %></a></p>
   <% } %>
   <input type="file" id="<%= id %>" name="<%= locals.name %>"<% if (locals.accept) { %> accept="<%= locals.accept %>"<% } %><%= locals.required && !locals.current ? ' required' : '' %>
          aria-describedby="<%= id %>-help<%= locals.error ? ` ${id}-error` : '' %>"<%- locals.error ? ' aria-invalid="true"' : '' %>

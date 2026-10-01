@@ -1,167 +1,76 @@
-const SiteSetting = require('../models/SiteSetting');
+// Admin untuk Pengaturan Situs (FR-M-12) -- dokumen singleton. Hanya
+// menawarkan field yang benar-benar dipakai tampilan publik saat ini
+// (footer: kontak/alamat/jam layanan/sosial media/quick links, beranda:
+// video, struktur organisasi: gambar). namaSitus/tagline/heroImage/
+// bannerRpl/siteLogo/slideshowImages ada di skema tapi tidak dipakai
+// desain F3 mana pun -- sengaja tidak ditawarkan di form ini (lihat
+// docs/POLA-ADMIN.md untuk pola serupa di modul lain).
+const fs = require('fs/promises');
 const path = require('path');
+const SiteSetting = require('../models/SiteSetting');
+const { validate, schemas } = require('../validators');
 
-const DEFAULT_LANDING_FOOTER_DESCRIPTION = 'Bidang Akademik mengatur kurikulum, jadwal perkuliahan, dan layanan administrasi mahasiswa agar proses belajar berjalan tertib dan bermutu.';
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
 
 const getSingleton = async () => {
   let doc = await SiteSetting.findOne();
-  if (!doc) {
-    doc = await SiteSetting.create({
-      namaSitus: 'BAA Akademik',
-      tagline: 'Portal Akademik',
-      landingFooterDescription: DEFAULT_LANDING_FOOTER_DESCRIPTION,
-    });
-  }
+  if (!doc) doc = await SiteSetting.create({ namaSitus: 'Bidang Akademik UNJANI' });
   return doc;
 };
-
-exports.show = async (req, res) => {
-  const setting = await getSingleton();
-  await setting.populate([
-    { path: 'updatedBy', select: 'name email' },
-    { path: 'createdBy', select: 'name email' },
-  ]);
-
-  const formatDate = d => (d ? d.toLocaleString('id-ID') : '-');
-  res.render('admin/settings/index', {
-    title: 'Pengaturan Situs',
-    user: req.user,
-    values: setting,
-    success: req.query.success,
-    lastUpdatedLabel: formatDate(setting.updatedAt),
-    strukturUpdatedLabel: formatDate(setting.strukturOrganisasiUpdatedAt),
-  });
-};
+exports.getSettingSingleton = getSingleton;
 
 exports.editForm = async (req, res) => {
   const setting = await getSingleton();
-  await setting.populate([
-    { path: 'updatedBy', select: 'name email' },
-    { path: 'createdBy', select: 'name email' },
-  ]);
-  const formatDate = d => (d ? d.toLocaleString('id-ID') : '-');
-  res.render('admin/settings/edit', {
-    title: 'Edit Pengaturan Situs',
-    user: req.user,
-    values: setting,
-    lastUpdatedLabel: formatDate(setting.updatedAt),
-    strukturUpdatedLabel: formatDate(setting.strukturOrganisasiUpdatedAt),
-  });
+  res.renderPage(
+    'admin/settings/edit',
+    { title: 'Pengaturan Situs', item: setting.toObject(), values: setting.toObject(), errors: {}, quickLinkErrors: {}, quickLinkValues: {}, lastUpdatedAt: setting.updatedAt },
+    'layouts/admin'
+  );
 };
 
 exports.update = async (req, res) => {
-  const {
-    namaSitus,
-    tagline,
-    kontakEmail,
-    kontakTelepon,
-    alamat,
-    landingFooterDescription,
-    socialFacebook,
-    socialTwitter,
-    socialYoutube,
-    socialTiktok,
-    socialLinkedin,
-    landingVideoUrl,
-    slideshowImages,
-    removeSlides,
-  } = req.body;
-  const quickLinkName = req.body.quickLinkName || req.body['quickLinkName[]'];
-  const quickLinkUrl = req.body.quickLinkUrl || req.body['quickLinkUrl[]'];
-  const quickLinkTarget = req.body.quickLinkTarget || req.body['quickLinkTarget[]'];
-  const bannerFile = req.files && req.files.bannerRpl ? req.files.bannerRpl[0] : null;
-  const slideshowFiles = (req.files && req.files.slideshowImages) ? req.files.slideshowImages : [];
-  const siteLogoFile = req.files && req.files.siteLogo ? req.files.siteLogo[0] : null;
-  const faviconFile = req.files && req.files.favicon ? req.files.favicon[0] : null;
-  const strukturFile = req.files && req.files.strukturOrganisasiImage ? req.files.strukturOrganisasiImage[0] : null;
   const setting = await getSingleton();
-
-  if (!namaSitus) {
-    const formatDate = d => (d ? d.toLocaleString('id-ID') : '-');
-    return res.status(400).render('admin/settings/edit', {
-      title: 'Edit Pengaturan Situs',
-      user: req.user,
-      error: 'Nama situs wajib diisi.',
-      values: {
-        ...setting.toObject(),
-        namaSitus,
-        tagline,
-        kontakEmail,
-        kontakTelepon,
-        alamat,
-        landingFooterDescription,
-        socialFacebook,
-        socialTwitter,
-        socialYoutube,
-        socialTiktok,
-        socialLinkedin,
-        landingVideoUrl,
-        slideshowImages,
-      },
-      lastUpdatedLabel: formatDate(setting.updatedAt),
-      strukturUpdatedLabel: formatDate(setting.strukturOrganisasiUpdatedAt),
-    });
+  const { data, errors, ok } = validate(schemas.siteSetting, req.body);
+  if (!ok) {
+    return res.renderPage(
+      'admin/settings/edit',
+      { title: 'Pengaturan Situs', item: setting.toObject(), values: req.body, errors, quickLinkErrors: {}, quickLinkValues: {}, lastUpdatedAt: setting.updatedAt },
+      'layouts/admin'
+    );
   }
-
-  setting.namaSitus = namaSitus;
-  setting.tagline = tagline;
-  setting.kontakEmail = kontakEmail;
-  setting.kontakTelepon = kontakTelepon;
-  setting.alamat = alamat;
-  setting.landingFooterDescription = landingFooterDescription;
-  setting.socialFacebook = socialFacebook;
-  setting.socialTwitter = socialTwitter;
-  setting.socialYoutube = socialYoutube;
-  setting.socialTiktok = socialTiktok;
-  setting.socialLinkedin = socialLinkedin;
-  setting.landingVideoUrl = landingVideoUrl;
-  const removeArr = Array.isArray(removeSlides)
-    ? removeSlides
-    : removeSlides
-      ? [removeSlides]
-      : [];
-  const removeSet = new Set(removeArr);
-
-  const existingKept = (setting.slideshowImages || []).filter(img => !removeSet.has(img));
-  const uploadedSlides = slideshowFiles.map(f => toPublicUrl(f.path));
-
-  const finalSlides = uploadedSlides.length ? existingKept.concat(uploadedSlides) : existingKept;
-  setting.slideshowImages = finalSlides;
-  if (bannerFile) {
-    setting.bannerRpl = toPublicUrl(bannerFile.path);
-  }
-  if (siteLogoFile) {
-    setting.siteLogo = toPublicUrl(siteLogoFile.path);
-  }
-  if (faviconFile) {
-    setting.favicon = toPublicUrl(faviconFile.path);
-  }
-  if (strukturFile) {
-    setting.strukturOrganisasiImage = toPublicUrl(strukturFile.path);
+  const favicon = req.files?.favicon?.[0];
+  const struktur = req.files?.strukturOrganisasiImage?.[0];
+  if (favicon) setting.favicon = toPublicUrl(favicon.path);
+  if (struktur) {
+    setting.strukturOrganisasiImage = toPublicUrl(struktur.path);
     setting.strukturOrganisasiUpdatedAt = new Date();
   }
-
-  // Quick links parsing: each line "Label|URL"
-  const toArr = v => (Array.isArray(v) ? v : v ? [v] : []);
-  const namesArr = toArr(quickLinkName);
-  const urlsArr = toArr(quickLinkUrl);
-  const targetsArr = toArr(quickLinkTarget);
-  const parsedQuickLinks = [];
-  for (let i = 0; i < namesArr.length; i++) {
-    const label = (namesArr[i] || '').trim();
-    const url = (urlsArr[i] || '').trim();
-    const target = (targetsArr[i] || '_self').trim() || '_self';
-    if (label && url) parsedQuickLinks.push({ label, url, target });
-  }
-  setting.quickLinks = parsedQuickLinks;
-
-  setting.updatedBy = req.user ? req.user._id : setting.updatedBy;
+  Object.assign(setting, data, { updatedBy: req.user._id });
   await setting.save();
-  return res.redirect('/admin/settings?success=Pengaturan situs berhasil disimpan');
+  res.redirect(`/admin/settings?success=${encodeURIComponent('Pengaturan situs berhasil disimpan.')}`);
 };
-const publicPath = path.join(__dirname, '..', 'public');
-const toPublicUrl = filePath => {
-  if (!filePath) return '';
-  const relative = path.relative(publicPath, filePath).replace(/\\/g, '/');
-  return `/${relative}`;
+
+exports.addQuickLink = async (req, res) => {
+  const setting = await getSingleton();
+  const { data, errors, ok } = validate(schemas.quickLink, req.body);
+  if (!ok) {
+    return res.renderPage(
+      'admin/settings/edit',
+      { title: 'Pengaturan Situs', item: setting.toObject(), values: setting.toObject(), errors: {}, quickLinkErrors: errors, quickLinkValues: req.body, lastUpdatedAt: setting.updatedAt },
+      'layouts/admin'
+    );
+  }
+  setting.quickLinks.push(data);
+  setting.updatedBy = req.user._id;
+  await setting.save();
+  res.redirect(`/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil ditambahkan.')}`);
+};
+
+exports.deleteQuickLink = async (req, res) => {
+  const setting = await getSingleton();
+  setting.quickLinks = setting.quickLinks.filter(l => String(l._id) !== req.params.linkId);
+  setting.updatedBy = req.user._id;
+  await setting.save();
+  res.redirect(`/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil dihapus.')}`);
 };

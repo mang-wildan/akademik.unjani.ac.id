@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { safeFilename, checkUploads, fileError } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, isAllowedImage, IMAGE_LIMITS } = require('../utils/upload');
 const { requireAuth, requireSuperadmin } = require('../middleware/authMiddleware');
 const siteSettingController = require('../controllers/siteSettingController');
 
@@ -13,36 +13,22 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const ts = Date.now();
-    const safe = safeFilename(file.originalname);
-    cb(null, `${ts}-${safe}`);
-  },
+  filename: (_req, file, cb) => cb(null, `${Date.now()}-${safeFilename(file.originalname)}`),
 });
 
 const fileFilter = (_req, file, cb) => {
-  const ok = ['image/png', 'image/jpeg', 'image/jpg'];
-  if (!ok.includes(file.mimetype)) return cb(fileError('Banner harus berupa gambar (PNG/JPG)'));
+  if (!isAllowedImage(file)) return cb(fileError('File harus berupa gambar (JPG/PNG/WEBP).'));
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 3 * 1024 * 1024 } });
+const upload = multer({ storage, fileFilter, limits: IMAGE_LIMITS });
+const uploadFields = upload.fields([{ name: 'favicon', maxCount: 1 }, { name: 'strukturOrganisasiImage', maxCount: 1 }]);
 
-router.get('/', requireAuth, requireSuperadmin, siteSettingController.show);
-router.get('/edit', requireAuth, requireSuperadmin, siteSettingController.editForm);
-router.post(
-  '/',
-  requireAuth,
-  requireSuperadmin,
-  upload.fields([
-    { name: 'bannerRpl', maxCount: 1 },
-    { name: 'slideshowImages', maxCount: 10 },
-    { name: 'siteLogo', maxCount: 1 },
-    { name: 'favicon', maxCount: 1 },
-    { name: 'strukturOrganisasiImage', maxCount: 1 },
-  ]),
-  checkUploads,
-  siteSettingController.update
-);
+router.use(requireAuth, requireSuperadmin);
+
+router.get('/', siteSettingController.editForm);
+router.post('/', uploadFields, checkUploads, siteSettingController.update);
+router.post('/quick-links', siteSettingController.addQuickLink);
+router.post('/quick-links/:linkId/delete', siteSettingController.deleteQuickLink);
 
 module.exports = router;

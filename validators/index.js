@@ -163,6 +163,34 @@ const kategori = z.object({
   isActive: checkbox,
 });
 
+const optionalUrl = label => z.preprocess(blankToUndefined, z.url(`${label} harus berupa URL yang valid.`).optional());
+const optionalEmail = label => z.preprocess(blankToUndefined, z.email(`${label} tidak valid.`).optional());
+
+// Hanya field yang benar-benar dipakai views/layouts/public.ejs (footer) dan
+// landing/index.ejs (video). namaSitus/tagline/heroImage/bannerRpl/siteLogo/
+// slideshowImages ada di skema tapi tidak dipakai tampilan mana pun di F3 --
+// tetap disimpan (additive-only) tapi sengaja tidak ditawarkan di form ini.
+const siteSetting = z.object({
+  kontakEmail: optionalEmail('Email kontak'),
+  kontakTelepon: optionalText('Telepon kontak', 80),
+  alamat: optionalText('Alamat', 300),
+  jamLayanan: optionalText('Jam layanan', 160),
+  landingFooterDescription: optionalText('Deskripsi footer', 300),
+  landingVideoUrl: optionalUrl('URL video'),
+  socialFacebook: optionalUrl('Facebook'),
+  socialInstagram: optionalUrl('Instagram'),
+  socialYoutube: optionalUrl('YouTube'),
+  socialTiktok: optionalUrl('TikTok'),
+  socialTwitter: optionalUrl('Twitter/X'),
+  socialLinkedin: optionalUrl('LinkedIn'),
+});
+
+const quickLink = z.object({
+  label: text('Label', { max: 60 }),
+  url: z.preprocess(v => (typeof v === 'string' ? v.trim() : v), z.url('URL tidak valid.')),
+  target: choice('Target', ['_self', '_blank']),
+});
+
 const unit = z.object({
   nama: text('Nama unit', { max: 160 }),
   deskripsi: optionalText('Deskripsi', 500),
@@ -235,5 +263,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, userCreate, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, siteSetting, quickLink, userCreate, passwordChange },
 };

@@ -115,10 +115,18 @@ Pola sebelumnya ("Jebakan CSS" di atas) menyebutkan teks di sebelah elemen `shri
 - **Diperbaiki** di `server.js`: `helmet({ ..., referrerPolicy: { policy: 'strict-origin-when-cross-origin' } })` — nilai default modern browser, tetap mengirim Origin asli pada navigasi sama-origin.
 - **Pelajaran untuk modul berikutnya**: selalu uji submit form yang sesungguhnya (bukan cuma `GET` halaman) lewat browser asli sebelum menandai modul selesai — bug ini lolos dari pengujian page-load karena hanya muncul saat benar-benar mem-POST.
 
+### Jebakan pengujian: cuma mem-probe `/new`, tidak pernah `/edit` dengan data nyata
+
+Bug "File saat ini" di atas lolos dari setiap probe F4 sebelumnya karena blok `locals.current` di `file-upload.ejs` **hanya dirender saat mode edit dengan file yang sudah ada** — setiap probe sebelumnya menguji `/new` (selalu kosong) dan `/list`, tidak pernah `/:id/edit` pada rekaman sungguhan. **Checklist pengujian modul baru wajib mencakup minimal satu halaman `/:id/edit` pada data yang benar-benar punya file/gambar**, bukan cuma halaman tambah baru — komponen bersama bisa sembunyikan bug di cabang kode yang jarang dilewati probe standar.
+
+### False-positive lain: label di dalam `<details>` tertutup dilaporkan "unnamed"
+
+`probe-core.js` menghitung nama aksesibel lewat `label.innerText`, dan `innerText` mengembalikan string kosong untuk elemen yang tidak dirender (termasuk isi `<details>` yang tertutup — `<details>` native menghentikan rendering kontennya sampai dibuka, serupa `display:none`). Form "tambah kegiatan"/"tambah lampiran"/"tambah tautan cepat" yang disembunyikan di balik `<details><summary>` akan selalu dilaporkan sebagai field "unnamed" oleh probe **meski label-nya benar dan `for`-nya cocok dengan `id` input** — begitu `<details>` dibuka, `innerText` mengembalikan teks label dengan normal dan pembaca layar mengaitkannya dengan benar. Verifikasi manual: `document.querySelector('#f-label').offsetParent` tetap truthy, tapi `label.innerText` kosong selama `<details>` tertutup. **Jangan "perbaiki" label yang sudah benar hanya karena probe menandainya di dalam `<details>` tertutup** — cek dulu apakah itu memang di dalam elemen yang collapsed.
+
 ## Cara menguji modul baru (checklist)
 
 1. `npm run build:css` jika ada perubahan `assets/css/app.css`.
-2. Muat halaman list & form di 390px dan 1440px — cek `scrollWidth === clientWidth`.
+2. Muat halaman list & form di 390px dan 1440px — cek `scrollWidth === clientWidth`. **Wajib termasuk satu halaman `/:id/edit` pada data nyata yang punya file/gambar**, bukan cuma `/new` kosong (lihat jebakan "File saat ini" di atas).
 3. Submit kosong → pastikan `required` klien mencegah request (tidak ada POST tercatat).
 4. Lepas `required` via `page.evaluate` lalu submit kosong lagi → pastikan pesan galat server (`field-error`) muncul per kolom.
 5. Submit valid → verifikasi redirect dengan `?success=`, item baru muncul di daftar.
