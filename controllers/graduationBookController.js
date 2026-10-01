@@ -1,99 +1,74 @@
+// Admin CRUD untuk Buku Wisuda (FR-M-07b). Sama seperti Buku, cover tetap
+// wajib (grid publik), plus field periode (I/II/III) untuk filter publik.
+const fs = require('fs/promises');
 const path = require('path');
 const GraduationBook = require('../models/GraduationBook');
+const { validate, schemas } = require('../validators');
 
-const publicPath = path.join(__dirname, '..', 'public');
-const toPublicUrl = (filePath) => {
-  if (!filePath) return '';
-  const relative = path.relative(publicPath, filePath).replace(/\\/g, '/');
-  return `/${relative}`;
+const PUBLIC_DIR = path.join(__dirname, '..', 'public');
+const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
+const removeUploaded = async req => {
+  const files = [req.files?.file?.[0], req.files?.cover?.[0]].filter(Boolean);
+  await Promise.all(files.map(f => fs.unlink(f.path).catch(() => {})));
 };
 
 exports.list = async (req, res) => {
-  const books = await GraduationBook.find()
-    .populate('createdBy', 'name email')
-    .populate('updatedBy', 'name email')
-    .sort({ createdAt: -1 });
-
-  res.render('admin/graduation-books/list', {
-    title: 'Daftar Buku Kelulusan',
-    user: req.user,
-    books,
-  });
+  const items = await GraduationBook.find().sort({ year: -1, periode: 1, createdAt: -1 }).lean();
+  res.renderPage('admin/graduation-books/list', { title: 'Buku Wisuda', items }, 'layouts/admin');
 };
 
-exports.showCreate = (req, res) =>
-  res.render('admin/graduation-books/create', {
-    title: 'Tambah Buku Kelulusan',
-    user: req.user,
-    values: {},
-  });
+exports.showCreate = (req, res) => {
+  res.renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: {}, errors: {} }, 'layouts/admin');
+};
 
 exports.create = async (req, res) => {
-  const { title, periode, year } = req.body;
-  const pdfFile = req.files && req.files.pdf && req.files.pdf[0];
-  const coverFile = req.files && req.files.cover && req.files.cover[0];
-  const values = { title, periode, year };
-
-  if (!title || !periode || !year || !pdfFile || !coverFile) {
-    return res.status(400).render('admin/graduation-books/create', {
-      title: 'Tambah Buku Kelulusan',
-      user: req.user,
-      error: 'Title, periode, tahun, PDF, dan cover wajib diisi.',
-      values,
-    });
+  const { data, errors, ok } = validate(schemas.graduationBook, req.body);
+  const fieldErrors = errors || {};
+  const file = req.files?.file?.[0];
+  const cover = req.files?.cover?.[0];
+  if (!file) fieldErrors.file = 'File PDF wajib diisi.';
+  if (!cover) fieldErrors.cover = 'Gambar sampul wajib diisi.';
+  if (!ok || fieldErrors.file || fieldErrors.cover) {
+    await removeUploaded(req);
+    return res.renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: req.body, errors: fieldErrors }, 'layouts/admin');
   }
+  await GraduationBook.create({ ...data, src: toPublicUrl(file.path), cover: toPublicUrl(cover.path), createdBy: req.user._id, updatedBy: req.user._id });
+  res.redirect(`/admin/graduation-books?success=${encodeURIComponent('Buku wisuda berhasil ditambahkan.')}`);
+};
 
-  const book = new GraduationBook({
-    title,
-    periode,
-    year,
-    src: toPublicUrl(pdfFile.path),
-    cover: toPublicUrl(coverFile.path),
-    createdBy: req.user ? req.user._id : undefined,
-    updatedBy: req.user ? req.user._id : undefined,
-  });
-  await book.save();
-  return res.redirect('/admin/graduation-books?success=Buku kelulusan berhasil ditambahkan');
+const findOrThrow = async id => {
+  const item = await GraduationBook.findById(id);
+  if (!item) {
+    const err = new Error('Buku wisuda tidak ditemukan.');
+    err.status = 404;
+    err.expose = true;
+    throw err;
+  }
+  return item;
 };
 
 exports.showEdit = async (req, res) => {
-  const book = await GraduationBook.findById(req.params.id);
-  if (!book) return res.redirect('/admin/graduation-books?error=Data tidak ditemukan');
-  return res.render('admin/graduation-books/edit', {
-    title: 'Edit Buku Kelulusan',
-    user: req.user,
-    values: book,
-  });
+  const item = await findOrThrow(req.params.id);
+  res.renderPage('admin/graduation-books/form', { title: 'Ubah Buku Wisuda', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {} }, 'layouts/admin');
 };
 
 exports.update = async (req, res) => {
-  const { title, periode, year } = req.body;
-  const pdfFile = req.files && req.files.pdf && req.files.pdf[0];
-  const coverFile = req.files && req.files.cover && req.files.cover[0];
-
-  const book = await GraduationBook.findById(req.params.id);
-  if (!book) return res.redirect('/admin/graduation-books?error=Data tidak ditemukan');
-
-  if (!title || !periode || !year) {
-    return res.status(400).render('admin/graduation-books/edit', {
-      title: 'Edit Buku Kelulusan',
-      user: req.user,
-      error: 'Title, periode, dan tahun wajib diisi.',
-      values: { ...book.toObject(), title, periode, year },
-    });
+  const item = await findOrThrow(req.params.id);
+  const { data, errors, ok } = validate(schemas.graduationBook, req.body);
+  if (!ok) {
+    await removeUploaded(req);
+    return res.renderPage('admin/graduation-books/form', { title: 'Ubah Buku Wisuda', mode: 'edit', item: item.toObject(), values: req.body, errors }, 'layouts/admin');
   }
-
-  book.title = title;
-  book.periode = periode;
-  book.year = year;
-  if (pdfFile) book.src = toPublicUrl(pdfFile.path);
-  if (coverFile) book.cover = toPublicUrl(coverFile.path);
-  book.updatedBy = req.user ? req.user._id : book.updatedBy;
-  await book.save();
-  return res.redirect('/admin/graduation-books?success=Buku kelulusan berhasil diperbarui');
+  const file = req.files?.file?.[0];
+  const cover = req.files?.cover?.[0];
+  if (file) item.src = toPublicUrl(file.path);
+  if (cover) item.cover = toPublicUrl(cover.path);
+  Object.assign(item, data, { updatedBy: req.user._id });
+  await item.save();
+  res.redirect(`/admin/graduation-books?success=${encodeURIComponent('Buku wisuda berhasil diperbarui.')}`);
 };
 
 exports.destroy = async (req, res) => {
   await GraduationBook.findByIdAndDelete(req.params.id);
-  return res.redirect('/admin/graduation-books?success=Buku kelulusan berhasil dihapus');
+  res.redirect(`/admin/graduation-books?success=${encodeURIComponent('Buku wisuda berhasil dihapus.')}`);
 };

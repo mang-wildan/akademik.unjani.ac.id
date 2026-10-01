@@ -210,7 +210,7 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 - [x] Akreditasi: pilihan peringkat tetap, lembaga, validasi tanggal, riwayat — FR-M-04 · `tambah_akreditasi_*` (`controllers/accreditationController.js`, skema flat tapi beda total dari Pengumuman jadi tidak pakai factory; status Berlaku/Segera berakhir/Kedaluwarsa dihitung, tidak disimpan; riwayat otomatis lewat banyak baris per prodi/unit, tanpa UI khusus — sudah dibangun di `getAkreditasiLanding`)
 - [x] Dokumen Akademik & RPL — FR-M-06 (`controllers/academicDocumentController.js`, `controllers/rplDocumentController.js`; `cover` dihapus dari kedua form karena tidak dipakai desain F3; kategori — yang dipakai filter publik — sebelumnya tidak pernah bisa diisi admin sama sekali, celah ditutup; RPL `status` adalah label Aktif/Arsip, bukan visibilitas, keduanya tetap tampil publik)
 - [x] Kurikulum — FR-M-05 (`controllers/kurikulumController.js`; field v1 teks bebas `nama`/`programStudi`/`fakultas` dan `cover` dilonggarkan jadi optional di `models/Kurikulum.js` — tidak dipakai desain F3, form hanya menulis `prodi` (ref) + `tahun`; validasi duplikat prodi+tahun)
-- [ ] Buku & Buku Wisuda — FR-M-07
+- [x] Buku & Buku Wisuda — FR-M-07 (`controllers/bookController.js`, `controllers/graduationBookController.js`; skema sudah bersih sejak awal, hanya perlu validasi Zod + `renderPage` + pola pesan galat konsisten; field upload PDF diseragamkan jadi `file` menggantikan `pdf`)
 - [ ] Data Lulusan + impor CSV — FR-M-08
 - [ ] Pimpinan & Staf — FR-M-09
 - [ ] Unit & Profil Bidang — FR-M-10

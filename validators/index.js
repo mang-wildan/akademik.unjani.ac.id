@@ -116,6 +116,20 @@ const rplDocument = z.object({
   status: checkbox,
 });
 
+const optionalYear = label => z.preprocess(v => (blankToUndefined(v) === undefined ? undefined : Number(v)), z.number().int().min(1950, `${label} tidak valid.`).max(2100, `${label} tidak valid.`).optional());
+const year = label => z.preprocess(v => Number(v), z.number({ error: req(label) }).int(`${label} tidak valid.`).min(1950, `${label} tidak valid.`).max(2100, `${label} tidak valid.`));
+
+const book = z.object({
+  title: text('Judul', { min: 3, max: 200 }),
+  year: optionalYear('Tahun'),
+});
+
+const graduationBook = z.object({
+  title: text('Judul', { min: 3, max: 200 }),
+  periode: choice('Periode', ['I', 'II', 'III']),
+  year: year('Tahun'),
+});
+
 const kurikulum = z.object({
   prodi: objectId('Program studi'),
   tahun: text('Tahun kurikulum', { max: 9 }).refine(v => /^\d{4}(\/\d{4})?$/.test(v), 'Tahun kurikulum ditulis seperti 2021 atau 2025/2026.'),
@@ -165,5 +179,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, staff, userCreate, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, staff, userCreate, passwordChange },
 };
