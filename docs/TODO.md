@@ -211,7 +211,7 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 - [x] Dokumen Akademik & RPL — FR-M-06 (`controllers/academicDocumentController.js`, `controllers/rplDocumentController.js`; `cover` dihapus dari kedua form karena tidak dipakai desain F3; kategori — yang dipakai filter publik — sebelumnya tidak pernah bisa diisi admin sama sekali, celah ditutup; RPL `status` adalah label Aktif/Arsip, bukan visibilitas, keduanya tetap tampil publik)
 - [x] Kurikulum — FR-M-05 (`controllers/kurikulumController.js`; field v1 teks bebas `nama`/`programStudi`/`fakultas` dan `cover` dilonggarkan jadi optional di `models/Kurikulum.js` — tidak dipakai desain F3, form hanya menulis `prodi` (ref) + `tahun`; validasi duplikat prodi+tahun)
 - [x] Buku & Buku Wisuda — FR-M-07 (`controllers/bookController.js`, `controllers/graduationBookController.js`; skema sudah bersih sejak awal, hanya perlu validasi Zod + `renderPage` + pola pesan galat konsisten; field upload PDF diseragamkan jadi `file` menggantikan `pdf`)
-- [ ] Data Lulusan + impor CSV — FR-M-08
+- [x] Data Lulusan + impor CSV — FR-M-08 (`controllers/lulusanController.js`, `utils/lulusanImport.js`; pelaporan error per-baris seperti impor Kalender; bug ditemukan: rute lama pakai `multer memoryStorage` untuk CSV sehingga `checkUploads` diam-diam dilewati — diganti `diskStorage`)
 - [ ] Pimpinan & Staf — FR-M-09
 - [ ] Unit & Profil Bidang — FR-M-10
 - [ ] Master Data (Fakultas, Prodi, Kategori, Lembaga) — FR-M-11

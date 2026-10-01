@@ -1,0 +1,24 @@
+<div class="mb-6">
+  <a href="/admin/lulusan" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Data Lulusan</a>
+  <h1 class="text-2xl font-bold"><%= mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan' %></h1>
+</div>
+
+<form method="POST" action="/admin/lulusan<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid gap-5 md:grid-cols-2">
+  <%- include('../../components/form-field', {
+    name: 'programStudi', label: 'Program Studi', type: 'select', required: true, value: values.programStudi && String(values.programStudi._id || values.programStudi), error: errors.programStudi,
+    placeholder: 'Pilih program studi', options: prodiList.map(p => ({ value: p._id, label: p.fakultas ? `${p.nama} (${p.fakultas.nama})` : p.nama })),
+  }) %>
+  <%- include('../../components/form-field', {
+    name: 'fakultas', label: 'Fakultas', type: 'select', required: true, value: values.fakultas && String(values.fakultas._id || values.fakultas), error: errors.fakultas,
+    placeholder: 'Pilih fakultas', options: fakultasList.map(f => ({ value: f._id, label: f.nama })),
+  }) %>
+  <%- include('../../components/form-field', { name: 'periode', label: 'Periode', required: true, value: values.periode, error: errors.periode, placeholder: 'mis. I, II, III' }) %>
+  <%- include('../../components/form-field', { name: 'tahun', label: 'Tahun', type: 'number', required: true, value: values.tahun, error: errors.tahun, min: 1950, max: 2100 }) %>
+  <div class="md:col-span-2">
+    <%- include('../../components/form-field', { name: 'jumlah', label: 'Jumlah Lulusan', type: 'number', required: true, value: values.jumlah, error: errors.jumlah, min: 0 }) %>
+  </div>
+  <div class="flex justify-end gap-2 border-t border-line pt-5 md:col-span-2">
+    <a href="/admin/lulusan" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary">Simpan</button>
+  </div>
+</form>

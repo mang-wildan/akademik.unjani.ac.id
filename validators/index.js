@@ -130,6 +130,14 @@ const graduationBook = z.object({
   year: year('Tahun'),
 });
 
+const lulusan = z.object({
+  programStudi: objectId('Program studi'),
+  fakultas: objectId('Fakultas'),
+  periode: text('Periode', { max: 40 }),
+  tahun: year('Tahun'),
+  jumlah: z.preprocess(v => Number(v), z.number({ error: req('Jumlah') }).int('Jumlah harus bilangan bulat.').min(0, 'Jumlah tidak boleh negatif.')),
+});
+
 const kurikulum = z.object({
   prodi: objectId('Program studi'),
   tahun: text('Tahun kurikulum', { max: 9 }).refine(v => /^\d{4}(\/\d{4})?$/.test(v), 'Tahun kurikulum ditulis seperti 2021 atau 2025/2026.'),
@@ -179,5 +187,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, staff, userCreate, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, userCreate, passwordChange },
 };
