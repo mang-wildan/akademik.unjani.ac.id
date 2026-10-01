@@ -19,6 +19,7 @@ router.get('/berita', homeController.getBeritaLanding);
 router.get('/berita/:slug', homeController.getBeritaDetail);
 router.get('/pengumuman', homeController.getPengumumanLanding);
 router.get('/pengumuman/:slug', homeController.getPengumumanDetail);
+router.get('/cari', homeController.getCari);
 router.get('/dashboard', requireAuth, homeController.getDashboard);
 router.get('/admin/dashboard', requireAuth, requireAdmin, homeController.getDashboard);
 

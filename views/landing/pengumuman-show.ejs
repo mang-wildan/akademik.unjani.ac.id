@@ -1,151 +1,49 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= item.title %> - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-</head>
-<body>
-  <%- include("../partials/landing-header") %>
-  <%
-    const pageTags = Array.isArray(displayTags) ? displayTags : [];
-    const sidebarTags = Array.isArray(allTags) ? allTags : [];
-  %>
+<%# Detail pengumuman (FR-P-03): kolom baca ~720px, lampiran, pengumuman lainnya. %>
+<%- include('../components/page-header', {
+  heading: item.title,
+  breadcrumb: [{ label: 'Pengumuman', href: '/pengumuman' }, { label: item.title }],
+}) %>
 
-  <main>
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-blog" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
-            <h1 class="secondary-accent">Pengumuman</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <a href="/pengumuman" class="breadcrumb-item">Pengumuman</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent"><%= item.title %></span>
-            </nav>
-          </div>
-        </div>
+<div class="container-content pb-16">
+  <div class="grid gap-10 lg:grid-cols-[1fr_20rem]">
+    <article>
+      <div class="mb-6 flex flex-wrap items-center gap-2 text-sm text-muted">
+        <% if (item.kategori) { %><%- include('../components/badge', { text: item.kategori.nama, tone: 'info' }) %><% } %>
+        <time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt, { long: true }) %></time>
+        <% if (item.createdBy) { %><span>· <%= item.createdBy.name %></span><% } %>
       </div>
-    </div>
+      <div class="prose-content"><%- item.body %></div>
 
-    <div class="section">
-      <div class="hero-container">
-        <div class="post-content-wrapper">
-          <div class="post-main-content">
-            <article class="card card-blog card-blog-post">
-              <div class="image-container">
-                <img src="<%= item.featuredImage || '/assets/landing-page/images/dummy-img-1920x900.jpg' %>" alt="<%= item.title %>">
-              </div>
-              <div class="blog-post-body">
-                <div class="d-flex flex-row align-items-center gspace-2">
-                  <div class="d-flex flex-row align-items-center gspace-1">
-                    <i class="fa-solid fa-calendar"></i>
-                    <span class="post-meta-data"><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                  </div>
-                  <div class="d-flex flex-row align-items-center gspace-1">
-                    <i class="fa-solid fa-user"></i>
-                    <span class="post-meta-data"><%= item.createdBy ? (item.createdBy.name || item.createdBy.email) : 'Admin' %></span>
-                  </div>
-                </div>
-                <h2 class="blog-title"><%= item.title %></h2>
-                <div class="post-body">
-                  <%- item.body %>
-                </div>
-                <% if (pageTags && pageTags.length) { %>
-                  <div class="blog-tag-container mt-3 d-flex flex-wrap gap-2">
-                    <% pageTags.forEach(function(tag){ %>
-                      <span class="blog-tag" style="background:#16a34a; color:#fff; font-weight:700; letter-spacing:0.2px; border-radius:999px; padding:6px 10px; text-transform:lowercase;">#<%= tag %></span>
-                    <% }); %>
-                  </div>
-                <% } %>
-              </div>
-            </article>
-          </div>
-
-          <div class="post-sidebar-wrapper">
-            <div class="card card-blog-category">
-              <h3 class="secondary-accent">Postingan</h3>
-              <div class="underline-primary-accent"></div>
-              <ul class="chevron-circle-list">
-                <li><a href="/berita">Berita</a></li>
-                <li><a href="/pengumuman">Pengumuman</a></li>
-              </ul>
-            </div>
-
-            <div class="card card-blog-recent">
-              <h3 class="secondary-accent">Recent Post</h3>
-              <div class="underline-primary-accent"></div>
-              <div class="recent-post-list">
-                <% if (recentPengumuman && recentPengumuman.length) { %>
-                  <% recentPengumuman.forEach(function(r){ %>
-                    <div class="recent-post-item">
-                      <div class="recent-post-thumb">
-                        <div class="image-container recent-post-image">
-                          <img src="<%= r.featuredImage || '/assets/landing-page/images/dummy-img-600x600.jpg' %>" alt="Recent Post" class="img-fluid">
-                        </div>
-                      </div>
-                      <div class="recent-post-body">
-                        <div class="recent-post-meta">
-                          <i class="fa-solid fa-calendar accent-color-2"></i>
-                          <span class="meta-data"><%= r.createdAt ? r.createdAt.toLocaleDateString() : '-' %></span>
-                        </div>
-                        <a href="/pengumuman/<%= r.slug %>" class="recent-post-title"><%= r.title %></a>
-                      </div>
-                    </div>
-                  <% }); %>
-                <% } else { %>
-                  <div class="text-muted">Belum ada pengumuman terbaru.</div>
-                <% } %>
-              </div>
-            </div>
-
-            <div class="card card-blog-tag">
-              <h3 class="secondary-accent">Tags</h3>
-              <div class="underline-primary-accent"></div>
-              <% if (sidebarTags && sidebarTags.length) { %>
-                <div class="blog-tag-container animate-box d-flex flex-wrap gap-2" data-animate="animate__fadeInLeft">
-                    <% sidebarTags.forEach(function(tag){ %>
-                    <span class="blog-tag" style="background:#16a34a; color:#fff; font-weight:700; letter-spacing:0.2px; border-radius:999px; padding:6px 10px; text-transform:lowercase;">#<%= tag %></span>
-                  <% }); %>
-                </div>
-              <% } else { %>
-                <div class="text-muted">Belum ada tag.</div>
-              <% } %>
-            </div>
-
-            <div class="card card-contact-cta cta-small-banner">
-              <h3 class="primary-accent">Ingin info terbaru?</h3>
-              <p class="primary-accent">Berlangganan newsletter untuk kabar terkini kampus.</p>
-              <a href="javascript:void(0)" class="cta-link">
-                <span>Subscribe Now</span>
-                <i class="fa-solid fa-chevron-circle-right"></i>
-              </a>
-              <div class="cta-image">
-                <div class="cta-image-container">
-                  <img src="/assets/landing-page/images/dummy-img-600x800.jpg" alt="Contact CTA">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <% if (item.attachments && item.attachments.length) { %>
+      <div class="mt-8">
+        <h2 class="mb-3 text-lg font-semibold">Lampiran</h2>
+        <ul class="card divide-y divide-line">
+          <% item.attachments.forEach(a => { %>
+            <li class="flex items-center gap-3 p-3">
+              <%- icon('picture_as_pdf', 'size-6 shrink-0 text-primary') %>
+              <span class="min-w-0 flex-1 truncate text-sm font-medium"><%= a.judul %></span>
+              <a href="<%= a.file %>" target="_blank" rel="noopener" class="btn btn-secondary shrink-0 px-3 py-1.5 text-sm"><%- icon('download', 'size-4') %>Unduh</a>
+            </li>
+          <% }) %>
+        </ul>
       </div>
-    </div>
-  </main>
+      <% } %>
+    </article>
 
-  <%- include("../partials/landing-footer") %>
-
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-</body>
-</html>
+    <aside>
+      <h2 class="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">Pengumuman Lainnya</h2>
+      <% if (!lainnya.length) { %>
+        <p class="text-sm text-muted">Belum ada pengumuman lain.</p>
+      <% } else { %>
+      <ul class="space-y-4">
+        <% lainnya.forEach(l => { %>
+          <li><a href="/pengumuman/<%= l.slug %>" class="block rounded-control p-2 -m-2 hover:bg-sunken">
+            <span class="block text-xs text-muted"><%= formatTanggal(l.createdAt) %></span>
+            <span class="block font-medium text-ink"><%= l.title %></span>
+          </a></li>
+        <% }) %>
+      </ul>
+      <% } %>
+    </aside>
+  </div>
+</div>

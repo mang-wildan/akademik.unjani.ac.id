@@ -1,130 +1,58 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kurikulum - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-</head>
-<body>
-  <!-- Header Section -->
-  <%- include("../partials/landing-header") %>
+<%# Kurikulum (FR-KU-01..03): tabel dikelompokkan per fakultas. %>
+<%- include('../components/page-header', {
+  heading: 'Kurikulum',
+  lead: 'Dokumen kurikulum per program studi dan fakultas.',
+  breadcrumb: [{ label: 'Akademik' }, { label: 'Kurikulum' }],
+}) %>
 
-  <!-- Sidebar Section -->
+<div class="container-content pb-16">
+  <form method="get" class="card card-body mb-6 flex flex-wrap items-end gap-3">
+    <div>
+      <label for="fakultas" class="field-label">Fakultas</label>
+      <select id="fakultas" name="fakultas" class="field-control">
+        <option value="">Semua fakultas</option>
+        <% fakultasList.forEach(f => { %><option value="<%= f %>"<%= filters.fakultas === f ? ' selected' : '' %>><%= f %></option><% }) %>
+      </select>
+    </div>
+    <div>
+      <label for="jenjang" class="field-label">Jenjang</label>
+      <select id="jenjang" name="jenjang" class="field-control">
+        <option value="">Semua jenjang</option>
+        <% jenjangList.forEach(j => { %><option value="<%= j %>"<%= filters.jenjang === j ? ' selected' : '' %>><%= j %></option><% }) %>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary"><%- icon('filter_list') %>Terapkan</button>
+    <% if (filters.fakultas || filters.jenjang) { %><a href="/kurikulum" class="btn btn-secondary">Reset</a><% } %>
+  </form>
 
-  <main>
-    <!-- Banner -->
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
-            <h1 class="secondary-accent">Kurikulum</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent">Kurikulum</span>
-            </nav>
-          </div>
+  <% if (!groups.length) { %>
+    <%- include('../components/empty-state', {
+      emptyIcon: 'menu_book', emptyTitle: 'Tidak ada kurikulum yang cocok',
+      emptyAction: (filters.fakultas || filters.jenjang) ? { label: 'Hapus filter', href: '/kurikulum' } : null,
+    }) %>
+  <% } else { %>
+  <div class="space-y-8">
+    <% groups.forEach(g => { %>
+      <div>
+        <h2 class="mb-3 text-lg font-semibold"><%= g.fakultas %> <span class="font-normal text-muted">— <%= g.items.length %> program studi</span></h2>
+        <div class="card overflow-hidden">
+          <table class="data-table data-table--stack">
+            <caption class="sr-only">Kurikulum <%= g.fakultas %></caption>
+            <thead><tr><th scope="col">Program Studi</th><th scope="col">Jenjang</th><th scope="col">Tahun Kurikulum</th><th scope="col"><span class="sr-only">Unduh</span></th></tr></thead>
+            <tbody>
+              <% g.items.forEach(k => { %>
+                <tr>
+                  <td data-label="Program Studi" class="font-medium"><%= k.namaProdi %></td>
+                  <td data-label="Jenjang"><span class="badge badge-neutral"><%= k.jenjang %></span></td>
+                  <td data-label="Tahun Kurikulum"><%= k.tahun %></td>
+                  <td data-label="Unduh"><a href="<%= k.file %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %>Unduh</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-
-    <!-- Content -->
-    <div class="section">
-      <div class="hero-container">
-        <div class="d-flex flex-column gspace-4">
-          <div class="service-title-container">
-            <div class="row row-cols-md-2 row-cols-1 grid-spacer-2 align-items-center">
-              <div class="col">
-                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
-                  <div class="sub-heading col-12 col-md-6">
-                    <i class="fa-solid fa-circle accent-color-2"></i>
-                    <span class="sub-heading-title">Dokumen Kurikulum</span>
-                  </div>
-                  <h2 class="mb-1">Kurikulum Terbaru</h2>
-                  <p class="text-muted mb-0">Kumpulan kurikulum per program studi dan fakultas.</p>
-                </div>
-              </div>
-              <div class="col d-flex justify-content-center justify-content-md-end align-items-center">
-                <div class="badge accent-bg text-white px-3 py-2">
-                  Total: <%= kurikulums ? kurikulums.length : 0 %> kurikulum
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row row-cols-xl-3 row-cols-md-2 row-cols-1 grid-spacer-3">
-            <% if (kurikulums && kurikulums.length) { %>
-              <% kurikulums.forEach(function(item, idx){ %>
-                <div class="col">
-                  <div class="card card-service animate-box" data-animate="animate__fadeInUp">
-                    <div class="image-container">
-                      <div class="service-icon-container">
-                        <div class="service-icon">
-                          <img src="/assets/landing-page/images/Icon-5.png" alt="Kurikulum" class="img-fluid">
-                        </div>
-                      </div>
-                      <div class="position-absolute top-0 start-0 m-3">
-                        <span class="badge accent-bg text-white px-3 py-2 shadow-sm">
-                          Kurikulum #<%= idx + 1 %>
-                        </span>
-                      </div>
-                      <img src="<%= item.cover || '/assets/landing-page/images/dummy-img-600x800.jpg' %>" alt="Kurikulum <%= item.nama %>" class="service-img">
-                      <div class="service-detail-container">
-                        <div class="service-detail">
-                          <div>
-                            <h4 class="secondary-accent mb-1"><%= item.nama %></h4>
-                            <p class="text-muted mb-1"><%= item.programStudi %> • <%= item.fakultas %></p>
-                            <span class="badge bg-white text-dark">Tahun <%= item.tahun %></span>
-                          </div>
-                          <div>
-                            <% if (item.file) { %>
-                              <a href="<%= item.file %>" target="_blank" class="service-btn" rel="noopener">
-                                <span class="icon-circle">
-                                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                </span>
-                              </a>
-                            <% } %>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <div class="small text-muted">
-                        Diunggah <%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %>
-                        <% const uploader = item.createdBy ? (item.createdBy.name || item.createdBy.email) : null; %>
-                        <% if (uploader) { %> oleh <%= uploader %><% } %>
-                      </div>
-                      <% if (item.updatedAt && item.updatedAt.getTime() !== item.createdAt.getTime()) { %>
-                        <div class="text-muted small">Pembaruan terakhir: <%= item.updatedAt.toLocaleDateString() %></div>
-                      <% } %>
-                    </div>
-                  </div>
-                </div>
-              <% }); %>
-            <% } else { %>
-              <div class="col-12">
-                <div class="alert alert-warning text-center">Belum ada dokumen kurikulum.</div>
-              </div>
-            <% } %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer Section -->
-  <%- include("../partials/landing-footer") %>
-
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-</body>
-</html>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

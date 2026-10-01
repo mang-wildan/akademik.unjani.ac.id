@@ -1,193 +1,59 @@
-﻿<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Berita - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-</head>
-<body>
-  <%- include("../partials/landing-header") %>
+<%# Berita (FR-P-04): kartu dengan gambar di atas, teks di bawah. Tanpa sidebar (FR-P-06). %>
+<%- include('../components/page-header', {
+  heading: 'Berita',
+  lead: 'Berita dan kegiatan akademik Universitas Jenderal Achmad Yani.',
+  breadcrumb: [{ label: 'Publikasi' }, { label: 'Berita' }],
+}) %>
 
-  <main>
-    <!-- Banner -->
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-blog" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
-            <h1 class="secondary-accent">Berita</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent">Berita</span>
-            </nav>
-          </div>
-        </div>
-      </div>
+<div class="container-content pb-16">
+  <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <% if (kategoriList.length) { %>
+    <div class="flex flex-wrap gap-2">
+      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= !filters.kategori ? 'badge-success' : 'badge-neutral' %>">Semua</a>
+      <% kategoriList.forEach(k => { %>
+        <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= filters.kategori === String(k._id) ? 'badge-success' : 'badge-neutral' %>"><%= k.nama %></a>
+      <% }) %>
     </div>
+    <% } %>
+    <form method="get" role="search" class="flex gap-2">
+      <% if (filters.kategori) { %><input type="hidden" name="kategori" value="<%= filters.kategori %>"><% } %>
+      <label for="q" class="sr-only">Cari berita</label>
+      <input id="q" name="q" type="search" class="field-control sm:w-64" placeholder="Cari berita…" value="<%= filters.q %>">
+      <button type="submit" class="btn btn-secondary" aria-label="Cari"><%- icon('search') %></button>
+    </form>
+  </div>
 
-    <!-- Blog Page Section -->
-    <div class="section">
-      <div class="hero-container">
-        <div class="post-content-wrapper">
-          <!-- Main posts -->
-          <div class="post-main-content">
-            <div class="d-flex flex-column gspace-2">
-              <form class="search-stack" action="/berita" method="get">
-                <div class="search-card shadow-sm">
-                  <div class="input-group search-input-group">
-                    <span class="input-group-text search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input type="search" name="q" value="<%= q || '' %>" class="form-control search-input" placeholder="Cari berita (judul, isi, atau tag)..." aria-label="Cari berita">
-                    <button type="submit" class="btn btn-accent search-btn">Cari</button>
-                  </div>
-                  <% if (q) { %>
-                  <div class="search-hint text-muted small mt-2">Menampilkan hasil untuk "<%= q %>".</div>
-                  <% } %>
-                </div>
-              </form>
-
-              <% if (newsList && newsList.length) { %>
-                <% newsList.forEach(function(item){ %>
-                  <% const cat = (item.displayTags && item.displayTags.length) ? item.displayTags[0] : 'Umum'; %>
-                  <div class="card card-blog card-blog-post">
-                    <div class="image-container">
-                      <a href="/berita/<%= item.slug %>">
-                        <img src="<%= item.featuredImage || '/assets/landing-page/images/dummy-img-1920x900.jpg' %>" alt="<%= item.title %>">
-                      </a>
-                    </div>
-                    <div class="blog-post-body">
-                      <div class="d-flex flex-row align-items-center gspace-2">
-                        <div class="d-flex flex-row align-items-center gspace-1">
-                          <i class="fa-solid fa-calendar"></i>
-                          <span class="post-meta-data"><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                        </div>
-                        <div class="d-flex flex-row align-items-center gspace-1">
-                          <i class="fa-solid fa-folder"></i>
-                          <span class="post-meta-data"><%= cat %></span>
-                        </div>
-                      </div>
-                      <a href="/berita/<%= item.slug %>" class="blog-title"><%= item.title %></a>
-                      <p><%= (item.body || '').replace(/<[^>]+>/g, '').slice(0, 220) %><%= item.body && item.body.length > 220 ? '…' : '' %></p>
-                      <div class="mt-3">
-                        <a href="/berita/<%= item.slug %>" class="btn btn-accent btn-sm">
-                          <span class="btn-title"><span>Read More</span></span>
-                          <span class="icon-circle"><i class="fa-solid fa-arrow-right"></i></span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                <% }); %>
-              <% } else { %>
-                <div class="alert alert-warning text-center"><%= q ? `Tidak ada berita untuk kata kunci \"${q}\".` : 'Belum ada berita.' %></div>
-              <% } %>
-
-              <% if (pagination && pagination.totalPages && pagination.totalPages > 1) { %>
-                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 mt-3">
-                  <div class="text-muted small">
-                    Menampilkan <%= pagination.start %> - <%= pagination.end %> dari <%= pagination.totalNews %> berita
-                  </div>
-                  <nav aria-label="Pagination berita">
-                    <ul class="pagination pagination-primary justify-content-center mb-0">
-                      <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
-                        <a class="page-link" href="/berita?page=<%= pagination.currentPage - 1 %><%= paginationQuery %>" aria-label="Sebelumnya">&laquo;</a>
-                      </li>
-                      <% for (let p = 1; p <= pagination.totalPages; p++) { %>
-                        <li class="page-item <%= p === pagination.currentPage ? 'active' : '' %>">
-                          <a class="page-link" href="/berita?page=<%= p %><%= paginationQuery %>"><%= p %></a>
-                        </li>
-                      <% } %>
-                      <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
-                        <a class="page-link" href="/berita?page=<%= pagination.currentPage + 1 %><%= paginationQuery %>" aria-label="Berikutnya">&raquo;</a>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-              <% } %>
-            </div>
+  <% if (!items.length) { %>
+    <%- include('../components/empty-state', {
+      emptyIcon: 'newspaper', emptyTitle: filters.q || filters.kategori ? 'Berita tidak ditemukan' : 'Belum ada berita',
+      emptyText: filters.q ? `Tidak ada berita yang cocok dengan "${filters.q}".` : null,
+      emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus pencarian', href: basePath } : null,
+    }) %>
+  <% } else { %>
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <% items.forEach(item => { %>
+      <article class="card overflow-hidden">
+        <%# Dekoratif: judul di bawah membawa tautan yang sama dan bisa diakses, menghindari tab stop ganda ke tujuan yang sama. %>
+        <a href="<%= basePath %>/<%= item.slug %>" class="block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
+          <% if (item.featuredImage) { %>
+            <img src="<%= item.featuredImage %>" alt="" class="size-full object-cover" loading="lazy">
+          <% } else { %>
+            <span class="flex size-full items-center justify-center text-muted"><%- icon('newspaper', 'size-10') %></span>
+          <% } %>
+        </a>
+        <div class="card-body">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <% if (item.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
+            <% if (item.kategori) { %><%- include('../components/badge', { text: item.kategori.nama, tone: 'info' }) %><% } %>
+            <% if (item.isBaru) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
+            <span class="text-muted"><%= formatTanggal(item.createdAt) %></span>
           </div>
-
-          <!-- Blog Sidebar -->
-          <div class="post-sidebar-wrapper">
-            <div class="card card-blog-category">
-              <h3 class="secondary-accent">Postingan</h3>
-              <div class="underline-primary-accent"></div>
-              <ul class="chevron-circle-list">
-                <li><a href="/berita">Berita</a></li>
-                <li><a href="/pengumuman">Pengumuman</a></li>
-              </ul>
-            </div>
-
-            <div class="card card-blog-recent">
-              <h3 class="secondary-accent">Recent Post</h3>
-              <div class="underline-primary-accent"></div>
-              <div class="recent-post-list">
-                <% if (recentNews && recentNews.length) { %>
-                  <% recentNews.forEach(function(item){ %>
-                    <div class="recent-post-item">
-                      <div class="recent-post-thumb">
-                        <div class="image-container recent-post-image">
-                          <img src="<%= item.featuredImage || '/assets/landing-page/images/dummy-img-600x600.jpg' %>" alt="Recent Post" class="img-fluid">
-                        </div>
-                      </div>
-                      <div class="recent-post-body">
-                        <div class="recent-post-meta">
-                          <i class="fa-solid fa-calendar accent-color-2"></i>
-                          <span class="meta-data"><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                        </div>
-                        <a href="/berita/<%= item.slug %>" class="recent-post-title"><%= item.title %></a>
-                      </div>
-                    </div>
-                  <% }); %>
-                <% } else { %>
-                  <div class="text-muted">Belum ada berita terbaru.</div>
-                <% } %>
-              </div>
-            </div>
-
-            <div class="card card-blog-tag">
-              <h3 class="secondary-accent">Tags</h3>
-              <div class="underline-primary-accent"></div>
-              <% if (allTags && allTags.length) { %>
-                <div class="blog-tag-container animate-box" data-animate="animate__fadeInLeft">
-                  <% allTags.forEach(function(tag){ %>
-                    <span class="blog-tag">#<%= tag %></span>
-                  <% }); %>
-                </div>
-              <% } else { %>
-                <div class="text-muted">Belum ada tag.</div>
-              <% } %>
-            </div>
-
-            <div class="card card-contact-cta cta-small-banner">
-              <h3 class="primary-accent">Ingin info terbaru?</h3>
-              <p class="primary-accent">Berlangganan newsletter untuk kabar terkini kampus.</p>
-              <a href="javascript:void(0)" class="cta-link">
-                <span>Subscribe Now</span>
-                <i class="fa-solid fa-chevron-circle-right"></i>
-              </a>
-              <div class="cta-image">
-                <div class="cta-image-container">
-                  <img src="/assets/landing-page/images/dummy-img-600x800.jpg" alt="Contact CTA">
-                </div>
-              </div>
-            </div>
-          </div>
+          <a href="<%= basePath %>/<%= item.slug %>" class="mt-2 block line-clamp-2 font-semibold text-ink hover:text-primary"><%= item.title %></a>
+          <% if (item.excerpt) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= item.excerpt %></p><% } %>
         </div>
-      </div>
-    </div>
-  </main>
-
-  <%- include("../partials/landing-footer") %>
-
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-</body>
-</html>
+      </article>
+    <% }) %>
+  </div>
+  <%- include('../components/pagination', { ...pagination, noun, path: basePath, query: filters }) %>
+  <% } %>
+</div>

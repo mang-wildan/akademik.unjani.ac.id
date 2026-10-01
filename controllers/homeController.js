@@ -14,114 +14,106 @@ const Unit = require('../models/Unit');
 const ProgramStudi = require('../models/ProgramStudi');
 const { getProfileSingleton } = require('./academicProfileController');
 const { normalizeTags } = require('../utils/tagNormalizer');
+const Kategori = require('../models/Kategori');
+const LembagaAkreditasi = require('../models/LembagaAkreditasi'); // eslint-disable-line no-unused-vars -- registers schema for .populate('lembaga')
+const Faculty = require('../models/Faculty');
+const { accreditationStatus, JENIS, PERINGKAT } = require('../utils/accreditation');
+const { SEMESTER, calendarEventStatus, currentAndNext, byStart } = require('../utils/calendar');
+const { jenjangFromNama } = require('../utils/prodi');
+const { sanitizeHtml } = require('../utils/html');
 
+// Beranda (FR-B-01..08). Hero has no text-over-photo; every section degrades
+// gracefully to nothing when its data is empty, rather than showing filler.
 exports.getLanding = async (req, res) => {
+  const now = new Date();
   const [
-    pengumumans,
-    latestDocs,
-    latestNews,
-    pinnedNews,
-    pinnedPengumumans,
-    pinnedDocs,
     setting,
-    accreditationDocs,
+    latestCalendar,
+    pinnedPengumuman,
+    pinnedDocs,
+    pinnedNews,
+    pengumumanTerbaru,
+    institusiAcc,
+    prodiPeringkat,
+    kegiatanTerbaru,
     lulusanAgg,
   ] = await Promise.all([
-    Pengumuman.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(3),
-    AcademicDocument.find({}).sort({ pinned: -1, createdAt: -1 }).limit(4),
-    News.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(3),
-    News.find({ status: 'published', pinned: true }).sort({ createdAt: -1 }).limit(4),
-    Pengumuman.find({ status: 'published', pinned: true }).sort({ createdAt: -1 }).limit(4),
-    AcademicDocument.find({ pinned: true }).sort({ createdAt: -1 }).limit(4),
-    SiteSetting.findOne(),
-    Accreditation.find({ isActive: { $ne: false } }, 'akreditasi').sort({ createdAt: 1 }).lean(),
-    Lulusan.aggregate([
-      { $group: { _id: { tahun: '$tahun', periode: '$periode' }, total: { $sum: '$jumlah' } } },
-      { $sort: { '_id.tahun': 1, '_id.periode': 1 } },
-    ]),
+    SiteSetting.findOne().lean(),
+    AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
+    Pengumuman.find({ status: 'published', pinned: true }).sort({ createdAt: -1 }).limit(3).lean(),
+    AcademicDocument.find({ pinned: true }).sort({ createdAt: -1 }).limit(3).lean(),
+    News.find({ status: 'published', pinned: true }).sort({ createdAt: -1 }).limit(3).lean(),
+    Pengumuman.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
+    Accreditation.find({ jenis: JENIS.INSTITUSI }).populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
+    Accreditation.find({ jenis: { $ne: JENIS.INSTITUSI }, peringkat: { $exists: true } }, 'peringkat').lean(),
+    News.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
+    Lulusan.aggregate([{ $group: { _id: '$tahun', total: { $sum: '$jumlah' } } }, { $sort: { _id: -1 } }]),
   ]);
 
-  const accreditationChart = [];
-  const accreditationIndexMap = {};
-  accreditationDocs.forEach((a) => {
-    const label = String(a.akreditasi || '').trim();
-    if (!label) return;
-    if (typeof accreditationIndexMap[label] === 'number') {
-      accreditationChart[accreditationIndexMap[label]].value += 1;
-      return;
-    }
-    accreditationIndexMap[label] = accreditationChart.length;
-    accreditationChart.push({ label, value: 1 });
-  });
+  // "Informasi Penting" (FR-B-02): newest 3 pinned items across the three content types.
+  const informasiPenting = [
+    ...pinnedPengumuman.map(d => ({ jenis: 'Pengumuman', judul: d.title, href: `/pengumuman/${d.slug}`, tanggal: d.createdAt })),
+    ...pinnedDocs.map(d => ({ jenis: 'Dokumen', judul: d.name, href: d.file, tanggal: d.createdAt })),
+    ...pinnedNews.map(d => ({ jenis: 'Berita', judul: d.title, href: `/berita/${d.slug}`, tanggal: d.createdAt })),
+  ].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 3);
 
-  // Build lulusan chart data (stacked by periode per tahun)
-  const periodeLabels = ['I', 'II', 'III'];
-  const yearMap = {};
-  lulusanAgg.forEach(item => {
-    const tahun = item._id?.tahun || 0;
-    const periode = (item._id?.periode || '').toUpperCase();
-    if (!yearMap[tahun]) yearMap[tahun] = {};
-    yearMap[tahun][periode] = item.total || 0;
-  });
-  const years = Object.keys(yearMap).map(Number).sort((a, b) => a - b);
-  const palette = ['#0ea5e9', '#22c55e', '#f97316'];
-  const lulusanChart = {
-    labels: years,
-    datasets: periodeLabels.map((p, idx) => ({
-      label: `Periode ${p}`,
-      data: years.map(y => yearMap[y]?.[p] || 0),
-      backgroundColor: palette[idx % palette.length],
-      stack: 'periode',
-      borderRadius: 6,
-      borderSkipped: false,
-    })),
-    total: lulusanAgg.reduce((acc, cur) => acc + (cur.total || 0), 0),
-  };
+  // "Agenda Akademik Terdekat" (FR-B-03): from the newest academic year's calendar.
+  const agenda = latestCalendar ? currentAndNext(latestCalendar.events, now, 4) : { berlangsung: [], berikutnya: [] };
+  const agendaItems = [...agenda.berlangsung, ...agenda.berikutnya].slice(0, 4);
 
-  res.render('landing/index', {
+  // "Status Mutu Institusi" (FR-B-05): every institutional record shown as-is
+  // (see getAkreditasiLanding for why none is picked as "the" status).
+  institusiAcc.forEach(a => { a.status = accreditationStatus(a.berlakuSampai); });
+  const peringkatCounts = {};
+  prodiPeringkat.forEach(a => { peringkatCounts[a.peringkat] = (peringkatCounts[a.peringkat] || 0) + 1; });
+  const peringkatStats = PERINGKAT.map(p => ({ peringkat: p, total: peringkatCounts[p] || 0 })).filter(p => p.total > 0);
+
+  // Lulusan (FR-B-07): latest year vs the one before it.
+  const [tahunTerbaru, tahunSebelumnya] = lulusanAgg;
+  const totalSemua = lulusanAgg.reduce((sum, y) => sum + y.total, 0);
+  const persenPerubahan = tahunTerbaru && tahunSebelumnya && tahunSebelumnya.total
+    ? Math.round(((tahunTerbaru.total - tahunSebelumnya.total) / tahunSebelumnya.total) * 1000) / 10
+    : null;
+
+  res.renderPage('landing/index', {
     title: 'Beranda',
-    user: res.locals.user || req.user,
-    pengumumans,
-    latestDocs,
-    latestNews,
-    pinnedNews,
-    pinnedPengumumans,
-    pinnedDocs,
+    description: 'Kalender, kurikulum, dokumen, dan informasi akademik resmi Universitas Jenderal Achmad Yani.',
     setting,
-    accreditationChart,
-    lulusanChart,
+    informasiPenting,
+    agendaItems,
+    pengumumanTerbaru,
+    institusiAcc,
+    peringkatStats,
+    kegiatanTerbaru,
+    lulusan: tahunTerbaru ? { tahun: tahunTerbaru._id, total: tahunTerbaru.total, totalSemua, persenPerubahan } : null,
   });
 };
 
 exports.getStrukturLanding = async (req, res) => {
-  const setting = await SiteSetting.findOne();
-  const formatDate = (d) =>
-    d ? d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
-  const strukturUpdatedLabel = formatDate(
-    (setting && (setting.strukturOrganisasiUpdatedAt || setting.updatedAt)) || null
-  );
+  const [setting, units] = await Promise.all([
+    SiteSetting.findOne().lean(),
+    Unit.find().sort({ createdAt: -1 }).lean(),
+  ]);
 
-  res.render('landing/struktur-organisasi', {
+  res.renderPage('landing/struktur-organisasi', {
     title: 'Struktur Organisasi',
-    user: res.locals.user || req.user,
+    description: 'Struktur organisasi Bidang Akademik Universitas Jenderal Achmad Yani.',
     siteSetting: setting,
-    strukturUpdatedLabel,
+    units, // versi teks alternatif dari bagan (FR-L-04)
   });
 };
 
 exports.getProfil = async (req, res) => {
-  const [profileContent, units, setting] = await Promise.all([
+  const [profileContent, units] = await Promise.all([
     getProfileSingleton(req.user || res.locals.user),
-    Unit.find().sort({ createdAt: -1 }),
-    SiteSetting.findOne(),
+    Unit.find().sort({ createdAt: -1 }).lean(),
   ]);
 
-  res.render('landing/profil', {
-    title: 'Profil',
-    user: res.locals.user || req.user,
+  res.renderPage('landing/profil', {
+    title: 'Profil Bidang Akademik',
+    description: profileContent.ringkasan.slice(0, 160),
     profileContent,
     units,
-    siteSetting: setting,
   });
 };
 
@@ -129,387 +121,382 @@ exports.getProfil = async (req, res) => {
 exports.getHome = async (req, res) => exports.getDashboard(req, res);
 
 exports.getBuku = async (req, res) => {
+  const tahunFilter = parseInt(req.query.tahun, 10) || null;
+  const filter = tahunFilter ? { year: tahunFilter } : {};
   const limit = 12;
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-  const totalBooks = await Book.countDocuments();
-  const totalPages = Math.max(Math.ceil(totalBooks / limit), 1);
+
+  const [tahunList, total] = await Promise.all([
+    Book.distinct('year'),
+    Book.countDocuments(filter),
+  ]);
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
   const currentPage = Math.min(page, totalPages);
-  const books = await Book.find()
+  const books = await Book.find(filter)
     .sort({ year: -1, createdAt: -1 })
     .skip((currentPage - 1) * limit)
-    .limit(limit);
-  const start = totalBooks === 0 ? 0 : (currentPage - 1) * limit + 1;
-  const end = Math.min(currentPage * limit, totalBooks);
-  res.render('landing/buku', {
+    .limit(limit)
+    .lean();
+  const from = total === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const to = Math.min(currentPage * limit, total);
+
+  res.renderPage('landing/buku', {
     title: 'Buku',
-    user: res.locals.user || req.user,
+    description: 'Koleksi buku panduan dan referensi Universitas Jenderal Achmad Yani.',
     books,
-    pagination: { totalBooks, totalPages, currentPage, start, end },
+    tahunList: tahunList.filter(Boolean).sort((a, b) => b - a),
+    filters: { tahun: tahunFilter ? String(tahunFilter) : '' },
+    pagination: { page: currentPage, totalPages, total, from, to },
   });
 };
 
 exports.getBukuWisudaLanding = async (req, res) => {
-  const gradBooks = await GraduationBook.find().sort({ year: -1, createdAt: -1 });
-  res.render('landing/buku-wisuda', {
+  const tahunFilter = parseInt(req.query.tahun, 10) || null;
+  const periodeFilter = String(req.query.periode || '');
+  const filter = {};
+  if (tahunFilter) filter.year = tahunFilter;
+  if (periodeFilter) filter.periode = periodeFilter;
+
+  const [tahunList, gradBooks] = await Promise.all([
+    GraduationBook.distinct('year'),
+    GraduationBook.find(filter).sort({ year: -1, periode: 1, createdAt: -1 }).lean(),
+  ]);
+
+  res.renderPage('landing/buku-wisuda', {
     title: 'Buku Wisuda',
-    user: res.locals.user || req.user,
+    description: 'Arsip buku wisuda per periode Universitas Jenderal Achmad Yani.',
     gradBooks,
+    tahunList: tahunList.filter(Boolean).sort((a, b) => b - a),
+    filters: { tahun: tahunFilter ? String(tahunFilter) : '', periode: periodeFilter },
   });
 };
 
+// Groups certificates for the same unit/prodi so the table shows the newest
+// as the current row, with older ones available as expandable history
+// (FR-A-06). Institutional-level rows are never merged with a program's.
+const groupAccreditationHistory = docs => {
+  const groups = new Map();
+  docs.forEach(d => {
+    const key = d.jenis === JENIS.PRODI && d.programStudi ? `prodi:${d.programStudi._id}` : `${d.jenis}:${(d.namaUnit || '').toLowerCase()}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(d);
+  });
+  const rows = [];
+  groups.forEach(list => {
+    const [current, ...history] = [...list].sort((a, b) => new Date(b.berlakuSampai) - new Date(a.berlakuSampai));
+    rows.push({ ...current, history });
+  });
+  return rows;
+};
+
 exports.getAkreditasiLanding = async (req, res) => {
-  const normalize = value =>
-    String(value || '')
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, ' ');
-  const slugify = value =>
-    String(value || '')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'group';
+  const docs = await Accreditation.find({ jenis: { $exists: true } })
+    .populate({ path: 'programStudi', select: 'nama fakultas', populate: { path: 'fakultas', select: 'nama singkatan' } })
+    .populate('lembaga', 'singkatan nama')
+    .sort({ berlakuSampai: -1 })
+    .lean();
 
-  const allAccreditations = await Accreditation.find({}).sort({ tahun: -1, createdAt: -1 }).lean();
-  const groupMap = new Map();
-
-  allAccreditations.forEach(item => {
-    const institusiDisplay = String(item.institusi || '').trim() || '-';
-    const unitDisplay = String(item.unit || '').trim() || '-';
-    const key = `${normalize(institusiDisplay)}||${normalize(unitDisplay)}`;
-
-    if (!groupMap.has(key)) {
-      groupMap.set(key, {
-        institusi: institusiDisplay,
-        unit: unitDisplay,
-        activeRows: [],
-        inactiveRows: [],
-      });
-    }
-
-    const group = groupMap.get(key);
-    if (item.isActive === false) {
-      group.inactiveRows.push(item);
-      return;
-    }
-    group.activeRows.push(item);
+  docs.forEach(d => {
+    d.status = accreditationStatus(d.berlakuSampai);
+    d.label = d.jenis === JENIS.PRODI && d.programStudi ? d.programStudi.nama : d.namaUnit;
   });
 
-  const byNewestYear = (a, b) => {
-    const yearA = Number(a && a.tahun ? a.tahun : 0);
-    const yearB = Number(b && b.tahun ? b.tahun : 0);
-    if (yearB !== yearA) return yearB - yearA;
-    return new Date(b && b.createdAt ? b.createdAt : 0) - new Date(a && a.createdAt ? a.createdAt : 0);
-  };
+  // Shown as-is, not merged into one "current" status (FR-A-01): legacy data
+  // can have more than one institutional record whose active flag disagrees
+  // with its dates (see docs/MIGRASI-F2.md) — hiding one would assert an
+  // answer the content team hasn't confirmed yet.
+  const institusi = docs.filter(d => d.jenis === JENIS.INSTITUSI);
 
-  const groupedRaw = Array.from(groupMap.values())
-    .filter(group => group.activeRows.length > 0)
-    .map(group => {
-      const activeRows = group.activeRows.sort(byNewestYear);
-      const inactiveRows = group.inactiveRows.sort(byNewestYear);
-      const latestActiveYear = activeRows.length ? Number(activeRows[0].tahun || 0) : 0;
-      return {
-        institusi: group.institusi,
-        unit: group.unit,
-        activeRows,
-        inactiveRows,
-        latestActiveYear,
-      };
-    })
-    .sort((a, b) => {
-      if (b.latestActiveYear !== a.latestActiveYear) return b.latestActiveYear - a.latestActiveYear;
-      const byInstitusi = a.institusi.localeCompare(b.institusi, 'id', { sensitivity: 'base' });
-      if (byInstitusi !== 0) return byInstitusi;
-      return a.unit.localeCompare(b.unit, 'id', { sensitivity: 'base' });
-    });
+  const peringkatCounts = {};
+  docs.filter(d => d.jenis !== JENIS.INSTITUSI).forEach(d => {
+    if (d.peringkat) peringkatCounts[d.peringkat] = (peringkatCounts[d.peringkat] || 0) + 1;
+  });
+  const peringkatStats = PERINGKAT.map(p => ({ peringkat: p, total: peringkatCounts[p] || 0 })).filter(p => p.total > 0);
 
-  const accreditationGroups = groupedRaw.map((group, idx) => ({
-    ...group,
-    groupId: `ac-group-${idx + 1}-${slugify(`${group.institusi}-${group.unit}`)}`,
-  }));
+  const rows = groupAccreditationHistory(docs);
+  const fakultasList = await Faculty.find().sort({ nama: 1 }).lean();
 
-  const totalVisible = accreditationGroups.reduce((sum, group) => sum + group.activeRows.length, 0);
-  const totalHidden = accreditationGroups.reduce((sum, group) => sum + group.inactiveRows.length, 0);
-  const accreditationSummary = {
-    totalAll: totalVisible + totalHidden,
-    totalVisible,
-    totalHidden,
-    totalGroups: accreditationGroups.length,
-  };
+  const q = String(req.query.q || '').trim().toLowerCase();
+  const statusFilter = String(req.query.status || '');
+  const fakultasFilter = String(req.query.fakultas || '');
+  let filtered = rows.filter(r => {
+    if (q && !`${r.label} ${r.programStudi?.fakultas?.nama || ''}`.toLowerCase().includes(q)) return false;
+    if (statusFilter && r.status.key !== statusFilter) return false;
+    if (fakultasFilter && String(r.programStudi?.fakultas?._id) !== fakultasFilter) return false;
+    return true;
+  });
+  filtered.sort((a, b) => a.label.localeCompare(b.label, 'id', { sensitivity: 'base' }));
 
-  res.render('landing/akreditasi', {
+  const limit = 12;
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  const totalPages = Math.max(Math.ceil(filtered.length / limit), 1);
+  const currentPage = Math.min(page, totalPages);
+  const pageRows = filtered.slice((currentPage - 1) * limit, currentPage * limit);
+  const start = filtered.length === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const end = Math.min(currentPage * limit, filtered.length);
+
+  res.renderPage('landing/akreditasi', {
     title: 'Akreditasi',
-    user: res.locals.user || req.user,
-    accreditationGroups,
-    accreditationSummary,
+    description: 'Status akreditasi institusi dan program studi Universitas Jenderal Achmad Yani.',
+    institusi,
+    peringkatStats,
+    rows: pageRows,
+    fakultasList,
+    filters: { q: req.query.q || '', status: statusFilter, fakultas: fakultasFilter },
+    pagination: { page: currentPage, totalPages, total: filtered.length, from: start, to: end },
   });
 };
 
 exports.getKalenderLanding = async (req, res) => {
-  const calendars = await AcademicCalendar.find().sort({ tahunAjaran: -1, createdAt: -1 }).populate('createdBy');
-  res.render('landing/kalender-akademik', {
+  const calendars = await AcademicCalendar.find().sort({ tahunAjaran: -1, createdAt: -1 }).lean();
+  if (!calendars.length) {
+    return res.renderPage('landing/kalender-akademik', {
+      title: 'Kalender Akademik',
+      description: 'Kalender akademik resmi Universitas Jenderal Achmad Yani.',
+      calendars: [],
+      calendar: null,
+    });
+  }
+
+  const calendar = calendars.find(c => c.tahunAjaran === req.query.tahun) || calendars[0];
+  const { berlangsung, berikutnya } = currentAndNext(calendar.events, new Date(), 2);
+  const bySemester = SEMESTER.map(s => ({
+    ...s,
+    events: (calendar.events || [])
+      .filter(e => e.semester === s.value)
+      .sort(byStart)
+      .map(e => ({ ...e, status: calendarEventStatus(e.mulai, e.selesai) })),
+  }));
+
+  res.renderPage('landing/kalender-akademik', {
     title: 'Kalender Akademik',
-    user: res.locals.user || req.user,
+    description: `Kalender akademik Universitas Jenderal Achmad Yani tahun ajaran ${calendar.tahunAjaran}.`,
     calendars,
+    calendar,
+    bySemester,
+    berlangsung,
+    berikutnya,
   });
 };
 
 exports.getKurikulumLanding = async (req, res) => {
-  const kurikulums = await Kurikulum.find({}).sort({ tahun: -1, createdAt: -1 }).populate('createdBy');
-  res.render('landing/kurikulum', {
+  const docs = await Kurikulum.find({})
+    .populate({ path: 'prodi', select: 'nama fakultas', populate: { path: 'fakultas', select: 'nama' } })
+    .sort({ tahun: -1 })
+    .lean();
+
+  docs.forEach(d => {
+    d.namaProdi = d.prodi ? d.prodi.nama : d.programStudi;
+    d.namaFakultas = d.prodi?.fakultas ? d.prodi.fakultas.nama : d.fakultas;
+    d.jenjang = jenjangFromNama(d.namaProdi);
+  });
+
+  const fakultasFilter = String(req.query.fakultas || '');
+  const jenjangFilter = String(req.query.jenjang || '');
+  const filtered = docs.filter(d => {
+    if (fakultasFilter && d.namaFakultas !== fakultasFilter) return false;
+    if (jenjangFilter && d.jenjang !== jenjangFilter) return false;
+    return true;
+  });
+
+  const byFakultas = new Map();
+  filtered.forEach(d => {
+    const key = d.namaFakultas || 'Lainnya';
+    if (!byFakultas.has(key)) byFakultas.set(key, []);
+    byFakultas.get(key).push(d);
+  });
+  const groups = [...byFakultas.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0], 'id'))
+    .map(([fakultas, items]) => ({ fakultas, items: items.sort((a, b) => a.namaProdi.localeCompare(b.namaProdi, 'id')) }));
+
+  const fakultasList = [...new Set(docs.map(d => d.namaFakultas).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'id'));
+  const jenjangList = [...new Set(docs.map(d => d.jenjang))].sort();
+
+  res.renderPage('landing/kurikulum', {
     title: 'Kurikulum',
-    user: res.locals.user || req.user,
-    kurikulums,
+    description: 'Dokumen kurikulum program studi Universitas Jenderal Achmad Yani.',
+    groups,
+    fakultasList,
+    jenjangList,
+    filters: { fakultas: fakultasFilter, jenjang: jenjangFilter },
+    total: filtered.length,
   });
 };
 
 exports.getDokumenAkademikLanding = async (req, res) => {
   const limit = 12;
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-  const totalDocs = await AcademicDocument.countDocuments();
+  const q = String(req.query.q || '').trim();
+  const kategoriId = String(req.query.kategori || '');
+
+  const filter = {};
+  if (q) filter.$or = [{ name: { $regex: q, $options: 'i' } }, { keterangan: { $regex: q, $options: 'i' } }];
+  if (kategoriId) filter.kategori = kategoriId;
+
+  const [kategoriList, kategoriCounts, totalDocs, totalDocsAll] = await Promise.all([
+    Kategori.find({ jenis: 'dokumen', isActive: true }).sort({ urutan: 1 }).lean(),
+    AcademicDocument.aggregate([{ $group: { _id: '$kategori', total: { $sum: 1 } } }]),
+    AcademicDocument.countDocuments(filter),
+    AcademicDocument.countDocuments(),
+  ]);
+  const countByKategori = Object.fromEntries(kategoriCounts.map(c => [String(c._id), c.total]));
+  const kategoriOptions = kategoriList.map(k => ({ ...k, total: countByKategori[String(k._id)] || 0 }));
+
   const totalPages = Math.max(Math.ceil(totalDocs / limit), 1);
   const currentPage = Math.min(page, totalPages);
-  const documents = await AcademicDocument.find({})
+  const documents = await AcademicDocument.find(filter)
     .sort({ pinned: -1, createdAt: -1 })
     .skip((currentPage - 1) * limit)
     .limit(limit)
-    .populate('createdBy');
+    .populate('kategori', 'nama')
+    .lean();
   const start = totalDocs === 0 ? 0 : (currentPage - 1) * limit + 1;
   const end = Math.min(currentPage * limit, totalDocs);
 
-  res.render('landing/dokumen-akademik', {
+  res.renderPage('landing/dokumen-akademik', {
     title: 'Dokumen Akademik',
-    user: res.locals.user || req.user,
+    description: 'Formulir, pedoman, dan peraturan akademik resmi Universitas Jenderal Achmad Yani.',
     documents,
-    pagination: { totalDocs, totalPages, currentPage, start, end },
+    kategoriOptions,
+    totalDocsAll,
+    filters: { q, kategori: kategoriId },
+    pagination: { page: currentPage, totalPages, total: totalDocs, from: start, to: end },
   });
 };
 
 exports.getRplLanding = async (req, res) => {
-  const [rplDocs, setting] = await Promise.all([
-    RplDocument.find()
-    .populate('createdBy', 'name email')
-    .sort({ status: -1, tahun: -1, createdAt: -1 }),
-    SiteSetting.findOne(),
-  ]);
-  const activeDoc = rplDocs.find(d => d.status);
+  const rplDocs = await RplDocument.find().sort({ status: -1, tahun: -1, createdAt: -1 }).lean();
 
-  res.render('landing/rpl', {
-    title: 'RPL',
-    user: res.locals.user || req.user,
+  res.renderPage('landing/rpl', {
+    title: 'Rekognisi Pembelajaran Lampau (RPL)',
+    description: 'Dokumen dan panduan Rekognisi Pembelajaran Lampau (RPL) Universitas Jenderal Achmad Yani.',
     rplDocs,
-    activeDoc,
-    setting,
   });
 };
 
 exports.getPimpinanStaffLanding = async (req, res) => {
-  const staffs = await Staff.find().sort({ nomorUrut: 1, createdAt: -1 });
-  res.render('landing/pimpinan-staff', {
-    title: 'Pimpinan dan Staff',
-    user: res.locals.user || req.user,
-    staffs,
+  // NIP/NID is never sent to this view (K-05) — only fields the public page uses are selected.
+  const all = await Staff.find({}, 'nama gelar jabatan foto nomorUrut kelompok')
+    .sort({ nomorUrut: 1, createdAt: -1 })
+    .lean();
+  res.renderPage('landing/pimpinan-staff', {
+    title: 'Pimpinan & Staf',
+    description: 'Struktur kepemimpinan dan staf Bidang Akademik Universitas Jenderal Achmad Yani.',
+    pimpinan: all.filter(s => s.kelompok === 'pimpinan'),
+    staf: all.filter(s => s.kelompok !== 'pimpinan'),
   });
 };
 
-exports.getBeritaLanding = async (req, res) => {
-  const search = (req.query.q || '').trim();
-  const filter = { status: 'published' };
-  if (search) {
-    filter.$or = [
-      { title: { $regex: search, $options: 'i' } },
-      { body: { $regex: search, $options: 'i' } },
-      { tags: { $regex: search, $options: 'i' } },
-    ];
-  }
-
-  const limit = 5;
-  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-
-  const [totalNews, recentNews, tagSource] = await Promise.all([
-    News.countDocuments(filter),
-    News.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(5),
-    News.find({ status: 'published' }, 'tags').lean(),
-  ]);
-
-  const totalPages = Math.max(Math.ceil(totalNews / limit), 1);
-  const currentPage = Math.min(page, totalPages);
-
-  const newsList = await News.find(filter)
-    .sort({ pinned: -1, createdAt: -1 })
-    .skip((currentPage - 1) * limit)
-    .limit(limit)
-    .populate('createdBy');
-  newsList.forEach(item => {
-    item.displayTags = normalizeTags(item.tags);
-  });
-
-  const tagCounts = {};
-  const tagLabels = {};
-  tagSource.forEach(n => {
-    normalizeTags(n.tags).forEach(tag => {
-      if (!tag) return;
-      const key = tag.toLowerCase();
-      tagLabels[key] = tagLabels[key] || tag;
-      tagCounts[key] = (tagCounts[key] || 0) + 1;
-    });
-  });
-  const categories = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([key, count]) => ({ name: tagLabels[key] || key, count }));
-  const allTags = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([key]) => tagLabels[key] || key);
-
-  const start = totalNews === 0 ? 0 : (currentPage - 1) * limit + 1;
-  const end = Math.min(currentPage * limit, totalNews);
-  const pagination = { totalNews, totalPages, currentPage, start, end };
-
-  res.render('landing/berita', {
+exports.getBeritaLanding = (req, res) =>
+  listContentPage(req, res, {
+    Model: News,
+    view: 'landing/berita',
     title: 'Berita',
-    user: res.locals.user || req.user,
-    newsList,
-    recentNews,
-    categories,
-    allTags,
-    pagination,
-    q: search,
-    paginationQuery: search ? `&q=${encodeURIComponent(search)}` : '',
+    description: 'Berita dan kegiatan akademik Universitas Jenderal Achmad Yani.',
+    basePath: '/berita',
+    noun: 'berita',
   });
-};
 
 exports.getBeritaDetail = async (req, res) => {
-  const item = await News.findOne({ slug: req.params.slug, status: 'published' }).populate('createdBy');
-  if (!item) return res.status(404).render('landing/error', { status: 404, heading: 'Berita tidak ditemukan', message: 'Berita yang Anda cari tidak tersedia atau sudah dihapus.' });
-  const displayTags = normalizeTags(item.tags);
-  const recentNews = await News.find({ status: 'published', _id: { $ne: item._id } })
+  const item = await News.findOne({ slug: req.params.slug, status: 'published' })
+    .populate('kategori', 'nama')
+    .populate('createdBy', 'name')
+    .lean();
+  if (!item) {
+    return res.status(404).render('landing/error', { status: 404, heading: 'Berita tidak ditemukan', message: 'Berita yang Anda cari tidak tersedia atau sudah dihapus.' });
+  }
+  // Defense in depth: old content was saved before sanitizeHtml existed, and
+  // the F4 admin form is the real write-time guard (NFR-S-06).
+  item.body = sanitizeHtml(item.body);
+  const lainnya = await News.find({ status: 'published', _id: { $ne: item._id } })
     .sort({ pinned: -1, createdAt: -1 })
-    .limit(4);
-  const tagCounts = {};
-  const tagLabels = {};
-  const all = await News.find({ status: 'published' });
-  all.forEach(n => normalizeTags(n.tags).forEach(t => {
-    if (!t) return;
-    const key = t.toLowerCase();
-    tagLabels[key] = tagLabels[key] || t;
-    tagCounts[key] = (tagCounts[key] || 0) + 1;
-  }));
-  const categories = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([key, count]) => ({ name: tagLabels[key] || key, count }));
-  const allTags = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([key]) => tagLabels[key] || key);
-  res.render('landing/berita-show', {
+    .limit(4)
+    .lean();
+
+  res.renderPage('landing/berita-show', {
     title: item.title,
-    user: res.locals.user || req.user,
+    description: item.excerpt || item.title,
     item,
-    displayTags,
-    recentNews,
-    categories,
-    allTags,
+    lainnya,
+    basePath: '/berita',
   });
 };
 
-exports.getPengumumanLanding = async (req, res) => {
-  const search = (req.query.q || '').trim();
+// Shared by Pengumuman and Berita list pages (FR-P-01..02).
+const listContentPage = async (req, res, { Model, view, title, description, basePath, noun }) => {
+  const q = String(req.query.q || '').trim();
+  const kategoriId = String(req.query.kategori || '');
   const filter = { status: 'published' };
-  if (search) {
-    filter.$or = [
-      { title: { $regex: search, $options: 'i' } },
-      { body: { $regex: search, $options: 'i' } },
-      { tags: { $regex: search, $options: 'i' } },
-    ];
-  }
+  if (q) filter.$or = [{ title: { $regex: q, $options: 'i' } }, { excerpt: { $regex: q, $options: 'i' } }];
+  if (kategoriId) filter.kategori = kategoriId;
 
-  const limit = 5;
+  const jenis = Model.modelName === 'News' ? 'berita' : 'pengumuman';
+  const limit = 10;
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
 
-  const [totalPengumuman, recentPengumuman, tagSource] = await Promise.all([
-    Pengumuman.countDocuments(filter),
-    Pengumuman.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(5),
-    Pengumuman.find({ status: 'published' }, 'tags').lean(),
+  const [kategoriList, total] = await Promise.all([
+    Kategori.find({ jenis, isActive: true }).sort({ urutan: 1 }).lean(),
+    Model.countDocuments(filter),
   ]);
-
-  const totalPages = Math.max(Math.ceil(totalPengumuman / limit), 1);
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
   const currentPage = Math.min(page, totalPages);
 
-  const pengumumanList = await Pengumuman.find(filter)
+  const items = await Model.find(filter)
     .sort({ pinned: -1, createdAt: -1 })
     .skip((currentPage - 1) * limit)
     .limit(limit)
-    .populate('createdBy');
-  pengumumanList.forEach(item => {
-    item.displayTags = normalizeTags(item.tags);
+    .populate('kategori', 'nama')
+    .lean();
+  const sevenDaysAgo = Date.now() - 7 * 86400000;
+  items.forEach(item => {
+    item.isBaru = new Date(item.createdAt).getTime() >= sevenDaysAgo;
   });
 
-  const tagCounts = {};
-  const tagLabels = {};
-  tagSource.forEach(p => {
-    normalizeTags(p.tags).forEach(tag => {
-      if (!tag) return;
-      const key = tag.toLowerCase();
-      tagLabels[key] = tagLabels[key] || tag;
-      tagCounts[key] = (tagCounts[key] || 0) + 1;
-    });
-  });
-  const categories = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([key, count]) => ({ name: tagLabels[key] || key, count }));
-  const allTags = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([key]) => tagLabels[key] || key);
+  const from = total === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const to = Math.min(currentPage * limit, total);
 
-  const start = totalPengumuman === 0 ? 0 : (currentPage - 1) * limit + 1;
-  const end = Math.min(currentPage * limit, totalPengumuman);
-  const pagination = { totalPengumuman, totalPages, currentPage, start, end };
-
-  res.render('landing/pengumuman', {
-    title: 'Pengumuman',
-    user: res.locals.user || req.user,
-    pengumumanList,
-    recentPengumuman,
-    categories,
-    allTags,
-    pagination,
-    q: search,
-    paginationQuery: search ? `&q=${encodeURIComponent(search)}` : '',
+  res.renderPage(view, {
+    title,
+    description,
+    items,
+    kategoriList,
+    filters: { q, kategori: kategoriId },
+    pagination: { page: currentPage, totalPages, total, from, to },
+    basePath,
+    noun,
   });
 };
 
+exports.getPengumumanLanding = (req, res) =>
+  listContentPage(req, res, {
+    Model: Pengumuman,
+    view: 'landing/pengumuman',
+    title: 'Pengumuman',
+    description: 'Pengumuman resmi akademik Universitas Jenderal Achmad Yani.',
+    basePath: '/pengumuman',
+    noun: 'pengumuman',
+  });
+
 exports.getPengumumanDetail = async (req, res) => {
-  const item = await Pengumuman.findOne({ slug: req.params.slug, status: 'published' }).populate('createdBy');
-  if (!item) return res.status(404).render('landing/error', { status: 404, heading: 'Pengumuman tidak ditemukan', message: 'Pengumuman yang Anda cari tidak tersedia atau sudah dihapus.' });
-  const displayTags = normalizeTags(item.tags);
-  const recentPengumuman = await Pengumuman.find({ status: 'published', _id: { $ne: item._id } })
+  const item = await Pengumuman.findOne({ slug: req.params.slug, status: 'published' })
+    .populate('kategori', 'nama')
+    .populate('createdBy', 'name')
+    .lean();
+  if (!item) {
+    return res.status(404).render('landing/error', { status: 404, heading: 'Pengumuman tidak ditemukan', message: 'Pengumuman yang Anda cari tidak tersedia atau sudah dihapus.' });
+  }
+  item.body = sanitizeHtml(item.body);
+  const lainnya = await Pengumuman.find({ status: 'published', _id: { $ne: item._id } })
     .sort({ pinned: -1, createdAt: -1 })
-    .limit(4);
-  const tagCounts = {};
-  const tagLabels = {};
-  const all = await Pengumuman.find({ status: 'published' });
-  all.forEach(n => normalizeTags(n.tags).forEach(t => {
-    if (!t) return;
-    const key = t.toLowerCase();
-    tagLabels[key] = tagLabels[key] || t;
-    tagCounts[key] = (tagCounts[key] || 0) + 1;
-  }));
-  const categories = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([key, count]) => ({ name: tagLabels[key] || key, count }));
-  const allTags = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([key]) => tagLabels[key] || key);
-  res.render('landing/pengumuman-show', {
+    .limit(4)
+    .lean();
+
+  res.renderPage('landing/pengumuman-show', {
     title: item.title,
-    user: res.locals.user || req.user,
+    description: item.excerpt || item.title,
     item,
-    displayTags,
-    recentPengumuman,
-    categories,
-    allTags,
+    lainnya,
+    basePath: '/pengumuman',
   });
 };
 
@@ -586,5 +573,32 @@ exports.getDashboard = async (req, res) => {
       error: 'Gagal memuat data dashboard. Coba lagi nanti.',
     });
   }
+};
+
+// Pencarian global (FR-G-06): pengumuman, berita, dokumen, kurikulum.
+exports.getCari = async (req, res) => {
+  const q = String(req.query.q || '').trim();
+  if (!q) {
+    return res.renderPage('landing/cari', { title: 'Cari', q: '', results: null });
+  }
+
+  const rx = { $regex: q, $options: 'i' };
+  const [pengumuman, berita, dokumen, kurikulum] = await Promise.all([
+    Pengumuman.find({ status: 'published', $or: [{ title: rx }, { excerpt: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
+    News.find({ status: 'published', $or: [{ title: rx }, { excerpt: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
+    AcademicDocument.find({ $or: [{ name: rx }, { keterangan: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
+    Kurikulum.find({ $or: [{ nama: rx }, { programStudi: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
+  ]);
+
+  res.renderPage('landing/cari', {
+    title: `Cari: ${q}`,
+    q,
+    results: {
+      pengumuman: pengumuman.map(p => ({ judul: p.title, href: `/pengumuman/${p.slug}`, tanggal: p.createdAt })),
+      berita: berita.map(n => ({ judul: n.title, href: `/berita/${n.slug}`, tanggal: n.createdAt })),
+      dokumen: dokumen.map(d => ({ judul: d.name, href: d.file, tanggal: d.createdAt })),
+      kurikulum: kurikulum.map(k => ({ judul: k.nama, href: '/kurikulum', tanggal: k.createdAt })),
+    },
+  });
 };
 

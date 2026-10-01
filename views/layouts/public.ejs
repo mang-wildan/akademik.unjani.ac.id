@@ -67,8 +67,8 @@
         </ul>
       </nav>
 
-      <%# Tombol pencarian global (FR-G-06) ditambahkan bersama rute /cari di F3. %>
       <div class="flex items-center gap-1">
+        <a href="/cari" class="btn-icon" aria-label="Cari"><%- icon('search', 'size-6') %></a>
         <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="menu-hp" aria-label="Buka menu">
           <%- icon('menu', 'size-6') %>
         </button>

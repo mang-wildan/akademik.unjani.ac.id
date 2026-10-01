@@ -1,0 +1,40 @@
+<%# Pencarian global (FR-G-06): pengumuman, berita, dokumen, kurikulum. %>
+<%- include('../components/page-header', { heading: 'Cari', breadcrumb: [{ label: 'Cari' }] }) %>
+
+<div class="container-content pb-16">
+  <form method="get" role="search" class="mb-8 flex gap-2">
+    <label for="q" class="sr-only">Kata kunci</label>
+    <input id="q" name="q" type="search" class="field-control" placeholder="Cari pengumuman, berita, dokumen, atau kurikulum…" value="<%= q %>" autofocus>
+    <button type="submit" class="btn btn-primary"><%- icon('search') %>Cari</button>
+  </form>
+
+  <% if (results === null) { %>
+    <p class="text-muted">Ketik kata kunci lalu tekan Cari.</p>
+  <% } else { %>
+    <% const groups = [
+      { key: 'pengumuman', label: 'Pengumuman', items: results.pengumuman, blank: false },
+      { key: 'berita', label: 'Berita', items: results.berita, blank: false },
+      { key: 'dokumen', label: 'Dokumen Akademik', items: results.dokumen, blank: true },
+      { key: 'kurikulum', label: 'Kurikulum', items: results.kurikulum, blank: false },
+    ]; %>
+    <% const total = groups.reduce((n, g) => n + g.items.length, 0); %>
+    <% if (!total) { %>
+      <%- include('../components/empty-state', { emptyIcon: 'search', emptyTitle: `Tidak ada hasil untuk "${q}"`, emptyText: 'Coba kata kunci lain.' }) %>
+    <% } else { %>
+      <p class="mb-6 text-sm text-muted"><%= formatAngka(total) %> hasil untuk "<%= q %>"</p>
+      <% groups.filter(g => g.items.length).forEach(g => { %>
+        <section class="mb-8">
+          <h2 class="mb-3 text-lg font-semibold"><%= g.label %></h2>
+          <ul class="card divide-y divide-line">
+            <% g.items.forEach(item => { %>
+              <li class="flex items-center justify-between gap-3 p-4">
+                <a href="<%= item.href %>"<%= g.blank ? ' target="_blank" rel="noopener"' : '' %> class="font-medium text-ink hover:text-primary"><%= item.judul %></a>
+                <span class="shrink-0 text-sm text-muted"><%= formatTanggal(item.tanggal) %></span>
+              </li>
+            <% }) %>
+          </ul>
+        </section>
+      <% }) %>
+    <% } %>
+  <% } %>
+</div>

@@ -1,1039 +1,147 @@
-<!DOCTYPE html>
-<html lang="id">
+<%# Beranda (FR-B-01..08). Setiap bagian hilang dengan rapi bila datanya kosong — tidak ada konten isian. %>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akademik UNJANI</title>
-    <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-    <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-    <link rel="web icon"
-        href="<%= (siteSetting && siteSetting.favicon) ? siteSetting.favicon : '/assets/landing-page/images/favicon.ico' %>">
-</head>
+<section class="border-b border-line bg-surface">
+  <div class="container-content grid gap-8 py-10 lg:grid-cols-2 lg:items-center lg:py-16">
+    <div>
+      <h1 class="text-4xl font-bold text-ink lg:text-5xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
+      <p class="mt-4 max-w-xl text-lg text-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:w-fit sm:grid-cols-4">
+        <a href="/kalender-akademik" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('event', 'size-6 text-primary') %><span class="text-sm font-medium">Kalender Akademik</span></a>
+        <a href="/dokumen-akademik" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('description', 'size-6 text-primary') %><span class="text-sm font-medium">Dokumen &amp; Formulir</span></a>
+        <a href="/kurikulum" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('menu_book', 'size-6 text-primary') %><span class="text-sm font-medium">Kurikulum</span></a>
+        <a href="/akreditasi" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('workspace_premium', 'size-6 text-primary') %><span class="text-sm font-medium">Akreditasi</span></a>
+      </div>
+    </div>
+    <img src="/img/hero-kampus.webp" alt="Kampus Universitas Jenderal Achmad Yani" class="aspect-[4/3] w-full rounded-card object-cover lg:aspect-video" width="1600" height="903">
+  </div>
+</section>
 
-<body>
-    <!-- Header Section -->
-    <%- include("../partials/landing-header") %>
+<div class="container-content py-10">
 
-    <!-- Sidebar Section -->
+  <% if (informasiPenting.length) { %>
+  <section class="card card-body mb-10">
+    <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold"><%- icon('info', 'size-5 text-primary') %>Informasi Penting</h2>
+    <ul class="divide-y divide-line">
+      <% informasiPenting.forEach(i => { %>
+        <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
+          <a href="<%= i.href %>" class="flex items-center gap-2 font-medium text-ink hover:text-primary" <%= i.jenis === 'Dokumen' ? 'target="_blank" rel="noopener"' : '' %>>
+            <%- include('../components/badge', { text: i.jenis, tone: 'info' }) %><%= i.judul %>
+          </a>
+          <span class="text-sm text-muted"><%= formatTanggal(i.tanggal) %></span>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+  <% } %>
 
-    <!-- Main Section -->
-    <main>
-        <!-- Banner Home Section -->
-        <div class="section-wrapper pb-0">
-            <div class="banner-home-container" id="banner-slideshow">
-                <div class="slideshow-container">
-                </div>
-                <div class="hero-container">
-                    <div class="banner-content-container">
-                        <div class="banner-home-top">
-                            <div class="banner-home-title animate-box animate__animated animated"
-                                data-animate="animate__fadeInLeft">
-                                <div>
-                                    <div class="sub-heading sub-heading-banner">
-                                        <span class="sub-heading-title">Universitas Jenderal Achmad Yani</span>
-                                    </div>
-                                </div>
-                                <h1 class="secondary-accent">BIDANG AKADEMIK </h1>
-                            </div>
-
-                            <div class="banner-home-network animate-box animate__animated animated"
-                                data-animate="animate__fadeInRight">
-
-                                <div class="banner-home-social">
-                                    <div class="social-container">
-                                        <i class="fa-brands fa-facebook"></i>
-                                        <a href="#" class="social-link-banner">Facebook</a>
-                                    </div>
-                                    <div class="social-container">
-                                        <i class="fa-brands fa-instagram"></i>
-                                        <a href="#" class="social-link-banner">Instagram</a>
-                                    </div>
-                                    <div class="social-container">
-                                        <i class="fa-brands fa-x-twitter"></i>
-                                        <a href="#" class="social-link-banner">X Twitter</a>
-                                    </div>
-                                    <div class="social-container">
-                                        <i class="fa-brands fa-tiktok"></i>
-                                        <a href="#" class="social-link-banner">Tiktok</a>
-                                    </div>
-                                </div>
-
-                                <div class="card card-banner-reviewer">
-                                    <h4 class="secondary-accent">Unlock Your Full Potential</h4>
-                                    <div class="banner-reviewer-container">
-                                        <img src="/assets/landing-page/images/dummy-img-400x400.jpg" alt="Reviewer"
-                                            class="banner-avatar">
-                                        <img src="/assets/landing-page/images/dummy-img-400x400.jpg" alt="Reviewer"
-                                            class="banner-avatar">
-                                        <img src="/assets/landing-page/images/dummy-img-400x400.jpg" alt="Reviewer"
-                                            class="banner-avatar">
-                                        <img src="/assets/landing-page/images/dummy-img-400x400.jpg" alt="Reviewer"
-                                            class="banner-avatar">
-                                    </div>
-                                    <span class="reviewer-card-description">With expert Padel tips, gear
-                                        recommendations, and pro level training.</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="banner-home-bottom">
-                            <div class="banner-home-community-container animate-box animate__animated animated"
-                                data-animate="animate__fadeInLeft">
-                                <div class="card banner-home-community">
-                                    <div class="home-community-img">
-                                        <img src="/assets/landing-page/images/dummy-img-600x500.jpg"
-                                            alt="Banner Home Community">
-                                    </div>
-                                    <div class="home-community-content">
-                                        <div class="d-flex flex-row align-items-center gspace-1">
-                                            <h3 class="home-community-highlight">25+</h3>
-                                            <div class="banner-reviewer-container">
-                                                <img src="/assets/landing-page/images/dummy-img-400x400.jpg"
-                                                    alt="Reviewer" class="banner-avatar">
-                                                <img src="/assets/landing-page/images/dummy-img-400x400.jpg"
-                                                    alt="Reviewer" class="banner-avatar">
-                                                <img src="/assets/landing-page/images/dummy-img-400x400.jpg"
-                                                    alt="Reviewer" class="banner-avatar">
-                                                <img src="/assets/landing-page/images/Gp-1.png" alt="Reviewer"
-                                                    class="banner-avatar banner-avatar-plus">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex flex-column">
-                                            <h5 class="secondary-accent mb-0">Padel Enthusiasts. One Club</h5>
-                                            <p class="secondary-accent mb-0">Enjoy World-Class Facilities and a Thriving
-                                                Community adipiscing elit ut elit.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="banner-home-cta-container animate-box animate__animated animated-delay-slow"
-                                data-animate="animate__fadeInRight">
-                                <div class="banner-home-cta">
-                                    <h3 class="secondary-accent">Active Members and Unlock Premium Padel Facilities</h3>
-                                    <p class="secondary-accent">Experience professional training, top-notch facilities,
-                                        and a vibrant community at Adelux your premier padel destination. Lorem ipsum
-                                        dolor sit amet consectetur adipiscing elit ut elit.</p>
-                                    <!-- <div class="d-flex flex-row align-items-center gspace-2 gspace-xl-4">
-                                        <div>
-                                            <a href="./booking.html" class="btn btn-accent">
-                                                <span class="btn-title">Book a Court</span>
-                                                <span class="icon-circle">
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <button class="request-loader" data-video="https://www.youtube.com/embed/VhBl3dHT5SY?autoplay=1">
-                                            <i class="fa-solid fa-play"></i>
-                                        </button>
-                                    </div> -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <% if (agendaItems.length) { %>
+  <section class="mb-10">
+    <div class="mb-4 flex items-end justify-between">
+      <h2 class="text-xl font-semibold">Agenda Akademik Terdekat</h2>
+      <a href="/kalender-akademik" class="text-sm font-semibold text-primary">Lihat kalender lengkap →</a>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% agendaItems.forEach(e => { %>
+        <div class="card card-body">
+          <%- include('../components/badge', { text: e.status.label, tone: e.status.tone }) %>
+          <p class="mt-2 font-semibold text-ink"><%= e.nama %></p>
+          <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
         </div>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
 
-        <!-- Pinned Section -->
-        <div class="section">
-            <div class="hero-container">
-                <div class="d-flex flex-column gspace-5">
-                    <div class="blog-title-container">
-                        <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-                            <div class="col">
-                                <div class="d-flex flex-column gspace-2 justify-content-center justify-content-md-start text-center text-md-start animate-box animate__animated animated"
-                                    data-animate="animate__fadeInLeft">
-                                    <div>
-                                        <div class="sub-heading">
-                                            <i class="fa-solid fa-thumbtack accent-color-2"></i>
-                                            <span class="sub-heading-title">Pinned</span>
-                                        </div>
-                                    </div>
-                                    <h2>Konten Prioritas</h2>
-                                    <p class="mb-0">Berita, pengumuman, dan dokumen yang diprioritaskan.</p>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex flex-column h-100 align-items-center justify-content-center align-items-md-end justify-content-md-end animate-box animate__animated animated"
-                                    data-animate="animate__fadeInRight">
-                                    <a href="/berita" class="btn btn-accent">
-                                        <span class="btn-title">
-                                            <span>Lihat Semua Konten</span>
-                                        </span>
-                                        <span class="icon-circle">
-                                            <i class="fa-solid fa-arrow-right"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%
-                        const pinnedItems = [];
-                        (pinnedNews || []).forEach(function(item){
-                            pinnedItems.push({
-                                type: 'Berita',
-                                typeColor: '#0d6efd',
-                                title: item.title,
-                                href: '/berita/' + item.slug,
-                                image: item.featuredImage || '/assets/landing-page/images/dummy-img-600x600.jpg',
-                                createdAt: item.createdAt,
-                                summary: (item.body || '').replace(/<[^>]*>/g, '').trim(),
-                                external: false,
-                            });
-                        });
-                        (pinnedPengumumans || []).forEach(function(item){
-                            pinnedItems.push({
-                                type: 'Pengumuman',
-                                typeColor: '#f59e0b',
-                                title: item.title,
-                                href: '/pengumuman/' + item.slug,
-                                image: item.featuredImage || '/assets/landing-page/images/dummy-img-600x600.jpg',
-                                createdAt: item.createdAt,
-                                summary: (item.body || '').replace(/<[^>]*>/g, '').trim(),
-                                external: false,
-                            });
-                        });
-                        (pinnedDocs || []).forEach(function(item){
-                            pinnedItems.push({
-                                type: 'Dokumen Akademik',
-                                typeColor: '#16a34a',
-                                title: item.name,
-                                href: item.file || '/dokumen-akademik',
-                                image: item.cover || '/assets/landing-page/images/dummy-img-600x800.jpg',
-                                createdAt: item.createdAt,
-                                summary: (item.keterangan || 'Dokumen akademik resmi.').trim(),
-                                external: !!item.file,
-                            });
-                        });
-                        pinnedItems.sort(function(a, b) {
-                            return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
-                        });
-                    %>
-                    <div class="row row-cols-xl-3 row-cols-md-2 row-cols-1 grid-spacer-2">
-                        <% if (pinnedItems.length) { %>
-                            <% pinnedItems.forEach(function(item){ %>
-                            <div class="col">
-                                <div class="card card-blog animate-box animate__animated animated" data-animate="animate__fadeInUp">
-                                    <a href="<%= item.href %>" <% if (item.external) { %>target="_blank" rel="noopener"<% } %>>
-                                        <div class="image-container blog-image">
-                                            <img src="<%= item.image %>" alt="<%= item.title %>">
-                                            <div class="blog-content">
-                                                <div class="d-flex flex-row align-items-center justify-content-between gspace-2 mb-2">
-                                                    <div class="meta-data">
-                                                        <i class="fa-solid fa-thumbtack"></i>
-                                                        <span>Pinned</span>
-                                                    </div>
-                                                    <span class="badge text-white px-2 py-1" style="background:<%= item.typeColor %>; border-radius: 999px;"><%= item.type %></span>
-                                                </div>
-                                                <h4 class="secondary-accent mb-1"><%= item.title %></h4>
-                                                <div class="meta-data mb-2">
-                                                    <i class="fa-solid fa-calendar"></i>
-                                                    <span><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                                                </div>
-                                                <p class="secondary-accent mb-0" style="font-size:.9rem;line-height:1.45;">
-                                                    <%= item.summary ? item.summary.slice(0, 110) : '-' %><%= item.summary && item.summary.length > 110 ? '...' : '' %>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <% }); %>
-                        <% } else { %>
-                            <div class="col-12">
-                                <div class="alert alert-warning text-center">Belum ada konten yang di-pin.</div>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>>
+  <div class="grid gap-10 lg:grid-cols-2">
+    <% if (pengumumanTerbaru.length) { %>
+    <section>
+      <div class="mb-4 flex items-end justify-between">
+        <h2 class="text-xl font-semibold">Pengumuman Terbaru</h2>
+        <a href="/pengumuman" class="text-sm font-semibold text-primary">Lihat semua →</a>
+      </div>
+      <ul class="card divide-y divide-line">
+        <% pengumumanTerbaru.forEach(p => { %>
+          <li class="flex gap-4 p-4">
+            <%- include('../components/date-block', { date: p.createdAt }) %>
+            <a href="/pengumuman/<%= p.slug %>" class="min-w-0 flex-1 font-medium text-ink hover:text-primary"><%= p.title %></a>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+    <% } %>
 
-        <!-- Chart Akreditasi Section -->
-        <div class="section-wrapper py-0">
-            <div class="section section-academy" id="akreditasi-section">
-                <div class="hero-container">
-                    <div class="d-flex flex-column flex-lg-row gspace-4 align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="sub-heading mb-2">
-                                <i class="fa-solid fa-circle accent-color-2"></i>
-                                <span class="sub-heading-title">Akreditasi</span>
-                            </div>
-                            <h3 class="secondary-accent mb-2">Capaian Akreditasi Kampus</h3>
-                            <p class="text-white mb-3">Distribusi peringkat akreditasi program berdasarkan data terkini.</p>
-                            <%
-                                const akreditasiPalette = ['#0ea5e9', '#22c55e', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6', '#f97316', '#6366f1'];
-                                const akreditasiLegend = Array.isArray(accreditationChart)
-                                    ? accreditationChart.filter(function(item){ return item && Number(item.value) > 0; })
-                                    : [];
-                            %>
-                            <ul class="list-unstyled d-flex flex-wrap gap-3 mb-0 text-white">
-                                <% if (akreditasiLegend.length) { %>
-                                    <% akreditasiLegend.forEach(function(item, idx){ %>
-                                    <li class="d-flex align-items-center gap-2">
-                                        <span class="badge rounded-circle" style="width:14px; height:14px; background:<%= akreditasiPalette[idx % akreditasiPalette.length] %>;"></span>
-                                        <span><%= item.label %> (<%= item.value %>)</span>
-                                    </li>
-                                    <% }); %>
-                                <% } else { %>
-                                    <li class="d-flex align-items-center gap-2">
-                                        <span class="badge rounded-circle" style="width:14px; height:14px; background:#94a3b8;"></span>
-                                        <span>Belum Ada Data</span>
-                                    </li>
-                                <% } %>
-                            </ul>
-                        </div>
-                        <div class="flex-grow-1 w-100">
-                            <div class="card shadow-sm border-0 bg-dark" style="border-radius:16px;">
-                                <div class="card-body">
-                                    <%
-                                        const akreditasiTotal = akreditasiLegend.reduce(function(sum, item){
-                                            return sum + (Number(item && item.value) || 0);
-                                        }, 0);
-                                        const akreditasiTerbanyak = akreditasiLegend.reduce(function(top, item){
-                                            const current = Number(item && item.value) || 0;
-                                            if (!top || current > top.value) return { label: item.label, value: current };
-                                            return top;
-                                        }, null);
-                                    %>
-                                    <div class="d-flex flex-wrap gap-2 mb-3">
-                                        <span class="badge px-3 py-2" style="border-radius:999px; background:#0ea5e91a; color:#0369a1;">
-                                            Total Data: <strong><%= akreditasiTotal %></strong>
-                                        </span>
-                                        <span class="badge px-3 py-2" style="border-radius:999px; background:#22c55e1a; color:#166534;">
-                                            Jumlah Kategori: <strong><%= akreditasiLegend.length %></strong>
-                                        </span>
-                                        <span class="badge px-3 py-2" style="border-radius:999px; background:#f59e0b1a; color:#92400e;">
-                                            Terbanyak:
-                                            <strong><%= akreditasiTerbanyak ? (akreditasiTerbanyak.label + ' (' + akreditasiTerbanyak.value + ')') : '-' %></strong>
-                                        </span>
-                                    </div>
-                                    <div style="border-radius:14px; background:linear-gradient(160deg,#212529 0%, #212529 100%); padding:14px 14px 6px; box-shadow: inset 0 0 0 1px rgba(148,163,184,0.22);">
-                                        <canvas id="akreditasiChart" height="240"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <% if (institusiAcc.length || peringkatStats.length) { %>
+    <section>
+      <h2 class="mb-4 text-xl font-semibold">Status Mutu Institusi</h2>
+      <div class="card card-body">
+        <% institusiAcc.forEach(a => { %>
+          <div class="flex items-center justify-between gap-3 border-b border-line pb-4 last:border-0 last:pb-0">
+            <div>
+              <span class="text-2xl font-bold text-primary"><%= a.peringkat %></span>
+              <p class="text-xs text-muted"><%= a.lembaga ? a.lembaga.singkatan : '—' %> · s.d. <%= formatTanggal(a.berlakuSampai) %></p>
             </div>
-        </div>
-
-        <!-- Pengumuman Section -->
-        <div class="section">
-            <div class="hero-container">
-                <div class="d-flex flex-column gspace-5">
-                    <div class="blog-title-container">
-                        <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-                            <div class="col">
-                                <div class="d-flex flex-column gspace-2 justify-content-center justify-content-md-start text-center text-md-start animate-box animate__animated animated"
-                                    data-animate="animate__fadeInLeft">
-                                    <div>
-                                        <div class="sub-heading">
-                                            <i class="fa-solid fa-circle accent-color-2"></i>
-                                            <span class="sub-heading-title">Pengumuman</span>
-                                        </div>
-                                    </div>
-                                    <h2>Pengumuman Akademik</h2>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex flex-column h-100 align-items-center justify-content-center align-items-md-end justify-content-md-end animate-box animate__animated animated"
-                                    data-animate="animate__fadeInRight">
-                                    <a href="/pengumuman" class="btn btn-accent">
-                                        <span class="btn-title">
-                                            <span>Read More</span>
-                                        </span>
-                                        <span class="icon-circle">
-                                            <i class="fa-solid fa-arrow-right"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-xl-3 row-cols-md-2 row-cols-1 grid-spacer-2">
-                        <% if (pengumumans && pengumumans.length) { %>
-                        <% pengumumans.forEach(function(item){ %>
-                        <div class="col">
-                            <div class="card card-blog animate-box animate__animated animated"
-                                data-animate="animate__fadeInUp">
-                                <a href="/pengumuman/<%= item.slug %>">
-                                    <div class="image-container blog-image">
-                                        <img src="<%= item.featuredImage || '/assets/landing-page/images/dummy-img-600x600.jpg' %>"
-                                            alt="<%= item.title %>">
-                                        <div class="blog-content">
-                                            <div
-                                                class="d-flex flex-row align-items-center justify-content-start gspace-2">
-                                                <div class="meta-data">
-                                                    <i class="fa-solid fa-calendar"></i>
-                                                    <span><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                                                </div>
-                                                <div class="meta-data">
-                                                    <i class="fa-solid fa-folder"></i>
-                                                    <span>Pengumuman</span>
-                                                </div>
-                                            </div>
-                                            <h4 class="secondary-accent"><%= item.title %></h4>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <% }); %>
-                        <% } else { %>
-                        <div class="col-12">
-                            <div class="alert alert-warning text-center">Belum ada pengumuman.</div>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chart Lulusan Section -->
-        <div class="section-wrapper py-0">
-            <div class="section section-academy">
-                <div class="hero-container">
-                    <div class="d-flex flex-column flex-lg-row gspace-4 align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="sub-heading mb-2">
-                                <i class="fa-solid fa-circle accent-color-2"></i>
-                                <span class="sub-heading-title">Lulusan</span>
-                            </div>
-                            <h3 class="secondary-accent mb-2">Tren Kelulusan per Periode</h3>
-                            <p class="mb-3 text-white">Perbandingan jumlah lulusan per tahun dengan pemisahan periode I, II, dan III.</p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <div class="pill d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm" style="border-radius:999px; background:#0ea5e91a;">
-                                    <span class="badge rounded-circle" style="width:12px; height:12px; background:#0ea5e9;"></span>
-                                    <span class="fw-semibold">Periode I</span>
-                                </div>
-                                <div class="pill d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm" style="border-radius:999px; background:#22c55e1a;">
-                                    <span class="badge rounded-circle" style="width:12px; height:12px; background:#22c55e;"></span>
-                                    <span class="fw-semibold">Periode II</span>
-                                </div>
-                                <div class="pill d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm" style="border-radius:999px; background:#f973161a;">
-                                    <span class="badge rounded-circle" style="width:12px; height:12px; background:#f97316;"></span>
-                                    <span class="fw-semibold">Periode III</span>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <span class="badge accent-bg text-white px-3 py-2 shadow-sm">Total lulusan: <%= lulusanChart ? lulusanChart.total : 0 %></span>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 w-100">
-                            <div class="card shadow-sm border-0 bg-dark" style="border-radius:16px;">
-                                <div class="card-body">
-                                    <%
-                                        const lulusanLabels = lulusanChart && Array.isArray(lulusanChart.labels) ? lulusanChart.labels : [];
-                                        const lulusanDatasets = lulusanChart && Array.isArray(lulusanChart.datasets) ? lulusanChart.datasets : [];
-                                        const lulusanTotal = lulusanChart ? (Number(lulusanChart.total) || 0) : 0;
-                                        const lulusanYearsCount = lulusanLabels.length;
-                                        const lulusanYearRange = lulusanYearsCount
-                                            ? (lulusanYearsCount === 1 ? String(lulusanLabels[0]) : `${lulusanLabels[0]} - ${lulusanLabels[lulusanYearsCount - 1]}`)
-                                            : '-';
-                                        const lulusanPeriodeTotals = lulusanDatasets.map(function(ds){
-                                            const sum = Array.isArray(ds.data)
-                                                ? ds.data.reduce(function(acc, n){ return acc + (Number(n) || 0); }, 0)
-                                                : 0;
-                                            return { label: ds.label || '-', value: sum };
-                                        });
-                                        const lulusanTopPeriode = lulusanPeriodeTotals.reduce(function(top, item){
-                                            if (!top || item.value > top.value) return item;
-                                            return top;
-                                        }, null);
-                                    %>
-                                    <div class="d-flex flex-wrap gap-2 mb-3">
-                                        <span class="badge px-3 py-2" style="border-radius:999px; background:#0ea5e91a; color:#0369a1;">
-                                            Rentang Tahun: <strong><%= lulusanYearRange %></strong>
-                                        </span>
-                                        <span class="badge px-3 py-2" style="border-radius:999px; background:#22c55e1a; color:#166534;">
-                                            Total Lulusan: <strong><%= lulusanTotal %></strong>
-                                        </span>
-                                        <span class="badge px-3 py-2" style="border-radius:999px; background:#f973161a; color:#9a3412;">
-                                            Periode Tertinggi:
-                                            <strong><%= lulusanTopPeriode ? `${lulusanTopPeriode.label} (${lulusanTopPeriode.value})` : '-' %></strong>
-                                        </span>
-                                    </div>
-                                    <div style="border-radius:14px; background:linear-gradient(160deg,#212529 0%, #212529 100%); padding:14px 14px 6px; box-shadow: inset 0 0 0 1px rgba(148,163,184,0.22);">
-                                        <canvas id="lulusanChart" height="260"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dokumen Section -->
-        <div class="section">
-            <div class="hero-container">
-                <div class="d-flex flex-column gspace-5">
-                    <div class="service-title-container">
-                        <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-                            <div class="col">
-                                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center animate-box animate__animated animated"
-                                    data-animate="animate__fadeInLeft">
-                                    <div>
-                                        <div class="sub-heading">
-                                            <i class="fa-solid fa-circle accent-color-2"></i>
-                                            <span class="sub-heading-title">Dokumen</span>
-                                        </div>
-                                    </div>
-                                    <h2>Dokumen Akademik</h2>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex flex-column h-100 align-items-center align-items-md-end justify-content-center justify-content-md-end animate-box animate__animated animated"
-                                    data-animate="animate__fadeInRight">
-                                    <a href="/dokumen-akademik" class="btn btn-accent">
-                                        <span class="btn-title">Lihat Semua</span>
-                                        <span class="icon-circle"><i class="fa-solid fa-arrow-right"></i></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-xl-4 row-cols-md-2 row-cols-1 grid-spacer-2 w-100">
-                        <% if (latestDocs && latestDocs.length) { %>
-                        <% latestDocs.forEach(function(doc, idx){ %>
-                        <div class="col">
-                            <div class="card card-service animate-box animate__animated animated"
-                                data-animate="animate__fadeInRight">
-                                <div class="image-container">
-                                    <div class="service-icon-container">
-                                        <div class="service-icon">
-                                            <img src="/assets/landing-page/images/Icon-5.png" alt="Dokumen"
-                                                class="img-fluid">
-                                        </div>
-                                    </div>
-                                    <div class="position-absolute top-0 start-0 m-3">
-                                        <span class="badge accent-bg text-white px-3 py-2 shadow-sm">Dokumen
-                                            #<%= idx + 1 %></span>
-                                    </div>
-                                    <img src="<%= doc.cover || '/assets/landing-page/images/dummy-img-600x800.jpg' %>"
-                                        alt="Dokumen <%= doc.name %>" class="service-img">
-                                    <div class="service-detail-container">
-                                        <div class="service-detail">
-                                            <h4 class="secondary-accent"><%= doc.name %></h4>
-                                            <div>
-                                                <% if (doc.file) { %>
-                                                <a href="<%= doc.file %>" class="service-btn" target="_blank"
-                                                    rel="noopener">
-                                                    <span class="icon-circle">
-                                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                                    </span>
-                                                </a>
-                                                <% } %>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <% }); %>
-                        <% } else { %>
-                        <div class="col-12">
-                            <div class="alert alert-warning text-center">Belum ada dokumen akademik.</div>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Section Modal Video -->
-        <div class="section p-0">
-            <div id="modal-overlay" class="modal-overlay">
-                <span class="my-close"><i class="fa-solid fa-xmark"></i></span>
-                <div class="my-modal">
-                    <iframe id="my-video-frame" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-
-        <!-- Video Profil: tampil hanya bila URL video diisi di Pengaturan Situs -->
-        <% if (setting && setting.landingVideoUrl) { %>
-        <div class="section-wrapper py-0">
-            <div class="section section-academy">
-                <div class="hero-container">
-                    <div class="video-profile-layout">
-                        <div class="academy-title-container">
-                            <div class="academy-heading-container animate-box animate__animated animated"
-                                data-animate="animate__fadeInLeft">
-                                <div>
-                                    <div class="sub-heading">
-                                        <i class="fa-solid fa-circle accent-color-2"></i>
-                                        <span class="sub-heading-title">Video Profil</span>
-                                    </div>
-                                </div>
-                                <p class="video-profile-description mb-0">
-                                    Saksikan video profil resmi untuk mengenal kampus, layanan, dan suasana akademik
-                                    UNJANI secara ringkas.
-                                </p>
-                            </div>
-                            <!-- <div class="academy-title-image animate-box animate__animated animated" data-animate="animate__fadeInUp">
-                                <div class="image-container overflow-visible">
-                                    <img src="/assets/landing-page/images/dummy-img-600x800.jpg" alt="Academy" class="img-fluid">
-                                </div>
-                            </div>
-                            <div class="academy-title-cta  animate-box animate__animated animated" data-animate="animate__fadeInRight">
-                                <p class="secondary-accent">
-                                    From beginners to future pros — our structured training programs are designed for every age and skill level. Join certified coaches and elevate your game.
-                                </p>
-                                <div>
-                                    <a href="./service.html" class="btn btn-accent">
-                                        <span class="btn-title">
-                                            Explore our Programs
-                                        </span>
-                                        <span class="icon-circle">
-                                            <i class="fa-solid fa-arrow-right"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                            </div> -->
-                        </div>
-                        <!-- <div class="academy-counter-container">
-                            <div class="row row-cols-xl-3 row-cols-1 grid-spacer-2">
-                                <div class="col">
-                                    <div class="d-flex flex-column gspace-1 animate-box animate__animated animated-delay-fast" data-animate="animate__fadeInRight">
-                                        <div class="d-flex flex-column flex-md-row gspace-1 gspace-md-2 align-items-center text-center text-md-start">
-                                            <span class="counter academy-stat" data-target="150"></span>
-                                            <h5 class="secondary-accent">Students Trained to Competitive Level</h5>
-                                        </div>
-                                        <p class="academy-stat-description">Our academy has successfully trained over 150 players who now compete in regional and national tournaments.</p>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="d-flex flex-column gspace-1  animate-box animate__animated animated" data-animate="animate__fadeInRight">
-                                        <div class="d-flex flex-column flex-md-row gspace-1 gspace-md-2 align-items-center text-center text-md-start">
-                                            <span class="counter academy-stat" data-target="30"></span>
-                                            <h5 class="secondary-accent">National Certifications & Recognitions</h5>
-                                        </div>
-                                        <p class="academy-stat-description">Adelux Academy is officially recognized by 3 national-level padel and sports development organizations.</p>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="d-flex flex-column gspace-1  animate-box animate__animated animated-delay-slow" data-animate="animate__fadeInRight">
-                                        <div class="d-flex flex-column flex-md-row gspace-1 gspace-md-2 align-items-center text-center text-md-start">
-                                            <span class="counter academy-stat" data-target="85"></span>
-                                            <h5 class="secondary-accent">Championship Won by Our Coaches</h5>
-                                        </div>
-                                        <p class="academy-stat-description">Our coaching team has collectively earned 12 prestigious padel championship titles a testament to their expertise</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <div class="academy-video-section">
-                            <div class="academy-video-container">
-                                <div class="academy-video-wrapper">
-                                    <iframe
-                                        src="<%= setting.landingVideoUrl %>"
-                                        title="Landing Video"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                                    <div class="video-overlay"></div>
-                                </div>
-                                <div class="video-profile-cta">
-                                    <a href="<%= setting.landingVideoUrl.replace('embed/', 'watch?v=') %>"
-                                        target="_blank" rel="noopener" class="btn btn-outline-accent btn-sm">Buka di
-                                        YouTube</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <%- include('../components/badge', { text: a.status.label, tone: a.status.tone }) %>
+          </div>
+        <% }) %>
+        <% if (peringkatStats.length) { %>
+        <div class="mt-4 flex flex-wrap gap-2 border-t border-line pt-4">
+          <% peringkatStats.forEach(p => { %><span class="badge badge-neutral"><%= p.peringkat %> <%= p.total %></span><% }) %>
         </div>
         <% } %>
-        <!-- Kegitatan Section -->
-        <div class="section">
-            <div class="hero-container">
-                <div class="d-flex flex-column gspace-5">
-                    <div class="blog-title-container">
-                        <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-                            <div class="col">
-                                <div class="d-flex flex-column gspace-2 justify-content-center justify-content-md-start text-center text-md-start animate-box animate__animated animated"
-                                    data-animate="animate__fadeInLeft">
-                                    <div>
-                                        <div class="sub-heading">
-                                            <i class="fa-solid fa-circle accent-color-2"></i>
-                                            <span class="sub-heading-title">Kegiatan</span>
-                                        </div>
-                                    </div>
-                                    <h2>Kegiatan Akademik</h2>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="d-flex flex-column h-100 align-items-center justify-content-center align-items-md-end justify-content-md-end animate-box animate__animated animated"
-                                    data-animate="animate__fadeInRight">
-                                    <a href="/berita" class="btn btn-accent">
-                                        <span class="btn-title"><span>Read More</span></span>
-                                        <span class="icon-circle"><i class="fa-solid fa-arrow-right"></i></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row row-cols-xl-3 row-cols-md-2 row-cols-1 grid-spacer-2">
-                        <% if (latestNews && latestNews.length) { %>
-                        <% latestNews.forEach(function(item){ %>
-                        <div class="col">
-                            <div class="card card-blog animate-box animate__animated animated"
-                                data-animate="animate__fadeInUp">
-                                <a href="/berita/<%= item.slug %>">
-                                    <div class="image-container blog-image">
-                                        <img src="<%= item.featuredImage || '/assets/landing-page/images/dummy-img-600x600.jpg' %>"
-                                            alt="<%= item.title %>">
-                                        <div class="blog-content">
-                                            <div
-                                                class="d-flex flex-row align-items-center justify-content-start gspace-2">
-                                                <div class="meta-data">
-                                                    <i class="fa-solid fa-calendar"></i>
-                                                    <span><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                                                </div>
-                                                <div class="meta-data">
-                                                    <i class="fa-solid fa-folder"></i>
-                                                    <span>Berita</span>
-                                                </div>
-                                            </div>
-                                            <h4 class="secondary-accent"><%= item.title %></h4>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <% }); %>
-                        <% } else { %>
-                        <div class="col-12">
-                            <div class="alert alert-warning text-center">Belum ada berita.</div>
-                        </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <a href="/akreditasi" class="mt-4 inline-flex min-h-6 items-center text-sm font-semibold text-primary">Lihat semua akreditasi →</a>
+      </div>
+    </section>
+    <% } %>
+  </div>
 
+  <% if (kegiatanTerbaru.length) { %>
+  <section class="mt-10">
+    <div class="mb-4 flex items-end justify-between">
+      <h2 class="text-xl font-semibold">Kegiatan Akademik</h2>
+      <a href="/berita" class="text-sm font-semibold text-primary">Lihat semua →</a>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <% kegiatanTerbaru.forEach(n => { %>
+        <article class="card overflow-hidden">
+          <a href="/berita/<%= n.slug %>" class="block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
+            <% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-full object-cover" loading="lazy"><% } %>
+          </a>
+          <div class="card-body">
+            <p class="text-xs text-muted"><%= formatTanggal(n.createdAt) %></p>
+            <a href="/berita/<%= n.slug %>" class="mt-1 block line-clamp-2 font-semibold text-ink hover:text-primary"><%= n.title %></a>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
 
+  <% if (lulusan) { %>
+  <section class="mt-10 grid gap-4 sm:grid-cols-3">
+    <div class="card card-body text-center">
+      <p class="text-3xl font-bold tabular-nums text-primary"><%= formatAngka(lulusan.total) %></p>
+      <p class="text-sm text-muted">Lulusan tahun <%= lulusan.tahun %></p>
+    </div>
+    <div class="card card-body text-center">
+      <p class="text-3xl font-bold tabular-nums text-ink"><%= formatAngka(lulusan.totalSemua) %></p>
+      <p class="text-sm text-muted">Total lulusan tercatat</p>
+    </div>
+    <% if (lulusan.persenPerubahan !== null) { %>
+    <div class="card card-body text-center">
+      <p class="text-3xl font-bold tabular-nums <%= lulusan.persenPerubahan >= 0 ? 'text-success' : 'text-danger' %>"><%= lulusan.persenPerubahan >= 0 ? '+' : '' %><%= lulusan.persenPerubahan %>%</p>
+      <p class="text-sm text-muted">Dibanding tahun sebelumnya</p>
+    </div>
+    <% } %>
+  </section>
+  <% } %>
 
-    </main>
+  <% if (setting && setting.landingVideoUrl) { %>
+  <section class="mt-10">
+    <h2 class="mb-4 text-xl font-semibold">Video Profil</h2>
+    <div class="aspect-video overflow-hidden rounded-card border border-line">
+      <iframe src="<%= setting.landingVideoUrl %>" title="Video Profil Bidang Akademik" class="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </section>
+  <% } %>
 
-    <!-- Footer Section -->
-    <%- include("../partials/landing-footer") %>
-
-    <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-    <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-    <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-    <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script>
-        window.LANDING_SLIDES = <%- JSON.stringify((setting && setting.slideshowImages && setting.slideshowImages.length) ? setting.slideshowImages : []) %>;
-        window.AKREDITASI_DATA = <%- JSON.stringify(typeof accreditationChart !== 'undefined' ? accreditationChart : []) %>;
-        window.LULUSAN_DATA = <%- JSON.stringify(typeof lulusanChart !== 'undefined' ? lulusanChart : { labels: [], datasets: [], total: 0 }) %>;
-    </script>
-    <script src="/assets/landing-page/js/banner.js"></script>
-    <script src="/assets/landing-page/js/script.js"></script>
-    <script src="/assets/landing-page/js/submit-form.js"></script>
-    <script src="/assets/landing-page/js/swiper-script.js"></script>
-    <script src="/assets/landing-page/js/video_embedded.js"></script>
-    <script>
-      (function(){
-        const canvas = document.getElementById('akreditasiChart');
-        if(!canvas || !window.Chart) return;
-        const section = document.getElementById('akreditasi-section');
-        const source = Array.isArray(window.AKREDITASI_DATA) ? window.AKREDITASI_DATA : [];
-        const palette = ['#0ea5e9', '#22c55e', '#f59e0b', '#8b5cf6', '#ef4444', '#14b8a6', '#f97316', '#6366f1'];
-        const activeCategories = source
-          .map((item, idx) => ({
-            label: String(item && item.label ? item.label : '').trim(),
-            value: Number(item && item.value ? item.value : 0) || 0,
-            color: palette[idx % palette.length]
-          }))
-          .filter((item) => item.label && item.value > 0);
-        const chartCategories = activeCategories.length
-          ? activeCategories
-          : [{ label: 'Belum Ada Data', value: 0, color: '#94a3b8' }];
-        const labels = chartCategories.map((item) => item.label);
-        const targetValues = chartCategories.map((item) => item.value);
-        const backgroundColor = chartCategories.map((item) => item.color);
-        const maxValue = targetValues.length ? Math.max(...targetValues) : 0;
-
-        let chart = null;
-        let hasAnimated = false;
-        const hexToRgba = function(hex, alpha) {
-          const fallback = `rgba(148, 163, 184, ${alpha})`;
-          const raw = String(hex || '').replace('#', '').trim();
-          if (!raw) return fallback;
-          const normalized = raw.length === 3
-            ? raw.split('').map((ch) => ch + ch).join('')
-            : raw;
-          if (!/^[0-9a-f]{6}$/i.test(normalized)) return fallback;
-          const intValue = parseInt(normalized, 16);
-          const r = (intValue >> 16) & 255;
-          const g = (intValue >> 8) & 255;
-          const b = intValue & 255;
-          return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        };
-        const barShadowPlugin = {
-          id: 'akreditasiBarShadow',
-          beforeDatasetDraw: function(chartInstance, args) {
-            if (args.index !== 0) return;
-            const ctx = chartInstance.ctx;
-            ctx.save();
-            ctx.shadowColor = 'rgba(15, 23, 42, 0.18)';
-            ctx.shadowBlur = 16;
-            ctx.shadowOffsetY = 8;
-          },
-          afterDatasetDraw: function(chartInstance, args) {
-            if (args.index !== 0) return;
-            chartInstance.ctx.restore();
-          }
-        };
-        const valueLabelPlugin = {
-          id: 'akreditasiValueLabel',
-          afterDatasetsDraw: function(chartInstance) {
-            const dataset = chartInstance.data && chartInstance.data.datasets && chartInstance.data.datasets[0];
-            const meta = chartInstance.getDatasetMeta(0);
-            if (!dataset || !meta || !meta.data) return;
-
-            const ctx = chartInstance.ctx;
-            ctx.save();
-            ctx.font = '600 11px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            meta.data.forEach(function(bar, idx) {
-              const value = Number(dataset.data[idx]);
-              if (!Number.isFinite(value) || value <= 0) return;
-              const barHeight = Math.abs(bar.base - bar.y);
-              if (barHeight < 16) return;
-              const x = bar.x;
-              const y = bar.y + ((bar.base - bar.y) / 2);
-              ctx.fillStyle = '#ffffff';
-              ctx.shadowColor = 'rgba(15, 23, 42, 0.45)';
-              ctx.shadowBlur = 2;
-              ctx.fillText(String(value), x, y);
-              ctx.shadowBlur = 0;
-            });
-
-            ctx.restore();
-          }
-        };
-
-        const renderAndAnimate = function() {
-          if (hasAnimated) return;
-          hasAnimated = true;
-
-          chart = new Chart(canvas, {
-            type: 'bar',
-            plugins: [barShadowPlugin, valueLabelPlugin],
-            data: {
-              labels,
-              datasets: [{
-                label: 'Jumlah Data',
-                data: targetValues.map(() => 0),
-                backgroundColor: function(context) {
-                  const idx = context.dataIndex;
-                  const baseColor = backgroundColor[idx] || '#94a3b8';
-                  const chartArea = context.chart && context.chart.chartArea;
-                  if (!chartArea) return baseColor;
-
-                  const gradient = context.chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                  gradient.addColorStop(0, hexToRgba(baseColor, 0.96));
-                  gradient.addColorStop(1, hexToRgba(baseColor, 0.46));
-                  return gradient;
-                },
-                borderColor: function(context) {
-                  return backgroundColor[context.dataIndex] || '#94a3b8';
-                },
-                borderWidth: 1.5,
-                borderRadius: 0,
-                borderSkipped: false,
-                hoverBorderWidth: 2.2,
-                hoverBackgroundColor: function(context) {
-                  const baseColor = backgroundColor[context.dataIndex] || '#94a3b8';
-                  return hexToRgba(baseColor, 0.98);
-                }
-              }]
-            },
-            options: {
-              responsive: true,
-              animation: {
-                duration: 2400,
-                easing: 'easeOutCubic',
-                delay: function(context) {
-                  if (context.type !== 'data' || context.mode !== 'default') return 0;
-                  return context.dataIndex * 140;
-                }
-              },
-              interaction: {
-                mode: 'index',
-                intersect: false
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  suggestedMax: Math.max(maxValue + 1, 2),
-                  grace: '18%',
-                  ticks: {
-                    stepSize: 1,
-                    color: '#cbd5e1',
-                    font: { weight: '600' },
-                    callback: function(value) {
-                      return Number.isInteger(value) ? value : '';
-                    }
-                  },
-                  grid: { drawBorder: false, color: '#ffffff' }
-                },
-                x: {
-                  ticks: { color: '#e2e8f0', font: { weight: '700' } },
-                  grid: { drawBorder: false, color: '#ffffff' }
-                }
-              },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  displayColors: false,
-                  backgroundColor: 'rgba(15, 23, 42, 0.96)',
-                  titleColor: '#ffffff',
-                  bodyColor: '#e2e8f0',
-                  borderColor: 'rgba(148,163,184,0.35)',
-                  borderWidth: 1,
-                  padding: 10,
-                  callbacks: {
-                    title: function(items) {
-                      return items && items[0] ? `Akreditasi ${items[0].label}` : 'Akreditasi';
-                    },
-                    label: function(ctx) {
-                      return `Jumlah: ${ctx.raw} data`;
-                    }
-                  }
-                }
-              }
-            }
-          });
-
-          requestAnimationFrame(function() {
-            if (!chart) return;
-            chart.data.datasets[0].data = targetValues;
-            chart.update();
-          });
-        };
-
-        if (!section) {
-          renderAndAnimate();
-          return;
-        }
-
-        if ('IntersectionObserver' in window) {
-          const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-              if (!entry.isIntersecting) return;
-              renderAndAnimate();
-              observer.disconnect();
-            });
-          }, { threshold: 0.35 });
-          observer.observe(section);
-          return;
-        }
-
-        const onScroll = function() {
-          const rect = section.getBoundingClientRect();
-          const viewport = window.innerHeight || document.documentElement.clientHeight || 0;
-          const isVisible = rect.top <= viewport * 0.75 && rect.bottom >= viewport * 0.25;
-          if (!isVisible) return;
-
-          renderAndAnimate();
-          window.removeEventListener('scroll', onScroll);
-          window.removeEventListener('resize', onScroll);
-        };
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
-        onScroll();
-      })();
-
-      (function(){
-        const ctx = document.getElementById('lulusanChart');
-        if(!ctx || !window.Chart) return;
-        const source = window.LULUSAN_DATA || { labels: [], datasets: [] };
-        const lulusanValueLabelPlugin = {
-          id: 'lulusanValueLabel',
-          afterDatasetsDraw: function(chartInstance) {
-            const chartCtx = chartInstance.ctx;
-            chartCtx.save();
-            chartCtx.font = '700 10px sans-serif';
-            chartCtx.textAlign = 'center';
-            chartCtx.textBaseline = 'middle';
-
-            chartInstance.data.datasets.forEach(function(dataset, datasetIndex){
-              const meta = chartInstance.getDatasetMeta(datasetIndex);
-              if (!meta || !meta.data) return;
-
-              meta.data.forEach(function(bar, dataIndex){
-                const value = Number(dataset.data && dataset.data[dataIndex]);
-                if (!Number.isFinite(value) || value <= 0) return;
-                const segmentHeight = Math.abs(bar.base - bar.y);
-                if (segmentHeight < 16) return;
-
-                const x = bar.x;
-                const y = bar.y + ((bar.base - bar.y) / 2);
-                chartCtx.fillStyle = 'rgba(255,255,255,0.95)';
-                chartCtx.fillText(String(value), x, y);
-              });
-            });
-
-            chartCtx.restore();
-          }
-        };
-        new Chart(ctx, {
-          type: 'bar',
-          plugins: [lulusanValueLabelPlugin],
-          data: {
-            labels: source.labels || [],
-            datasets: (source.datasets || []).map(ds => ({
-              ...ds,
-              borderSkipped: false,
-              borderRadius: 0,
-              stack: 'periode'
-            }))
-          },
-          options: {
-            responsive: true,
-            animation: { duration: 900, easing: 'easeOutQuart' },
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: { boxWidth: 12, boxHeight: 12, color: '#e2e8f0' }
-              },
-              tooltip: {
-                callbacks: {
-                  label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y || 0} lulusan`
-                }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: { color: '#cbd5e1', font: { weight: '600' } },
-                grid: { drawBorder: false, color: '#ffffff' }
-              },
-              x: {
-                stacked: true,
-                ticks: { color: '#e2e8f0', font: { weight: '600' } },
-                grid: { drawBorder: false, color: '#ffffff' }
-              }
-            }
-          }
-        });
-      })();
-    </script>
-</body>
-
-</html>
+</div>

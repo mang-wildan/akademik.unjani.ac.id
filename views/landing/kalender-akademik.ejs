@@ -1,123 +1,105 @@
-﻿<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kalender Akademik - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-  <style>
-    .calendar-pdf-frame {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .pdf-thumb canvas {
-      width: 100% !important;
-      height: auto !important;
-      border-radius: 12px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-      border: 1px solid #e5e7eb;
-    }
-  </style>
-</head>
-<body>
-  <!-- Header Section -->
-  <%- include("../partials/landing-header") %>
+<%# Kalender Akademik (FR-K-01..06). Tabel per semester; <768px otomatis jadi kartu (.data-table--stack). %>
+<%- include('../components/page-header', {
+  heading: 'Kalender Akademik',
+  lead: calendar ? `Tahun Ajaran ${calendar.tahunAjaran}${calendar.nomorSK ? ' · Ditetapkan dengan SK Rektor No. ' + calendar.nomorSK : ''}` : 'Jadwal kegiatan akademik resmi.',
+  breadcrumb: [{ label: 'Akademik' }, { label: 'Kalender Akademik' }],
+  actions: calendar ? [{ label: 'Unduh PDF Resmi', href: calendar.file, icon: 'download', variant: 'secondary' }] : [],
+}) %>
 
-  <!-- Sidebar Section -->
+<div class="container-content pb-16">
+  <% if (!calendar) { %>
+    <%- include('../components/empty-state', {
+      emptyIcon: 'event', emptyTitle: 'Kalender akademik belum tersedia',
+      emptyText: 'Admin belum mengunggah kalender akademik.',
+    }) %>
+  <% } else { %>
 
-  <main>
-    <!-- Banner -->
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
-            <h1 class="secondary-accent">Kalender Akademik</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent">Kalender Akademik</span>
-            </nav>
-          </div>
+  <% if (calendars.length > 1) { %>
+  <form method="get" class="mb-6 flex items-center gap-3">
+    <label for="tahun" class="text-sm font-medium text-muted">Tahun Ajaran</label>
+    <select id="tahun" name="tahun" class="field-control w-auto" onchange="this.form.submit()">
+      <% calendars.forEach(c => { %>
+        <option value="<%= c.tahunAjaran %>"<%= c.tahunAjaran === calendar.tahunAjaran ? ' selected' : '' %>><%= c.tahunAjaran %></option>
+      <% }) %>
+    </select>
+    <noscript><button type="submit" class="btn btn-secondary">Tampilkan</button></noscript>
+  </form>
+  <% } %>
+
+  <% if (berlangsung.length || berikutnya.length) { %>
+  <div class="mb-6 grid gap-4 md:grid-cols-2">
+    <% if (berlangsung.length) { %>
+      <% berlangsung.forEach(e => { %>
+        <div class="card card-body border-l-4 border-primary">
+          <%- include('../components/badge', { text: 'Sedang berlangsung', tone: 'success' }) %>
+          <h2 class="mt-2 text-lg font-semibold"><%= e.nama %></h2>
+          <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
         </div>
+      <% }) %>
+    <% } %>
+    <% berikutnya.forEach(e => { %>
+      <div class="card card-body border-l-4 border-accent">
+        <%- include('../components/badge', { text: 'Berikutnya', tone: 'gold' }) %>
+        <h2 class="mt-2 text-lg font-semibold"><%= e.nama %></h2>
+        <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
       </div>
+    <% }) %>
+  </div>
+  <% } %>
+
+  <div class="card" x-data="tabs" data-active="<%= Math.max(bySemester.findIndex(s => s.events.length), 0) %>">
+    <div role="tablist" aria-label="Semester" class="flex gap-1 overflow-x-auto border-b border-line p-2">
+      <% bySemester.forEach((s, i) => { %>
+        <button type="button" role="tab" id="tab-<%= i %>" aria-controls="panel-<%= i %>" data-index="<%= i %>"
+                x-on:click="select" x-on:keydown="move" x-bind:aria-selected="isActive" x-bind:tabindex="tabIndex"
+                class="btn whitespace-nowrap text-muted hover:bg-sunken aria-selected:bg-primary aria-selected:text-white">
+          <%= s.label %><% if (s.events.length) { %> <span class="ml-1 text-xs opacity-75">(<%= s.events.length %>)</span><% } %>
+        </button>
+      <% }) %>
     </div>
-
-    <!-- Content -->
-    <div class="section">
-      <div class="hero-container">
-        <div class="d-flex flex-column gspace-4">
-          <div class="service-title-container">
-            <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-              <div class="col">
-                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
-                  <div class="sub-heading col-2">
-                    <i class="fa-solid fa-circle accent-color-2"></i>
-                    <span class="sub-heading-title">Kalender Akademik</span>
-                  </div>
-                  <h2>Kalender per Tahun Ajaran</h2>
-                  <p class="text-muted">Lihat kalender akademik terbaru lengkap dengan tanggal unggah dan pengunggah.</p>
-                </div>
-              </div>
-              <div class="col d-flex justify-content-center justify-content-md-end align-items-center">
-                <div class="badge accent-bg text-white px-3 py-2">
-                  Total: <%= calendars ? calendars.length : 0 %> kalender
-                </div>
-              </div>
-            </div>
+    <% bySemester.forEach((s, i) => { %>
+      <div role="tabpanel" id="panel-<%= i %>" aria-labelledby="tab-<%= i %>" data-index="<%= i %>" x-show="isActive" tabindex="0">
+        <% if (!s.events.length) { %>
+          <div class="p-6">
+            <%- include('../components/empty-state', { emptyIcon: 'event', emptyTitle: `Belum ada kegiatan ${s.label.toLowerCase()}` }) %>
           </div>
-
-          <div class="row row-cols-1 grid-spacer-3">
-            <% if (calendars && calendars.length) { %>
-              <% calendars.forEach(function(item, idx){ %>
-                <div class="col">
-                  <div class="card card-service animate-box text-center" data-animate="animate__fadeInUp">
-                    <div class="card-body">
-                      <h3 class="mb-2 text-uppercase">Kalender Akademik Tahun Ajaran <%= item.tahunAjaran %></h3>
-                      <p class="text-muted small mb-3">
-                        Diunggah <%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %>
-                        <% const uploader = item.createdBy ? (item.createdBy.name || item.createdBy.email) : null; %>
-                        <% if (uploader) { %> oleh <%= uploader %><% } %>
-                      </p>
-                      <% if (item.file) { %>
-                        <div class="calendar-pdf-frame mb-3">
-                          <div class="pdf-thumb" data-url="<%= item.file %>" data-page="2"></div>
-                        </div>
-                        <a href="<%= item.file %>" target="_blank" class="btn btn-accent">
-                          <span class="btn-title">Lihat / Unduh</span>
-                          <span class="icon-circle"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-                        </a>
-                      <% } else { %>
-                        <div class="alert alert-warning">File kalender belum tersedia.</div>
-                      <% } %>
-                    </div>
-                  </div>
-                </div>
-              <% }); %>
-            <% } else { %>
-              <div class="col-12">
-                <div class="alert alert-warning text-center">Belum ada kalender akademik.</div>
-              </div>
-            <% } %>
-          </div>
-        </div>
+        <% } else { %>
+        <table class="data-table data-table--stack">
+          <caption class="sr-only">Kegiatan <%= s.label %></caption>
+          <thead><tr><th scope="col" class="w-12">No</th><th scope="col">Kegiatan</th><th scope="col">Waktu</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            <% s.events.forEach((e, idx) => { %>
+              <tr<%= e.status.key === 'berlangsung' ? ' class="bg-primary-soft"' : '' %>>
+                <td data-label="No"><%= idx + 1 %></td>
+                <td data-label="Kegiatan" class="font-medium"><%= e.nama %></td>
+                <td data-label="Waktu"><%= formatRentangTanggal(e.mulai, e.selesai) %></td>
+                <td data-label="Status"><%- include('../components/badge', { text: e.status.label, tone: e.status.tone }) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } %>
       </div>
-    </div>
-  </main>
+    <% }) %>
+  </div>
 
-  <!-- Footer Section -->
-  <%- include("../partials/landing-footer") %>
+  <% if (calendar.lampiran && calendar.lampiran.length) { %>
+  <div class="mt-8">
+    <h2 class="mb-3 text-xl font-semibold">Surat Edaran Terkait</h2>
+    <ul class="card divide-y divide-line">
+      <% calendar.lampiran.forEach(l => { %>
+        <li class="flex items-center gap-4 p-4">
+          <%- icon('description', 'size-8 shrink-0 text-primary') %>
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-medium"><%= l.judul %></p>
+            <p class="text-sm text-muted"><% if (l.nomorSurat) { %><%= l.nomorSurat %> · <% } %><%= formatTanggal(l.tanggal) %></p>
+          </div>
+          <a href="<%= l.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener"><%- icon('download') %>Unduh</a>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+  <% } %>
 
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="/assets/landing-page/js/pdf-thumb.js"></script>
-</body>
-</html>
+  <% } %>
+</div>

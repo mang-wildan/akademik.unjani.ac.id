@@ -1,118 +1,44 @@
-﻿<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buku Wisuda - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-  <style>
-    .wisuda-card {border:1px solid #e9eef5;border-radius:16px;box-shadow:0 12px 28px rgba(0,0,0,0.08);transition:transform .18s ease,box-shadow .18s ease;overflow:hidden;height:100%;}
-    .wisuda-card:hover {transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
-    .wisuda-cover {width:100%;aspect-ratio:3/4;object-fit:cover;}
-    .wisuda-badge {background:rgba(13,147,148,0.12);color:#0D9394;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;}
-    .btn-outline-accent {border-radius: 12px;}
-  </style>
-</head>
-<body>
-  <%- include("../partials/landing-header") %>
+<%# Buku Wisuda (FR-L-01): grid cover, filter tahun & periode. %>
+<%- include('../components/page-header', {
+  heading: 'Buku Wisuda',
+  lead: 'Arsip buku wisuda per periode.',
+  breadcrumb: [{ label: 'Publikasi' }, { label: 'Buku Wisuda' }],
+}) %>
 
-  <main>
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
-            <h1 class="secondary-accent">Buku Wisuda</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent">Buku Wisuda</span>
-            </nav>
-          </div>
-        </div>
-      </div>
+<div class="container-content pb-16">
+  <form method="get" class="card card-body mb-6 flex flex-wrap items-end gap-3">
+    <div>
+      <label for="tahun" class="field-label">Tahun</label>
+      <select id="tahun" name="tahun" class="field-control">
+        <option value="">Semua tahun</option>
+        <% tahunList.forEach(y => { %><option value="<%= y %>"<%= filters.tahun === String(y) ? ' selected' : '' %>><%= y %></option><% }) %>
+      </select>
     </div>
-
-    <div class="section">
-      <div class="hero-container">
-        <div class="service-title-container mb-4">
-          <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-            <div class="col">
-              <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
-                <div class="sub-heading">
-                  <i class="fa-solid fa-circle accent-color-2"></i>
-                  <span class="sub-heading-title">Arsip Wisuda</span>
-                </div>
-                <h2>Buku Wisuda per Periode</h2>
-                <p class="text-muted">Unduh buku wisuda beserta cover, tahun, dan periode.</p>
-              </div>
-            </div>
-            <div class="col d-flex justify-content-center justify-content-md-end align-items-center">
-              <div class="badge accent-bg text-white px-3 py-2">
-                Total: <%= gradBooks ? gradBooks.length : 0 %> buku
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <% if (gradBooks && gradBooks.length) { %>
-          <% let currentYear = null; %>
-          <% gradBooks.forEach(function(book, idx){ %>
-            <% if (book.year !== currentYear) { %>
-              <% if (currentYear !== null) { %></div><% } %>
-              <% currentYear = book.year; %>
-              <div class="mt-4 mb-3 text-center">
-                <h3 class="mb-1">Buku Wisuda Tahun <%= currentYear || '-' %></h3>
-                <div class="underline-primary-accent mx-auto" style="max-width:200px;"></div>
-              </div>
-              <div class="row g-4 mb-3 justify-content-center">
-            <% } %>
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3 d-flex">
-                  <div class="wisuda-card animate-box w-100" data-animate="animate__fadeInUp">
-                    <div class="position-absolute m-3">
-                      <span class="wisuda-badge">#<%= idx + 1 %></span>
-                    </div>
-                    <img src="<%= book.cover || '/assets/landing-page/images/dummy-img-600x800.jpg' %>" alt="<%= book.title %>" class="wisuda-cover">
-                    <div class="card-body text-center d-flex flex-column gspace-2 p-3">
-                      <h5 class="mb-1"><%= book.title %></h5>
-                      <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <span class="wisuda-badge">Periode <%= book.periode || '-' %></span>
-                        <span class="wisuda-badge">Tahun <%= book.year || '-' %></span>
-                      </div>
-                      <% if (book.src) { %>
-                        <a href="<%= book.src %>" target="_blank" class="btn btn-outline-accent w-100 mt-2">
-                          <span class="btn-title">Buka PDF</span>
-                          <span class="icon-circle"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-                        </a>
-                      <% } %>
-                    </div>
-                  </div>
-                </div>
-            <% const next = gradBooks[idx + 1]; if (!next || next.year !== currentYear) { %>
-              </div>
-            <% } %>
-          <% }); %>
-        <% } else { %>
-          <div class="row">
-            <div class="col-12">
-              <div class="alert alert-warning text-center">Belum ada buku wisuda.</div>
-            </div>
-          </div>
-        <% } %>
-      </div>
+    <div>
+      <label for="periode" class="field-label">Periode</label>
+      <select id="periode" name="periode" class="field-control">
+        <option value="">Semua periode</option>
+        <% ['I', 'II', 'III'].forEach(p => { %><option value="<%= p %>"<%= filters.periode === p ? ' selected' : '' %>>Periode <%= p %></option><% }) %>
+      </select>
     </div>
-  </main>
+    <button type="submit" class="btn btn-primary"><%- icon('filter_list') %>Terapkan</button>
+    <% if (filters.tahun || filters.periode) { %><a href="/buku-wisuda" class="btn btn-secondary">Reset</a><% } %>
+  </form>
 
-  <%- include("../partials/landing-footer") %>
-
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-</body>
-</html>
+  <% if (!gradBooks.length) { %>
+    <%- include('../components/empty-state', { emptyIcon: 'school', emptyTitle: 'Tidak ada buku wisuda yang cocok', emptyAction: (filters.tahun || filters.periode) ? { label: 'Hapus filter', href: '/buku-wisuda' } : null }) %>
+  <% } else { %>
+  <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+    <% gradBooks.forEach(b => { %>
+      <article>
+        <%# Dekoratif: judul di bawah membawa tautan yang sama dan bisa diakses. %>
+        <a href="<%= b.src %>" target="_blank" rel="noopener" class="block overflow-hidden rounded-card border border-line bg-sunken shadow-card" aria-hidden="true" tabindex="-1">
+          <img src="<%= b.cover %>" alt="" class="aspect-[3/4] w-full object-cover">
+        </a>
+        <a href="<%= b.src %>" target="_blank" rel="noopener" class="mt-2 inline-block line-clamp-2 py-1 text-sm font-semibold text-ink hover:text-primary"><%= b.title %></a>
+        <p class="text-xs text-muted">Periode <%= b.periode %> · Tahun <%= b.year %></p>
+      </article>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

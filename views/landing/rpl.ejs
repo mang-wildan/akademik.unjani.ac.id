@@ -1,179 +1,41 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPL - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-  <style>
-    /* New immersive card style */
-    .rpl-card {
-      position: relative;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 22px 48px rgba(0,0,0,0.14);
-      height: 920px;
-      display: flex;
-      flex-direction: column;
-      background: #0b3b3c;
-    }
-    .rpl-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-    .rpl-card .overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.75) 90%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 22px;
-      color: #fff;
-    }
-    .rpl-card .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .rpl-card .chip {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.35);
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(4px);
-    }
-    .rpl-card h3 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 800;
-      line-height: 1.25;
-    }
-    .rpl-card .meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-top: 8px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.85);
-    }
-    .rpl-card .cta {
-      margin-top: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #0d9394;
-      background: #fff;
-      padding: 9px 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-    }
-    .rpl-card .cta:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.32); }
-    .rpl-grid { row-gap: 28px; }
-  </style>
-</head>
-<body>
-  <%- include("../partials/landing-header") %>
+<%# RPL (FR-D-03): teks penjelasan + daftar dokumen format FR-D-01. %>
+<%- include('../components/page-header', {
+  heading: 'Rekognisi Pembelajaran Lampau (RPL)',
+  lead: 'Pengakuan atas pembelajaran yang diperoleh dari pendidikan formal, nonformal, informal, dan/atau pengalaman kerja.',
+  breadcrumb: [{ label: 'Akademik' }, { label: 'RPL' }],
+}) %>
 
-  <main>
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= setting && setting.bannerRpl ? setting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center" style="backdrop-filter: brightness(0.95);">
-            <h1 class="secondary-accent">Rekognisi Pembelajaran Lampau (RPL)</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent">RPL</span>
-            </nav>
-          </div>
+<div class="container-content pb-16">
+  <%# Teks penjelasan statis untuk F3; dipindah ke kolom yang bisa diedit admin di F4. %>
+  <div class="prose-content mb-10">
+    <h2>Apa itu RPL?</h2>
+    <p>Rekognisi Pembelajaran Lampau (RPL) adalah pengakuan terhadap capaian pembelajaran seseorang yang diperoleh dari pendidikan formal, nonformal, informal, dan/atau pengalaman kerja, untuk memperoleh pengakuan angka kredit atau kualifikasi pada pendidikan formal.</p>
+    <h2>Siapa yang dapat mengajukan?</h2>
+    <p>RPL dapat diajukan oleh calon mahasiswa atau mahasiswa aktif yang memiliki pengalaman belajar atau bekerja relevan dengan program studi yang dituju, sesuai dengan pedoman yang berlaku di Universitas Jenderal Achmad Yani.</p>
+    <h2>Alur pengajuan</h2>
+    <p>Pengajuan RPL dilakukan melalui Bidang Akademik dengan melengkapi dokumen portofolio, mengikuti asesmen, dan menunggu penetapan hasil oleh tim asesor. Unduh buku saku dan formulir di bawah untuk panduan lengkap.</p>
+  </div>
+
+  <h2 class="mb-4 text-xl font-semibold">Dokumen &amp; Panduan RPL</h2>
+  <% if (!rplDocs.length) { %>
+    <%- include('../components/empty-state', { emptyIcon: 'verified', emptyTitle: 'Belum ada dokumen RPL' }) %>
+  <% } else { %>
+  <ul class="card divide-y divide-line">
+    <% rplDocs.forEach(d => { %>
+      <li class="flex items-start gap-4 p-4">
+        <%- icon('picture_as_pdf', 'size-8 shrink-0 text-primary') %>
+        <div class="min-w-0 flex-1">
+          <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-block py-1.5 font-semibold text-ink hover:text-primary"><%= d.judul %></a>
+          <% if (d.deskripsi) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.deskripsi %></p><% } %>
+          <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+            <%- include('../components/badge', { text: d.status ? 'Aktif' : 'Arsip', tone: d.status ? 'success' : 'neutral' }) %>
+            <span>Tahun <%= d.tahun %></span>
+            <% if (d.fileSize) { %><span>· <%= formatUkuranFile(d.fileSize) %></span><% } %>
+          </p>
         </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="hero-container">
-        <div class="d-flex flex-column gspace-4">
-          <div class="service-title-container">
-            <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
-              <div class="col">
-                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
-                  <div class="sub-heading col-2">
-                    <i class="fa-solid fa-circle accent-color-2"></i>
-                    <span class="sub-heading-title">Informasi RPL</span>
-                  </div>
-                  <h2>Dokumen & Panduan RPL</h2>
-                  <p class="text-muted">Unduh panduan, formulir, dan dokumen terkait pelaksanaan RPL.</p>
-                </div>
-              </div>
-              <div class="col d-flex justify-content-center justify-content-md-end align-items-center">
-                <div class="badge accent-bg text-white px-3 py-2">
-                  Total: <%= rplDocs ? rplDocs.length : 0 %> dokumen
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row row-cols-xl-2 row-cols-md-2 row-cols-1 g-4 justify-content-center rpl-grid">
-            <% if (rplDocs && rplDocs.length) { %>
-              <% rplDocs.forEach(function(item, idx){ %>
-                <div class="col d-flex">
-                  <div class="rpl-card w-100 animate-box" data-animate="animate__fadeInUp">
-                    <img src="<%= item.cover || '/assets/landing-page/images/dummy-img-600x800.jpg' %>" alt="RPL <%= item.judul %>">
-                    <div class="overlay">
-                      <div class="chips">
-                        <span class="chip"><i class="fa-solid fa-hashtag"></i>RPL #<%= idx + 1 %></span>
-                        <span class="chip"><i class="fa-solid fa-calendar"></i><%= item.tahun || '-' %></span>
-                        <% if (item.status) { %><span class="chip" style="background:rgba(0,255,170,0.25);border-color:rgba(0,255,170,0.45);color:#e8fff6;"><i class="fa-solid fa-circle-check"></i>Aktif</span><% } %>
-                      </div>
-                      <h3><%= item.judul %></h3>
-                      <div class="meta">
-                        <span>Diunggah <%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></span>
-                        <% const uploader = item.createdBy ? (item.createdBy.name || item.createdBy.email) : null; %>
-                        <% if (uploader) { %><span>oleh <%= uploader %></span><% } %>
-                      </div>
-                      <% if (item.file) { %>
-                        <a class="cta" href="<%= item.file %>" target="_blank" rel="noopener"><i class="fa-solid fa-file-pdf"></i> Buka PDF</a>
-                      <% } %>
-                    </div>
-                  </div>
-                </div>
-              <% }); %>
-            <% } else { %>
-              <div class="col-12">
-                <div class="alert alert-warning text-center">Belum ada dokumen RPL.</div>
-              </div>
-            <% } %>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <%- include("../partials/landing-footer") %>
-
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-</body>
-</html>
+        <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download><%- icon('download') %><span class="hidden sm:inline">Unduh</span></a>
+      </li>
+    <% }) %>
+  </ul>
+  <% } %>
+</div>

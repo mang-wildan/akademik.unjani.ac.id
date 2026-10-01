@@ -1,186 +1,54 @@
-<!DOCTYPE html>
-<html lang="id">
+<%# Dokumen Akademik (FR-D-01..02): daftar, bukan kartu. %>
+<%- include('../components/page-header', {
+  heading: 'Dokumen Akademik',
+  lead: 'Formulir, pedoman, dan peraturan akademik resmi.',
+  breadcrumb: [{ label: 'Akademik' }, { label: 'Dokumen Akademik' }],
+}) %>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dokumen Akademik - BAA</title>
-  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
-  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
-  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
-</head>
+<div class="container-content grid gap-6 pb-16 lg:grid-cols-[16rem_1fr]">
+  <aside>
+    <h2 class="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">Kategori</h2>
+    <ul class="space-y-1">
+      <li><a href="/dokumen-akademik<%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between rounded-control px-3 text-sm font-medium <%= !filters.kategori ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-sunken' %>">Semua <span><%= totalDocsAll %></span></a></li>
+      <% kategoriOptions.forEach(k => { %>
+        <li><a href="/dokumen-akademik?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between rounded-control px-3 text-sm font-medium <%= filters.kategori === String(k._id) ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-sunken' %>"><%= k.nama %> <span><%= k.total %></span></a></li>
+      <% }) %>
+    </ul>
+  </aside>
 
-<body>
-  <%- include("../partials/landing-header") %>
+  <div>
+    <form method="get" role="search" class="mb-5 flex gap-2">
+      <% if (filters.kategori) { %><input type="hidden" name="kategori" value="<%= filters.kategori %>"><% } %>
+      <label for="q" class="sr-only">Cari dokumen</label>
+      <input id="q" name="q" type="search" class="field-control" placeholder="Cari judul dokumen…" value="<%= filters.q %>">
+      <button type="submit" class="btn btn-secondary"><%- icon('search') %><span class="hidden sm:inline">Cari</span></button>
+    </form>
 
-  <main>
-    <div class="section-wrapper pb-0">
-      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
-        <div class="hero-container">
-          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
-            <h1 class="secondary-accent">Dokumen Akademik</h1>
-            <nav class="breadcrumb">
-              <a href="/" class="breadcrumb-item">Home</a>
-              <span class="breadcrumb-icon">/</span>
-              <span class="breadcrumb-item recent">Dokumen Akademik</span>
-            </nav>
+    <% if (!documents.length) { %>
+      <%- include('../components/empty-state', {
+        emptyIcon: 'search', emptyTitle: filters.q || filters.kategori ? 'Dokumen tidak ditemukan' : 'Belum ada dokumen',
+        emptyText: filters.q ? `Tidak ada dokumen yang cocok dengan "${filters.q}".` : 'Dokumen akan muncul di sini setelah diunggah admin.',
+        emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus pencarian', href: '/dokumen-akademik' } : null,
+      }) %>
+    <% } else { %>
+    <ul class="card divide-y divide-line">
+      <% documents.forEach(d => { %>
+        <li class="flex items-start gap-4 p-4">
+          <%- icon('picture_as_pdf', 'size-8 shrink-0 text-primary') %>
+          <div class="min-w-0 flex-1">
+            <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-block py-1.5 font-semibold text-ink hover:text-primary"><%= d.name %></a>
+            <% if (d.keterangan) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.keterangan %></p><% } %>
+            <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+              <% if (d.kategori) { %><span class="badge badge-info"><%= d.kategori.nama %></span><% } %>
+              <span>Diperbarui <%= formatTanggal(d.updatedAt || d.createdAt) %></span>
+              <% if (d.fileSize) { %><span>· <%= formatUkuranFile(d.fileSize) %></span><% } %>
+            </p>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="hero-container">
-        <div class="d-flex flex-column gspace-4">
-          <div class="service-title-container">
-            <div class="row row-cols-md-1 row-cols-1 grid-spacer-2 align-items-center">
-              <div class="col">
-                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
-                  <div class="sub-heading col-2">
-                    <i class="fa-solid fa-circle accent-color-2"></i>
-                    <span class="sub-heading-title">Arsip Akademik</span>
-                  </div>
-                  <h2 class="mb-1">Dokumen Akademik Resmi</h2>
-                  <p class="text-muted mb-0">Cari berdasarkan judul dokumen lalu klik untuk membuka PDF.</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-          <div class="col">
-            <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-end gap-2">
-              <div class="input-group"
-                style="max-width: 420px; border: 2px solid var(--accent-color, #0D9394); border-radius: 999px; overflow: hidden;">
-                <span class="input-group-text bg-white border-0"><i
-                    class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                <input id="doc-search" type="search" class="form-control border-0" placeholder="Cari judul dokumen..."
-                  aria-label="Cari dokumen">
-              </div>
-              <div class="badge accent-bg text-white px-3 py-2">
-                <span id="doc-count"
-                  data-total="<%= (pagination && pagination.totalDocs) ? pagination.totalDocs : (documents ? documents.length : 0) %>">Total:
-                  <%= (pagination && pagination.totalDocs) ? pagination.totalDocs : (documents ? documents.length : 0) %></span>
-              </div>
-            </div>
-          </div>
-          <div class="row row-cols-xl-3 row-cols-md-2 row-cols-1 grid-spacer-3">
-            <% if (documents && documents.length) { %>
-            <% documents.forEach(function(item, idx){ %>
-            <div class="col doc-card" data-title="<%= (item.name || '').toLowerCase() %>">
-              <div class="card card-service animate-box" data-animate="animate__fadeInUp">
-                <div class="image-container">
-                  <div class="service-icon-container">
-                    <div class="service-icon">
-                      <img src="/assets/landing-page/images/Icon-4.png" alt="Dokumen" class="img-fluid">
-                    </div>
-                  </div>
-                  <div class="position-absolute top-0 start-0 m-3">
-                    <span class="badge accent-bg text-white px-3 py-2 shadow-sm">
-                      Dokumen #<%= idx + 1 %>
-                    </span>
-                  </div>
-                  <img src="<%= item.cover || '/assets/landing-page/images/dummy-img-600x800.jpg' %>"
-                    alt="Dokumen <%= item.name %>" class="service-img">
-                  <div class="service-detail-container">
-                    <div class="service-detail">
-                      <div>
-                        <h4 class="secondary-accent mb-1"><%= item.name %></h4>
-                        <p class="text-muted mb-1"><%= item.keterangan || 'Tidak ada keterangan.' %></p>
-                        <% if (item.file) { %>
-                        <span class="badge bg-white text-dark">PDF</span>
-                        <% } %>
-                      </div>
-                      <div>
-                        <% if (item.file) { %>
-                        <a href="<%= item.file %>" class="service-btn" target="_blank" rel="noopener">
-                          <span class="icon-circle">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                          </span>
-                        </a>
-                        <% } %>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="small text-muted">
-                    Diunggah <%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %>
-                    <% const uploader = item.createdBy ? (item.createdBy.name || item.createdBy.email) : null; %>
-                    <% if (uploader) { %> oleh <%= uploader %><% } %>
-                  </div>
-                  <% if (item.updatedAt && item.updatedAt.getTime() !== item.createdAt.getTime()) { %>
-                  <div class="text-muted small">Pembaruan terakhir: <%= item.updatedAt.toLocaleDateString() %></div>
-                  <% } %>
-                </div>
-              </div>
-            </div>
-            <% }); %>
-            <% } else { %>
-            <div class="col-12">
-              <div class="alert alert-warning text-center">Belum ada dokumen akademik.</div>
-            </div>
-            <% } %>
-          </div>
-
-          <% if (pagination && pagination.totalPages && pagination.totalPages > 1) { %>
-          <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-2 mt-3">
-            <div class="text-muted small">
-              Menampilkan <%= pagination.start %> - <%= pagination.end %> dari <%= pagination.totalDocs %> dokumen
-            </div>
-            <nav aria-label="Pagination dokumen">
-              <ul class="pagination justify-content-center mb-0">
-                <li class="page-item <%= pagination.currentPage === 1 ? 'disabled' : '' %>">
-                  <a class="page-link" href="/dokumen-akademik?page=<%= pagination.currentPage - 1 %>"
-                    aria-label="Sebelumnya">&laquo;</a>
-                </li>
-                <% for (let p = 1; p <= pagination.totalPages; p++) { %>
-                <li class="page-item <%= p === pagination.currentPage ? 'active' : '' %>">
-                  <a class="page-link" href="/dokumen-akademik?page=<%= p %>"><%= p %></a>
-                </li>
-                <% } %>
-                <li class="page-item <%= pagination.currentPage === pagination.totalPages ? 'disabled' : '' %>">
-                  <a class="page-link" href="/dokumen-akademik?page=<%= pagination.currentPage + 1 %>"
-                    aria-label="Berikutnya">&raquo;</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <% } %>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <%- include("../partials/landing-footer") %>
-
-  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
-  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
-  <script src="/assets/landing-page/js/script.js"></script>
-  <script src="/assets/landing-page/js/submit-form.js"></script>
-  <script src="/assets/landing-page/js/swiper-script.js"></script>
-  <script>
-    (function () {
-      const input = document.getElementById('doc-search');
-      const cards = Array.from(document.querySelectorAll('.doc-card'));
-      const counter = document.getElementById('doc-count');
-      if (!input) return;
-      input.addEventListener('input', () => {
-        const q = input.value.trim().toLowerCase();
-        let visible = 0;
-        cards.forEach(card => {
-          const title = card.dataset.title || '';
-          const match = !q || title.includes(q);
-          card.classList.toggle('d-none', !match);
-          if (match) visible += 1;
-        });
-        if (counter) counter.textContent = q ? `Hasil: ${visible}` :
-          `Total: ${counter.dataset.total || cards.length}`;
-      });
-    })();
-  </script>
-</body>
-
-</html>
+          <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download><%- icon('download') %><span class="hidden sm:inline">Unduh</span></a>
+        </li>
+      <% }) %>
+    </ul>
+    <%- include('../components/pagination', { ...pagination, noun: 'dokumen', path: '/dokumen-akademik', query: filters }) %>
+    <% } %>
+  </div>
+</div>

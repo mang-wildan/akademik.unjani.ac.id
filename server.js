@@ -14,6 +14,7 @@ const multer = require('multer');
 dotenv.config();
 
 const connectDB = require('./config/db');
+require('./models'); // register every schema before any route can .populate() one
 const User = require('./models/User');
 const staffRoutes = require('./routes/staffRoutes');
 const authRoutes = require('./routes/authRoutes');

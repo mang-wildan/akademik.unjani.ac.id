@@ -155,28 +155,40 @@ Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.
 
 ## F3 — Situs publik `[Sonnet 5.5 · medium]`
 
-Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Terapkan koreksi dari SRS §7.2.
+Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Koreksi SRS §7.2 diterapkan (palet token saja, logo asli, dll — lihat F1).
 
-- [ ] Header, menu HP layar penuh, footer, dan breadcrumb — FR-G-01..04, FR-G-07
-- [ ] **Kalender Akademik** `[Sonnet 5.5 · high]`: tabel per semester, kartu Sedang berlangsung/Berikutnya, pemilih tahun ajaran, Unduh PDF, timeline di HP — FR-K-01..05 · `kalender_akademik_*`
-- [ ] **Akreditasi** `[Sonnet 5.5 · high]`: kartu institusi, tabel + filter + paginasi, riwayat yang bisa dibuka, kartu di HP — FR-A-01..07 · `akreditasi_*`
-- [ ] Dokumen Akademik: daftar, filter kategori dengan jumlah, pencarian, tampilan kosong — FR-D-01..02 · `dokumen_akademik_*`
-- [ ] RPL: teks penjelasan + daftar dokumen — FR-D-03
-- [ ] Kurikulum: tabel per fakultas, filter — FR-KU-01..03 · `kurikulum_*`
-- [ ] Pengumuman: daftar dengan blok tanggal, chip kategori, item disematkan, label "Baru" — FR-P-01..02 · `pengumuman_akademik_*`
-- [ ] Detail pengumuman: kolom baca 720 px, lampiran, "Pengumuman lainnya" — FR-P-03 · `detail_pengumuman_*`
-- [ ] Berita: kartu dengan gambar di atas, detail berita, hapus sidebar — FR-P-04, FR-P-06
-- [ ] **Beranda**: hero, Informasi Penting, Agenda Terdekat, Pengumuman Terbaru, Status Mutu, Kegiatan, Statistik — FR-B-01..08 · `beranda_*`
-- [ ] Buku dan Buku Wisuda: grid cover, filter tahun dan periode — FR-L-01 · `buku_wisuda_*`
-- [ ] Pimpinan & Staf — FR-L-03 · `pimpinan_dan_staf_*`
-- [ ] Profil — FR-L-02
-- [ ] Struktur Organisasi + versi teks — FR-L-04
-- [ ] Pencarian global — FR-G-06 (Sebaiknya)
-- [ ] Bottom tab bar HP — FR-G-09 (Bisa)
-- [ ] Tombol "+ Kalender" (.ics) — FR-K-06 (Bisa)
-- [ ] **Review fase** `[Opus 5.5 · high]`: jalankan probe audit di 360/390/1440 px untuk semua rute publik
+- [x] Header, dropdown, menu HP layar penuh, footer, breadcrumb — sudah dari F1 (`layouts/public.ejs`), dipakai semua halaman di bawah — FR-G-01..04, FR-G-07
+- [x] **Kalender Akademik**: tabel per semester (tab + `data-table--stack`), kartu Sedang berlangsung/Berikutnya, pemilih tahun ajaran, Unduh PDF SK, **lampiran surat edaran** (K-04), tampilan kosong per semester — FR-K-01..05 · `utils/calendar.js`
+- [x] **Akreditasi**: kartu status institusi (semua record ditampilkan apa adanya — data "Unggul" vs "B" yang kontradiktif dari F2 tidak disembunyikan, lihat `docs/MIGRASI-F2.md`), stat tile per peringkat, tabel + filter (cari/fakultas/status) + paginasi, riwayat via `<details>` native, kartu di HP — FR-A-01..07
+- [x] Dokumen Akademik: daftar (bukan kartu), sidebar kategori dengan jumlah, pencarian, tampilan kosong — FR-D-01..02
+- [x] RPL: teks penjelasan statis (FR-D-03 — *catatan: akan diedit admin saat kolom tersedia, F4*) + daftar dokumen format sama
+- [x] Kurikulum: tabel dikelompokkan per fakultas, filter fakultas + jenjang (jenjang diturunkan dari nama prodi via `utils/prodi.js`, lihat catatan di bawah) — FR-KU-01..03
+- [x] Pengumuman: daftar dengan blok tanggal, chip kategori (kategori `jenis=pengumuman`), disematkan di atas, label "Baru" (<7 hari) — FR-P-01..02
+- [x] Detail pengumuman: kolom baca, lampiran, "Pengumuman lainnya"; `body` disanitasi saat dibaca (defense-in-depth, NFR-S-06) — FR-P-03
+- [x] Berita: kartu gambar-di-atas (grid, bukan daftar blok tanggal seperti pengumuman), detail dengan sidebar kartu bergambar, **sidebar Tags/Recent Post/newsletter lama dihapus** — FR-P-04, FR-P-06
+- [x] **Beranda**: hero foto asli (dikompres 1,1 MB→209 KB WebP) tanpa teks di atas foto, 4 akses cepat, Informasi Penting (gabungan 3 jenis konten disematkan), Agenda Terdekat (dari kalender terbaru), Pengumuman Terbaru, Status Mutu Institusi, Kegiatan, 3 angka lulusan ringkas, video kondisional — FR-B-01..08. Setiap bagian hilang bila datanya kosong (saat ini: tidak ada berita/pengumuman terbit, tidak ada kegiatan kalender)
+- [x] Buku & Buku Wisuda: grid cover rata kiri, filter tahun (+ periode untuk wisuda) — FR-L-01
+- [x] Pimpinan & Staf: pimpinan kartu besar terpisah dari staf grid kecil; **NIP tidak pernah di-query/dikirim ke view** (K-05, diverifikasi) — FR-L-03
+- [x] Profil: dipindah ke layout baru, konten sama (sudah dinilai terbaik di audit)
+- [x] Struktur Organisasi: gambar bagan + **versi teks** berupa daftar unit (reuse model `Unit`) — FR-L-04
+- [x] Pencarian global `/cari`: pengumuman, berita, dokumen, kurikulum — FR-G-06
+- [ ] Bottom tab bar HP — FR-G-09 (Bisa, ditunda — tidak kritis)
+- [ ] Tombol "+ Kalender" (.ics) — FR-K-06 (Bisa, ditunda)
+- [x] **Review fase**: probe kontras/fokus/tap-target/overflow/unnamed-control di 390 & 1440 px untuk **14 rute publik** (termasuk 2 halaman detail dengan konten nyata) — 0 error JS/CSP, 0 gagal kontras, 0 overflow, 1 H1 di semua halaman. 2 bug ditemukan & diperbaiki saat probe (lihat di bawah); 1 false-positive diverifikasi & didokumentasikan (bukan diperbaiki dengan cara yang salah)
 
----
+### Bug ditemukan & diperbaiki selama verifikasi
+- [x] CSS belum di-build ulang sejak F2 → kelas baru (`size-8`, `line-clamp-2`, dll.) tidak ter-generate, ikon PDF tampil raksasa. **Pelajaran: `npm run build:css` wajib sebelum setiap smoke test di fase berisi view baru.**
+- [x] Komponen `pagination.ejs` mengharapkan field `from`/`to`, tapi controller awal mengirim `start`/`end` → "Menampilkan --- dari N". Diperbaiki di akreditasi & dokumen-akademik.
+- [x] `models/LembagaAkreditasi.js` tidak pernah di-require di mana pun → `MissingSchemaError` saat `.populate('lembaga')`. **Perbaikan struktural:** `models/index.js` baru, meregistrasi semua model sekali di `server.js` sebelum rute mana pun berjalan — mencegah kelas bug ini terulang di F4.
+- [x] Tombol ikon pencarian tanpa `aria-label` di pengumuman/berita
+- [x] Tautan teks < 24px (WCAG 2.5.8) di akreditasi/dokumen/RPL/kurikulum → `min-h-6` atau `inline-block py-1.5`
+- [x] Tautan gambar kartu (berita/buku/buku wisuda) tanpa teks saat sendirian di `<a>` → dibuat dekoratif (`aria-hidden` + `tabindex="-1"`), judul di bawahnya membawa tautan aksesibel — pola W3C untuk kartu bergambar
+- [x] Model `Kategori` belum punya jenis `'berita'` (hanya pengumuman/dokumen) → ditambahkan, plus migrasi `008-berita-kategori-seed` (dry-run + apply, 5 kategori)
+
+### Keputusan desain yang diambil (dicatat agar tidak dianggap celah)
+- [x] `ProgramStudi` belum punya field `jenjang` terstruktur (di luar cakupan F2) → `utils/prodi.js` menurunkan jenjang dari nama ("Teknik Kimia **S1**"). Cukup untuk filter F3; jadikan field asli bila nama prodi suatu saat tidak konsisten.
+- [x] Riwayat akreditasi (FR-A-06) dibangun dari pengelompokan ulang di `getAkreditasiLanding`, bukan field baru — data saat ini tidak punya riwayat berganda untuk didemonstrasikan, tapi logikanya teruji secara struktural (berfungsi untuk ≥1 record per grup).
+- [x] Filter akreditasi: cari + fakultas + status diimplementasikan; **filter jenjang tidak dibuat terpisah** (jenjang prodi tidak relevan untuk akreditasi per-institusi/unit) — sesuai SRS yang sebenarnya hanya meminta fakultas/status/cari untuk akreditasi.
 
 ## F4 — Panel admin `[Sonnet 5.5 · medium]`
 
