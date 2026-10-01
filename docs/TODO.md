@@ -213,7 +213,7 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 - [x] Buku & Buku Wisuda — FR-M-07 (`controllers/bookController.js`, `controllers/graduationBookController.js`; skema sudah bersih sejak awal, hanya perlu validasi Zod + `renderPage` + pola pesan galat konsisten; field upload PDF diseragamkan jadi `file` menggantikan `pdf`)
 - [x] Data Lulusan + impor CSV — FR-M-08 (`controllers/lulusanController.js`, `utils/lulusanImport.js`; pelaporan error per-baris seperti impor Kalender; bug ditemukan: rute lama pakai `multer memoryStorage` untuk CSV sehingga `checkUploads` diam-diam dilewati — diganti `diskStorage`)
 - [x] Pimpinan & Staf — FR-M-09 (`controllers/staffController.js`; `kelompok` dan `gelar` sebelumnya tidak pernah bisa diisi admin sama sekali meski dipakai halaman publik — celah ditutup; NIP tetap bisa diisi admin tapi tidak dikirim ke publik, K-05)
-- [ ] Unit & Profil Bidang — FR-M-10
+- [x] Unit & Profil Bidang — FR-M-10 (`controllers/unitController.js` CRUD biasa; `controllers/academicProfileController.js` dokumen singleton — satu halaman lihat+ubah, misi/tugas/fungsi diisi lewat satu textarea per kolom, satu baris = satu butir)
 - [ ] Master Data (Fakultas, Prodi, Kategori, Lembaga) — FR-M-11
 - [ ] Pengaturan Situs — FR-M-12
 - [ ] Akun Admin — FR-M-13

@@ -4,8 +4,10 @@ const academicProfileController = require('../controllers/academicProfileControl
 
 const router = express.Router();
 
-router.get('/', requireAuth, requireAdmin, academicProfileController.show);
-router.get('/edit', requireAuth, requireAdmin, academicProfileController.editForm);
-router.post('/', requireAuth, requireAdmin, academicProfileController.update);
+router.use(requireAuth, requireAdmin);
+
+// Singleton: satu halaman untuk lihat + ubah, tidak ada daftar.
+router.get('/', academicProfileController.editForm);
+router.post('/', academicProfileController.update);
 
 module.exports = router;

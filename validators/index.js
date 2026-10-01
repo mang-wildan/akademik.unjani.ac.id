@@ -138,6 +138,29 @@ const lulusan = z.object({
   jumlah: z.preprocess(v => Number(v), z.number({ error: req('Jumlah') }).int('Jumlah harus bilangan bulat.').min(0, 'Jumlah tidak boleh negatif.')),
 });
 
+const unit = z.object({
+  nama: text('Nama unit', { max: 160 }),
+  deskripsi: optionalText('Deskripsi', 500),
+  link: optionalText('Tautan', 300),
+});
+
+const linesToArray = v => String(v || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+const lines = (label, { min = 1 } = {}) =>
+  z.preprocess(linesToArray, z.array(z.string()).min(min, `${label} minimal ${min} butir.`));
+
+const academicProfile = z.object({
+  judulHalaman: text('Judul halaman', { min: 5, max: 120 }),
+  ringkasan: text('Ringkasan', { min: 300, max: 1200 }),
+  visi: text('Visi', { min: 80, max: 500 }),
+  misi: lines('Misi'),
+  tugas: lines('Tugas'),
+  fungsi: lines('Fungsi'),
+  kontakEmail: z.preprocess(v => (typeof v === 'string' ? v.trim().toLowerCase() : v), z.union([z.literal(''), z.email('Format email tidak valid.')])).optional(),
+  kontakTelepon: optionalText('Telepon', 80),
+  alamatLayanan: optionalText('Alamat layanan', 500),
+  jamLayanan: optionalText('Jam layanan', 160),
+});
+
 const kurikulum = z.object({
   prodi: objectId('Program studi'),
   tahun: text('Tahun kurikulum', { max: 9 }).refine(v => /^\d{4}(\/\d{4})?$/.test(v), 'Tahun kurikulum ditulis seperti 2021 atau 2025/2026.'),
@@ -187,5 +210,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, userCreate, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, userCreate, passwordChange },
 };

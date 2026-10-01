@@ -85,7 +85,11 @@ Dokumen lama di database (disalin dari skema sebelum field baru ditambahkan) bis
 
 Modul yang skemanya sudah ditambah field baru di F2 tapi field LAMA-nya masih `required: true` di Mongoose (bukan cuma di Zod) akan gagal disimpan begitu form F4 berhenti mengisi field lama itu — error-nya `ValidationError` dari Mongoose, bukan dari `validate()` kita, jadi tidak tertangkap oleh pola render-ulang-dengan-errors biasa (muncul sebagai 500, bukan form dengan pesan galat). Ditemukan di `models/Accreditation.js`: `institusi`/`unit`/`tahun`/`akreditasi` v1 masih `required: true` padahal form F4 menulis `jenis`/`namaUnit`/`programStudi`/`peringkat`. **Sebelum menulis form F4 untuk modul lama, periksa field mana di skema Mongoose yang masih `required: true` tapi tidak lagi diisi oleh form baru — longgarkan ke optional (jangan hapus, data lama tetap butuh field itu).**
 
-### Jebakan: `multer.memoryStorage()` membuat `checkUploads` diam-diam tidak berfungsi
+### Dokumen singleton (Profil Bidang, Pengaturan Situs)
+
+Untuk data yang selalu tepat satu dokumen (bukan daftar), pola yang dipakai: `getSingleton()` yang membuat dokumen default sekali jika belum ada, satu rute `GET /` yang langsung me-render form (bukan halaman "lihat" + halaman "ubah" terpisah), dan `POST /` yang menyimpan ke dokumen yang sama. Tidak ada `list.ejs`, tidak ada `:id` di rute sama sekali. Field array yang isinya daftar butir pendek (misi/tugas/fungsi) diisi lewat **satu `<textarea>` per kolom, satu baris = satu butir** (`validators/index.js`: helper `lines()`/`linesToArray`) -- jauh lebih sederhana daripada form dinamis tambah/hapus baris, dan tidak butuh JS.
+
+## Jebakan: `multer.memoryStorage()` membuat `checkUploads` diam-diam tidak berfungsi
 
 `checkUploads`/`matchesSignature` (`utils/upload.js`) membaca isi file lewat `file.path` untuk verifikasi magic-byte. File yang diunggah dengan `multer.memoryStorage()` hanya punya `file.buffer`, tidak ada `.path` — `matchesSignature` mengembalikan `true` (lolos) untuk kasus ini tanpa memeriksa apa pun. Ditemukan di rute impor CSV Data Lulusan (v1 memakai `memoryStorage`). **Selalu pakai `multer.diskStorage()` untuk upload apa pun yang melewati `checkUploads`**, termasuk file sementara seperti CSV impor yang langsung dihapus setelah dibaca (lihat pola di `academicCalendarController.js`/`lulusanController.js`).
 
