@@ -13,28 +13,24 @@ fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const timestamp = Date.now();
-    const safeName = safeFilename(file.originalname);
-    cb(null, `${timestamp}-${safeName}`);
-  },
+  filename: (_req, file, cb) => cb(null, `${Date.now()}-${safeFilename(file.originalname)}`),
 });
 
 const fileFilter = (_req, file, cb) => {
-  if (file.fieldname === 'sertifikat' && file.mimetype !== 'application/pdf') {
-    return cb(fileError('File sertifikat harus berupa PDF'));
-  }
+  if (file.fieldname === 'sertifikat' && file.mimetype !== 'application/pdf') return cb(fileError('File sertifikat harus berupa PDF.'));
   cb(null, true);
 };
 
 const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
+const uploadSertifikat = upload.fields([{ name: 'sertifikat', maxCount: 1 }]);
 
-router.get('/', requireAuth, requireAdmin, accreditationController.list);
-router.get('/new', requireAuth, requireAdmin, accreditationController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'sertifikat', maxCount: 1 }]), checkUploads, accreditationController.create);
-router.post('/:id/toggle-active', requireAuth, requireAdmin, accreditationController.toggleActive);
-router.get('/:id/edit', requireAuth, requireAdmin, accreditationController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'sertifikat', maxCount: 1 }]), checkUploads, accreditationController.update);
-router.post('/:id/delete', requireAuth, requireAdmin, accreditationController.destroy);
+router.use(requireAuth, requireAdmin);
+
+router.get('/', accreditationController.list);
+router.get('/new', accreditationController.showCreate);
+router.post('/', uploadSertifikat, checkUploads, accreditationController.create);
+router.get('/:id/edit', accreditationController.showEdit);
+router.post('/:id', uploadSertifikat, checkUploads, accreditationController.update);
+router.post('/:id/delete', accreditationController.destroy);
 
 module.exports = router;

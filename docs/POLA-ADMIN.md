@@ -81,6 +81,10 @@ Pengumuman/Berita punya skema datar dan cocok dengan factory `adminContentContro
 
 Dokumen lama di database (disalin dari skema sebelum field baru ditambahkan) bisa benar-benar tidak punya field itu sama sekali di MongoDB. Query dengan `.populate()`/hydrasi biasa menerapkan default skema (`events: { default: [] }`) saat dokumen di-instantiate, **tapi `.lean()` mengembalikan data mentah apa adanya** — field yang hilang di DB tetap `undefined`, bukan `[]`. Ini menyebabkan `item.events.length` di EJS melempar `TypeError` untuk dokumen lama, meski skema mendeklarasikan default. Perbaikan: normalisasi manual setelah `.lean()` untuk field array apa pun yang mungkin hilang pada data lama (`c.events || []`) — jangan andalkan default skema begitu saja saat memakai `.lean()`. `scripts/migrate/007-readiness.js` sudah mendeteksi kondisi ini sebelumnya tapi tidak memperbaikinya (read-only report), jadi kontroler tetap harus defensif.
 
+### Jebakan: field lama `required: true` yang tidak pernah dilonggarkan
+
+Modul yang skemanya sudah ditambah field baru di F2 tapi field LAMA-nya masih `required: true` di Mongoose (bukan cuma di Zod) akan gagal disimpan begitu form F4 berhenti mengisi field lama itu — error-nya `ValidationError` dari Mongoose, bukan dari `validate()` kita, jadi tidak tertangkap oleh pola render-ulang-dengan-errors biasa (muncul sebagai 500, bukan form dengan pesan galat). Ditemukan di `models/Accreditation.js`: `institusi`/`unit`/`tahun`/`akreditasi` v1 masih `required: true` padahal form F4 menulis `jenis`/`namaUnit`/`programStudi`/`peringkat`. **Sebelum menulis form F4 untuk modul lama, periksa field mana di skema Mongoose yang masih `required: true` tapi tidak lagi diisi oleh form baru — longgarkan ke optional (jangan hapus, data lama tetap butuh field itu).**
+
 ## Bug kritis yang ditemukan saat menguji alur CRUD pertama kali (F4)
 
 **`helmet()` tanpa konfigurasi `referrerPolicy` mematikan SEMUA form POST di seluruh situs, termasuk login.**

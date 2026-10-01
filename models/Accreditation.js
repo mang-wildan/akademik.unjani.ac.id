@@ -3,17 +3,19 @@ const { PERINGKAT, JENIS } = require('../utils/accreditation');
 
 const AccreditationSchema = new mongoose.Schema(
   {
-    institusi: { type: String, required: true, trim: true },
-    unit: { type: String, required: true, trim: true },
-    tahun: { type: Number, required: true },
-    akreditasi: { type: String, required: true, trim: true },
+    // Legacy pre-F4 fields. The F4 admin form (controllers/accreditationController.js)
+    // writes jenis/namaUnit/programStudi/peringkat below instead; these stay
+    // optional so old rows keep their data without blocking new writes.
+    institusi: { type: String, trim: true },
+    unit: { type: String, trim: true },
+    tahun: { type: Number },
+    akreditasi: { type: String, trim: true },
     isActive: { type: Boolean, default: true },
     sertifikat: { type: String, required: true, trim: true }, // path + filename to PDF
     tanggalBerlaku: { type: Date, required: true },
     berlakuSampai: { type: Date, required: true },
 
-    // F2 (SRS §5). Filled by migration 003 from institusi/unit/akreditasi above;
-    // those, plus tahun and isActive, stay until the F4 admin form replaces them.
+    // F2 (SRS §5). Filled by migration 003 from institusi/unit/akreditasi above.
     // Status is never stored: see utils/accreditation.accreditationStatus().
     jenis: { type: String, enum: Object.values(JENIS) },
     programStudi: { type: mongoose.Schema.Types.ObjectId, ref: 'ProgramStudi' },
