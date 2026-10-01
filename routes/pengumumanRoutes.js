@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError, isAllowedImage, IMAGE_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const pengumumanController = require('../controllers/pengumumanController');
 
@@ -19,10 +20,10 @@ const storage = multer.diskStorage({
   },
 });
 const fileFilter = (_req, file, cb) => {
-  if (!file.mimetype.startsWith('image/')) return cb(new Error('Featured image harus berupa gambar'));
+  if (!isAllowedImage(file)) return cb(fileError('Featured image harus berupa gambar'));
   cb(null, true);
 };
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: IMAGE_LIMITS });
 
 router.use(requireAuth, requireAdmin);
 

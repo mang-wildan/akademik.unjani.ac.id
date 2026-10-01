@@ -51,13 +51,11 @@ const profilePhotoUpload = (req, res, next) => {
 };
 
 router.get('/login', authController.getLogin);
-router.get('/register', authController.getRegister);
 router.get('/profile', requireAuth, authController.getProfile);
 router.get('/profile/edit', requireAuth, authController.getEditProfile);
 router.post('/profile/edit', requireAuth, profilePhotoUpload, authController.updateProfile);
 router.get('/profile/password', requireAuth, authController.getChangePassword);
 router.post('/profile/password', requireAuth, authController.updatePassword);
-router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 

@@ -181,7 +181,7 @@ Diringkas dari audit:
 
 | ID | Kebutuhan | Prio | Audit |
 |---|---|---|---|
-| FR-AD-01 | Login di `/admin/login` dengan reCAPTCHA, pembatasan percobaan (5 kali gagal → jeda 15 menit), dan sesi JWT di cookie `httpOnly; secure; sameSite=lax` | Wajib | 01 |
+| FR-AD-01 | Login di `/admin/login` tanpa reCAPTCHA pada percobaan normal. reCAPTCHA wajib setelah **3 kali gagal** dari IP yang sama atau untuk email yang sama dalam 15 menit, lalu hitungan di-reset saat login berhasil (sudah diterapkan di F0). Sesi JWT di cookie `httpOnly; secure; sameSite=lax` | Wajib | 01 |
 | FR-AD-02 | Sidebar dikelompokkan: Ringkasan · Konten · Akademik · Publikasi · Organisasi · Pengaturan, mengikuti referensi `dasbor_admin` | Wajib | 14 |
 | FR-AD-03 | Topbar berisi judul halaman, notifikasi, dan menu akun. **Tidak ada** pemilih bahasa, shortcuts template, maupun template customizer | Wajib | 14 |
 | FR-AD-04 | Semua label berbahasa Indonesia, termasuk status (Terbit, Draf) dan paginasi | Wajib | 09, 15 |

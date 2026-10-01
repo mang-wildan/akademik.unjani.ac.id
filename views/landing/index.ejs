@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,6 @@
     <%- include("../partials/landing-header") %>
 
     <!-- Sidebar Section -->
-    <%- include("../partials/landing-aside") %>
 
     <!-- Main Section -->
     <main>
@@ -557,7 +556,8 @@
             </div>
         </div>
 
-        <!-- Academy Section -->
+        <!-- Video Profil: tampil hanya bila URL video diisi di Pengaturan Situs -->
+        <% if (setting && setting.landingVideoUrl) { %>
         <div class="section-wrapper py-0">
             <div class="section section-academy">
                 <div class="hero-container">
@@ -632,14 +632,14 @@
                             <div class="academy-video-container">
                                 <div class="academy-video-wrapper">
                                     <iframe
-                                        src="<%= (setting && setting.landingVideoUrl) ? setting.landingVideoUrl : 'https://www.youtube-nocookie.com/embed/l-WF7h3UiwQ?rel=0&modestbranding=1&autoplay=1' %>"
+                                        src="<%= setting.landingVideoUrl %>"
                                         title="Landing Video"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                                     <div class="video-overlay"></div>
                                 </div>
                                 <div class="video-profile-cta">
-                                    <a href="<%= (setting && setting.landingVideoUrl) ? setting.landingVideoUrl.replace('embed/', 'watch?v=') : 'https://www.youtube.com/watch?v=l-WF7h3UiwQ' %>"
+                                    <a href="<%= setting.landingVideoUrl.replace('embed/', 'watch?v=') %>"
                                         target="_blank" rel="noopener" class="btn btn-outline-accent btn-sm">Buka di
                                         YouTube</a>
                                 </div>
@@ -650,6 +650,7 @@
 
             </div>
         </div>
+        <% } %>
         <!-- Kegitatan Section -->
         <div class="section">
             <div class="hero-container">

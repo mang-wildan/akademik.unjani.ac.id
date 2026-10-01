@@ -2,8 +2,6 @@ $(document).ready(function() {
     initCustomDropdown();
     initFlatpickrCalendar();
     initNavLink();
-    initSidebar();
-    initSidebarDropdown();
     initCounter();
     initTestimonialSlider();
     initAnimateData();
@@ -260,34 +258,6 @@ function initNavLink() {
     });
 }
 
-function initSidebar() {
-    const $menuBtn = $('.nav-btn');
-    const $closeBtn = $('.close-btn');
-    const $overlay = $('.sidebar-overlay');
-    const $sidebar = $('.sidebar');
-  
-    $menuBtn.click(function() {
-      $overlay.addClass('active');
-      setTimeout(() => {
-        $sidebar.addClass('active');
-      }, 200);
-    });
-  
-    $closeBtn.click(function() {
-      $sidebar.removeClass('active');
-      setTimeout(() => {
-        $overlay.removeClass('active');
-      }, 200);
-    });
-  
-    $overlay.click(function() {
-      $sidebar.removeClass('active');
-      setTimeout(() => {
-        $overlay.removeClass('active');
-      }, 200);
-    });
-}
-
 function initEditSidebar() {
     const $contentBtn = $('.content-edit');
     const $closeBtn = $('.close-btn-second');
@@ -306,21 +276,6 @@ function initEditSidebar() {
         setTimeout(() => {
             $overlay.removeClass('active');
         }, 200);
-    });
-}
-
-function initSidebarDropdown() {
-    const $dropdownButtons = $(".sidebar-dropdown-btn");
-
-    $dropdownButtons.each(function() {
-        $(this).on("click", function() {
-            const $dropdownMenu = $(this).parent().next(".sidebar-dropdown-menu");
-            const isOpen = $dropdownMenu.hasClass("active");
-
-            $(".sidebar-dropdown-menu").not($dropdownMenu).removeClass("active");
-
-            $dropdownMenu.toggleClass("active", !isOpen);
-        });
     });
 }
 

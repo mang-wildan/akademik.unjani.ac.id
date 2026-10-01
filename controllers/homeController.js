@@ -380,7 +380,7 @@ exports.getBeritaLanding = async (req, res) => {
 
 exports.getBeritaDetail = async (req, res) => {
   const item = await News.findOne({ slug: req.params.slug, status: 'published' }).populate('createdBy');
-  if (!item) return res.status(404).render('landing/404', { title: 'Berita tidak ditemukan', user: res.locals.user || req.user });
+  if (!item) return res.status(404).render('landing/error', { status: 404, heading: 'Berita tidak ditemukan', message: 'Berita yang Anda cari tidak tersedia atau sudah dihapus.' });
   const displayTags = normalizeTags(item.tags);
   const recentNews = await News.find({ status: 'published', _id: { $ne: item._id } })
     .sort({ pinned: -1, createdAt: -1 })
@@ -481,7 +481,7 @@ exports.getPengumumanLanding = async (req, res) => {
 
 exports.getPengumumanDetail = async (req, res) => {
   const item = await Pengumuman.findOne({ slug: req.params.slug, status: 'published' }).populate('createdBy');
-  if (!item) return res.status(404).render('landing/404', { title: 'Pengumuman tidak ditemukan', user: res.locals.user || req.user });
+  if (!item) return res.status(404).render('landing/error', { status: 404, heading: 'Pengumuman tidak ditemukan', message: 'Pengumuman yang Anda cari tidak tersedia atau sudah dihapus.' });
   const displayTags = normalizeTags(item.tags);
   const recentPengumuman = await Pengumuman.find({ status: 'published', _id: { $ne: item._id } })
     .sort({ pinned: -1, createdAt: -1 })

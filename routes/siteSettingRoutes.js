@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const siteSettingController = require('../controllers/siteSettingController');
 
@@ -21,7 +22,7 @@ const storage = multer.diskStorage({
 
 const fileFilter = (_req, file, cb) => {
   const ok = ['image/png', 'image/jpeg', 'image/jpg'];
-  if (!ok.includes(file.mimetype)) return cb(new Error('Banner harus berupa gambar (PNG/JPG)'));
+  if (!ok.includes(file.mimetype)) return cb(fileError('Banner harus berupa gambar (PNG/JPG)'));
   cb(null, true);
 };
 

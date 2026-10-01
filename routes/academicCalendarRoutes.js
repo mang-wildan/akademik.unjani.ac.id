@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError, DOCUMENT_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const academicCalendarController = require('../controllers/academicCalendarController');
 
@@ -21,12 +22,12 @@ const storage = multer.diskStorage({
 
 const fileFilter = (_req, file, cb) => {
   if (file.fieldname === 'file' && file.mimetype !== 'application/pdf') {
-    return cb(new Error('File kalender harus berupa PDF.'));
+    return cb(fileError('File kalender harus berupa PDF.'));
   }
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, academicCalendarController.list);
 router.get('/new', requireAuth, requireAdmin, academicCalendarController.showCreate);

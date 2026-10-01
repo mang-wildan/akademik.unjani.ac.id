@@ -908,3 +908,40 @@
         --bs-gutter-y: 100px; 
     }
 }
+/* Menu HP: navigasi utama tampil sebagai panel lipat di bawah header
+   (menggantikan sidebar bawaan template yang sudah dihapus). */
+@media screen and (max-width: 1025px) {
+    .navbar-nav-container {
+        flex-wrap: wrap;
+    }
+    .navbar .nav-link-container {
+        display: block;
+        order: 1;
+        width: 100%;
+    }
+    #navbarNav {
+        margin-top: 12px;
+        border-radius: 16px;
+        background-color: var(--accent-color);
+    }
+    #navbarNav .navbar-nav {
+        padding: 8px 0;
+    }
+    #navbarNav .nav-link,
+    #navbarNav .dropdown-item {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 12px 20px;
+    }
+    #navbarNav .dropdown-menu {
+        margin-top: 0 !important;
+        padding-left: 16px;
+        border-radius: 0;
+        box-shadow: none;
+        background-color: transparent;
+    }
+    #navbarNav .dropdown-item {
+        color: var(--secondary);
+    }
+}

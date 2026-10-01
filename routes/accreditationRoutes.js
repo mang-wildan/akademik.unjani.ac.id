@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError, DOCUMENT_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const accreditationController = require('../controllers/accreditationController');
 
@@ -21,12 +22,12 @@ const storage = multer.diskStorage({
 
 const fileFilter = (_req, file, cb) => {
   if (file.fieldname === 'sertifikat' && file.mimetype !== 'application/pdf') {
-    return cb(new Error('File sertifikat harus berupa PDF'));
+    return cb(fileError('File sertifikat harus berupa PDF'));
   }
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, accreditationController.list);
 router.get('/new', requireAuth, requireAdmin, accreditationController.showCreate);

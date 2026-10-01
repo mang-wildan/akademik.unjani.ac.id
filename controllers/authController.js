@@ -1,9 +1,19 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const path = require('path');
 const User = require('../models/User');
+const loginAttempts = require('../utils/loginAttempts');
 
 const recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY;
 const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+if (!recaptchaSiteKey || !recaptchaSecretKey) {
+  // eslint-disable-next-line no-console
+  console.warn('RECAPTCHA_SITE_KEY/RECAPTCHA_SECRET_KEY belum diisi: login akan terkunci setelah percobaan gagal berulang.');
+}
+
+// Compared against when the email is unknown, so a missing account takes as
+// long to reject as a wrong password (no account enumeration by timing).
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync('unused-placeholder-password', 10);
 
 const publicPath = path.join(__dirname, '..', 'public');
 const toPublicUrl = filePath => {
@@ -12,10 +22,11 @@ const toPublicUrl = filePath => {
   return `/${relative}`;
 };
 
-const renderAuth = (res, view, statusCode = 200, payload = {}) =>
-  res.status(statusCode).render(`auth/${view}`, {
-    title: view === 'login' ? 'Login' : 'Register',
+const renderLogin = (res, statusCode = 200, payload = {}) =>
+  res.status(statusCode).render('auth/login', {
+    title: 'Masuk',
     recaptchaSiteKey,
+    requireCaptcha: false,
     ...payload,
   });
 
@@ -104,90 +115,52 @@ const sendTokenResponse = (user, req, res, statusCode = 200, message = 'OK') => 
   return res.redirect(redirectPath);
 };
 
-exports.getRegister = (req, res) => {
-  const targetUser = req.user || res.locals.user;
-  if (targetUser) {
-    return res.redirect(targetUser.role === 'admin' ? '/admin/dashboard' : '/dashboard');
-  }
-  return renderAuth(res, 'register');
-};
-
-exports.register = async (req, res) => {
-  const { name, email, password, confirmPassword, role } = req.body;
-  const recaptchaToken = req.body['g-recaptcha-response'] || req.body.recaptcha_token;
-  const remoteIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip;
-
-  const recaptcha = await verifyRecaptcha(recaptchaToken, remoteIp);
-  if (!recaptcha.ok) {
-    return renderAuth(res, 'register', 400, {
-      error: recaptcha.message,
-      values: { name, email, role },
-    });
-  }
-
-  if (!email || !password || !confirmPassword) {
-    return renderAuth(res, 'register', 400, {
-      error: 'Harap isi seluruh field.',
-      values: { name, email, role },
-    });
-  }
-
-  if (password !== confirmPassword) {
-    return renderAuth(res, 'register', 400, {
-      error: 'Konfirmasi password tidak sesuai.',
-      values: { name, email, role },
-    });
-  }
-
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return renderAuth(res, 'register', 400, {
-      error: 'Email sudah terdaftar.',
-      values: { name, email, role },
-    });
-  }
-
-  const user = new User({ name, email, password, role });
-  await user.save();
-
-  return sendTokenResponse(user, req, res, 201, 'Registrasi berhasil');
-};
-
 exports.getLogin = (req, res) => {
   const targetUser = req.user || res.locals.user;
   if (targetUser) {
     return res.redirect(targetUser.role === 'admin' ? '/admin/dashboard' : '/dashboard');
   }
-  return renderAuth(res, 'login');
+  return renderLogin(res, 200, { requireCaptcha: loginAttempts.captchaRequired({ ip: req.ip }) });
 };
 
+// reCAPTCHA is only demanded once this IP or this email has failed
+// CAPTCHA_AFTER_FAILURES times within the attempt window.
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-  const recaptchaToken = req.body['g-recaptcha-response'] || req.body.recaptcha_token;
-  const remoteIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip;
+  const email = String(req.body.email || '').trim().toLowerCase();
+  const password = String(req.body.password || '');
+  const who = { ip: req.ip, email };
 
-  const recaptcha = await verifyRecaptcha(recaptchaToken, remoteIp);
-  if (!recaptcha.ok) {
-    return renderAuth(res, 'login', 400, { error: recaptcha.message, values: { email } });
+  const fail = message =>
+    renderLogin(res, 400, {
+      error: message,
+      values: { email },
+      requireCaptcha: loginAttempts.captchaRequired(who),
+    });
+
+  if (loginAttempts.captchaRequired(who)) {
+    const recaptchaToken = req.body['g-recaptcha-response'] || req.body.recaptcha_token;
+    const recaptcha = await verifyRecaptcha(recaptchaToken, req.ip);
+    if (!recaptcha.ok) return fail(recaptcha.message);
   }
 
   if (!email || !password) {
-    return renderAuth(res, 'login', 400, {
-      error: 'Email dan password wajib diisi.',
-      values: { email },
-    });
+    return fail('Email dan password wajib diisi.');
   }
 
   const user = await User.findOne({ email });
-  if (!user) {
-    return renderAuth(res, 'login', 400, { error: 'Email atau password salah.', values: { email } });
+  const isMatch = user
+    ? await user.comparePassword(password)
+    : await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
+
+  if (!user || !isMatch) {
+    loginAttempts.recordFailure(who);
+    const message = loginAttempts.captchaRequired(who)
+      ? 'Email atau password salah. Demi keamanan, selesaikan verifikasi reCAPTCHA sebelum mencoba lagi.'
+      : 'Email atau password salah.';
+    return fail(message);
   }
 
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    return renderAuth(res, 'login', 400, { error: 'Email atau password salah.', values: { email } });
-  }
-
+  loginAttempts.reset(who);
   return sendTokenResponse(user, req, res, 200, 'Login berhasil');
 };
 

@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError, DOCUMENT_LIMITS, enforceImageLimit } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const kurikulumController = require('../controllers/kurikulumController');
 
@@ -22,15 +23,15 @@ const storage = multer.diskStorage({
 const fileFilter = (_req, file, cb) => {
   const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
   if (file.fieldname === 'cover' && !imageTypes.includes(file.mimetype)) {
-    return cb(new Error('Cover harus berupa gambar JPG/PNG.'));
+    return cb(fileError('Cover harus berupa gambar JPG/PNG.'));
   }
   if (file.fieldname === 'file' && file.mimetype !== 'application/pdf') {
-    return cb(new Error('File kurikulum harus berupa PDF.'));
+    return cb(fileError('File kurikulum harus berupa PDF.'));
   }
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, kurikulumController.list);
 router.get('/new', requireAuth, requireAdmin, kurikulumController.showCreate);
@@ -41,7 +42,7 @@ router.post(
   upload.fields([
     { name: 'cover', maxCount: 1 },
     { name: 'file', maxCount: 1 },
-  ]),
+  ]), enforceImageLimit,
   kurikulumController.create
 );
 router.get('/:id/edit', requireAuth, requireAdmin, kurikulumController.showEdit);
@@ -52,7 +53,7 @@ router.post(
   upload.fields([
     { name: 'cover', maxCount: 1 },
     { name: 'file', maxCount: 1 },
-  ]),
+  ]), enforceImageLimit,
   kurikulumController.update
 );
 router.post('/:id/delete', requireAuth, requireAdmin, kurikulumController.destroy);

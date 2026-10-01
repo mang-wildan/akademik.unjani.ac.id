@@ -6,6 +6,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 
 dotenv.config();
 
@@ -34,9 +35,17 @@ const News = require('./models/News');
 const Pengumuman = require('./models/Pengumuman');
 const AcademicDocument = require('./models/AcademicDocument');
 const AcademicCalendar = require('./models/AcademicCalendar');
+const { uploadErrorMessage } = require('./utils/upload');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Behind a reverse proxy (Nginx, cPanel, etc.) set TRUST_PROXY to the number of
+// proxy hops so req.ip is the visitor's address; login attempt limits rely on it.
+if (process.env.TRUST_PROXY) {
+  const hops = Number(process.env.TRUST_PROXY);
+  app.set('trust proxy', Number.isInteger(hops) ? hops : process.env.TRUST_PROXY);
+}
 
 const truncateText = (text, max = 72) => {
   const value = String(text || '').trim();
@@ -207,6 +216,7 @@ app.use(async (req, res, next) => {
 });
 
 // Routes
+app.get('/admin', (_req, res) => res.redirect('/admin/dashboard'));
 app.use('/admin/books', bookRoutes);
 app.use('/admin/graduation-books', graduationBookRoutes);
 app.use('/admin/accreditations', accreditationRoutes);
@@ -228,13 +238,57 @@ app.use('/', indexRoutes);
 
 // 404 fallback
 app.use((req, res) => {
-  res.status(404);
-  res.render('admin/index', {
-    title: 'Not Found',
-    error: 'Halaman tidak ditemukan.',
-    user: req.user,
-    stats: { bookCount: 0, gradBookCount: 0, accCount: 0, calCount: 0, docCount: 0, kurCount: 0 },
-    latest: null,
+  res.status(404).render('landing/error', {
+    status: 404,
+    heading: 'Halaman tidak ditemukan',
+    message: 'Alamat yang Anda buka tidak tersedia atau sudah dipindahkan.',
+  });
+});
+
+// Only sends the user back to a page on this same site.
+const sameOriginReferer = req => {
+  try {
+    const url = new URL(req.get('referer'));
+    return url.host === req.get('host') ? url : null;
+  } catch (_err) {
+    return null;
+  }
+};
+
+// Central error handler: never shows stack traces. Upload and validation errors
+// on admin forms go back to the form, where the message appears as an alert.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+
+  const isUploadError = err instanceof multer.MulterError;
+  let status = err.status || err.statusCode || 500;
+  if (isUploadError) status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+  if (status < 400 || status > 599) status = 500;
+
+  let message = null;
+  if (isUploadError) message = uploadErrorMessage(err);
+  else if (status < 500 && err.expose) message = err.message;
+
+  if (status >= 500) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  }
+
+  const back = message && req.method === 'POST' && req.path.startsWith('/admin') ? sameOriginReferer(req) : null;
+  if (back) {
+    back.searchParams.set('error', message);
+    return res.redirect(303, back.pathname + back.search);
+  }
+
+  return res.status(status).render('landing/error', {
+    status,
+    heading: status >= 500 ? 'Terjadi kesalahan pada server' : 'Permintaan tidak dapat diproses',
+    message:
+      message ||
+      (status >= 500
+        ? 'Silakan coba beberapa saat lagi. Jika masalah berlanjut, hubungi akademik@unjani.ac.id.'
+        : 'Periksa kembali data yang Anda kirim, lalu coba lagi.'),
   });
 });
 

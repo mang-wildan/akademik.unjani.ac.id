@@ -38,21 +38,21 @@ document.addEventListener('DOMContentLoaded', function () {
       email: {
         validators: {
           notEmpty: {
-            message: 'Please enter your email'
+            message: 'Email wajib diisi'
           },
           emailAddress: {
-            message: 'Please enter a valid email address'
+            message: 'Format email tidak valid'
           }
         }
       },
       password: {
         validators: {
           notEmpty: {
-            message: 'Please enter your password'
+            message: 'Password wajib diisi'
           },
           stringLength: {
             min: 6,
-            message: 'Password must be more than 6 characters'
+            message: 'Password minimal 6 karakter'
           }
         }
       }
@@ -70,21 +70,21 @@ document.addEventListener('DOMContentLoaded', function () {
       email: {
         validators: {
           notEmpty: {
-            message: 'Please enter your email'
+            message: 'Email wajib diisi'
           },
           emailAddress: {
-            message: 'Please enter a valid email address'
+            message: 'Format email tidak valid'
           }
         }
       },
       password: {
         validators: {
           notEmpty: {
-            message: 'Please enter your password'
+            message: 'Password wajib diisi'
           },
           stringLength: {
             min: 6,
-            message: 'Password must be more than 6 characters'
+            message: 'Password minimal 6 karakter'
           }
         }
       },

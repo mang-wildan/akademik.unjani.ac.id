@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError, isAllowedImage, DOCUMENT_LIMITS, enforceImageLimit } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const bookController = require('../controllers/bookController');
 
@@ -21,21 +22,21 @@ const storage = multer.diskStorage({
 
 const fileFilter = (_req, file, cb) => {
   if (file.fieldname === 'pdf') {
-    if (file.mimetype !== 'application/pdf') return cb(new Error('File PDF tidak valid'));
+    if (file.mimetype !== 'application/pdf') return cb(fileError('File PDF tidak valid'));
   }
   if (file.fieldname === 'cover') {
-    if (!file.mimetype.startsWith('image/')) return cb(new Error('File cover harus berupa gambar'));
+    if (!isAllowedImage(file)) return cb(fileError('File cover harus berupa gambar'));
   }
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, bookController.list);
 router.get('/new', requireAuth, requireAdmin, bookController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), bookController.create);
+router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), enforceImageLimit, bookController.create);
 router.get('/:id/edit', requireAuth, requireAdmin, bookController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), bookController.update);
+router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'pdf', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), enforceImageLimit, bookController.update);
 router.post('/:id/delete', requireAuth, requireAdmin, bookController.destroy);
 
 module.exports = router;

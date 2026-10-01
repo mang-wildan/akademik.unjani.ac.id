@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const { fileError } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const programStudiController = require('../controllers/programStudiController');
 
@@ -9,7 +10,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter: (_req, file, cb) => {
     if (!file.mimetype.includes('csv') && !file.originalname.toLowerCase().endsWith('.csv')) {
-      return cb(new Error('File harus berupa CSV'));
+      return cb(fileError('File harus berupa CSV'));
     }
     cb(null, true);
   },

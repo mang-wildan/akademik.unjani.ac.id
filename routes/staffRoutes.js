@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const { fileError, IMAGE_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const staffController = require('../controllers/staffController');
 
@@ -22,12 +23,12 @@ const storage = multer.diskStorage({
 const fileFilter = (_req, file, cb) => {
   const allowed = ['image/jpeg', 'image/png', 'image/jpg'];
   if (!allowed.includes(file.mimetype)) {
-    return cb(new Error('Foto harus berupa gambar JPG/PNG.'));
+    return cb(fileError('Foto harus berupa gambar JPG/PNG.'));
   }
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: IMAGE_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, staffController.list);
 router.get('/new', requireAuth, requireAdmin, staffController.showCreate);

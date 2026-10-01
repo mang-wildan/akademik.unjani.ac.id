@@ -1,6 +1,6 @@
 <!doctype html>
 <html
-  lang="en"
+  lang="id"
   class="layout-wide customizer-hide"
   dir="ltr"
   data-skin="default"
@@ -13,9 +13,9 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Login | BAA UNJANI</title>
+    <title>Masuk | Bidang Akademik UNJANI</title>
 
-    <meta name="description" content="Login ke aplikasi BAA UNJANI" />
+    <meta name="description" content="Masuk ke panel admin Bidang Akademik UNJANI" />
 
     <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
 
@@ -120,12 +120,14 @@
                   </div>
                 </div>
 
+                <% if (requireCaptcha) { %>
                 <div class="mb-5 recaptcha-full">
                   <div class="g-recaptcha" data-sitekey="<%= recaptchaSiteKey %>"></div>
                 </div>
+                <% } %>
 
                 <div class="mb-5">
-                  <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                  <button class="btn btn-primary d-grid w-100" type="submit">Masuk</button>
                   <div class="text-center mt-3">
                     <a href="/" class="text-muted small text-decoration-none">Kembali ke Beranda</a>
                   </div>
@@ -133,10 +135,7 @@
               </form>
 
               <p class="text-center mb-5">
-                <span>© 2025 <b>UNJANI</b> All rights reserved.</span>
-                <!-- <a href="/register">
-                  <span>Buat akun</span>
-                </a> -->
+                <span>© 2025 <b>UNJANI</b>. Hak cipta dilindungi.</span>
               </p>
             </div>
           </div>
@@ -167,7 +166,8 @@
 
     <script src="/assets/js/main.js"></script>
     <script src="/assets/js/pages-auth.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <% if (requireCaptcha) { %>
+    <script src="https://www.google.com/recaptcha/api.js?hl=id" async defer></script>
     <script>
       // Dynamically scale the visible reCAPTCHA to match the form width
       (function () {
@@ -201,5 +201,6 @@
         window.addEventListener('resize', resizeRecaptcha);
       })();
     </script>
+    <% } %>
   </body>
 </html>

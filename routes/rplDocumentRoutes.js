@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
+const { fileError, DOCUMENT_LIMITS, enforceImageLimit } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const rplDocumentController = require('../controllers/rplDocumentController');
 
@@ -21,21 +22,21 @@ const storage = multer.diskStorage({
 
 const fileFilter = (_req, file, cb) => {
   if (file.fieldname === 'file' && file.mimetype !== 'application/pdf') {
-    return cb(new Error('File harus berupa PDF'));
+    return cb(fileError('File harus berupa PDF'));
   }
   if (file.fieldname === 'cover' && !['image/png', 'image/jpeg', 'image/jpg'].includes(file.mimetype)) {
-    return cb(new Error('Cover harus berupa PNG/JPG'));
+    return cb(fileError('Cover harus berupa PNG/JPG'));
   }
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.get('/', requireAuth, requireAdmin, rplDocumentController.list);
 router.get('/new', requireAuth, requireAdmin, rplDocumentController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), rplDocumentController.create);
+router.post('/', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), enforceImageLimit, rplDocumentController.create);
 router.get('/:id/edit', requireAuth, requireAdmin, rplDocumentController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), rplDocumentController.update);
+router.post('/:id', requireAuth, requireAdmin, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'file', maxCount: 1 }]), enforceImageLimit, rplDocumentController.update);
 router.post('/:id/delete', requireAuth, requireAdmin, rplDocumentController.destroy);
 
 module.exports = router;

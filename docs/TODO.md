@@ -19,20 +19,24 @@ Label di setiap kelompok tugas: `[Model · effort]`. Kelompok tugas yang labelny
 ## F0 — Hotfix keamanan & kebersihan situs lama
 
 ### Keamanan `[Opus 5.5 · xhigh]`
-- [ ] `register`: abaikan `role` dari body dan tutup rute `GET/POST /register` — SRS NFR-S-01 · Audit 01
-- [ ] Hapus `<input type="hidden" name="role">` dari `views/auth/register.ejs`
-- [ ] Periksa koleksi `users`; pastikan tidak ada admin tak dikenal
-- [ ] Fallback 404 render `landing/404`, bukan `admin/index` — Audit 02
-- [ ] Error handler terpusat (500) tanpa stack trace, dan set `NODE_ENV=production` di server — NFR-S-02
-- [ ] CTA navbar `/admin` menjadi `/admin/dashboard`, atau tambahkan redirect `/admin`
-- [ ] Hapus nilai cadangan kunci reCAPTCHA di `controllers/authController.js:5-8`, lalu rotasi kunci di Google — NFR-S-03 · K1
+- [x] Rute `GET/POST /register` dan view `register.ejs` dihapus — SRS NFR-S-01 · Audit 01
+- [x] Periksa koleksi `users`: hanya 1 akun admin (database salinan)
+- [x] Fallback 404 dan "berita/pengumuman tidak ditemukan" memakai `landing/error.ejs` (mandiri, tanpa sisa template padel) — Audit 02
+- [x] Error handler terpusat tanpa stack trace; error unggahan di admin kembali ke form dengan alert — NFR-S-02
+- [ ] Set `NODE_ENV=production` di `.env` server produksi (sudah didokumentasikan di `.env.example`)
+- [x] Redirect `/admin` → `/admin/dashboard`, CTA navbar diperbaiki
+- [x] Hapus nilai cadangan kunci reCAPTCHA (dilakukan sebelum commit awal) — NFR-S-03
+- [ ] Rotasi kunci reCAPTCHA di Google Admin Console — K1 *(manual)*
+- [x] **Tambahan:** reCAPTCHA login hanya diminta setelah 3× gagal per IP atau per email dalam 15 menit (`utils/loginAttempts.js`) + tes unit
+- [x] **Tambahan:** email login dinormalisasi (huruf kecil), waktu respons akun tak dikenal disamakan (cegah enumerasi), `TRUST_PROXY` untuk IP di balik reverse proxy
+- [x] **Tambahan:** unggahan gambar hanya JPG/PNG/WEBP/GIF (SVG ditolak: bisa berisi skrip)
 
 ### Perbaikan cepat `[Sonnet 5.5 · medium]`
-- [ ] Hapus `views/partials/landing-aside.ejs` dan `initSidebar()` di `script.js` — Audit 03
-- [ ] Tambahkan `limits.fileSize` ke semua `multer` (PDF 10 MB, gambar 5 MB) — Audit 07
-- [ ] Ganti `logo.png` 2,4 MB dengan versi teroptimasi (≤ 30 KB)
-- [ ] Ubah video profil YouTube menjadi Public/Unlisted, atau kosongkan URL-nya — Audit 18
-- [ ] `<html lang="id">` di semua layout — Audit 09 · A4
+- [x] Hapus `landing-aside.ejs` (15 include) dan `initSidebar()`; menu HP kini panel lipat berisi navigasi asli — Audit 03
+- [x] Batas unggahan di 14 rute: gambar 5 MB, PDF 10 MB, form campuran dicek per file (`utils/upload.js`) — Audit 07
+- [x] `logo.png` 2,4 MB → 25 KB (240 px, kedua salinan)
+- [x] Bagian video profil disembunyikan bila URL kosong; video cadangan privat dihapus — Audit 18
+- [x] `<html lang="id">` di 72 view — Audit 09 · A4
 
 ### Konten `[manual oleh admin BAA]`
 - [ ] Hapus atau draf-kan berita uji (rgwegewrg, test, pm, edtbed, ghrdb, fasfaf, gjgjgj, dst.) — Audit 05
@@ -43,10 +47,12 @@ Label di setiap kelompok tugas: `[Model · effort]`. Kelompok tugas yang labelny
 - [ ] Nonaktifkan atau tandai 4 akreditasi yang kedaluwarsa — Audit 06
 
 ### Verifikasi `[Opus 5.5 · high]`
-- [ ] Uji: `POST /register` dengan `role=admin` ditolak
-- [ ] Uji: `/halaman-acak` dan `/admin` tidak menampilkan stack trace
-- [ ] Uji: menu HP di 390 px membuka navigasi BAA
-- [ ] Uji: unggah gambar 20 MB ditolak dengan pesan yang jelas
+- [x] Uji: `POST /register` dengan `role=admin` → 404, tidak ada akun baru
+- [x] Uji: `/halaman-acak`, `/register`, `/berita/tidak-ada` → 404 ramah tanpa stack trace; `/admin` → 302 ke dashboard/login
+- [x] Uji: login gagal ke-1 & ke-2 tanpa reCAPTCHA, ke-3 menampilkan reCAPTCHA; setelahnya password benar tanpa/dengan token palsu tetap ditolak
+- [x] Uji: menu HP di 390 px dan 1024 px membuka navigasi asli, target sentuh 44 px, tanpa geser horizontal
+- [x] Uji: gambar 6 MB, SVG, PDF 12 MB, cover 6 MB di form campuran → ditolak sebelum controller, kembali ke form dengan pesan; tidak ada file tersisa
+- [x] Smoke test: 14 rute publik 200 tanpa error JS; 5 halaman admin 200
 
 ---
 
