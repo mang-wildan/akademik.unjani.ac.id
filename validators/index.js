@@ -138,6 +138,31 @@ const lulusan = z.object({
   jumlah: z.preprocess(v => Number(v), z.number({ error: req('Jumlah') }).int('Jumlah harus bilangan bulat.').min(0, 'Jumlah tidak boleh negatif.')),
 });
 
+// ---------------------------------------------------------------- master data
+const faculty = z.object({
+  nama: text('Nama fakultas', { max: 160 }),
+  singkatan: text('Singkatan', { max: 30 }),
+});
+
+const lembagaAkreditasi = z.object({
+  nama: text('Nama lembaga', { max: 160 }),
+  singkatan: text('Singkatan', { max: 30 }),
+  urutan: z.preprocess(v => (blankToUndefined(v) === undefined ? 0 : Number(v)), z.number().int('Urutan harus bilangan bulat.').min(0).max(999)),
+});
+
+const programStudi = z.object({
+  nama: text('Nama program studi', { max: 160 }),
+  singkatan: text('Singkatan', { max: 30 }),
+  fakultas: objectId('Fakultas'),
+});
+
+const kategori = z.object({
+  jenis: choice('Jenis', ['pengumuman', 'dokumen', 'berita']),
+  nama: text('Nama kategori', { max: 60 }),
+  urutan: z.preprocess(v => (blankToUndefined(v) === undefined ? 0 : Number(v)), z.number().int('Urutan harus bilangan bulat.').min(0).max(999)),
+  isActive: checkbox,
+});
+
 const unit = z.object({
   nama: text('Nama unit', { max: 160 }),
   deskripsi: optionalText('Deskripsi', 500),
@@ -210,5 +235,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, userCreate, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, userCreate, passwordChange },
 };

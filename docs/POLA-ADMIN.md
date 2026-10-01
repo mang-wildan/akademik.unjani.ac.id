@@ -85,7 +85,15 @@ Dokumen lama di database (disalin dari skema sebelum field baru ditambahkan) bis
 
 Modul yang skemanya sudah ditambah field baru di F2 tapi field LAMA-nya masih `required: true` di Mongoose (bukan cuma di Zod) akan gagal disimpan begitu form F4 berhenti mengisi field lama itu — error-nya `ValidationError` dari Mongoose, bukan dari `validate()` kita, jadi tidak tertangkap oleh pola render-ulang-dengan-errors biasa (muncul sebagai 500, bukan form dengan pesan galat). Ditemukan di `models/Accreditation.js`: `institusi`/`unit`/`tahun`/`akreditasi` v1 masih `required: true` padahal form F4 menulis `jenis`/`namaUnit`/`programStudi`/`peringkat`. **Sebelum menulis form F4 untuk modul lama, periksa field mana di skema Mongoose yang masih `required: true` tapi tidak lagi diisi oleh form baru — longgarkan ke optional (jangan hapus, data lama tetap butuh field itu).**
 
-### Dokumen singleton (Profil Bidang, Pengaturan Situs)
+### Master data sederhana (Fakultas, Lembaga Akreditasi)
+
+`controllers/masterDataController.js` adalah factory kedua (setelah `adminContentController.js`) untuk bentuk yang benar-benar identik: `nama` + `singkatan`, opsional `urutan`. Dipakai Fakultas dan Lembaga Akreditasi lewat wrapper tipis yang sama seperti `newsController.js`. Beda dari pola Pengumuman: tidak ada upload file, dan menangani `MongoServerError` kode `11000` (duplicate key, mis. `singkatan` yang punya index unik) sebagai pesan galat per-field, bukan 500 polos.
+
+Program Studi (butuh ref Fakultas) dan Kategori (butuh `jenis` terkunci + slug otomatis) **tidak** memakai factory ini — bentuknya cukup beda untuk ditulis sebagai kontroler sendiri, tapi tetap ikuti gaya yang sama (list+form, Zod, `renderPage`).
+
+**Semua rute master data ini `requireSuperadmin`, bukan `requireAdmin`** — mengubahnya memengaruhi banyak data turunan (akreditasi merujuk lembaga, kurikulum merujuk prodi, dst.), jadi dibatasi lebih ketat daripada modul konten biasa.
+
+## Dokumen singleton (Profil Bidang, Pengaturan Situs)
 
 Untuk data yang selalu tepat satu dokumen (bukan daftar), pola yang dipakai: `getSingleton()` yang membuat dokumen default sekali jika belum ada, satu rute `GET /` yang langsung me-render form (bukan halaman "lihat" + halaman "ubah" terpisah), dan `POST /` yang menyimpan ke dokumen yang sama. Tidak ada `list.ejs`, tidak ada `:id` di rute sama sekali. Field array yang isinya daftar butir pendek (misi/tugas/fungsi) diisi lewat **satu `<textarea>` per kolom, satu baris = satu butir** (`validators/index.js`: helper `lines()`/`linesToArray`) -- jauh lebih sederhana daripada form dinamis tambah/hapus baris, dan tidak butuh JS.
 

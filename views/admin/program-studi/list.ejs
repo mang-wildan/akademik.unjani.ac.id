@@ -1,188 +1,59 @@
-<!doctype html>
-<html
-  lang="id"
-  class="layout-navbar-fixed layout-menu-fixed layout-compact"
-  dir="ltr"
-  data-skin="default"
-  data-bs-theme="light"
-  data-assets-path="/assets/"
-  data-template="vertical-menu-template">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><%= title || 'Program Studi' %></title>
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
-    <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
-    <link rel="stylesheet" href="/assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" />
-    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
-    <link rel="stylesheet" href="/assets/css/demo.css" />
-    <style>
-      .table-card-header { padding: 1rem 1.25rem 0.5rem 1.25rem; }
-      .table-card-toolbar { gap: .5rem; }
-      .dataTables_filter input { min-width: 220px; }
-      .badge-soft { background-color: var(--bs-primary-bg-subtle); color: var(--bs-primary); }
-      tr.table-empty td:not(:first-child) { display: none !important; }
-      tr.table-empty td:first-child {
-        width: 100%;
-        text-align: center;
-        padding: 1.25rem;
-        color: var(--bs-secondary-color);
-        background: var(--bs-body-bg);
-      }
-    </style>
-    <script src="/assets/vendor/js/helpers.js"></script>
-    <script src="/assets/js/config.js"></script>
-  </head>
+<%# Program Studi + impor CSV — FR-M-11. %>
+<div class="mb-6 flex flex-wrap items-start justify-between gap-3">
+  <div>
+    <h1 class="text-2xl font-bold">Program Studi</h1>
+    <p class="text-muted">Master data program studi per fakultas.</p>
+  </div>
+  <a href="/admin/program-studi/new" class="btn btn-primary"><%- icon('add') %>Tambah Program Studi</a>
+</div>
 
-  <body>
-    <div class="layout-wrapper layout-content-navbar">
-      <div class="layout-container">
-        <%- include("../../partials/menu") %>
-        <div class="layout-page">
-          <%- include("../../partials/navbar") %>
-          <div class="content-wrapper">
-            <div class="container-xxl flex-grow-1 container-p-y">
-              <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-                <div>
-                  <h4 class="mb-1">Data Program Studi</h4>
-                  <p class="text-muted mb-0">Kelola daftar program studi beserta fakultasnya.</p>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                  <span class="badge bg-label-primary px-3 py-2">Total: <%= programs ? programs.length : 0 %></span>
-                  <a class="btn btn-primary" href="/admin/program-studi/new"><i class="ri ri-add-line me-1"></i>Tambah</a>
-                  <form action="/admin/program-studi/import" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2" data-disable-submit>
-                    <label class="btn btn-outline-secondary mb-0" for="importFile">
-                      <i class="ri ri-upload-2-line me-1"></i>Import CSV
-                    </label>
-                    <input type="file" id="importFile" name="file" accept=".csv,text/csv" class="d-none" onchange="this.form.submit()" />
-                    <a class="btn btn-sm btn-label-info" href="/templates/program-studi-import.csv" download>
-                      <i class="ri ri-file-download-line me-1"></i>Template
-                    </a>
-                  </form>
-                </div>
-              </div>
-
-              <div class="card shadow-sm">
-                <div class="d-flex flex-wrap justify-content-between align-items-center table-card-header">
-                  <div>
-                    <h6 class="mb-1">Tabel Program Studi</h6>
-                    <p class="text-muted mb-0 small">Daftar nama, singkatan, dan fakultas terkait.</p>
-                  </div>
-                  <div class="d-flex table-card-toolbar align-items-center">
-                    <span class="badge badge-soft px-3 py-2">Total data: <%= programs ? programs.length : 0 %></span>
-                  </div>
-                </div>
-                <div class="table-responsive m-4">
-                  <table id="programsTable" class="table table-striped table-hover align-middle mb-0">
-                    <thead class="table-light">
-                      <tr>
-                        <th style="width:60px" class="text-center">No.</th>
-                        <th>Nama</th>
-                        <th>Singkatan</th>
-                        <th>Fakultas</th>
-                        <th>Dibuat</th>
-                        <th>Diperbarui</th>
-                        <th class="text-end">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <% if (programs && programs.length) { %>
-                        <% programs.forEach(function(item, idx){ %>
-                          <tr>
-                            <td class="text-center"><%= idx + 1 %></td>
-                            <td class="fw-semibold"><%= item.nama %></td>
-                            <td><span class="badge bg-label-success"><%= item.singkatan %></span></td>
-                            <td><%= item.fakultas ? (item.fakultas.nama || item.fakultas.singkatan) : '-' %></td>
-                            <td>
-                              <div><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></div>
-                              <small class="text-muted"><%= item.createdBy ? (item.createdBy.name || item.createdBy.email || '') : '' %></small>
-                            </td>
-                            <td>
-                              <div><%= item.updatedAt ? item.updatedAt.toLocaleDateString() : '-' %></div>
-                              <small class="text-muted"><%= item.updatedBy ? (item.updatedBy.name || item.updatedBy.email || '') : '' %></small>
-                            </td>
-                            <td class="text-end">
-                              <a class="btn btn-sm btn-outline-primary me-2" href="/admin/program-studi/<%= item._id %>/edit">
-                                <i class="ri ri-pencil-line"></i>
-                              </a>
-                              <form action="/admin/program-studi/<%= item._id %>/delete" method="POST" class="d-inline" data-disable-submit>
-                                <button class="btn btn-sm btn-outline-danger" type="submit">
-                                  <i class="ri ri-delete-bin-line"></i>
-                                </button>
-                              </form>
-                            </td>
-                          </tr>
-                        <% }); %>
-                      <% } else { %>
-                        <tr class="table-empty" data-empty="true" data-message="Belum ada data program studi.">
-                          <td class="text-center text-muted">Belum ada data program studi.</td>
-                          <td></td><td></td><td></td><td></td><td></td><td></td>
-                        </tr>
-                      <% } %>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <div class="content-backdrop fade"></div>
-          </div>
-        </div>
-      </div>
+<div class="card card-body mb-6 space-y-4">
+  <h2 class="font-semibold">Impor dari CSV</h2>
+  <% if (importErrors) { %>
+    <div class="rounded-control border border-danger-solid bg-danger-soft p-3 text-sm text-danger">
+      <p class="font-semibold">Impor gagal, tidak ada yang disimpan:</p>
+      <ul class="mt-1 list-disc space-y-0.5 pl-5">
+        <% importErrors.forEach(e => { %><li><%= e %></li><% }) %>
+      </ul>
     </div>
+  <% } %>
+  <form method="POST" action="/admin/program-studi/import" enctype="multipart/form-data" class="flex flex-col gap-3 sm:flex-row sm:items-end">
+    <div class="flex-1">
+      <%- include('../../components/file-upload', { name: 'csv', label: 'File CSV', accept: '.csv,text/csv', required: true, limitText: 'Kolom: nama, singkatan, fakultas.' }) %>
+    </div>
+    <button type="submit" class="btn btn-secondary">Impor</button>
+  </form>
+</div>
 
-    <div class="layout-overlay layout-menu-toggle"></div>
-    <div class="drag-target"></div>
-
-    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="/assets/vendor/libs/popper/popper.js"></script>
-    <script src="/assets/vendor/js/bootstrap.js"></script>
-    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
-    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
-    <script src="/assets/vendor/js/menu.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script>
-      $(function () {
-        const table = $('#programsTable');
-        if (!table.length) return;
-        const dt = table.DataTable({
-          responsive: true,
-          pageLength: 10,
-          lengthMenu: [10, 25, 50, 100],
-          order: [[1, 'asc']],
-          columnDefs: [
-            { targets: [0, 6], orderable: false, searchable: false }
-          ],
-          language: {
-            searchPlaceholder: 'Cari program studi...',
-            search: '',
-            lengthMenu: 'Tampilkan _MENU_',
-            emptyTable: 'Belum ada data program studi.'
-          },
-          dom: '<\"row align-items-center mb-3\"<\"col-md-6\"l><\"col-md-6 text-md-end\"f>>t<\"row align-items-center mt-3\"<\"col-md-6\"i><\"col-md-6 text-md-end\"p>>'
-        });
-
-        dt.on('order.dt search.dt', function () {
-          let i = 1;
-          dt.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell) {
-            const row = cell.closest('tr');
-            if (row && row.dataset.empty === 'true') {
-              cell.innerHTML = row.dataset.message || '-';
-            } else {
-              cell.innerHTML = i++;
-            }
-          });
-        }).draw();
-
-        const wrapper = table.closest('.dataTables_wrapper');
-        wrapper.find('.dataTables_filter input').addClass('form-control form-control-sm').attr('aria-label', 'Cari program studi');
-        wrapper.find('.dataTables_length select').addClass('form-select form-select-sm');
-      });
-    </script>
-  </body>
-</html>
+<div class="card">
+  <% if (!items.length) { %>
+    <div class="p-6">
+      <%- include('../../components/empty-state', { emptyIcon: 'school', emptyTitle: 'Belum ada program studi', emptyAction: { label: 'Tambah Program Studi', href: '/admin/program-studi/new' } }) %>
+    </div>
+  <% } else { %>
+  <table class="data-table data-table--stack">
+    <caption class="sr-only">Daftar program studi</caption>
+    <thead><tr><th scope="col">Nama</th><th scope="col">Singkatan</th><th scope="col">Fakultas</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+    <tbody>
+      <% items.forEach(item => { %>
+        <tr>
+          <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.nama %></span></td>
+          <td data-label="Singkatan"><%= item.singkatan %></td>
+          <td data-label="Fakultas"><%= item.fakultas ? item.fakultas.nama : '—' %></td>
+          <td data-label="Aksi">
+            <div class="flex items-center gap-1 md:justify-end">
+              <a href="/admin/program-studi/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah <%= item.nama %>"><%- icon('edit') %>Ubah</a>
+              <button type="button" class="btn-icon text-danger hover:bg-danger-soft" data-dialog-open="hapus-<%= item._id %>" aria-label="Hapus <%= item.nama %>"><%- icon('delete') %></button>
+            </div>
+            <%- include('../../components/confirm-dialog', {
+              dialogId: `hapus-${item._id}`, dialogTitle: `Hapus ${item.nama}?`,
+              dialogText: 'Data ini akan dihapus permanen dan tidak bisa dikembalikan.',
+              action: `/admin/program-studi/${item._id}/delete`, confirmLabel: 'Hapus',
+            }) %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+</div>

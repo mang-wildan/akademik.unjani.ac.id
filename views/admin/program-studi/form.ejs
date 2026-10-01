@@ -1,0 +1,17 @@
+<div class="mb-6">
+  <a href="/admin/program-studi" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Program Studi</a>
+  <h1 class="text-2xl font-bold"><%= mode === 'edit' ? 'Ubah Program Studi' : 'Tambah Program Studi' %></h1>
+</div>
+
+<form method="POST" action="/admin/program-studi<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid max-w-xl gap-5">
+  <%- include('../../components/form-field', { name: 'nama', label: 'Nama', required: true, value: values.nama, error: errors.nama }) %>
+  <%- include('../../components/form-field', { name: 'singkatan', label: 'Singkatan', required: true, value: values.singkatan, error: errors.singkatan }) %>
+  <%- include('../../components/form-field', {
+    name: 'fakultas', label: 'Fakultas', type: 'select', required: true, value: values.fakultas && String(values.fakultas._id || values.fakultas), error: errors.fakultas,
+    placeholder: 'Pilih fakultas', options: facultyList.map(f => ({ value: f._id, label: f.nama })),
+  }) %>
+  <div class="flex justify-end gap-2 border-t border-line pt-5">
+    <a href="/admin/program-studi" class="btn btn-secondary">Batal</a>
+    <button type="submit" class="btn btn-primary">Simpan</button>
+  </div>
+</form>

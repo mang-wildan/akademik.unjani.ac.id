@@ -4,11 +4,13 @@ const facultyController = require('../controllers/facultyController');
 
 const router = express.Router();
 
-router.get('/', requireAuth, requireSuperadmin, facultyController.list);
-router.get('/new', requireAuth, requireSuperadmin, facultyController.showCreate);
-router.post('/', requireAuth, requireSuperadmin, facultyController.create);
-router.get('/:id/edit', requireAuth, requireSuperadmin, facultyController.showEdit);
-router.post('/:id', requireAuth, requireSuperadmin, facultyController.update);
-router.post('/:id/delete', requireAuth, requireSuperadmin, facultyController.destroy);
+router.use(requireAuth, requireSuperadmin);
+
+router.get('/', facultyController.list);
+router.get('/new', facultyController.showCreate);
+router.post('/', facultyController.create);
+router.get('/:id/edit', facultyController.showEdit);
+router.post('/:id', facultyController.update);
+router.post('/:id/delete', facultyController.destroy);
 
 module.exports = router;

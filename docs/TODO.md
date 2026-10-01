@@ -214,7 +214,7 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 - [x] Data Lulusan + impor CSV — FR-M-08 (`controllers/lulusanController.js`, `utils/lulusanImport.js`; pelaporan error per-baris seperti impor Kalender; bug ditemukan: rute lama pakai `multer memoryStorage` untuk CSV sehingga `checkUploads` diam-diam dilewati — diganti `diskStorage`)
 - [x] Pimpinan & Staf — FR-M-09 (`controllers/staffController.js`; `kelompok` dan `gelar` sebelumnya tidak pernah bisa diisi admin sama sekali meski dipakai halaman publik — celah ditutup; NIP tetap bisa diisi admin tapi tidak dikirim ke publik, K-05)
 - [x] Unit & Profil Bidang — FR-M-10 (`controllers/unitController.js` CRUD biasa; `controllers/academicProfileController.js` dokumen singleton — satu halaman lihat+ubah, misi/tugas/fungsi diisi lewat satu textarea per kolom, satu baris = satu butir)
-- [ ] Master Data (Fakultas, Prodi, Kategori, Lembaga) — FR-M-11
+- [x] Master Data (Fakultas, Prodi, Kategori, Lembaga) — FR-M-11, superadmin-only (`requireSuperadmin`). Kategori dan Lembaga Akreditasi **sebelumnya tidak punya UI admin sama sekali** (hanya pernah diisi lewat skrip migrasi) — dibangun dari nol. `controllers/masterDataController.js`: factory untuk Fakultas/Lembaga (nama+singkatan[+urutan], termasuk tangani duplicate-key Mongo). `controllers/kategoriController.js`: satu halaman dengan tab per jenis + slug otomatis. `controllers/programStudiController.js`: ditulis ulang, termasuk perbaikan bug `memoryStorage` pada impor CSV (lih. docs/POLA-ADMIN.md)
 - [ ] Pengaturan Situs — FR-M-12
 - [ ] Akun Admin — FR-M-13
 - [ ] Audit log — FR-AD-08 (Sebaiknya)
