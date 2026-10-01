@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pimpinan & Staff - BAA</title>
+  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
+  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
+  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
+  <style>
+    .staff-card { border:1px solid #e8edf5; border-radius:18px; box-shadow:0 14px 30px rgba(0,0,0,0.08); transition:.2s ease; height:100%; background:#fff; overflow:hidden; position:relative; }
+    .staff-card:hover { transform: translateY(-6px); box-shadow:0 18px 46px rgba(0,0,0,0.12); }
+    .staff-ribbon { position:absolute; top:12px; left:12px; background:linear-gradient(135deg,#0D9394,#0aa2a2); color:#fff; border-radius:10px; padding:6px 10px; font-size:12px; font-weight:700; box-shadow:0 6px 18px rgba(0,0,0,0.12); }
+    .staff-photo { width:120px; height:120px; object-fit:cover; border-radius:50%; border:5px solid #fff; box-shadow:0 8px 24px rgba(0,0,0,0.12); }
+    .staff-badge { background: rgba(13,147,148,0.12); color:#0D9394; border-radius:999px; padding:4px 10px; font-size:12px; font-weight:600; }
+    .staff-name { font-size:18px; font-weight:700; margin-bottom:4px; }
+    .staff-role { font-size:14px; color:#6b7280; }
+  </style>
+</head>
+<body>
+  <%- include("../partials/landing-header") %>
+  <%- include("../partials/landing-aside") %>
+
+  <main>
+    <div class="section-wrapper pb-0">
+      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
+        <div class="hero-container">
+          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
+            <h1 class="secondary-accent">Pimpinan & Staff</h1>
+            <nav class="breadcrumb">
+              <a href="/" class="breadcrumb-item">Home</a>
+              <span class="breadcrumb-icon">/</span>
+              <span class="breadcrumb-item recent">Pimpinan & Staff</span>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="hero-container">
+        <div class="d-flex flex-column gspace-4">
+          <div class="service-title-container">
+            <div class="row row-cols-md-1 row-cols-1 grid-spacer-2 align-items-center">
+              <div class="col">
+                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
+                  <div class="sub-heading col-2">
+                    <i class="fa-solid fa-circle accent-color-2"></i>
+                    <span class="sub-heading-title">Tim Kami</span>
+                  </div>
+                  <h2 class="mb-1">Pimpinan dan Staff BAA</h2>
+                  <p class="text-muted mb-0">Kenali struktur kepemimpinan dan staf yang mendukung layanan akademik.</p>
+                </div>
+              </div>
+              <div class="col d-flex justify-content-center justify-content-md-end align-items-center">
+                <div class="badge accent-bg text-white px-3 py-2">Total: <%= staffs ? staffs.length : 0 %> orang</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row row-cols-xl-4 row-cols-md-3 row-cols-2 grid-spacer-3">
+            <% if (staffs && staffs.length) { %>
+              <% staffs.forEach(function(item, idx){ %>
+                <div class="col d-flex">
+                  <div class="staff-card w-100 animate-box animate__animated animated" data-animate="animate__fadeInUp">
+                    <div class="staff-ribbon">#<%= item.nomorUrut || idx + 1 %></div>
+                    <div class="card-body text-center d-flex flex-column gspace-2 py-4 px-3">
+                      <div class="position-relative mx-auto">
+                        <img src="<%= item.foto || '/assets/landing-page/images/dummy-img-400x400.jpg' %>" alt="<%= item.nama %>" class="staff-photo">
+                      </div>
+                      <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <span class="staff-badge"><%= item.jabatan %></span>
+                      </div>
+                      <div class="staff-name"><%= item.nama %></div>
+                      <div class="staff-role">NIP/NID: <%= item.nip %></div>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="col-12">
+                <div class="alert alert-warning text-center">Data staff belum tersedia.</div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%- include("../partials/landing-footer") %>
+
+  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
+  <script src="/assets/landing-page/js/script.js"></script>
+  <script src="/assets/landing-page/js/submit-form.js"></script>
+  <script src="/assets/landing-page/js/swiper-script.js"></script>
+</body>
+</html>

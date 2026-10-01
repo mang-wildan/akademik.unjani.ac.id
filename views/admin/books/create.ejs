@@ -1,0 +1,237 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Tambah Buku' %></title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="/assets/css/demo.css" />
+
+  <style>
+    .upload-zone {
+      transition: all 0.3s ease;
+      background-color: #f8f9fa;
+      cursor: pointer;
+    }
+
+    .upload-zone:hover {
+      background-color: #e9ecef;
+      border-color: var(--bs-primary) !important;
+    }
+
+    .book-cover-preview {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <script src="/assets/vendor/js/helpers.js"></script>
+  <script src="/assets/vendor/js/template-customizer.js"></script>
+  <script src="/assets/js/config.js"></script>
+</head>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include("../../partials/menu") %>
+      <div class="layout-page">
+        <%- include("../../partials/navbar") %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <div
+              class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+              <div>
+                <h4 class="fw-bold mb-0">Tambah Buku Baru</h4>
+                <p class="text-muted mb-0">Isi form di bawah untuk menambahkan koleksi buku ke database.</p>
+              </div>
+              <div class="d-flex gap-2">
+                <a class="btn btn-label-secondary" href="/admin/books">
+                  <span class="iconify me-1" data-icon="ri:arrow-left-line"></span> Kembali
+                </a>
+              </div>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <div class="d-flex align-items-center">
+                <span class="iconify me-2 fs-4" data-icon="ri:error-warning-fill"></span>
+                <span><%= error %></span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+            <form method="POST" action="/admin/books" enctype="multipart/form-data" data-disable-submit>
+              <div class="row g-4">
+
+                <div class="col-lg-8">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h5 class="mb-0 card-title">Informasi Umum</h5>
+                      <small class="text-muted"><span class="text-danger">*</span> Wajib diisi</small>
+                    </div>
+                    <div class="card-body">
+                      <div class="mb-4">
+                        <label class="form-label fw-medium" for="titleInput">Judul Buku <span
+                            class="text-danger">*</span></label>
+                        <div class="input-group input-group-merge">
+                          <span class="input-group-text"><span class="iconify"
+                              data-icon="ri:book-mark-line"></span></span>
+                          <input type="text" id="titleInput" name="title" class="form-control"
+                            placeholder="Masukkan judul lengkap buku..."
+                            value="<%= values && values.title ? values.title : '' %>" required />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                          <label class="form-label fw-medium" for="yearInput">Tahun Terbit <span
+                              class="text-danger">*</span></label>
+                          <% const nowY = new Date().getFullYear(); %>
+                          <select name="year" id="yearInput" class="form-select" required>
+                            <% for (let y = nowY + 1; y >= nowY - 5; y--) { %>
+                            <option value="<%= y %>"
+                              <%= ((values && values.year && Number(values.year) === y) || (!values || !values.year) && y === nowY) ? 'selected' : '' %>>
+                              <%= y %></option>
+                            <% } %>
+                          </select>
+                          <div class="form-text">Rentang: 5 tahun ke belakang sampai 1 tahun ke depan.</div>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-medium" for="pdfInput">File E-Book (PDF) <span
+                              class="text-danger">*</span></label>
+                          <input type="file" name="pdf" id="pdfInput" accept="application/pdf" class="form-control"
+                            required />
+                          <div class="form-text">Maksimal ukuran file disarankan di bawah 10MB.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-4">
+                  <div class="card h-100 shadow-sm">
+                    <div class="card-header">
+                      <h5 class="mb-0 card-title">Cover Buku</h5>
+                    </div>
+                    <div class="card-body">
+                      <input type="file" name="cover" id="coverInput" accept="image/png,image/jpg,image/jpeg"
+                        class="d-none" required />
+
+                      <label for="coverInput"
+                        class="upload-zone d-block border border-2 border-dashed rounded-3 p-2 text-center position-relative"
+                        style="min-height: 320px;">
+
+                        <div id="coverPlaceholder"
+                          class="d-flex flex-column align-items-center justify-content-center h-100 py-5"
+                          style="display:<%= values && values.cover ? 'none !important' : 'flex' %>;">
+                          <div class="bg-label-primary rounded p-3 mb-3">
+                            <span class="iconify fs-1 text-primary" data-icon="ri:image-add-line"></span>
+                          </div>
+                          <h6 class="mb-1">Klik untuk upload cover</h6>
+                          <small class="text-muted">Format: JPG/PNG. <br>Rasio disarankan 3:4</small>
+                        </div>
+
+                        <div id="previewContainer" class="position-absolute top-0 start-0 w-100 h-100 p-2"
+                          style="display:<%= values && values.cover ? 'block' : 'none' %>;">
+                          <img id="coverPreview" src="<%= values && values.cover ? values.cover : '' %>"
+                            alt="Preview cover" class="book-cover-preview rounded-2 shadow-sm" />
+
+                          <button type="button" id="btnRemoveCover"
+                            class="btn btn-sm btn-icon btn-danger position-absolute top-0 end-0 m-3 shadow">
+                            <span class="iconify" data-icon="ri:close-line"></span>
+                          </button>
+                        </div>
+                      </label>
+                      <div class="form-text text-center mt-2">Pastikan cover terlihat menarik.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <div class="card shadow-sm">
+                    <div class="card-body d-flex justify-content-end gap-3">
+                      <a href="/admin/books" class="btn btn-label-secondary">Batal</a>
+                      <button type="submit" class="btn btn-primary px-4">
+                        <span class="iconify me-1" data-icon="ri:save-line"></span> Simpan Buku
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
+
+  <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+  <div class="drag-target"></div>>
+
+  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/assets/vendor/js/bootstrap.js"></script>
+  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/assets/vendor/js/menu.js"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Logic Upload Cover yang Lebih Baik
+      const coverInput = document.getElementById('coverInput');
+      const coverPreview = document.getElementById('coverPreview');
+      const coverPlaceholder = document.getElementById('coverPlaceholder');
+      const previewContainer = document.getElementById('previewContainer');
+      const btnRemoveCover = document.getElementById('btnRemoveCover');
+
+      if (coverInput) {
+        // Saat file dipilih
+        coverInput.addEventListener('change', (e) => {
+          const [file] = e.target.files;
+          if (file) {
+            coverPreview.src = URL.createObjectURL(file);
+            previewContainer.style.display = 'block';
+            coverPlaceholder.style.setProperty('display', 'none', 'important');
+          }
+        });
+
+        // Tombol Hapus Cover
+        btnRemoveCover.addEventListener('click', (e) => {
+          e.preventDefault(); // Mencegah trigger label
+          e.stopPropagation(); // Mencegah event bubbling
+
+          coverInput.value = ''; // Reset input file
+          coverPreview.src = '';
+          previewContainer.style.display = 'none';
+          coverPlaceholder.style.setProperty('display', 'flex', 'important');
+        });
+      }
+    });
+  </script>
+  <%- include("../../partials/template-customizer") %>
+</body>
+
+</html>

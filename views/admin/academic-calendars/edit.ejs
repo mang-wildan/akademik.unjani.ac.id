@@ -1,0 +1,205 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Edit Kalender Akademik' %></title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="/assets/css/demo.css" />
+  <script src="/assets/vendor/js/helpers.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <style>
+    .calendar-preview {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #f8fafb;
+      border: 1px dashed var(--bs-border-color);
+      padding: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include("../../partials/menu") %>
+      <div class="layout-page">
+        <%- include("../../partials/navbar") %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+              <div>
+                <h4 class="fw-bold mb-0">Edit Kalender Akademik</h4>
+                <p class="text-muted mb-0">Perbarui gambar kalender atau tahun ajaran.</p>
+              </div>
+              <a class="btn btn-label-secondary" href="/admin/academic-calendars">
+                <span class="iconify me-1" data-icon="ri:arrow-left-line"></span> Kembali
+              </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <div class="d-flex align-items-center">
+                <span class="iconify me-2 fs-4" data-icon="ri:error-warning-fill"></span>
+                <span><%= error %></span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+            <form method="POST" action="/admin/academic-calendars/<%= values._id %>" enctype="multipart/form-data" data-disable-submit>
+              <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0 card-title">Form Kalender Akademik</h5>
+                  <small class="text-muted"><span class="text-danger">*</span> Wajib diisi</small>
+                </div>
+                <div class="card-body">
+                  <div class="row g-4">
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="tahunAjaranInput">Tahun Ajaran <span class="text-danger">*</span></label>
+                      <% const nowY = new Date().getFullYear(); %>
+                      <select id="tahunAjaranInput" name="tahunAjaran" class="form-select" required>
+                        <% for (let y = nowY + 2; y >= nowY - 6; y--) { const label = `${y}/${y+1}`; %>
+                          <option value="<%= label %>"
+                            <%= (values && values.tahunAjaran === label) || (!values || !values.tahunAjaran) && y === nowY ? 'selected' : '' %>>
+                            <%= label %>
+                          </option>
+                        <% } %>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="fileInput">File Kalender (Gambar)</label>
+                      <input type="file" name="file" id="fileInput" accept="image/png,image/jpg,image/jpeg" class="form-control" />
+                      <% if (values && values.file) { %>
+                      <div class="form-text">
+                        <a href="<%= values.file %>" target="_blank"><i class="ri ri-image-line me-1"></i>Lihat file saat ini</a>
+                      </div>
+                      <% } %>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label fw-medium">Pratinjau</label>
+                      <img id="filePreview" src="<%= values && values.file ? values.file : '' %>" alt="Preview kalender"
+                        data-initial="<%= values && values.file ? values.file : '' %>"
+                        class="calendar-preview <%= values && values.file ? '' : 'd-none' %>" />
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-3">
+                  <a href="/admin/academic-calendars" class="btn btn-label-secondary">Batal</a>
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="iconify me-1" data-icon="ri:save-line"></span> Simpan Perubahan
+                  </button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-overlay layout-menu-toggle"></div>
+  <div class="drag-target"></div>
+
+  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/assets/vendor/js/bootstrap.js"></script>
+  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/assets/vendor/js/menu.js"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput = document.getElementById('fileInput');
+      const preview = document.getElementById('filePreview');
+      const dropzone = document.getElementById('dropzone');
+      const pickBtn = document.getElementById('pickFileBtn');
+      const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+      if (fileInput && dropzone && !dropzone.dataset.bound) {
+        dropzone.dataset.bound = '1';
+      }
+
+      if (fileInput && preview) {
+        const setFileInput = (file) => {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileInput.files = dt.files;
+          fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+
+        fileInput.addEventListener('change', (e) => {
+          const [file] = e.target.files;
+          if (!file) {
+            if (!preview.getAttribute('data-initial')) {
+              preview.classList.add('d-none');
+              preview.src = '';
+            } else {
+              preview.src = preview.getAttribute('data-initial');
+              preview.classList.remove('d-none');
+            }
+            return;
+          }
+          if (!file.type.startsWith('image/')) {
+            alert('File harus berupa gambar JPG/PNG.');
+            fileInput.value = '';
+            return;
+          }
+          if (file.size > MAX_SIZE) {
+            alert('Ukuran file maksimal 5MB.');
+            fileInput.value = '';
+            return;
+          }
+          preview.src = URL.createObjectURL(file);
+          preview.classList.remove('d-none');
+        });
+
+        if (dropzone) {
+          ['dragenter', 'dragover'].forEach(evt => {
+            dropzone.addEventListener(evt, (e) => {
+              e.preventDefault(); e.stopPropagation();
+              dropzone.classList.add('hover');
+            });
+          });
+          ['dragleave', 'drop'].forEach(evt => {
+            dropzone.addEventListener(evt, (e) => {
+              e.preventDefault(); e.stopPropagation();
+              dropzone.classList.remove('hover');
+            });
+          });
+          dropzone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+            setFileInput(file);
+          });
+          dropzone.addEventListener('click', () => fileInput.click());
+        }
+
+        pickBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation(); // hindari bubble ke dropzone yang memicu click ganda
+          fileInput.click();
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

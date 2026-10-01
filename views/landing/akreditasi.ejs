@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akreditasi - BAA</title>
+  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
+  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
+  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
+  <style>
+    .ac-table-card {
+      background: #fff;
+      border: 1px solid #e6ecf5;
+      border-radius: 16px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    .ac-table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 20px 10px 20px;
+    }
+    .ac-chip {
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ac-chip.primary { background: rgba(13,147,148,0.12); color: #0D9394; }
+    .ac-chip.active { background: rgba(34,197,94,0.16); color: #166534; }
+    .ac-chip.inactive { background: rgba(249,115,22,0.16); color: #9a3412; }
+    .ac-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: #0D9394;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .ac-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6b7280;
+    }
+
+    .ac-group-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 14px;
+    }
+    .ac-group-card {
+      border: 1px solid #e6ecf5;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .ac-group-head {
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #f8fbff, #f3f8ff);
+      border-bottom: 1px solid #e7edf6;
+    }
+    .ac-group-title-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .ac-group-title {
+      margin: 0;
+      font-size: 16px;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    .ac-group-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .ac-group-toggle {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      text-align: left;
+      cursor: pointer;
+    }
+    .ac-group-toggle .ac-chevron {
+      transition: transform .2s ease;
+      color: #0D9394;
+      font-size: 14px;
+    }
+    .ac-group-toggle:not(.collapsed) .ac-chevron {
+      transform: rotate(180deg);
+    }
+    .ac-group-non-toggle .ac-chevron {
+      display: none;
+    }
+
+    .ac-table-wrap { overflow: auto; }
+    .ac-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+    .ac-table thead th {
+      background: linear-gradient(90deg,#0D9394,#0b7a7b);
+      color: #fff;
+      font-weight: 600;
+      text-align: left;
+      padding: 11px 12px;
+      border: none;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+    .ac-table tbody tr:nth-child(even) { background: #f8fafc; }
+    .ac-table tbody tr:hover { background: #eef7f7; }
+    .ac-table td {
+      padding: 10px 12px;
+      border-top: 1px solid #e8edf5;
+      color: #1f2937;
+      font-size: 14px;
+      vertical-align: top;
+    }
+    .ac-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .ac-pill.active {
+      background: rgba(34,197,94,0.15);
+      color: #166534;
+    }
+    .ac-pill.inactive {
+      background: rgba(249,115,22,0.14);
+      color: #9a3412;
+    }
+    .ac-pill.year {
+      background: rgba(13,147,148,0.12);
+      color: #0D9394;
+    }
+    .ac-pill.rank {
+      background: rgba(13,147,148,0.18);
+      color: #0D9394;
+    }
+    .ac-link {
+      color: #0D9394;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .ac-link:hover { color: #0b7a7b; text-decoration: underline; }
+    .ac-collapse-box {
+      border-top: 1px dashed #dbe7f3;
+      background: #fcfdff;
+    }
+    .ac-collapse-head {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #e8edf5;
+    }
+    .ac-collapse-head h5 {
+      margin: 0;
+      font-size: 14px;
+      color: #334155;
+      font-weight: 700;
+    }
+    .ac-collapse-note {
+      margin: 0;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .ac-table-card { border-radius: 12px; }
+      .ac-table-toolbar { padding: 14px 14px 8px; }
+      .ac-group-list { padding: 10px; gap: 10px; }
+      .ac-group-head { padding: 10px 12px; }
+      .ac-group-title { font-size: 14px; }
+      .ac-group-subtitle { font-size: 12px; }
+
+      .ac-table { min-width: 100%; }
+      .ac-table thead { display: none; }
+      .ac-table tbody tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px 10px;
+        padding: 10px;
+        border-bottom: 1px solid #e8edf5;
+      }
+      .ac-table td {
+        border: none;
+        padding: 0;
+        font-size: 13px;
+      }
+      .ac-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        color: #6b7280;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+        letter-spacing: .2px;
+      }
+      .ac-collapse-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <%- include("../partials/landing-header") %>
+
+  <!-- Sidebar Section -->
+  <%- include("../partials/landing-aside") %>
+
+  <main>
+    <%
+      const groups = Array.isArray(accreditationGroups) ? accreditationGroups : [];
+      const summary = accreditationSummary || {};
+    %>
+
+    <!-- Banner -->
+    <div class="section-wrapper pb-0">
+      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
+        <div class="hero-container">
+          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
+            <h1 class="secondary-accent">Akreditasi</h1>
+            <nav class="breadcrumb">
+              <a href="/" class="breadcrumb-item">Home</a>
+              <span class="breadcrumb-icon">/</span>
+              <span class="breadcrumb-item recent">Akreditasi</span>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="section">
+      <div class="hero-container">
+        <div class="d-flex flex-column gspace-4">
+          <div class="service-title-container">
+            <div class="row row-cols-md-1 row-cols-1 grid-spacer-2">
+              <div class="col">
+                <div class="d-flex flex-column gspace-2 justify-content-center text-md-start text-center">
+                  <div class="sub-heading col-2">
+                    <i class="fa-solid fa-circle accent-color-2"></i>
+                    <span class="sub-heading-title">Status Mutu</span>
+                  </div>
+                  <h2>Akreditasi Institusi & Unit</h2>
+                  <p class="text-muted">Data aktif ditampilkan langsung. Klik nama Institusi/Unit untuk membuka riwayat data nonaktif.</p>
+                </div>
+              </div>
+              <div class="col d-flex justify-content-center justify-content-md-end align-items-center">
+                <div class="badge accent-bg text-white px-3 py-2">Grup Aktif: <%= summary.totalGroups || 0 %></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ac-table-card animate-box" data-animate="animate__fadeInUp">
+            <div class="ac-table-toolbar">
+              <div class="d-flex align-items-center gap-2">
+                <span class="ac-badge"><i class="fa-solid fa-table"></i> Tabel Akreditasi</span>
+                <span class="text-muted small">Grup per Institusi + Unit. Data nonaktif tersembunyi secara default.</span>
+              </div>
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="ac-chip primary"><i class="fa-solid fa-database"></i> Total <%= summary.totalAll || 0 %></span>
+                <span class="ac-chip active"><i class="fa-solid fa-eye"></i> Aktif <%= summary.totalVisible || 0 %></span>
+                <span class="ac-chip inactive"><i class="fa-solid fa-eye-slash"></i> Nonaktif <%= summary.totalHidden || 0 %></span>
+              </div>
+            </div>
+
+            <% if (groups.length) { %>
+              <div class="ac-group-list">
+                <% groups.forEach(function(group){ %>
+                  <% const hasInactive = Array.isArray(group.inactiveRows) && group.inactiveRows.length > 0; %>
+                  <div class="ac-group-card">
+                    <div class="ac-group-head">
+                      <% if (hasInactive) { %>
+                        <button
+                          type="button"
+                          class="ac-group-toggle collapsed"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#<%= group.groupId %>"
+                          aria-expanded="false"
+                          aria-controls="<%= group.groupId %>">
+                          <div class="ac-group-title-wrap">
+                            <div>
+                              <h4 class="ac-group-title"><%= group.institusi %> / <%= group.unit %></h4>
+                              <p class="ac-group-subtitle">Klik nama untuk melihat riwayat nonaktif.</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                              <span class="ac-pill active">Aktif <%= group.activeRows.length %></span>
+                              <span class="ac-pill inactive">Riwayat <%= group.inactiveRows.length %></span>
+                              <i class="fa-solid fa-chevron-down ac-chevron"></i>
+                            </div>
+                          </div>
+                        </button>
+                      <% } else { %>
+                        <div class="ac-group-title-wrap ac-group-non-toggle">
+                          <div>
+                            <h4 class="ac-group-title"><%= group.institusi %> / <%= group.unit %></h4>
+                            <p class="ac-group-subtitle">Hanya memiliki data aktif.</p>
+                          </div>
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="ac-pill active">Aktif <%= group.activeRows.length %></span>
+                            <i class="fa-solid fa-chevron-down ac-chevron"></i>
+                          </div>
+                        </div>
+                      <% } %>
+                    </div>
+
+                    <div class="ac-table-wrap">
+                      <table class="ac-table">
+                        <thead>
+                          <tr>
+                            <th style="width:60px">No</th>
+                            <th style="width:90px">Status</th>
+                            <th style="width:100px">Tahun</th>
+                            <th style="width:120px">Akreditasi</th>
+                            <th style="width:190px">Berlaku</th>
+                            <th style="width:140px">Sertifikat</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% group.activeRows.forEach(function(item, idx){ %>
+                            <tr>
+                              <td data-label="No"><%= idx + 1 %></td>
+                              <td data-label="Status"><span class="ac-pill active">Aktif</span></td>
+                              <td data-label="Tahun"><span class="ac-pill year"><i class="fa-solid fa-calendar"></i> <%= item.tahun || '-' %></span></td>
+                              <td data-label="Akreditasi"><span class="ac-pill rank"><i class="fa-solid fa-award"></i> <%= item.akreditasi %></span></td>
+                              <td data-label="Berlaku" class="text-muted small">
+                                <%= item.tanggalBerlaku ? new Date(item.tanggalBerlaku).toLocaleDateString('id-ID') : '-' %> - <%= item.berlakuSampai ? new Date(item.berlakuSampai).toLocaleDateString('id-ID') : '-' %>
+                              </td>
+                              <td data-label="Sertifikat">
+                                <% if (item.sertifikat) { %>
+                                  <a class="ac-link" href="<%= item.sertifikat %>" target="_blank"><i class="fa-solid fa-file-pdf"></i> Lihat PDF</a>
+                                <% } else { %>
+                                  <span class="text-muted">Belum ada</span>
+                                <% } %>
+                              </td>
+                            </tr>
+                          <% }); %>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <% if (hasInactive) { %>
+                      <div id="<%= group.groupId %>" class="collapse ac-collapse-box">
+                        <div class="ac-collapse-head">
+                          <h5>Riwayat Data Nonaktif</h5>
+                          <p class="ac-collapse-note">Data berikut tidak aktif, ditampilkan sebagai arsip/riwayat.</p>
+                        </div>
+                        <div class="ac-table-wrap">
+                          <table class="ac-table">
+                            <thead>
+                              <tr>
+                                <th style="width:60px">No</th>
+                                <th style="width:90px">Status</th>
+                                <th style="width:100px">Tahun</th>
+                                <th style="width:120px">Akreditasi</th>
+                                <th style="width:190px">Berlaku</th>
+                                <th style="width:140px">Sertifikat</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% group.inactiveRows.forEach(function(item, idx){ %>
+                                <tr>
+                                  <td data-label="No"><%= idx + 1 %></td>
+                                  <td data-label="Status"><span class="ac-pill inactive">Nonaktif</span></td>
+                                  <td data-label="Tahun"><span class="ac-pill year"><i class="fa-solid fa-calendar"></i> <%= item.tahun || '-' %></span></td>
+                                  <td data-label="Akreditasi"><span class="ac-pill rank"><i class="fa-solid fa-award"></i> <%= item.akreditasi %></span></td>
+                                  <td data-label="Berlaku" class="text-muted small">
+                                    <%= item.tanggalBerlaku ? new Date(item.tanggalBerlaku).toLocaleDateString('id-ID') : '-' %> - <%= item.berlakuSampai ? new Date(item.berlakuSampai).toLocaleDateString('id-ID') : '-' %>
+                                  </td>
+                                  <td data-label="Sertifikat">
+                                    <% if (item.sertifikat) { %>
+                                      <a class="ac-link" href="<%= item.sertifikat %>" target="_blank"><i class="fa-solid fa-file-pdf"></i> Lihat PDF</a>
+                                    <% } else { %>
+                                      <span class="text-muted">Belum ada</span>
+                                    <% } %>
+                                  </td>
+                                </tr>
+                              <% }); %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    <% } %>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="ac-empty">
+                <i class="fa-solid fa-clipboard-check fa-lg mb-2"></i>
+                <div>Belum ada data akreditasi aktif yang dapat ditampilkan.</div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Section -->
+  <%- include("../partials/landing-footer") %>
+
+  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
+  <script src="/assets/landing-page/js/script.js"></script>
+  <script src="/assets/landing-page/js/submit-form.js"></script>
+  <script src="/assets/landing-page/js/swiper-script.js"></script>
+</body>
+</html>

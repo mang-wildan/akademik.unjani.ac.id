@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Error - BAA</title>
+    <link rel="stylesheet" href="/assets/landing-page/css/main.css">
+    <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
+    <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
+</head>
+<body>
+    <%- include("../partials/landing-preloader") %>
+
+    <!-- Main Section -->
+    <main>
+        <!-- Banner Inner Section -->
+        <div class="section-wrapper">
+            <div class="section-banner-inner banner-inner-404" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/unjani-new.jpg' %>'); background-size: cover; background-position: center;">
+                <div class="hero-container">
+                    <div class="d-flex flex-column gspace-2 text-center justify-content-center">
+                        <h1 class="heading-notfound">404</h1>
+                        <h3 class="secondary-accent">Oops! Court Not Found</h3>
+                        <p class="description-notfound">
+                            The page you're looking for has gone out of bounds. Let's rally back to the action. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dictum magna eget sem cursus porta. Cras dignissim tincidunt feugiat. Aenean feugiat eget purus non ornare.
+                        </p>
+                        <div>
+                            <a href="/" class="btn btn-accent">
+                                <span class="btn-title">
+                                    Return to Home
+                                </span>
+                                <span class="icon-circle">
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
+    <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
+    <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
+    <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+    <script src="/assets/landing-page/js/preloader.js"></script>
+    <script src="/assets/landing-page/js/script.js"></script>
+    <script src="/assets/landing-page/js/submit-form.js"></script>
+    <script src="/assets/landing-page/js/swiper-script.js"></script>
+</body>
+</html>

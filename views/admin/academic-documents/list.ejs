@@ -1,0 +1,258 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title || 'Dokumen Akademik' %></title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
+    <style>
+      .table-card-header { padding: 1rem 1.25rem 0.5rem 1.25rem; }
+      .table-card-toolbar { gap: .5rem; }
+      .dataTables_filter input { min-width: 220px; }
+      .badge-soft { background-color: var(--bs-primary-bg-subtle); color: var(--bs-primary); }
+      tr.table-empty td:not(:first-child) { display: none !important; }
+      tr.table-empty td:first-child {
+        width: 100%;
+        text-align: center;
+        padding: 1.25rem;
+        color: var(--bs-secondary-color);
+        background: var(--bs-body-bg);
+      }
+      .pin-btn { min-width: 92px; display: inline-flex; align-items: center; justify-content: center; gap: .35rem; }
+      .pin-btn.btn-warning { background-color: #fef3c7; border-color: #facc15; }
+    </style>
+    <script src="/assets/vendor/js/helpers.js"></script>
+    <script src="/assets/js/config.js"></script>
+  </head>
+
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <%- include("../../partials/menu") %>
+        <div class="layout-page">
+          <%- include("../../partials/navbar") %>
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                  <h4 class="mb-1">Dokumen Akademik</h4>
+                  <p class="text-muted mb-0">Kumpulan dokumen akademik dengan cover dan file PDF.</p>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                  <span class="badge bg-label-primary px-3 py-2">Total: <%= documents ? documents.length : 0 %></span>
+                  <a class="btn btn-primary" href="/admin/academic-documents/new"><i class="ri ri-add-line me-1"></i>Tambah</a>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="d-flex flex-wrap justify-content-between align-items-center table-card-header">
+                  <div>
+                    <h6 class="mb-1">Tabel Dokumen Akademik</h6>
+                    <p class="text-muted mb-0 small">Daftar dokumen PDF beserta cover.</p>
+                  </div>
+                  <div class="d-flex table-card-toolbar align-items-center">
+                    <span class="badge badge-soft px-3 py-2">Total data: <%= documents ? documents.length : 0 %></span>
+                  </div>
+                </div>
+                <div class="table-responsive m-4">
+                  <table id="academicDocumentsTable" class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th style="width:50px" class="text-center">No.</th>
+                        <th style="width:48px"></th>
+                        <th>Nama</th>
+                        <th style="width:90px" class="text-center">Pin</th>
+                        <th>Keterangan</th>
+                        <th>File</th>
+                        <th>Dibuat</th>
+                        <th>Diperbarui</th>
+                        <th class="text-end">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (documents && documents.length) { %>
+                        <% documents.forEach(function(item, idx){ %>
+                          <tr>
+                            <td class="text-center"><%= idx + 1 %></td>
+                            <td>
+                              <% if (item.cover) { %>
+                                <img src="<%= item.cover %>" alt="cover" class="rounded" style="width:46px;height:46px;object-fit:cover;" />
+                              <% } else { %>
+                                <span class="avatar avatar-sm bg-label-secondary"><i class="ri ri-file-list-3-line"></i></span>
+                              <% } %>
+                            </td>
+                            <td class="fw-semibold"><%= item.name %></td>
+                            <td class="text-center pin-cell" data-order="<%= item.pinned ? 1 : 0 %>">
+                              <button
+                                type="button"
+                                class="btn btn-sm pin-btn <%= item.pinned ? 'btn-warning text-dark' : 'btn-outline-secondary' %> pin-toggle"
+                                data-url="/admin/academic-documents/<%= item._id %>/pin"
+                                data-title="<%= item.name %>"
+                                data-pinned="<%= !!item.pinned %>">
+                                <i class="ri <%= item.pinned ? 'ri-pushpin-2-fill' : 'ri-pushpin-line' %> pin-icon"></i>
+                                <span class="pin-label"><%= item.pinned ? 'Pinned' : 'Pin' %></span>
+                              </button>
+                            </td>
+                            <td><%= item.keterangan || '-' %></td>
+                            <td>
+                              <% if (item.file) { %>
+                                <a href="<%= item.file %>" target="_blank" class="text-primary"><i class="ri ri-file-pdf-line me-1"></i>Lihat PDF</a>
+                              <% } else { %>
+                                <span class="text-muted">-</span>
+                              <% } %>
+                            </td>
+                            <td data-order="<%= item.createdAt ? item.createdAt.getTime() : 0 %>">
+                              <div><%= item.createdAt ? item.createdAt.toLocaleDateString() : '-' %></div>
+                              <small class="text-muted"><%= item.createdBy ? (item.createdBy.name || item.createdBy.email || '') : '' %></small>
+                            </td>
+                            <td>
+                              <div><%= item.updatedAt ? item.updatedAt.toLocaleDateString() : '-' %></div>
+                              <small class="text-muted"><%= item.updatedBy ? (item.updatedBy.name || item.updatedBy.email || '') : '' %></small>
+                            </td>
+                            <td class="text-end">
+                              <a class="btn btn-sm btn-outline-primary me-2" href="/admin/academic-documents/<%= item._id %>/edit">
+                                <i class="ri ri-pencil-line"></i>
+                              </a>
+                              <form action="/admin/academic-documents/<%= item._id %>/delete" method="POST" class="d-inline" data-disable-submit>
+                                <button class="btn btn-sm btn-outline-danger" type="submit">
+                                  <i class="ri ri-delete-bin-line"></i>
+                                </button>
+                              </form>
+                            </td>
+                          </tr>
+                        <% }); %>
+                      <% } else { %>
+                        <tr class="table-empty" data-empty="true" data-message="Belum ada dokumen akademik.">
+                          <td class="text-center text-muted">Belum ada dokumen akademik.</td>
+                          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout-overlay layout-menu-toggle"></div>
+    <div class="drag-target"></div>
+
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+      $(function () {
+        const table = $('#academicDocumentsTable');
+        if (!table.length) return;
+        const dt = table.DataTable({
+          responsive: true,
+          pageLength: 10,
+          lengthMenu: [10, 25, 50, 100],
+          order: [[6, 'desc']],
+          orderFixed: [[3, 'desc']],
+          columnDefs: [
+            { targets: [0, 1, 5, 8], orderable: false, searchable: false },
+            { targets: [3], searchable: false }
+          ],
+          language: {
+            searchPlaceholder: 'Cari dokumen...',
+            search: '',
+            lengthMenu: 'Tampilkan _MENU_',
+            emptyTable: 'Belum ada dokumen akademik.'
+          },
+          dom: '<"row align-items-center mb-3"<"col-md-6"l><"col-md-6 text-md-end"f>>t<"row align-items-center mt-3"<"col-md-6"i><"col-md-6 text-md-end"p>>'
+        });
+
+        dt.on('order.dt search.dt', function () {
+          let i = 1;
+          dt.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell) {
+            const row = cell.closest('tr');
+            if (row && row.dataset.empty === 'true') {
+              cell.innerHTML = row.dataset.message || '-';
+            } else {
+              cell.innerHTML = i++;
+            }
+          });
+        }).draw();
+
+        // Beautify built-in controls
+        const wrapper = table.closest('.dataTables_wrapper');
+        wrapper.find('.dataTables_filter input').addClass('form-control form-control-sm').attr('aria-label', 'Cari dokumen');
+        wrapper.find('.dataTables_length select').addClass('form-select form-select-sm');
+
+        table.on('click', '.pin-toggle', function () {
+          const btn = $(this);
+          const pinCell = btn.closest('.pin-cell');
+          const url = btn.data('url');
+          const title = btn.data('title') || 'Dokumen';
+          const willPin = btn.data('pinned') !== true;
+          const previous = btn.data('pinned') === true;
+
+          const setVisual = pinned => {
+            btn.data('pinned', pinned);
+            pinCell.attr('data-order', pinned ? 1 : 0);
+            btn.toggleClass('btn-warning text-dark', pinned);
+            btn.toggleClass('btn-outline-secondary', !pinned);
+            btn.find('.pin-icon').toggleClass('ri-pushpin-2-fill', pinned).toggleClass('ri-pushpin-line', !pinned);
+            btn.find('.pin-label').text(pinned ? 'Pinned' : 'Pin');
+          };
+
+          btn.prop('disabled', true);
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pinned: willPin })
+          })
+            .then(async res => {
+              const data = await res.json().catch(() => ({}));
+              if (!res.ok || !data.success) {
+                throw new Error(data.message || 'Gagal memperbarui pin dokumen.');
+              }
+              setVisual(willPin);
+              dt.order([[6, 'desc']]).draw(false);
+              Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: data.message || `${title} diperbarui.`,
+                timer: 1400,
+                showConfirmButton: false
+              });
+            })
+            .catch(err => {
+              setVisual(previous);
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: err.message || 'Gagal memperbarui pin dokumen.'
+              });
+            })
+            .finally(() => btn.prop('disabled', false));
+        });
+      });
+    </script>
+  </body>
+</html>

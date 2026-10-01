@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Struktur Organisasi - BAA</title>
+  <link rel="stylesheet" href="/assets/landing-page/css/main.css">
+  <link rel="stylesheet" href="/assets/landing-page/css/responsive.css">
+  <link rel="web icon" href="/assets/landing-page/images/favicon.ico">
+  <style>
+    .struktur-wrapper { max-width: 1100px; margin: 0 auto; }
+    .struktur-card { border: 1px solid #e8edf5; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.08); overflow: hidden; background:#fff; }
+    .struktur-card img { width: 100%; height: auto; display: block; }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <%- include("../partials/landing-header") %>
+
+  <!-- Sidebar Section -->
+  <%- include("../partials/landing-aside") %>
+
+  <main>
+    <!-- Banner -->
+    <div class="section-wrapper pb-0">
+      <div class="section-banner-inner banner-inner-service" style="background-image: url('<%= (siteSetting && siteSetting.bannerRpl) ? siteSetting.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>'); background-size: cover; background-position: center;">
+        <div class="hero-container">
+          <div class="d-flex flex-column gspace-2 text-center justify-content-center">
+            <h1 class="secondary-accent">Struktur Organisasi</h1>
+            <nav class="breadcrumb">
+              <a href="/" class="breadcrumb-item">Home</a>
+              <span class="breadcrumb-icon">/</span>
+              <span class="breadcrumb-item recent">Struktur Organisasi</span>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="section">
+      <div class="hero-container">
+        <div class="struktur-wrapper">
+                    <div class="struktur-card animate-box animate__animated animated" data-animate="animate__fadeInUp">
+            <img src="<%= (siteSetting && siteSetting.strukturOrganisasiImage) ? siteSetting.strukturOrganisasiImage : '/assets/landing-page/images/Struktur-Organisasi-UNJANI.png' %>" alt="Struktur Organisasi">
+          </div>
+          <p class="text-muted text-center mt-3">Diperbarui: <%= strukturUpdatedLabel || '-' %></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Section -->
+  <%- include("../partials/landing-footer") %>
+
+  <script src="/assets/landing-page/js/vendor/jquery.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/swiper-bundle.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/isotope.pkgd.min.js"></script>
+  <script src="/assets/landing-page/js/vendor/flatpickr.min.js"></script>
+  <script src="/assets/landing-page/js/script.js"></script>
+  <script src="/assets/landing-page/js/submit-form.js"></script>
+  <script src="/assets/landing-page/js/swiper-script.js"></script>
+</body>
+</html>

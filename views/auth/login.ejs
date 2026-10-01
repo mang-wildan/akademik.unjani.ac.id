@@ -1,0 +1,205 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-wide customizer-hide"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="horizontal-menu-template">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Login | BAA UNJANI</title>
+
+    <meta name="description" content="Login ke aplikasi BAA UNJANI" />
+
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
+      rel="stylesheet" />
+
+    <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/@form-validation/form-validation.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/pages/page-auth.css" />
+    <style>
+      /* Custom background */
+      body {
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.55) 100%),
+          url('/assets/img/backgrounds/unjani.jpg') center center / cover no-repeat fixed;
+        min-height: 100vh;
+      }
+      .authentication-wrapper {
+        background: transparent;
+      }
+      .authentication-inner .card {
+        box-shadow: 0 12px 38px rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      /* Make the visible reCAPTCHA follow input width via JS scaling */
+      .recaptcha-full {
+        width: 100%;
+        overflow: hidden;
+      }
+      .recaptcha-full .g-recaptcha {
+        transform-origin: top left;
+        display: inline-block;
+      }
+    </style>
+
+    <script src="/assets/vendor/js/helpers.js"></script>
+    <script src="/assets/vendor/js/template-customizer.js"></script>
+    <script src="/assets/js/config.js"></script>
+  </head>
+
+  <body>
+    <div class="position-relative">
+      <div class="authentication-wrapper authentication-basic container-p-y p-4 p-sm-0">
+        <div class="authentication-inner py-6">
+          <div class="card p-md-7 p-1">
+            <div class="app-brand justify-content-center mt-5">
+              <a href="/" class="app-brand-link gap-2">
+                <span class="app-brand-logo demo">
+                  <span class="text-primary">
+                    <img src="/assets/img/branding/logo.png" alt="logo" width="40px">
+                  </span>
+                </span>
+                <span class="app-brand-text demo text-heading fw-semibold">Bidang Akademik</span>
+              </a>
+            </div>
+
+            <div class="card-body mt-1">
+              <h5 class="mb-1">Masuk ke akun Anda</h5>
+              <p class="mb-5">Gunakan email dan password terdaftar.</p>
+
+              <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert alert-danger" role="alert"><%= error %></div>
+              <% } %>
+
+              <form id="formAuthentication" class="mb-5" action="/login" method="POST" novalidate>
+                <div class="form-floating form-floating-outline mb-5 form-control-validation">
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    value="<%= typeof values !== 'undefined' && values ? values.email || '' : '' %>"
+                    required
+                    autofocus />
+                  <label for="email">Email</label>
+                </div>
+                <div class="mb-5">
+                  <div class="form-password-toggle form-control-validation">
+                    <div class="input-group input-group-merge">
+                      <div class="form-floating form-floating-outline">
+                        <input
+                          type="password"
+                          id="password"
+                          class="form-control"
+                          name="password"
+                          placeholder="••••••"
+                          aria-describedby="password"
+                          required />
+                        <label for="password">Password</label>
+                      </div>
+                      <span class="input-group-text cursor-pointer"
+                        ><i class="icon-base ri ri-eye-off-line icon-20px"></i
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-5 recaptcha-full">
+                  <div class="g-recaptcha" data-sitekey="<%= recaptchaSiteKey %>"></div>
+                </div>
+
+                <div class="mb-5">
+                  <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                  <div class="text-center mt-3">
+                    <a href="/" class="text-muted small text-decoration-none">Kembali ke Beranda</a>
+                  </div>
+                </div>
+              </form>
+
+              <p class="text-center mb-5">
+                <span>© 2025 <b>UNJANI</b> All rights reserved.</span>
+                <!-- <a href="/register">
+                  <span>Buat akun</span>
+                </a> -->
+              </p>
+            </div>
+          </div>
+          <img
+            alt="mask"
+            src="/assets/img/illustrations/auth-basic-login-mask-light.png"
+            class="authentication-image d-none d-lg-block"
+            data-app-light-img="illustrations/auth-basic-login-mask-light.png"
+            data-app-dark-img="illustrations/auth-basic-login-mask-dark.png" />
+        </div>
+      </div>
+    </div>
+
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/assets/vendor/libs/@algolia/autocomplete-js.js"></script>
+    <script src="/assets/vendor/libs/pickr/pickr.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="/assets/vendor/libs/i18n/i18n.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+
+    <script src="/assets/vendor/libs/@form-validation/popular.js"></script>
+    <script src="/assets/vendor/libs/@form-validation/bootstrap5.js"></script>
+    <script src="/assets/vendor/libs/@form-validation/auto-focus.js"></script>
+
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/pages-auth.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script>
+      // Dynamically scale the visible reCAPTCHA to match the form width
+      (function () {
+        const BASE_WIDTH = 302; // default width of v2 checkbox iframe
+
+        function resizeRecaptcha() {
+          const wrapper = document.querySelector('.recaptcha-full');
+          const widget = document.querySelector('.recaptcha-full .g-recaptcha');
+          if (!wrapper || !widget) return;
+
+          const available = wrapper.clientWidth || BASE_WIDTH;
+          const scale = Math.min(1.6, Math.max(0.8, available / BASE_WIDTH));
+
+          widget.style.transform = `scale(${scale})`;
+          widget.style.webkitTransform = `scale(${scale})`;
+          widget.style.width = `${BASE_WIDTH * scale}px`;
+          widget.style.height = `${78 * scale}px`;
+          wrapper.style.height = `${78 * scale}px`;
+        }
+
+        function waitForIframe() {
+          const iframe = document.querySelector('.recaptcha-full iframe');
+          if (iframe) {
+            resizeRecaptcha();
+          } else {
+            setTimeout(waitForIframe, 150);
+          }
+        }
+
+        window.addEventListener('load', waitForIframe);
+        window.addEventListener('resize', resizeRecaptcha);
+      })();
+    </script>
+  </body>
+</html>

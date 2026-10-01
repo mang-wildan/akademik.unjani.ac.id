@@ -1,0 +1,144 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Tambah Akreditasi' %></title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="/assets/css/demo.css" />
+  <script src="/assets/vendor/js/helpers.js"></script>
+  <script src="/assets/js/config.js"></script>
+</head>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include("../../partials/menu") %>
+      <div class="layout-page">
+        <%- include("../../partials/navbar") %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+              <div>
+                <h4 class="fw-bold mb-0">Tambah Akreditasi</h4>
+                <p class="text-muted mb-0">Lengkapi data dan unggah sertifikat akreditasi.</p>
+              </div>
+              <a class="btn btn-label-secondary" href="/admin/accreditations">
+                <span class="iconify me-1" data-icon="ri:arrow-left-line"></span> Kembali
+              </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <div class="d-flex align-items-center">
+                <span class="iconify me-2 fs-4" data-icon="ri:error-warning-fill"></span>
+                <span><%= error %></span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+            <form method="POST" action="/admin/accreditations" enctype="multipart/form-data" data-disable-submit>
+              <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0 card-title">Form Akreditasi</h5>
+                  <small class="text-muted"><span class="text-danger">*</span> Wajib diisi</small>
+                </div>
+                <div class="card-body">
+                  <div class="row g-4">
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="institusiInput">Institusi / Fakultas <span class="text-danger">*</span></label>
+                      <input type="text" id="institusiInput" name="institusi" class="form-control" placeholder="Contoh: Universitas Jenderal Achmad Yani"
+                        value="<%= values && values.institusi ? values.institusi : '' %>" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="unitInput">Unit / Program Studi <span class="text-danger">*</span></label>
+                      <input type="text" id="unitInput" name="unit" class="form-control" placeholder="Contoh: Program Studi Informatika"
+                        value="<%= values && values.unit ? values.unit : '' %>" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="tahunInput">Tahun <span class="text-danger">*</span></label>
+                      <% const nowY = new Date().getFullYear(); %>
+                      <select name="tahun" id="tahunInput" class="form-select" required>
+                        <% for (let y = nowY + 1; y >= nowY - 5; y--) { %>
+                        <option value="<%= y %>"
+                          <%= ((values && values.tahun && Number(values.tahun) === y) || (!values || !values.tahun) && y === nowY) ? 'selected' : '' %>>
+                          <%= y %></option>
+                        <% } %>
+                      </select>
+                      <div class="form-text">Rentang: 5 tahun ke belakang s/d 1 tahun ke depan.</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="akreditasiInput">Akreditasi <span class="text-danger">*</span></label>
+                      <input type="text" id="akreditasiInput" name="akreditasi" class="form-control" placeholder="Contoh: A / Unggul / Baik Sekali"
+                        value="<%= values && values.akreditasi ? values.akreditasi : '' %>" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="tanggalBerlakuInput">Tanggal Berlaku <span class="text-danger">*</span></label>
+                      <input type="date" id="tanggalBerlakuInput" name="tanggalBerlaku" class="form-control"
+                        value="<%= values && values.tanggalBerlaku ? values.tanggalBerlaku.toISOString ? values.tanggalBerlaku.toISOString().substring(0,10) : values.tanggalBerlaku : '' %>" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="berlakuSampaiInput">Berlaku Sampai <span class="text-danger">*</span></label>
+                      <input type="date" id="berlakuSampaiInput" name="berlakuSampai" class="form-control"
+                        value="<%= values && values.berlakuSampai ? values.berlakuSampai.toISOString ? values.berlakuSampai.toISOString().substring(0,10) : values.berlakuSampai : '' %>" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="sertifikatInput">Sertifikat (PDF) <span class="text-danger">*</span></label>
+                      <input type="file" name="sertifikat" id="sertifikatInput" accept="application/pdf" class="form-control" required />
+                      <div class="form-text">Unggah file sertifikat resmi (PDF).</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium d-block">Status Aktif</label>
+                      <div class="form-check form-switch mt-2">
+                        <input type="hidden" name="isActive" value="false" />
+                        <input class="form-check-input" type="checkbox" id="isActiveSwitch" name="isActive" value="true"
+                          <%= values && values.isActive === false ? '' : 'checked' %>>
+                        <label class="form-check-label fw-semibold" for="isActiveSwitch">Tampilkan di halaman publik</label>
+                      </div>
+                      <div class="form-text">Jika nonaktif, data tidak akan ditampilkan pada landing page.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-3">
+                  <a href="/admin/accreditations" class="btn btn-label-secondary">Batal</a>
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="iconify me-1" data-icon="ri:save-line"></span> Simpan
+                  </button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-overlay layout-menu-toggle"></div>
+  <div class="drag-target"></div>
+
+  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/assets/vendor/js/bootstrap.js"></script>
+  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/assets/vendor/js/menu.js"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+
+</html>

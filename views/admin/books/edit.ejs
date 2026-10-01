@@ -1,0 +1,160 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title || 'Edit Buku' %></title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
+    <script src="/assets/vendor/js/helpers.js"></script>
+    <script src="/assets/vendor/js/template-customizer.js"></script>
+    <script src="/assets/js/config.js"></script>
+  </head>
+
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <%- include("../../partials/menu") %>
+        <div class="layout-page">
+          <%- include("../../partials/navbar") %>
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <h4 class="mb-0">Edit Buku</h4>
+                  <p class="text-muted mb-0">Perbarui metadata dan file buku.</p>
+                </div>
+                <a class="btn btn-outline-secondary" href="/admin/books"><i class="ri ri-arrow-left-line me-1"></i>Kembali</a>
+              </div>
+
+              <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert alert-danger"><%= error %></div>
+              <% } %>
+
+              <form method="POST" action="/admin/books/<%= values._id %>" enctype="multipart/form-data" data-disable-submit>
+                <div class="row g-4">
+                  <div class="col-lg-7">
+                    <div class="card h-100 border-0 shadow-sm">
+                      <div class="card-header d-flex align-items-center justify-content-between">
+                        <div>
+                          <h5 class="mb-0">Informasi Buku</h5>
+                          <small class="text-muted">Perbarui judul & tahun</small>
+                        </div>
+                        <span class="badge bg-label-primary">Wajib</span>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-4">
+                          <label class="form-label">Judul</label>
+                          <input
+                            type="text"
+                            name="title"
+                            class="form-control form-control-lg"
+                            value="<%= values && values.title ? values.title : '' %>"
+                            required />
+                        </div>
+                        <div>
+                          <label class="form-label">Tahun Terbit</label>
+                          <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light"><i class="ri ri-calendar-2-line"></i></span>
+                            <% const nowY = new Date().getFullYear(); %>
+                            <select name="year" id="yearInput" class="form-select" required>
+                              <% for (let y = nowY + 1; y >= nowY - 5; y--) { %>
+                                <option value="<%= y %>" <%= ((values && values.year && Number(values.year) === y) || (!values || !values.year) && y === nowY) ? 'selected' : '' %>><%= y %></option>
+                              <% } %>
+                            </select>
+                          </div>
+                          <small class="text-muted">Rentang: 5 tahun ke belakang sampai 1 tahun ke depan.</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-5">
+                    <div class="card h-100 border-0 shadow-sm">
+                      <div class="card-header">
+                        <h5 class="mb-0">Unggah Berkas</h5>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-4">
+                          <label class="form-label">File PDF</label>
+                          <input type="file" name="pdf" accept="application/pdf" class="form-control" />
+                          <% if (values && values.src) { %>
+                          <small class="text-muted d-block mt-1">Saat ini: <%= values.src %></small>
+                          <% } %>
+                        </div>
+
+                        <label class="form-label">Cover (png/jpg/jpeg)</label>
+                        <div class="border rounded-3 p-3 bg-light-subtle text-center">
+                          <input
+                            type="file"
+                            name="cover"
+                            accept="image/png,image/jpg,image/jpeg"
+                            class="form-control mb-3"
+                            id="coverInput"
+                          />
+                          <div
+                            class="ratio ratio-16x9 bg-white d-flex align-items-center justify-content-center rounded-3 overflow-hidden border border-dashed"
+                            style="min-height: 160px;">
+                            <img
+                              id="coverPreview"
+                              src="<%= values && values.cover ? values.cover : '' %>"
+                              alt="Preview cover"
+                              style="max-height: 100%; max-width: 100%; display:<%= values && values.cover ? 'block' : 'none' %>;" />
+                            <span id="coverPlaceholder" class="text-muted" style="display:<%= values && values.cover ? 'none' : 'block' %>;">Preview cover tampil di sini</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                  <button type="submit" class="btn btn-primary btn-lg"><i class="ri ri-save-line me-1"></i>Simpan</button>
+                  <a href="/admin/books" class="btn btn-outline-secondary btn-lg">Batal</a>
+                </div>
+              </form>
+            </div>
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout-overlay layout-menu-toggle"></div>
+    <div class="drag-target"></div>
+
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+      const coverInput = document.getElementById('coverInput');
+      const coverPreview = document.getElementById('coverPreview');
+      const coverPlaceholder = document.getElementById('coverPlaceholder');
+      if (coverInput) {
+        coverInput.addEventListener('change', (e) => {
+          const [file] = e.target.files;
+          if (file) {
+            coverPreview.src = URL.createObjectURL(file);
+            coverPreview.style.display = 'block';
+            if (coverPlaceholder) coverPlaceholder.style.display = 'none';
+          }
+        });
+      }
+    </script>
+    <%- include("../../partials/template-customizer") %>
+  </body>
+</html>

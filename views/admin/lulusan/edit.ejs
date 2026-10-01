@@ -1,0 +1,169 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Edit Data Lulusan' %></title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="/assets/css/demo.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+  <style>
+    .select2-container .select2-selection--single { height: 38px; }
+    .select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 36px; }
+    .select2-container--default .select2-selection--single .select2-selection__arrow { height: 36px; }
+  </style>
+  <script src="/assets/vendor/js/helpers.js"></script>
+  <script src="/assets/js/config.js"></script>
+</head>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include("../../partials/menu") %>
+      <div class="layout-page">
+        <%- include("../../partials/navbar") %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+              <div>
+                <h4 class="fw-bold mb-0">Edit Data Lulusan</h4>
+                <p class="text-muted mb-0">Perbarui jumlah lulusan untuk periode dan tahun terkait.</p>
+              </div>
+              <a class="btn btn-label-secondary" href="/admin/lulusan">
+                <span class="iconify me-1" data-icon="ri:arrow-left-line"></span> Kembali
+              </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <div class="d-flex align-items-center">
+                <span class="iconify me-2 fs-4" data-icon="ri:error-warning-fill"></span>
+                <span><%= error %></span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+            <form method="POST" action="/admin/lulusan/<%= values && values._id %>" data-disable-submit>
+              <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h5 class="mb-0 card-title">Form Lulusan</h5>
+                  <small class="text-muted"><span class="text-danger">*</span> Wajib diisi</small>
+                </div>
+                <div class="card-body">
+                  <div class="row g-4">
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="programStudiSelect">Program Studi <span class="text-danger">*</span></label>
+                      <select id="programStudiSelect" name="programStudi" class="form-select" required>
+                        <option value="">-- Pilih Program Studi --</option>
+                        <% (programs || []).forEach(function(p){ %>
+                          <option value="<%= p._id %>" data-fakultas="<%= p.fakultas ? p.fakultas._id : '' %>" <%= values && values.programStudi == p._id ? 'selected' : '' %>>
+                            <%= p.nama %> (<%= p.singkatan %>)
+                          </option>
+                        <% }) %>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="fakultasSelect">Fakultas <span class="text-danger">*</span></label>
+                      <select id="fakultasSelect" name="fakultas" class="form-select" required>
+                        <option value="">-- Pilih Fakultas --</option>
+                        <% (faculties || []).forEach(function(f){ %>
+                          <option value="<%= f._id %>" <%= values && values.fakultas == f._id ? 'selected' : '' %>>
+                            <%= f.nama %> (<%= f.singkatan %>)
+                          </option>
+                        <% }) %>
+                      </select>
+                      <small class="text-muted">Otomatis menyesuaikan dengan program studi terpilih.</small>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="periodeSelect">Periode <span class="text-danger">*</span></label>
+                      <select id="periodeSelect" name="periode" class="form-select" required>
+                        <option value="">-- Pilih Periode --</option>
+                        <option value="I" <%= values && values.periode === 'I' ? 'selected' : '' %>>I</option>
+                        <option value="II" <%= values && values.periode === 'II' ? 'selected' : '' %>>II</option>
+                        <option value="III" <%= values && values.periode === 'III' ? 'selected' : '' %>>III</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="tahunInput">Tahun <span class="text-danger">*</span></label>
+                      <input type="number" id="tahunInput" name="tahun" class="form-control" placeholder="2024" min="2000" max="2100"
+                        value="<%= values && values.tahun ? values.tahun : '' %>" required />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label fw-medium" for="jumlahInput">Jumlah Lulusan <span class="text-danger">*</span></label>
+                      <input type="number" id="jumlahInput" name="jumlah" class="form-control" placeholder="Misal: 120" min="0"
+                        value="<%= values && values.jumlah ? values.jumlah : '' %>" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between flex-wrap gap-3">
+                  <div class="text-muted small d-flex align-items-center gap-3">
+                    <span>Dibuat: <%= values && values.createdAt ? values.createdAt.toLocaleDateString() : '-' %></span>
+                    <span>Terakhir diubah: <%= values && values.updatedAt ? values.updatedAt.toLocaleDateString() : '-' %></span>
+                  </div>
+                  <div class="d-flex gap-3">
+                    <a href="/admin/lulusan" class="btn btn-label-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary px-4">
+                      <span class="iconify me-1" data-icon="ri:save-line"></span> Simpan Perubahan
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-overlay layout-menu-toggle"></div>
+  <div class="drag-target"></div>
+
+  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/assets/vendor/js/bootstrap.js"></script>
+  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/assets/vendor/js/menu.js"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script>
+    $(function () {
+      $('#programStudiSelect, #fakultasSelect, #periodeSelect').select2({
+        width: '100%',
+        placeholder: 'Pilih data',
+        allowClear: true
+      });
+
+      const map = {};
+      <% (programs || []).forEach(function(p){ %>
+        map['<%= p._id %>'] = '<%= p.fakultas ? p.fakultas._id : '' %>';
+      <% }); %>
+
+      const syncFakultas = () => {
+        const target = map[$('#programStudiSelect').val()];
+        if (target) $('#fakultasSelect').val(target).trigger('change.select2');
+      };
+
+      $('#programStudiSelect').on('change', syncFakultas);
+      syncFakultas();
+    });
+  </script>
+</body>
+
+</html>

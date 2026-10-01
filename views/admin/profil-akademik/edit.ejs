@@ -1,0 +1,196 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Edit Profil Akademik' %></title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="/assets/css/demo.css" />
+  <script src="/assets/vendor/js/helpers.js"></script>
+  <script src="/assets/js/config.js"></script>
+</head>
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include("../../partials/menu") %>
+      <div class="layout-page">
+        <%- include("../../partials/navbar") %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <%
+              const misiText = Array.isArray(values && values.misi) ? values.misi.join('\n') : '';
+              const tugasText = Array.isArray(values && values.tugas) ? values.tugas.join('\n') : '';
+              const fungsiText = Array.isArray(values && values.fungsi) ? values.fungsi.join('\n') : '';
+            %>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h4 class="mb-1">Edit Profil Akademik</h4>
+                <p class="text-muted mb-0">Terakhir diperbarui: <%= lastUpdatedLabel || '-' %></p>
+              </div>
+              <a href="/admin/profil-akademik" class="btn btn-light border">
+                <i class="ri ri-arrow-left-line me-1"></i>Kembali
+              </a>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert alert-danger"><%= error %></div>
+            <% } %>
+
+            <form method="POST" action="/admin/profil-akademik" class="row g-4" data-disable-submit>
+              <div class="col-lg-8">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header">
+                    <h6 class="mb-0">Konten Inti Profil</h6>
+                  </div>
+                  <div class="card-body row g-3">
+                    <div class="col-12">
+                      <label class="form-label">Judul Halaman <span class="text-danger">*</span></label>
+                      <input
+                        type="text"
+                        name="judulHalaman"
+                        class="form-control"
+                        maxlength="120"
+                        value="<%= (values && values.judulHalaman) || '' %>"
+                        required>
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">Ringkasan (300-1200 karakter) <span class="text-danger">*</span></label>
+                      <textarea
+                        name="ringkasan"
+                        rows="8"
+                        class="form-control"
+                        minlength="300"
+                        maxlength="1200"
+                        required><%= (values && values.ringkasan) || '' %></textarea>
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">Visi (80-500 karakter) <span class="text-danger">*</span></label>
+                      <textarea
+                        name="visi"
+                        rows="4"
+                        class="form-control"
+                        minlength="80"
+                        maxlength="500"
+                        required><%= (values && values.visi) || '' %></textarea>
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">Misi <span class="text-danger">*</span></label>
+                      <textarea
+                        name="misi"
+                        rows="6"
+                        class="form-control"
+                        placeholder="Satu butir per baris"
+                        required><%= misiText %></textarea>
+                      <small class="text-muted">Isi satu butir misi per baris.</small>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label">Tugas <span class="text-danger">*</span></label>
+                      <textarea
+                        name="tugas"
+                        rows="6"
+                        class="form-control"
+                        placeholder="Satu butir per baris"
+                        required><%= tugasText %></textarea>
+                      <small class="text-muted">Isi satu butir tugas per baris.</small>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label">Fungsi <span class="text-danger">*</span></label>
+                      <textarea
+                        name="fungsi"
+                        rows="6"
+                        class="form-control"
+                        placeholder="Satu butir per baris"
+                        required><%= fungsiText %></textarea>
+                      <small class="text-muted">Isi satu butir fungsi per baris.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header">
+                    <h6 class="mb-0">Kontak Layanan (Opsional)</h6>
+                  </div>
+                  <div class="card-body row g-3">
+                    <div class="col-12">
+                      <label class="form-label">Email Kontak</label>
+                      <input
+                        type="email"
+                        name="kontakEmail"
+                        class="form-control"
+                        value="<%= (values && values.kontakEmail) || '' %>">
+                      <small class="text-muted">Jika kosong, halaman publik pakai data Pengaturan Situs.</small>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Telepon Kontak</label>
+                      <input
+                        type="text"
+                        name="kontakTelepon"
+                        class="form-control"
+                        value="<%= (values && values.kontakTelepon) || '' %>">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Alamat Layanan</label>
+                      <textarea
+                        name="alamatLayanan"
+                        rows="4"
+                        class="form-control"><%= (values && values.alamatLayanan) || '' %></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label">Jam Layanan</label>
+                      <input
+                        type="text"
+                        name="jamLayanan"
+                        class="form-control"
+                        placeholder="Senin-Jumat, 08.00-15.30 WIB"
+                        value="<%= (values && values.jamLayanan) || '' %>">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 d-flex justify-content-between">
+                <a href="/admin/profil-akademik" class="btn btn-light border">
+                  <i class="ri ri-arrow-go-back-line me-1"></i>Batal
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="ri ri-save-line me-1"></i>Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-overlay layout-menu-toggle"></div>
+  <div class="drag-target"></div>
+  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/assets/vendor/js/bootstrap.js"></script>
+  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/assets/vendor/js/menu.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

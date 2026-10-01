@@ -1,0 +1,122 @@
+<footer>
+    <div class="section pb-0 bg-accent-color">
+        <div class="hero-container">
+            <div class="footer-content-container">
+                <div class="row row-cols-xl-4 row-cols-md-2 row-cols-1 grid-spacer-2">
+                    <div class="col">
+                        <div class="d-flex flex-column gspace-2">
+                            <%
+                                const defaultFooterDescription = 'Bidang Akademik mengatur kurikulum, jadwal perkuliahan, dan layanan administrasi mahasiswa agar proses belajar berjalan tertib dan bermutu.';
+                                const footerDescription = (siteSetting && siteSetting.landingFooterDescription)
+                                    ? siteSetting.landingFooterDescription
+                                    : defaultFooterDescription;
+                                const footerSocials = [
+                                    { label: 'Facebook', icon: 'fa-facebook', url: siteSetting && siteSetting.socialFacebook },
+                                    { label: 'Twitter', icon: 'fa-twitter', url: siteSetting && siteSetting.socialTwitter },
+                                    { label: 'YouTube', icon: 'fa-youtube', url: siteSetting && siteSetting.socialYoutube },
+                                    { label: 'TikTok', icon: 'fa-tiktok', url: siteSetting && siteSetting.socialTiktok },
+                                    { label: 'LinkedIn', icon: 'fa-linkedin', url: siteSetting && siteSetting.socialLinkedin }
+                                ];
+                            %>
+                            <div class="footer-logo-container">
+                                <img src="/assets/landing-page/images/logo.png" alt="Logo" class="img-fluid"
+                                    style="height: 65px; width: 65px;">
+                            </div>
+                            <h4 class="secondary-accent">Akademik UNJANI</h4>
+                            <p class="secondary-accent"><%= footerDescription %></p>
+                            <div class="footer-social-icon">
+                                <% footerSocials.forEach(function(social){ %>
+                                    <a href="<%= social.url || '#' %>" class="social-icon" aria-label="<%= social.label %>" <% if (social.url) { %>target="_blank" rel="noopener noreferrer"<% } %>>
+                                        <i class="fa-brands <%= social.icon %>"></i>
+                                    </a>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex flex-column gspace-2">
+                                <h4 class="secondary-accent">Quick Links</h4>
+                                <div class="underline-primary-accent"></div>
+                                <ul class="chevron-list">
+                                    <% if (siteSetting && siteSetting.quickLinks && siteSetting.quickLinks.length) { %>
+                                        <% siteSetting.quickLinks.forEach(function(link){ %>
+                                            <li><a href="<%= link.url %>" target="<%= link.target || '_self' %>"><%= link.label %></a></li>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <li><a href="/">Beranda</a></li>
+                                        <li><a href="/profil">Profil</a></li>
+                                        <li><a href="/pengumuman">Pengumuman</a></li>
+                                        <li><a href="/berita">Berita</a></li>
+                                        <li><a href="/dokumen-akademik">Dokumen Akademik</a></li>
+                                    <% } %>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex flex-column gspace-2">
+                            <h4 class="secondary-accent">Contact Info</h4>
+                            <div class="underline-primary-accent"></div>
+                            <div class="d-flex flex-column gspace-2">
+                                <div class="d-flex flex-row gspace-2 align-items-start">
+                                    <div>
+                                        <div class="contact-icon footer-icon">
+                                            <i class="fa-solid fa-phone-volume"></i>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="contact-info-heading">Phone Number</h6>
+                                        <h5 class="secondary-accent">+62 (022) 6656190</h5>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row gspace-1 align-items-start">
+                                    <div>
+                                        <div class="contact-icon footer-icon">
+                                            <i class="fa-solid fa-envelope"></i>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="contact-info-heading">Email Address</h6>
+                                        <h5 class="secondary-accent">akademik@unjani.ac.id</h5>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-row gspace-1 align-items-start">
+                                    <div>
+                                        <div class="contact-icon footer-icon">
+                                            <i class="fa-solid fa-map-location-dot"></i>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <h6 class="contact-info-heading">Location</h6>
+                                        <h5 class="secondary-accent">Jl. Terusan Jend. Sudirman, Cibeber, Kec. Cimahi
+                                            Sel., Kota Cimahi, Jawa Barat</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex flex-column gspace-2">
+                            <h4 class="secondary-accent">Map</h4>
+                            <div class="underline-primary-accent"></div>
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.009838439806!2d107.52533237193603!3d-6.889424132478706!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e590f3de2cb1%3A0xdeea7720af7df91e!2sRektorat%20Universitas%20Jenderal%20Achmad%20Yani!5e0!3m2!1sid!2sid!4v1770370980792!5m2!1sid!2sid"
+                                width="320" height="350" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-copyright-container">
+                    <div class="footer-legalink-container">
+                        <!-- <a href="#" class="legalink">Privacy Policy</a>
+                        <div class="divider"></div>
+                        <a href="#" class="legalink">Terms & Conditions</a> -->
+                    </div>
+
+                    <h6 class="secondary-accent mb-0">© 2025 <a class="text-white" href="https://unjani.ac.id">UNJANI</a> All rights reserved.</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+<script src="/assets/landing-page/js/preloader.js"></script>

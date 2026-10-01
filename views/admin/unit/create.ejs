@@ -1,0 +1,124 @@
+<!doctype html>
+<html
+  lang="en"
+  class="layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-skin="default"
+  data-bs-theme="light"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template">  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tambah Unit</title>
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+    <link rel="stylesheet" href="/assets/css/demo.css" />
+    <script src="/assets/vendor/js/helpers.js"></script>
+    <script src="/assets/js/config.js"></script>
+  </head>
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <%- include("../../partials/menu") %>
+        <div class="layout-page">
+          <%- include("../../partials/navbar") %>
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <h4 class="mb-1">Tambah Unit</h4>
+                  <p class="text-muted mb-0">Isi data unit beserta gambar (JPG/PNG).</p>
+                </div>
+                <a href="/admin/unit" class="btn btn-light border"><i class="ri ri-arrow-left-line me-1"></i>Kembali</a>
+              </div>
+
+              <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger"><%= error %></div>
+              <% } %>
+
+              <form action="/admin/unit" method="POST" enctype="multipart/form-data" class="row g-4" data-disable-submit>
+                <div class="col-lg-7">
+                  <div class="card shadow-sm h-100">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                      <div>
+                        <h6 class="mb-0">Informasi Unit</h6>
+                        <small class="text-muted">Lengkapi nama dan deskripsi unit.</small>
+                      </div>
+                      <span class="badge bg-label-danger">Wajib diisi</span>
+                    </div>
+                    <div class="card-body row g-3">
+                      <div class="col-12">
+                        <label class="form-label">Nama Unit <span class="text-danger">*</span></label>
+                        <input type="text" name="nama" class="form-control" placeholder="Nama unit" value="<%= values.nama || '' %>" required>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">Link Website/URL</label>
+                        <input type="url" name="link" class="form-control" placeholder="https://example.com/unit" value="<%= values.link || '' %>">
+                        <small class="text-muted">Opsional, akan ditampilkan sebagai tautan pada halaman profil.</small>
+                      </div>
+                      <div class="col-12">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="deskripsi" rows="4" class="form-control" placeholder="Deskripsi singkat unit"><%= values.deskripsi || '' %></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-5">
+                  <div class="card shadow-sm h-100">
+                    <div class="card-header">
+                      <h6 class="mb-0">Gambar Unit</h6>
+                      <small class="text-muted">Format JPG/PNG.</small>
+                    </div>
+                    <div class="card-body">
+                      <div class="text-center mb-3">
+                        <img id="img-preview" src="/assets/landing-page/images/dummy-img-600x800.jpg" alt="Preview" class="rounded border" style="width:180px;height:120px;object-fit:cover;">
+                      </div>
+                      <label class="form-label">Unggah Gambar <span class="text-danger">*</span></label>
+                      <input type="file" name="img" accept="image/jpeg,image/png,image/jpg" class="form-control" id="img-input" required>
+                      <small class="text-muted d-block mt-2">Gunakan gambar proporsional agar rapi.</small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-between">
+                  <a href="/admin/unit" class="btn btn-light border"><i class="ri ri-arrow-go-back-line me-1"></i>Batal</a>
+                  <button type="submit" class="btn btn-primary"><i class="ri ri-save-line me-1"></i>Simpan</button>
+                </div>
+              </form>
+            </div>
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="layout-overlay layout-menu-toggle"></div>
+    <div class="drag-target"></div>
+
+    <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/assets/vendor/js/bootstrap.js"></script>
+    <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="/assets/vendor/js/menu.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script>
+      (function() {
+        const input = document.getElementById('img-input');
+        const preview = document.getElementById('img-preview');
+        if (!input || !preview) return;
+        input.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = ev => { preview.src = ev.target.result; };
+          reader.readAsDataURL(file);
+        });
+      })();
+    </script>
+  </body>
+</html>

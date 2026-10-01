@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en" class="layout-navbar-fixed layout-menu-fixed layout-compact" dir="ltr" data-skin="default"
+  data-bs-theme="light" data-assets-path="/assets/" data-template="vertical-menu-template">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Pengaturan Situs' %></title>
+  <link rel="icon" type="image/x-icon" href="/assets/img/favicon/favicon.ico" />
+  <link rel="stylesheet" href="/assets/vendor/fonts/iconify-icons.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/node-waves/node-waves.css" />
+  <link rel="stylesheet" href="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+  <link rel="stylesheet" href="/assets/vendor/css/core.css" />
+  <link rel="stylesheet" href="/assets/css/demo.css" />
+  <script src="/assets/vendor/js/helpers.js"></script>
+  <script src="/assets/js/config.js"></script>
+  <style>
+    :root {
+      --navy: #0f172a;
+      --sky: #0ea5e9;
+      --indigo: #4338ca;
+      --mint: #e0f2fe;
+    }
+
+    body {
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    }
+
+    .editor-hero {
+      background: linear-gradient(135deg, #07a250 0%, #0a763d 55%, #0f2a12 100%);
+      color: #e8f5ff;
+      border: none;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+      position: relative;
+    }
+
+    .editor-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 25% 18%, rgba(255, 255, 255, 0.14), transparent 40%),
+        radial-gradient(circle at 78% 0%, rgba(255, 255, 255, 0.1), transparent 32%);
+      pointer-events: none;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #f8fafc;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    .section-nav a {
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .section-card {
+      border-radius: 18px;
+      border: 1px solid var(--bs-border-color);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .field-hint {
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    .input-ico {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .has-icon .form-control {
+      padding-left: 40px;
+    }
+
+    .upload-tile {
+      border: 1px dashed #d0d7e2;
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 14px;
+      height: 100%;
+      position: relative;
+    }
+
+    .upload-tile:hover {
+      border-color: #25eb5d;
+    }
+
+    .upload-tile input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .mini-badge {
+      background: #e0f2fe;
+      color: #0f172a;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .pill-muted {
+      background: #f1f5f9;
+      color: #334155;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .sticky-actions {
+      position: sticky;
+      bottom: 0;
+      background: #ffffffee;
+      border-top: 1px solid var(--bs-border-color);
+      padding: 14px 16px;
+      z-index: 5;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .quick-preview-table tbody tr:nth-child(odd) {
+      background: #f8fafc;
+    }
+
+    .quick-preview-table td {
+      vertical-align: middle;
+    }
+
+    .preview-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      background: #ecfeff;
+      color: #0f172a;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .helper-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: grid;
+      gap: 4px;
+    }
+
+    .helper-list li {
+      color: #475569;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kpi-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+    }
+
+    .slide-row {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 2px 8px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .slide-card {
+      min-width: 150px;
+      max-width: 180px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px;
+      background: #f8fafc;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      box-sizing: border-box;
+    }
+
+    .slide-thumb {
+      width: 100%;
+      height: 84px;
+      overflow: hidden;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .slide-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .new-slide-wrap {
+      border: 1px dashed #d0d7e2;
+      border-radius: 10px;
+      padding: 10px;
+      background: #f9fbff;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 767px) {
+      .section-nav {
+        width: 100%;
+      }
+
+      .section-nav a {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <%- include("../../partials/menu") %>
+      <div class="layout-page">
+        <%- include("../../partials/navbar") %>
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+
+            <%
+              const essentials = ['namaSitus','kontakEmail','kontakTelepon','alamat','siteLogo','favicon'];
+              const defaultFooterDescription = 'Bidang Akademik mengatur kurikulum, jadwal perkuliahan, dan layanan administrasi mahasiswa agar proses belajar berjalan tertib dan bermutu.';
+              const missing = essentials.filter(key => !(values && values[key]));
+              const completion = Math.round(((essentials.length - missing.length) / essentials.length) * 100);
+              const updater = (values && values.updatedBy && (values.updatedBy.name || values.updatedBy.email)) ?
+                (values.updatedBy.name || values.updatedBy.email) :
+                (values && values.createdBy && (values.createdBy.name || values.createdBy.email)) ?
+                  (values.createdBy.name || values.createdBy.email) : 'Tidak diketahui';
+            %>
+
+            <div class="card editor-hero mb-4">
+              <div
+                class="card-body position-relative d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3">
+                <div class="flex-grow-1 position-relative">
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="hero-chip"><span class="iconify" data-icon="ri:global-line"></span> Form Global</span>
+                    <span class="hero-chip"><span class="iconify" data-icon="ri:time-line"></span>
+                      <%= lastUpdatedLabel || '-' %></span>
+                    <span class="hero-chip"><span class="iconify" data-icon="ri:user-3-line"></span>
+                      <%= updater %></span>
+                  </div>
+                  <h3 class="fw-bold mt-3 mb-1 text-white">Edit Pengaturan Situs</h3>
+                  <p class="mb-0 text-soft-light">Isi identitas, kontak, brand asset, video, banner, quick links, dan
+                    slideshow. Perubahan langsung berdampak ke halaman publik.</p>
+                </div>
+                <div class="d-flex flex-column align-items-start gap-2 position-relative section-nav">
+                  <div class="text-soft-light small fw-semibold">Kelengkapan data</div>
+                  <div class="d-flex align-items-center gap-2 w-100">
+                    <div class="progress flex-grow-1"
+                      style="height: 8px; width: 220px; background: rgba(255,255,255,0.32);">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: <%= completion %>%"
+                        aria-valuenow="<%= completion %>" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="fw-bold fs-6"><%= completion %>%</span>
+                  </div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <a href="#general-section" class="btn btn-light btn-sm text-primary">
+                      <span class="iconify me-1" data-icon="ri:profile-line"></span>Identitas
+                    </a>
+                    <a href="#media-section" class="btn btn-outline-light btn-sm text-white border-white">
+                      <span class="iconify me-1" data-icon="ri:brush-line"></span>Branding
+                    </a>
+                    <a href="#slideshow-section" class="btn btn-outline-light btn-sm text-white border-white">
+                      <span class="iconify me-1" data-icon="ri:slideshow-line"></span>Link & Slide
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <div class="d-flex align-items-center">
+                <span class="iconify me-2 fs-4" data-icon="ri:error-warning-fill"></span>
+                <span><%= error %></span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+            <form method="POST" action="/admin/settings" enctype="multipart/form-data" data-disable-submit>
+              <div class="card section-card mb-4" id="general-section">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="text-muted mb-1">Identitas, Kontak & Footer</p>
+                    <h5 class="mb-0 card-title">Informasi Umum</h5>
+                  </div>
+                  <span class="pill-muted"><span class="kpi-dot"></span> Wajib: nama situs</span>
+                </div>
+                <div class="card-body">
+                  <div class="row g-4">
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="namaSitusInput">Nama Situs <span
+                          class="text-danger">*</span></label>
+                      <div class="position-relative has-icon">
+                        <span class="input-ico iconify" data-icon="ri:global-line"></span>
+                        <input type="text" id="namaSitusInput" name="namaSitus" class="form-control" required
+                          value="<%= values && values.namaSitus ? values.namaSitus : '' %>"
+                          placeholder="Contoh: BAA Akademik" />
+                      </div>
+                      <div class="field-hint mt-1">Ditampilkan pada judul dan banner.</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="taglineInput">Tagline</label>
+                      <div class="position-relative has-icon">
+                        <span class="input-ico iconify" data-icon="ri:megaphone-line"></span>
+                        <input type="text" id="taglineInput" name="tagline" class="form-control"
+                          value="<%= values && values.tagline ? values.tagline : '' %>"
+                          placeholder="Tagline singkat situs" />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="emailInput">Email Kontak</label>
+                      <div class="position-relative has-icon">
+                        <span class="input-ico iconify" data-icon="ri:mail-line"></span>
+                        <input type="email" id="emailInput" name="kontakEmail" class="form-control"
+                          placeholder="info@example.com"
+                          value="<%= values && values.kontakEmail ? values.kontakEmail : '' %>" />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="teleponInput">Telepon</label>
+                      <div class="position-relative has-icon">
+                        <span class="input-ico iconify" data-icon="ri:phone-line"></span>
+                        <input type="text" id="teleponInput" name="kontakTelepon" class="form-control"
+                          placeholder="+62 ..."
+                          value="<%= values && values.kontakTelepon ? values.kontakTelepon : '' %>" />
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label fw-medium" for="alamatInput">Alamat</label>
+                      <textarea id="alamatInput" name="alamat" class="form-control" rows="3"
+                        placeholder="Alamat kampus / kantor"><%= values && values.alamat ? values.alamat : '' %></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label fw-medium" for="landingFooterDescriptionInput">Deskripsi Footer Landing</label>
+                      <textarea id="landingFooterDescriptionInput" name="landingFooterDescription" class="form-control" rows="3"
+                        placeholder="Bidang Akademik mengatur kurikulum, jadwal perkuliahan, dan layanan administrasi mahasiswa agar proses belajar berjalan tertib dan bermutu."><%= values && values.landingFooterDescription ? values.landingFooterDescription : defaultFooterDescription %></textarea>
+                      <div class="field-hint">Teks ini tampil di footer landing, tepat di bawah judul "Akademik UNJANI".</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="socialFacebookInput">Link Facebook</label>
+                      <input type="url" id="socialFacebookInput" name="socialFacebook" class="form-control"
+                        placeholder="https://facebook.com/..." value="<%= values && values.socialFacebook ? values.socialFacebook : '' %>" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="socialTwitterInput">Link Twitter / X</label>
+                      <input type="url" id="socialTwitterInput" name="socialTwitter" class="form-control"
+                        placeholder="https://x.com/..." value="<%= values && values.socialTwitter ? values.socialTwitter : '' %>" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="socialYoutubeInput">Link YouTube</label>
+                      <input type="url" id="socialYoutubeInput" name="socialYoutube" class="form-control"
+                        placeholder="https://youtube.com/..." value="<%= values && values.socialYoutube ? values.socialYoutube : '' %>" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="socialTiktokInput">Link TikTok</label>
+                      <input type="url" id="socialTiktokInput" name="socialTiktok" class="form-control"
+                        placeholder="https://www.tiktok.com/@..." value="<%= values && values.socialTiktok ? values.socialTiktok : '' %>" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="socialLinkedinInput">Link LinkedIn</label>
+                      <input type="url" id="socialLinkedinInput" name="socialLinkedin" class="form-control"
+                        placeholder="https://www.linkedin.com/..." value="<%= values && values.socialLinkedin ? values.socialLinkedin : '' %>" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card section-card mb-4" id="media-section">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="text-muted mb-1">Branding & Media</p>
+                    <h5 class="mb-0 card-title">Logo, Favicon, Video, Banner</h5>
+                  </div>
+                  <span class="pill-muted"><span class="iconify me-1" data-icon="ri:information-line"></span>Format
+                    aman: PNG/JPG</span>
+                </div>
+                <div class="card-body">
+                  <div class="row g-4">
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="siteLogoInput">Logo Situs</label>
+                      <div class="upload-tile">
+                        <input type="file" id="siteLogoInput" name="siteLogo" accept="image/png,image/jpeg"
+                          data-file-label="siteLogoLabel" data-preview="siteLogoPreview" />
+                        <div class="upload-body">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="mini-badge"><span class="iconify" data-icon="ri:upload-2-line"></span> Pilih /
+                              tarik file</span>
+                            <span class="preview-chip" id="siteLogoLabel" data-default="PNG/JPG transparan">PNG/JPG
+                              transparan</span>
+                          </div>
+                          <div class="field-hint">Rekomendasi latar transparan, tinggi minimal 120px.</div>
+                          <% if (values && values.siteLogo) { %>
+                          <div class="d-flex align-items-center gap-2">
+                            <img id="siteLogoPreview" src="<%= values.siteLogo %>" alt="Logo"
+                              style="height:38px; width:auto;">
+                            <a href="<%= values.siteLogo %>" target="_blank" rel="noopener"
+                              class="btn btn-sm btn-outline-primary">Lihat</a>
+                          </div>
+                          <% } else { %>
+                          <img id="siteLogoPreview" alt="Preview logo" style="height:32px; width:auto; display:none;">
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label fw-medium" for="faviconInput">Favicon (32x32 / 64x64)</label>
+                      <div class="upload-tile">
+                        <input type="file" id="faviconInput" name="favicon"
+                          accept="image/png,image/x-icon,image/vnd.microsoft.icon" data-file-label="faviconLabel"
+                          data-preview="faviconPreview" />
+                        <div class="upload-body">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="mini-badge"><span class="iconify" data-icon="ri:file-2-line"></span> Pilih
+                              favicon</span>
+                            <span class="preview-chip" id="faviconLabel" data-default="ICO/PNG 32px">ICO/PNG 32px</span>
+                          </div>
+                          <div class="field-hint">Gunakan gambar persegi. File kecil agar cepat dimuat.</div>
+                          <% if (values && values.favicon) { %>
+                          <div class="d-flex align-items-center gap-2">
+                            <img id="faviconPreview" src="<%= values.favicon %>" alt="Favicon"
+                              style="height:24px; width:24px;">
+                            <a href="<%= values.favicon %>" target="_blank" rel="noopener"
+                              class="btn btn-sm btn-outline-primary">Lihat</a>
+                          </div>
+                          <% } else { %>
+                          <img id="faviconPreview" alt="Preview favicon" style="height:24px; width:24px; display:none;">
+                          <% } %>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-10 mb-10">
+                      <div class="col-md-6">
+                        <label class="form-label fw-medium" for="landingVideoUrlInput">URL Video Landing (YouTube
+                          embed)</label>
+                        <div class="position-relative has-icon">
+                          <span class="input-ico iconify" data-icon="ri:movie-2-line"></span>
+                          <input type="url" id="landingVideoUrlInput" name="landingVideoUrl" class="form-control"
+                            placeholder="https://www.youtube.com/embed/VIDEO_ID"
+                            value="<%= values && values.landingVideoUrl ? values.landingVideoUrl : '' %>" />
+                        </div>
+                        <div class="field-hint">Gunakan format embed (https://www.youtube.com/embed/ID). Pastikan video
+                          publik.</div>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label fw-medium" for="bannerRplInput">Banner (maks 3MB)</label>
+                        <div class="upload-tile">
+                          <input type="file" id="bannerRplInput" name="bannerRpl" accept="image/png,image/jpeg"
+                            data-file-label="bannerLabel" data-preview="bannerRplPreview" />
+                          <div class="upload-body">
+                            <div class="d-flex align-items-center gap-2">
+                              <span class="mini-badge"><span class="iconify" data-icon="ri:image-add-line"></span>
+                                Unggah banner</span>
+                              <span class="preview-chip" id="bannerLabel" data-default="PNG/JPG, 1600px+">PNG/JPG,
+                                1600px+</span>
+                            </div>
+                            <div class="field-hint mb-1">Dipakai sebagai latar hero halaman.</div>
+                            <img id="bannerRplPreview"
+                              src="<%= values && values.bannerRpl ? values.bannerRpl : '/assets/landing-page/images/hero-bg.jpg' %>"
+                              alt="Banner RPL" class="img-fluid rounded"
+                              style="max-height:160px; object-fit: cover; width: 100%;">
+                            <% if (values && values.bannerRpl) { %>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                              <small class="text-muted">File saat ini</small>
+                              <a href="<%= values.bannerRpl %>" target="_blank" rel="noopener"
+                                class="btn btn-sm btn-outline-primary ms-2">
+                                <span class="iconify me-1" data-icon="ri:external-link-line"></span>Buka
+                              </a>
+                            </div>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-12 mb-8">
+                      <label class="form-label fw-medium" for="strukturOrganisasiInput">Struktur Organisasi</label>
+                      <div class="upload-tile">
+                        <input type="file" id="strukturOrganisasiInput" name="strukturOrganisasiImage"
+                          accept="image/png,image/jpeg" data-file-label="strukturLabel"
+                          data-preview="strukturPreview" />
+                        <div class="upload-body">
+                          <div class="d-flex flex-wrap align-items-center gap-2">
+                            <span class="mini-badge"><span class="iconify" data-icon="ri:organization-chart"></span>
+                              Unggah foto struktur</span>
+                            <span class="preview-chip" id="strukturLabel"
+                              data-default="PNG/JPG resolusi tinggi">PNG/JPG resolusi tinggi</span>
+                          </div>
+                          <div class="field-hint">Tampil di halaman publik /struktur-organisasi. Gunakan gambar terbaca
+                            jelas.</div>
+                          <img id="strukturPreview"
+                            src="<%= values && values.strukturOrganisasiImage ? values.strukturOrganisasiImage : '/assets/landing-page/images/Struktur-Organisasi-UNJANI.png' %>"
+                            alt="Struktur Organisasi" class="img-fluid rounded"
+                            style="max-height:220px; object-fit: contain; width: 100%;">
+                          <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">Terakhir diperbarui:
+                              <%= strukturUpdatedLabel || '-' %>
+                            </small>
+                            <% if (values && values.strukturOrganisasiImage) { %>
+                            <a href="<%= values.strukturOrganisasiImage %>" target="_blank" rel="noopener"
+                              class="btn btn-sm btn-outline-primary ms-2">
+                              <span class="iconify me-1" data-icon="ri:external-link-line"></span>Lihat
+                            </a>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <% const quicks = (values && values.quickLinks && values.quickLinks.length) ? values.quickLinks : [{ label: 'Beranda', url: '/', target: '_self' }]; %>
+              <div class="card section-card mb-4" id="slideshow-section">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="text-muted mb-1">Navigasi & Visual Landing</p>
+                    <h5 class="mb-0 card-title">Quick Links & Slideshow</h5>
+                  </div>
+                  <span class="pill-muted"><span class="iconify me-1" data-icon="ri:lightbulb-flash-line"></span>Gunakan
+                    3-6 tautan</span>
+                </div>
+                <div class="card-body">
+                  <div class="row g-4 mb-12">
+                    <div class="col-12">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                          <label class="form-label fw-medium mb-1">Quick Links Footer</label>
+                          <div class="field-hint">Isi data lalu klik tambah. Link akan tampil di footer landing page.
+                          </div>
+                        </div>
+                        <span class="pill-muted" id="quick-link-count">Link: <%= quicks.length %></span>
+                      </div>
+                      <div class="row g-2 align-items-end mb-2">
+                        <div class="col-md-4">
+                          <label class="form-label small mb-1" for="ql-name">Nama</label>
+                          <input type="text" id="ql-name" class="form-control" placeholder="Contoh: Portal Akademik">
+                        </div>
+                        <div class="col-md-5">
+                          <label class="form-label small mb-1" for="ql-url">URL</label>
+                          <input type="text" id="ql-url" class="form-control" placeholder="/path atau https://domain">
+                        </div>
+                        <div class="col-md-3 d-flex flex-column flex-md-row gap-2">
+                          <div class="flex-grow-1">
+                            <label class="form-label small mb-1" for="ql-target">Target</label>
+                            <select id="ql-target" class="form-select">
+                              <option value="_self">Halaman sama</option>
+                              <option value="_blank">Tab baru</option>
+                            </select>
+                          </div>
+                          <div class="d-grid">
+                            <label class="form-label small mb-1 invisible">Tambah</label>
+                            <button type="button" id="add-quick-link" class="btn btn-outline-primary">
+                              <i class="ri ri-add-line me-1"></i>Tambah
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table class="table table-sm align-middle quick-preview-table" id="quick-link-preview">
+                          <thead>
+                            <tr>
+                              <th style="width:40px;">#</th>
+                              <th>Nama</th>
+                              <th>URL</th>
+                              <th>Target</th>
+                              <th class="text-end">Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% if (quicks && quicks.length) { %>
+                              <% quicks.forEach(function(q, idx){ %>
+                                <tr>
+                                  <td class="text-muted small">#<%= idx + 1 %></td>
+                                  <td class="fw-semibold"><%= q.label %></td>
+                                  <td class="text-truncate" style="max-width:260px;" title="<%= q.url %>"><%= q.url %></td>
+                                  <td><span class="badge bg-label-primary"><%= q.target === '_blank' ? 'Tab baru' : 'Halaman sama' %></span></td>
+                                  <td class="text-end">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-quick-link" data-index="<%= idx %>">
+                                      <i class="ri ri-delete-bin-line"></i>
+                                    </button>
+                                    <input type="hidden" name="quickLinkName[]" value="<%= q.label %>">
+                                    <input type="hidden" name="quickLinkUrl[]" value="<%= q.url %>">
+                                    <input type="hidden" name="quickLinkTarget[]" value="<%= q.target %>">
+                                  </td>
+                                </tr>
+                              <% }); %>
+                            <% } else { %>
+                              <tr><td colspan="5" class="text-center text-muted">Belum ada link.</td></tr>
+                            <% } %>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label fw-medium mb-0" for="slideshowImagesInput">Slideshow Landing</label>
+                        <span class="pill-muted">Tersimpan:
+                          <%= values && values.slideshowImages ? values.slideshowImages.length : 0 %> / 10</span>
+                      </div>
+                      <div class="upload-tile mb-2">
+                        <input type="file" id="slideshowImagesInput" name="slideshowImages"
+                          accept="image/png,image/jpeg" multiple />
+                        <div class="upload-body">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="mini-badge"><span class="iconify" data-icon="ri:upload-cloud-2-line"></span>
+                              Tambah gambar</span>
+                            <span class="field-hint">Unggah 1-10 gambar (PNG/JPG). Urutan slider mengikuti urutan
+                              pilih.</span>
+                          </div>
+                          <div class="new-slide-wrap d-none" id="slideshow-new-preview"></div>
+                        </div>
+                        <% if (values && values.slideshowImages && values.slideshowImages.length) { %>
+                        <div class="mt-2 mb-2">
+                          <div class="text-muted small mb-2">Gambar tersimpan (centang hapus jika perlu):</div>
+                          <div class="slide-row mb-12">
+                            <% values.slideshowImages.forEach(function(img, idx){ %>
+                            <div class="slide-card">
+                              <div class="d-flex justify-content-between align-items-center mb-1 small text-muted">
+                                <span>#<%= idx + 1 %></span>
+                                <button type="button" class="btn btn-sm btn-outline-danger p-1 remove-slide-btn"
+                                  data-target-url="<%= img %>" title="Hapus gambar ini">
+                                  <i class="ri ri-delete-bin-6-line"></i>
+                                </button>
+                                <input type="checkbox" class="d-none" name="removeSlides" value="<%= img %>">
+                              </div>
+                              <div class="slide-thumb">
+                                <img src="<%= img %>" alt="Slide <%= idx + 1 %>">
+                              </div>
+                              <div class="text-truncate small mt-1" title="<%= img %>"><%= img %></div>
+                            </div>
+                            <% }); %>
+                          </div>
+                        </div>
+                        <% } %>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div
+                class="sticky-actions d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
+                <div class="text-muted small">Pastikan kolom bertanda <span class="text-danger">*</span> terisi. Logo &
+                  favicon membantu konsistensi brand.</div>
+                <div class="d-flex gap-2">
+                  <a href="/admin/settings" class="btn btn-light border">Batal</a>
+                  <button type="submit" class="btn btn-outline-primary px-3" name="redirectTo" value="summary">
+                    <span class="iconify me-1" data-icon="ri:save-3-line"></span> Simpan & Kembali
+                  </button>
+                  <button type="submit" class="btn btn-primary px-4">
+                    <span class="iconify me-1" data-icon="ri:save-line"></span> Simpan Pengaturan
+                  </button>
+                </div>
+              </div>
+            </form>
+
+          </div>
+          <div class="content-backdrop fade"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout-overlay layout-menu-toggle"></div>
+  <div class="drag-target"></div>
+
+  <script src="/assets/vendor/libs/jquery/jquery.js"></script>
+  <script src="/assets/vendor/libs/popper/popper.js"></script>
+  <script src="/assets/vendor/js/bootstrap.js"></script>
+  <script src="/assets/vendor/libs/node-waves/node-waves.js"></script>
+  <script src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+  <script src="/assets/vendor/js/menu.js"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script>
+    // Preview helper for images
+    function bindPreview(inputId, previewId, labelId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      const label = labelId ? document.getElementById(labelId) : null;
+      if (!input) return;
+      const updateLabel = (text) => {
+        if (label) label.textContent = text || (label.dataset.default || '');
+      };
+      input.addEventListener('change', e => {
+        const file = e.target.files && e.target.files[0];
+        if (file && preview) {
+          const reader = new FileReader();
+          reader.onload = ev => {
+            preview.src = ev.target.result;
+            preview.style.display = 'inline-block';
+          };
+          reader.readAsDataURL(file);
+          updateLabel(file.name);
+        } else {
+          updateLabel(label && label.dataset.default);
+        }
+      });
+    }
+
+    // Banner live preview
+    bindPreview('bannerRplInput', 'bannerRplPreview', 'bannerLabel');
+    bindPreview('siteLogoInput', 'siteLogoPreview', 'siteLogoLabel');
+    bindPreview('faviconInput', 'faviconPreview', 'faviconLabel');
+    bindPreview('strukturOrganisasiInput', 'strukturPreview', 'strukturLabel');
+
+    // Quick Links add to table (no extra inputs)
+    (function () {
+      const addBtn = document.getElementById('add-quick-link');
+      const nameInput = document.getElementById('ql-name');
+      const urlInput = document.getElementById('ql-url');
+      const targetInput = document.getElementById('ql-target');
+      const previewBody = document.querySelector('#quick-link-preview tbody');
+      const countBadge = document.getElementById('quick-link-count');
+      const form = document.querySelector('form');
+      if (!addBtn || !nameInput || !urlInput || !targetInput || !previewBody || !countBadge) return;
+
+      const quickLinks = <%- JSON.stringify(quicks) %>;
+
+      const renderTable = () => {
+        previewBody.innerHTML = '';
+        if (!quickLinks.length) {
+          previewBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada link.</td></tr>';
+          countBadge.textContent = 'Link: 0';
+          return;
+        }
+        quickLinks.forEach((item, idx) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="text-muted small">#${idx + 1}</td>
+            <td class="fw-semibold">${item.label}</td>
+            <td class="text-truncate" style="max-width:260px;" title="${item.url}">${item.url}</td>
+            <td><span class="badge bg-label-primary">${item.target === '_blank' ? 'Tab baru' : 'Halaman sama'}</span></td>
+            <td class="text-end">
+              <button type="button" class="btn btn-outline-danger btn-sm remove-quick-link" data-index="${idx}">
+                <i class="ri ri-delete-bin-line"></i>
+              </button>
+              <input type="hidden" name="quickLinkName[]" value="${item.label}">
+              <input type="hidden" name="quickLinkUrl[]" value="${item.url}">
+              <input type="hidden" name="quickLinkTarget[]" value="${item.target}">
+            </td>
+          `;
+          previewBody.appendChild(row);
+        });
+        countBadge.textContent = `Link: ${quickLinks.length}`;
+      };
+
+      const resetInputs = () => {
+        nameInput.value = '';
+        urlInput.value = '';
+        targetInput.value = '_self';
+        nameInput.focus();
+      };
+
+      const addLink = () => {
+        const label = (nameInput.value || '').trim();
+        const url = (urlInput.value || '').trim();
+        const target = (targetInput.value || '_self').trim() || '_self';
+        if (!label || !url) {
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              title: 'Lengkapi nama & URL',
+              icon: 'warning',
+              confirmButtonText: 'Mengerti'
+            });
+          } else {
+            alert('Nama dan URL wajib diisi');
+          }
+          return;
+        }
+        quickLinks.push({
+          label,
+          url,
+          target
+        });
+        renderTable();
+        resetInputs();
+      };
+
+      const handleRemove = async (idx) => {
+        const item = quickLinks[idx];
+        const title = item && item.label ? `Hapus "${item.label}"?` : 'Hapus link ini?';
+        const res = await Swal.fire({
+          title,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, hapus',
+          cancelButtonText: 'Batal',
+          allowOutsideClick: false,
+        });
+        const confirmed = res.isConfirmed;
+        if (!confirmed) return;
+        quickLinks.splice(idx, 1);
+        renderTable();
+      };
+
+      previewBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.remove-quick-link');
+        if (!btn) return;
+        const idx = Number(btn.getAttribute('data-index'));
+        if (Number.isNaN(idx)) return;
+        handleRemove(idx);
+      });
+
+      addBtn.addEventListener('click', addLink);
+      renderTable();
+
+    })();
+
+    // Slideshow new file preview (client-side)
+    (function () {
+      const input = document.getElementById('slideshowImagesInput');
+      const previewWrap = document.getElementById('slideshow-new-preview');
+      if (!input || !previewWrap) return;
+      input.addEventListener('change', () => {
+        const files = Array.from(input.files || []);
+        previewWrap.innerHTML = '';
+        if (!files.length) {
+          previewWrap.classList.add('d-none');
+          return;
+        }
+        files.slice(0, 6).forEach((file, idx) => {
+          const card = document.createElement('div');
+          card.className = 'slide-card';
+          card.style.minWidth = '150px';
+          card.style.maxWidth = '180px';
+          card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-1 small text-muted">
+              <span>Baru #${idx + 1}</span>
+              <span class="badge bg-label-primary">Preview</span>
+            </div>
+            <div class="slide-thumb">
+              <img alt="Preview ${idx + 1}">
+            </div>
+            <div class="text-truncate small mt-1" title="${file.name}">${file.name}</div>
+          `;
+          const img = card.querySelector('img');
+          img.src = URL.createObjectURL(file);
+          previewWrap.appendChild(card);
+        });
+        previewWrap.classList.remove('d-none');
+      });
+    })();
+
+    // Slide removal with SweetAlert2 confirmation
+    (function () {
+      const removeButtons = document.querySelectorAll('.remove-slide-btn');
+      removeButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const url = btn.getAttribute('data-target-url') || '';
+          const form = btn.closest('form');
+          const confirmAction = async () => {
+            const card = btn.closest('.slide-card');
+            const checkbox = card?.querySelector('input[name="removeSlides"]');
+            if (checkbox) checkbox.checked = true;
+            // extra safety: inject hidden input so value pasti terkirim
+            if (form && !form.querySelector(
+              `input[type="hidden"][name="removeSlides"][value="${url}"]`)) {
+              const hidden = document.createElement('input');
+              hidden.type = 'hidden';
+              hidden.name = 'removeSlides';
+              hidden.value = url;
+              form.appendChild(hidden);
+            }
+            btn.classList.remove('btn-outline-danger');
+            btn.classList.add('btn-danger', 'text-white');
+            btn.innerHTML = '<i class="ri ri-check-line"></i>';
+            // optional: sembunyikan thumbnail supaya user yakin
+            if (card) card.style.opacity = '0.5';
+          };
+
+          const result = await Swal.fire({
+            title: 'Hapus gambar?',
+            text: url,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, hapus',
+            cancelButtonText: 'Batal',
+            allowOutsideClick: false,
+          });
+          if (result.isConfirmed) await confirmAction();
+        });
+      });
+    })();
+  </script>
+</body>
+
+</html>
