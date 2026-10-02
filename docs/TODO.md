@@ -99,9 +99,9 @@ Dijalankan di database salinan pada 1 Okt 2026; backup di `backups/f0-cleanup-*.
 
 ### Bersih-bersih template lama — **ditunda ke akhir F3/F4** `[Sonnet 5.5 · low]`
 > Aset template lama (`public/assets/vendor`, `landing-page`, `json`, `js/app-*`) masih dipakai halaman yang berjalan. Hapus per halaman setelah halaman itu dibangun ulang, dan terakhir di F5 setelah tidak ada view yang merujuknya (cek dengan `grep`).
-- [ ] (F3/F4) Setiap view yang selesai diganti: hapus aset yang hanya dipakai view itu
-- [ ] (F5) Hapus sisa `public/assets/vendor`, `landing-page`, `json`, `js/app-*`, `cards-*`, `charts-*`
-- [ ] (F4) Hapus `views/partials/template-customizer.ejs`, `settings.ejs`, dan bagian bahasa/shortcuts di `navbar.ejs`
+- [x] (F3/F4) Setiap view yang selesai diganti: hapus aset yang hanya dipakai view itu (dilakukan bertahap sepanjang F3/F4)
+- [x] (F5) Hapus sisa yang **sudah** yatim, diverifikasi dengan `grep` sebelum hapus: `public/assets/json`, `public/assets/js/app-*.js`, `js/cards-*.js`, `js/charts-*.js`, 2 CSS `cards-*` yang menyertainya, dan 3 partial yang ternyata sudah tidak di-`include` di mana pun (`footer.ejs`, `landing-footer.ejs`, `landing-header.ejs`). **`public/assets/vendor` (26 MB) dan `public/assets/img` (28 MB) sengaja TIDAK dihapus** — masih dipakai 3 halaman profil admin lama (`views/admin/profile/{index,edit,password}.ejs`) yang belum dirombak ke desain baru (di luar lingkup F4: profil adalah swa-layani akun sendiri, bukan salah satu dari 14 modul admin). Menghapusnya akan merusak halaman yang masih hidup — ditunda sampai ketiga halaman itu dirombak (F6 atau fase terpisah).
+- [x] (F4) Hapus `views/partials/template-customizer.ejs`, `settings.ejs` (keduanya ternyata sudah yatim, dihapus total) **dan** bagian bahasa/shortcuts di `navbar.ejs` (dropdown "Language" 4 opsi palsu dan dropdown "Shortcuts" berisi 10 tautan ke halaman demo template yang tidak ada di aplikasi ini, mis. `app-calendar.html` — bukan cuma dekorasi usang tapi tautan rusak di halaman admin yang masih live; dihapus, bukan cuma dirapikan). Diverifikasi: ketiga halaman profil (`/profile`, `/profile/edit`, `/profile/password`) tetap 200 setelah perubahan.
 
 ---
 
