@@ -37,7 +37,7 @@ const siteSettingRoutes = require('./routes/siteSettingRoutes');
 const academicProfileRoutes = require('./routes/academicProfileRoutes');
 const rplDocumentRoutes = require('./routes/rplDocumentRoutes');
 const indexRoutes = require('./routes/indexRoutes');
-const SiteSetting = require('./models/SiteSetting');
+const siteSettingCache = require('./utils/siteSettingCache');
 const News = require('./models/News');
 const Pengumuman = require('./models/Pengumuman');
 const AcademicDocument = require('./models/AcademicDocument');
@@ -48,6 +48,7 @@ const { isStaff } = roles;
 const icon = require('./utils/icons');
 const format = require('./utils/format');
 const navigation = require('./utils/navigation');
+const { assetUrl } = require('./utils/assetVersion');
 const { accreditationStatus } = require('./utils/accreditation');
 const { calendarEventStatus } = require('./utils/calendar');
 const renderPage = require('./middleware/renderPage');
@@ -57,7 +58,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Helpers available in every view (new layouts & components).
-Object.assign(app.locals, { icon, ...format, ...navigation, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus });
+Object.assign(app.locals, { icon, ...format, ...navigation, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus, assetUrl });
 
 // Behind a reverse proxy (Nginx, cPanel, etc.) set TRUST_PROXY to the number of
 // proxy hops so req.ip is the visitor's address; login attempt limits rely on it.
@@ -106,7 +107,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Long + immutable: uploads keep a unique timestamped filename per file
+// (utils/upload.js), and app.css/app.js are only ever linked through
+// assetUrl() with a content-hash query string -- both are safe to cache
+// for a year because their URL changes whenever their content does.
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1y', immutable: true }));
 app.use(verifyOrigin);
 app.use(renderPage);
 app.use(
@@ -148,17 +153,21 @@ app.use(async (req, res, next) => {
   return next();
 });
 
-// Expose current path to templates for active menu states
+// Expose current path and absolute URL to templates (active menu states,
+// canonical link, og:url — NFR-SEO-01). APP_ORIGIN wins when set (reverse
+// proxy / custom domain), otherwise built from this request.
 app.use((req, res, next) => {
   res.locals.path = req.path;
+  const origin = (process.env.APP_ORIGIN || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+  res.locals.canonicalUrl = `${origin}${req.originalUrl}`;
   next();
 });
 
-// Load site setting per request for landing banners
+// Site setting for layout/footer: cached in memory (NFR-P-05), not queried
+// per request. See utils/siteSettingCache.js; invalidated on save.
 app.use(async (_req, res, next) => {
   try {
-    const setting = await SiteSetting.findOne();
-    res.locals.siteSetting = setting;
+    res.locals.siteSetting = await siteSettingCache.get();
   } catch (err) {
     // ignore setting errors to avoid breaking requests
   }

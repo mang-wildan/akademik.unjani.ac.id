@@ -21,7 +21,7 @@
       <% if (filters.kategori) { %><input type="hidden" name="kategori" value="<%= filters.kategori %>"><% } %>
       <label for="q" class="sr-only">Cari dokumen</label>
       <input id="q" name="q" type="search" class="field-control" placeholder="Cari judul dokumen…" value="<%= filters.q %>">
-      <button type="submit" class="btn btn-secondary"><%- icon('search') %><span class="hidden sm:inline">Cari</span></button>
+      <button type="submit" class="btn btn-secondary" aria-label="Cari"><%- icon('search') %><span class="hidden sm:inline" aria-hidden="true">Cari</span></button>
     </form>
 
     <% if (!documents.length) { %>
@@ -44,7 +44,7 @@
               <% if (d.fileSize) { %><span>· <%= formatUkuranFile(d.fileSize) %></span><% } %>
             </p>
           </div>
-          <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download><%- icon('download') %><span class="hidden sm:inline">Unduh</span></a>
+          <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download aria-label="Unduh"><%- icon('download') %><span class="hidden sm:inline" aria-hidden="true">Unduh</span></a>
         </li>
       <% }) %>
     </ul>

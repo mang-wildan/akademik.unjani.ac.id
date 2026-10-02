@@ -9,6 +9,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const SiteSetting = require('../models/SiteSetting');
 const { validate, schemas } = require('../validators');
+const siteSettingCache = require('../utils/siteSettingCache');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
@@ -48,6 +49,7 @@ exports.update = async (req, res) => {
   }
   Object.assign(setting, data, { updatedBy: req.user._id });
   await setting.save();
+  siteSettingCache.invalidate(setting.toObject());
   res.redirect(`/admin/settings?success=${encodeURIComponent('Pengaturan situs berhasil disimpan.')}`);
 };
 
@@ -64,6 +66,7 @@ exports.addQuickLink = async (req, res) => {
   setting.quickLinks.push(data);
   setting.updatedBy = req.user._id;
   await setting.save();
+  siteSettingCache.invalidate(setting.toObject());
   res.redirect(`/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil ditambahkan.')}`);
 };
 
@@ -72,5 +75,6 @@ exports.deleteQuickLink = async (req, res) => {
   setting.quickLinks = setting.quickLinks.filter(l => String(l._id) !== req.params.linkId);
   setting.updatedBy = req.user._id;
   await setting.save();
+  siteSettingCache.invalidate(setting.toObject());
   res.redirect(`/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil dihapus.')}`);
 };

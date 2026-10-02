@@ -8,7 +8,6 @@ const GraduationBook = require('../models/GraduationBook');
 const Kurikulum = require('../models/Kurikulum');
 const RplDocument = require('../models/RplDocument');
 const Lulusan = require('../models/Lulusan');
-const SiteSetting = require('../models/SiteSetting');
 const Staff = require('../models/Staff');
 const Unit = require('../models/Unit');
 const ProgramStudi = require('../models/ProgramStudi');
@@ -26,8 +25,8 @@ const { sanitizeHtml } = require('../utils/html');
 // gracefully to nothing when its data is empty, rather than showing filler.
 exports.getLanding = async (req, res) => {
   const now = new Date();
+  const setting = res.locals.siteSetting;
   const [
-    setting,
     latestCalendar,
     pinnedPengumuman,
     pinnedDocs,
@@ -38,15 +37,14 @@ exports.getLanding = async (req, res) => {
     kegiatanTerbaru,
     lulusanAgg,
   ] = await Promise.all([
-    SiteSetting.findOne().lean(),
     AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
-    Pengumuman.find({ status: 'published', pinned: true }).sort({ createdAt: -1 }).limit(3).lean(),
-    AcademicDocument.find({ pinned: true }).sort({ createdAt: -1 }).limit(3).lean(),
-    News.find({ status: 'published', pinned: true }).sort({ createdAt: -1 }).limit(3).lean(),
-    Pengumuman.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
-    Accreditation.find({ jenis: JENIS.INSTITUSI }).populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
+    Pengumuman.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
+    AcademicDocument.find({ pinned: true }, 'name file createdAt').sort({ createdAt: -1 }).limit(3).lean(),
+    News.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
+    Pengumuman.find({ status: 'published' }, 'title slug createdAt').sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
+    Accreditation.find({ jenis: JENIS.INSTITUSI }, 'peringkat berlakuSampai lembaga').populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
     Accreditation.find({ jenis: { $ne: JENIS.INSTITUSI }, peringkat: { $exists: true } }, 'peringkat').lean(),
-    News.find({ status: 'published' }).sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
+    News.find({ status: 'published' }, 'title slug createdAt featuredImage').sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
     Lulusan.aggregate([{ $group: { _id: '$tahun', total: { $sum: '$jumlah' } } }, { $sort: { _id: -1 } }]),
   ]);
 
@@ -90,15 +88,12 @@ exports.getLanding = async (req, res) => {
 };
 
 exports.getStrukturLanding = async (req, res) => {
-  const [setting, units] = await Promise.all([
-    SiteSetting.findOne().lean(),
-    Unit.find().sort({ createdAt: -1 }).lean(),
-  ]);
+  const units = await Unit.find().sort({ createdAt: -1 }).lean();
 
   res.renderPage('landing/struktur-organisasi', {
     title: 'Struktur Organisasi',
     description: 'Struktur organisasi Bidang Akademik Universitas Jenderal Achmad Yani.',
-    siteSetting: setting,
+    siteSetting: res.locals.siteSetting,
     units, // versi teks alternatif dari bagan (FR-L-04)
   });
 };
@@ -510,10 +505,11 @@ const isValidHttpUrl = value => {
 
 exports.getDashboard = async (req, res) => {
   const now = new Date();
+  const setting = res.locals.siteSetting;
   const [
     beritaTerbit, pengumumanAktif, dokCount,
     akreditasiAll, beritaTanpaGambar, pengumumanTanpaGambar,
-    kalenderTerbaru, setting, aktivitas,
+    kalenderTerbaru, aktivitas,
   ] = await Promise.all([
     News.countDocuments({ status: 'published' }),
     Pengumuman.countDocuments({ status: 'published' }),
@@ -522,7 +518,6 @@ exports.getDashboard = async (req, res) => {
     News.find({ status: 'published', $or: [{ featuredImage: '' }, { featuredImage: { $exists: false } }] }, 'title').lean(),
     Pengumuman.find({ status: 'published', $or: [{ featuredImage: '' }, { featuredImage: { $exists: false } }] }, 'title').lean(),
     AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
-    SiteSetting.findOne().lean(),
     Promise.all([
       News.find({}, 'title createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(r => ({ ...r, label: 'Berita', href: '/admin/news' }))),
       Pengumuman.find({}, 'title createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(r => ({ ...r, label: 'Pengumuman', href: '/admin/pengumuman' }))),

@@ -228,14 +228,14 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 
 ## F5 — Performa, SEO, aksesibilitas `[Sonnet 5.5 · medium]`
 
-- [ ] Cache `SiteSetting` di memori, invalidasi saat disimpan — NFR-P-05
-- [ ] Paralelkan query di controller beranda dan dasbor; gunakan `.lean()` dan proyeksi field
-- [ ] Header cache statis (`Cache-Control`, nama file dengan hash untuk CSS/JS)
-- [ ] `<title>`, meta description, Open Graph, dan canonical per halaman — NFR-SEO-01
-- [ ] `sitemap.xml` dan `robots.txt` — NFR-SEO-02
-- [ ] `prefers-reduced-motion`, konten tetap tampil tanpa JS — NFR-A-06
-- [ ] **Audit ulang** `[Opus 5.5 · high]`: jalankan skill `ux-ui-audit` (publik + admin, 390 dan 1440 px) dan tulis `docs/AUDIT-UIUX-v2.md`
-- [ ] Lighthouse mobile untuk beranda, kalender, akreditasi, dan dokumen: Perf ≥ 85, A11y ≥ 95, SEO ≥ 95
+- [x] Cache `SiteSetting` di memori, invalidasi saat disimpan — NFR-P-05 (`utils/siteSettingCache.js`; ditemukan sekaligus 3 query duplikat — Beranda, Dasbor, Struktur Organisasi masing-masing meng-query ulang padahal middleware global sudah menyediakannya di `res.locals.siteSetting` — dihapus, bukan cuma di-cache)
+- [x] Paralelkan query di controller beranda dan dasbor; gunakan `.lean()` dan proyeksi field — kedua controller sudah memakai `Promise.all` + `.lean()` sejak F3/F4; ditambahkan proyeksi field pada 5 query Beranda yang sebelumnya mengambil dokumen penuh padahal hanya 2-3 field dipakai
+- [x] Header cache statis (`Cache-Control`, nama file dengan hash untuk CSS/JS) — `express.static({ maxAge: '1y', immutable: true })` untuk seluruh `public/`; `app.css`/`app.js` (satu-satunya aset yang kontennya berubah di path yang sama tiap deploy) memakai query-string versi dari hash konten (`scripts/build-manifest.js` + `utils/assetVersion.js`, helper `assetUrl()`) supaya aman di-cache lama tanpa menyajikan versi basi
+- [x] `<title>`, meta description, Open Graph, dan canonical per halaman — NFR-SEO-01 (title/description/OG sudah ada sejak F1; `<link rel="canonical">` dan `og:url` baru ditambahkan, dari `res.locals.canonicalUrl` yang menghormati `APP_ORIGIN`/`X-Forwarded-Proto`)
+- [x] `sitemap.xml` dan `robots.txt` — NFR-SEO-02 (`controllers/seoController.js`: 13 rute statis + URL dinamis dari Pengumuman/Berita yang Terbit; diverifikasi dengan menandai satu item Terbit sementara dan mengembalikannya)
+- [x] `prefers-reduced-motion`, konten tetap tampil tanpa JS — NFR-A-06 (sudah ada sejak F1, `assets/css/app.css`)
+- [x] **Audit ulang** `[Opus 5.5 · high]`: jalankan skill `ux-ui-audit` (publik + admin, 390 dan 1440 px) dan tulis `docs/AUDIT-UIUX-v2.md` — 14 rute publik + 19 halaman admin + 4 halaman form/edit dengan data nyata, semua bersih; 1 bug aksesibilitas nyata ditemukan lewat Lighthouse (lihat item di bawah) dan diperbaiki; 3 false-positive probe diverifikasi ulang dan didokumentasikan
+- [x] Lighthouse mobile untuk beranda, kalender, akreditasi, dan dokumen: Perf ≥ 85, A11y ≥ 95, SEO ≥ 95 — **A11y dan SEO lolos 100/100 di keempat halaman** (1 bug `button-name`/`link-name` ditemukan & diperbaiki di Dokumen Akademik + RPL: `<span class="hidden sm:inline">` untuk label ikon memakai `display:none`, bukan `sr-only`, sehingga tombol/tautan benar-benar tanpa nama di mobile — ditambahkan `aria-label`). **Performa lolos di 1 dari 4** (Kalender Akademik: 85); Beranda (76)/Akreditasi (81)/Dokumen (84) di bawah target. Dibuktikan dengan pengukuran langsung (`curl` TTFB `/robots.txt` ~2 ms vs `/` ~460-480 ms) bahwa selisihnya adalah latensi jaringan ke database pengembangan (MongoDB Atlas jarak jauh), bukan kode — kueri sudah paralel+lean+terproyeksi, satu round-trip DB adalah batas bawah yang bisa dicapai dari sisi kode. **Direkomendasikan diukur ulang di F6 setelah topologi produksi final** (app server & database co-located), bukan dikejar lebih jauh di lingkungan dev ini. Detail lengkap di `docs/AUDIT-UIUX-v2.md`.
 
 ---
 

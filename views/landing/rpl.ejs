@@ -33,7 +33,7 @@
             <% if (d.fileSize) { %><span>· <%= formatUkuranFile(d.fileSize) %></span><% } %>
           </p>
         </div>
-        <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download><%- icon('download') %><span class="hidden sm:inline">Unduh</span></a>
+        <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download aria-label="Unduh"><%- icon('download') %><span class="hidden sm:inline" aria-hidden="true">Unduh</span></a>
       </li>
     <% }) %>
   </ul>
