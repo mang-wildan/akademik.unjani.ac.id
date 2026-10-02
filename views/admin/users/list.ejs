@@ -10,7 +10,7 @@
 <div class="card">
   <table class="data-table data-table--stack">
     <caption class="sr-only">Daftar akun admin</caption>
-    <thead><tr><th scope="col">Nama</th><th scope="col">Email</th><th scope="col">Peran</th><th scope="col">Status</th><th scope="col">Login Terakhir</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+    <thead><tr><th scope="col">Nama</th><th scope="col">Email</th><th scope="col">Peran</th><th scope="col">Status</th><th scope="col">Masuk Terakhir</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
         <% const self = String(item._id) === currentUserId; %>
@@ -19,7 +19,7 @@
           <td data-label="Email"><%= item.email %></td>
           <td data-label="Peran"><span class="badge badge-neutral"><%= roleLabel(item) %></span></td>
           <td data-label="Status"><%- include('../../components/badge', { text: item.isActive ? 'Aktif' : 'Nonaktif', tone: item.isActive ? 'success' : 'neutral' }) %></td>
-          <td data-label="Login Terakhir"><%= item.lastLoginAt ? formatTanggal(item.lastLoginAt) : 'Belum pernah' %></td>
+          <td data-label="Masuk Terakhir"><%= item.lastLoginAt ? formatTanggal(item.lastLoginAt) : 'Belum pernah' %></td>
           <td data-label="Aksi">
             <div class="flex items-center gap-1 md:justify-end">
               <a href="/admin/users/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah akun <%= item.email %>"><%- icon('edit') %>Ubah</a>

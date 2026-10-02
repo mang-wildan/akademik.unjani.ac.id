@@ -524,9 +524,13 @@ exports.getDashboard = async (req, res) => {
     AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
     SiteSetting.findOne().lean(),
     Promise.all([
-      News.find({ status: 'published' }, 'title createdAt').sort({ createdAt: -1 }).limit(4).lean(),
-      Pengumuman.find({ status: 'published' }, 'title createdAt').sort({ createdAt: -1 }).limit(4).lean(),
-      AcademicDocument.find({}, 'name createdAt').sort({ createdAt: -1 }).limit(4).lean(),
+      News.find({}, 'title createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(r => ({ ...r, label: 'Berita', href: '/admin/news' }))),
+      Pengumuman.find({}, 'title createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(r => ({ ...r, label: 'Pengumuman', href: '/admin/pengumuman' }))),
+      AcademicDocument.find({}, 'name createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(r => ({ ...r, title: r.name, label: 'Dokumen Akademik', href: '/admin/academic-documents' }))),
+      RplDocument.find({}, 'judul createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(r => ({ ...r, title: r.judul, label: 'Dokumen RPL', href: '/admin/rpl-documents' }))),
+      AcademicCalendar.find({}, 'tahunAjaran createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(3).lean().then(rows => rows.map(r => ({ ...r, title: `Kalender ${r.tahunAjaran}`, label: 'Kalender Akademik', href: '/admin/academic-calendars' }))),
+      Accreditation.find({}, 'namaUnit peringkat createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(3).lean().then(rows => rows.map(r => ({ ...r, title: r.namaUnit || r.peringkat || 'Akreditasi', label: 'Akreditasi', href: '/admin/accreditations' }))),
+      Staff.find({}, 'nama createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(3).lean().then(rows => rows.map(r => ({ ...r, title: r.nama, label: 'Pimpinan & Staf', href: '/admin/staff' }))),
     ]),
   ]);
 
@@ -560,12 +564,24 @@ exports.getDashboard = async (req, res) => {
     });
   }
 
-  const [latestBerita, latestPengumuman, latestDokumen] = aktivitas;
-  const recentActivities = [
-    ...latestBerita.map(b => ({ label: 'Berita', title: b.title, date: b.createdAt, icon: 'newspaper', href: '/admin/news' })),
-    ...latestPengumuman.map(p => ({ label: 'Pengumuman', title: p.title, date: p.createdAt, icon: 'campaign', href: '/admin/pengumuman' })),
-    ...latestDokumen.map(d => ({ label: 'Dokumen', title: d.name, date: d.createdAt, icon: 'description', href: '/admin/academic-documents' })),
-  ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+  // FR-AD-08 (Sebaiknya): siapa + kapan + aksi apa, lewat createdBy/updatedBy
+  // yang sudah dicatat tiap model -- bukan koleksi audit-log terpisah, jadi
+  // tidak menangkap penghapusan (item yang dihapus tidak lagi ada untuk
+  // di-query). "Dibuat" vs "Diperbarui" dibedakan dari selisih createdAt/
+  // updatedAt: keduanya sama persis hanya pada create pertama.
+  const ICONS = { Berita: 'newspaper', Pengumuman: 'campaign', 'Dokumen Akademik': 'description', 'Dokumen RPL': 'verified', 'Kalender Akademik': 'event', Akreditasi: 'workspace_premium', 'Pimpinan & Staf': 'groups' };
+  const actorName = u => (u && u.name) || 'Sistem';
+  const recentActivities = aktivitas
+    .flat()
+    .map(r => {
+      const created = new Date(r.createdAt).getTime();
+      const updated = new Date(r.updatedAt).getTime();
+      const isCreate = Math.abs(updated - created) < 2000;
+      const actor = actorName(isCreate ? r.createdBy : r.updatedBy);
+      return { label: `${r.label} · ${isCreate ? 'Dibuat' : 'Diperbarui'} oleh ${actor}`, title: r.title, date: r.updatedAt, icon: ICONS[r.label] || 'description', href: r.href };
+    })
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 8);
 
   res.renderPage(
     'admin/dashboard',

@@ -20,7 +20,7 @@
   <% } else { %>
     <div class="flex min-h-11 items-center gap-2">
       <input type="checkbox" id="f-isActive" name="isActive" value="on" <%= values.isActive === undefined || values.isActive ? 'checked' : '' %> class="size-6 shrink-0 rounded border-control text-primary focus:ring-primary">
-      <label for="f-isActive" class="text-sm font-medium">Aktif <span class="text-muted">(nonaktifkan untuk mencegah akun ini login)</span></label>
+      <label for="f-isActive" class="text-sm font-medium">Aktif <span class="text-muted">(nonaktifkan untuk mencegah akun ini masuk)</span></label>
     </div>
     <p class="field-help -mt-3">Untuk mengubah password, gunakan "Reset Password" dari daftar akun.</p>
   <% } %>
