@@ -40,6 +40,7 @@ exports.getLanding = async (req, res) => {
     pengumumanTerbaru,
     institusiAcc,
     prodiPeringkat,
+    prodiIds,
     kegiatanTerbaru,
     lulusanAgg,
   ] = await Promise.all([
@@ -49,9 +50,11 @@ exports.getLanding = async (req, res) => {
     News.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
     Pengumuman.find({ status: 'published' }, 'title slug createdAt').sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
     Accreditation.find({ jenis: JENIS.INSTITUSI }, 'peringkat berlakuSampai lembaga').populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
-    // Newest first, with deterministic tie-breaks; populate drops links to deleted prodi (programStudi → null).
+    // Newest first, with deterministic tie-breaks. Existing prodi ids come from a parallel
+    // query (not .populate, which would add a sequential round-trip) to skip links to deleted prodi.
     Accreditation.find({ jenis: JENIS.PRODI }, 'peringkat programStudi berlakuSampai')
-      .populate('programStudi', '_id').sort({ berlakuSampai: -1, tanggalBerlaku: -1, _id: -1 }).lean(),
+      .sort({ berlakuSampai: -1, tanggalBerlaku: -1, _id: -1 }).lean(),
+    ProgramStudi.distinct('_id'),
     News.find({ status: 'published' }, 'title slug createdAt featuredImage').sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
     Lulusan.aggregate([{ $group: { _id: '$tahun', total: { $sum: '$jumlah' } } }, { $sort: { _id: -1 } }]),
   ]);
@@ -73,10 +76,11 @@ exports.getLanding = async (req, res) => {
   // Prodi distribution: only each existing program's newest certificate, and
   // only while it is valid — older, expired or undated ones would claim a grade
   // nobody can be shown to hold now. Rows arrive newest-first, so the first per prodi wins.
+  const prodiAda = new Set(prodiIds.map(String));
   const terbaruPerProdi = new Map();
   prodiPeringkat.forEach(a => {
-    if (!a.programStudi) return;
-    const key = String(a.programStudi._id);
+    const key = String(a.programStudi || '');
+    if (!prodiAda.has(key)) return;
     if (!terbaruPerProdi.has(key)) terbaruPerProdi.set(key, a);
   });
   const peringkatCounts = {};

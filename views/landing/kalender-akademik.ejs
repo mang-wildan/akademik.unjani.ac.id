@@ -53,7 +53,7 @@
         <button type="button" role="tab" id="tab-<%= i %>" aria-controls="panel-<%= i %>" data-index="<%= i %>"
                 x-on:click="select" x-on:keydown="move" x-bind:aria-selected="isActive" x-bind:tabindex="tabIndex"
                 class="btn whitespace-nowrap text-muted hover:bg-sunken aria-selected:bg-primary aria-selected:text-white">
-          <%= s.label %><% if (s.events.length) { %> <span class="ml-1 text-xs opacity-75">(<%= s.events.length %>)</span><% } %>
+          <%= s.label %><% if (s.events.length) { %> <span class="ml-1 text-xs">(<%= s.events.length %>)</span><% } %>
         </button>
       <% }) %>
     </div>

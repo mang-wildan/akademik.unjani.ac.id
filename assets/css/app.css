@@ -169,7 +169,9 @@
 
   /* Buttons — 44px minimum height (WCAG 2.5.8 & DESIGN.md) */
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-5 py-2.5 text-sm font-semibold no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    /* Not transition-colors: in Tailwind v4 that also animates outline-color, so the
+       focus ring fades in from currentColor (white on .btn-primary, invisible) for 150 ms. */
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-5 py-2.5 text-sm font-semibold no-underline transition-[color,background-color,border-color] disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-primary {
     @apply bg-primary text-white hover:bg-primary-hover active:bg-primary-active;
@@ -333,8 +335,9 @@
   .field-label {
     @apply mb-1.5 block text-sm font-semibold text-ink;
   }
+  /* Focus: solid 2px primary ring (5:1 on white). The old 20% ring was ~1.2:1, leaving only a border-colour change. */
   .field-control {
-    @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3.5 py-2.5 text-base text-ink focus:border-primary focus:ring-3 focus:ring-primary/20 focus:outline-none aria-invalid:border-danger-solid;
+    @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3.5 py-2.5 text-base text-ink focus:border-primary focus:ring-2 focus:ring-primary focus:outline-none aria-invalid:border-danger-solid;
   }
   .field-help {
     @apply mt-1.5 text-sm text-muted;

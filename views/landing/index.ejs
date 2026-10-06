@@ -16,7 +16,8 @@
 %>
 
 <section class="section-dark relative isolate overflow-hidden">
-  <img src="/img/hero-kampus.webp" alt="" class="absolute inset-0 -z-20 size-full object-cover" width="1600" height="903" fetchpriority="high">
+  <%# srcset: HP memakai versi 800 px (61 KB, bukan 210 KB) — foto di sana tertutup overlay 90%, dan ini elemen LCP. Samakan dengan preload di layouts/public.ejs. %>
+  <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="100vw" alt="" class="absolute inset-0 -z-20 size-full object-cover" width="1600" height="903" fetchpriority="high">
   <%# Overlay: hijau (hampir) pekat di bawah kolom teks di semua lebar ≥1024 px agar kontras teks tidak bergantung pada foto. %>
   <div class="absolute inset-0 -z-10 bg-brand/90 lg:bg-transparent lg:bg-linear-to-r lg:from-brand lg:from-45% lg:via-brand/90 lg:via-65% lg:to-brand/30" aria-hidden="true"></div>
   <div class="container-content pt-16 pb-36 lg:pt-24 lg:pb-44">
