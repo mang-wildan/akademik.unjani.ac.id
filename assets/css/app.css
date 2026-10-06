@@ -202,6 +202,20 @@
     @apply relative text-primary after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:rounded-full after:bg-accent;
   }
 
+  /* Admin sidebar link on bg-brand (layouts/admin.ejs). White text: 9.1:1 on brand,
+     7.0:1 on hover (white/10), 6.1:1 when active (white/15). The active page also gets
+     a 4px on-dark-accent bar (non-text, 4.0:1) so state never rests on color alone. */
+  .admin-nav-link {
+    @apply relative flex min-h-11 items-center gap-3 rounded-control px-3 font-medium text-white no-underline transition-colors hover:bg-white/10;
+  }
+  .admin-nav-link[aria-current="page"] {
+    @apply bg-white/15 font-semibold;
+  }
+  .admin-nav-link[aria-current="page"]::before {
+    content: "";
+    @apply absolute inset-y-1.5 left-0 w-1 rounded-r-full bg-on-dark-accent;
+  }
+
   /* Full-width page bands (F7). Pair .section (rhythm) with at most one
      background: none (canvas), .section-surface, .section-soft or .section-dark. */
   .section {

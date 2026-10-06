@@ -1,4 +1,5 @@
-<%# Login admin (FR-AD-01). Halaman mandiri (bukan renderPage): tidak memakai layout publik/admin. %>
+<%# Login admin (FR-AD-01). Halaman mandiri (bukan renderPage): tidak memakai layout publik/admin.
+    ≥1024 px: layar terbagi — panel hijau berfoto di kiri, kartu formulir di kanan. Di bawah itu hanya kolom formulir. %>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -12,56 +13,79 @@
   <script src="<%= assetUrl('/js/app.js') %>" defer></script>
   <script src="/js/vendor/alpine-csp.min.js" defer></script>
 </head>
-<body class="flex min-h-screen items-center justify-center bg-canvas px-4 py-10">
-  <main class="w-full max-w-sm">
-    <a href="/" class="mb-6 flex flex-col items-center gap-2 no-underline">
-      <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-14 object-contain">
-      <span class="text-center font-bold text-brand">Bidang Akademik<br><span class="text-sm font-medium text-muted">Universitas Jenderal Achmad Yani</span></span>
-    </a>
+<body class="min-h-screen bg-canvas lg:grid lg:grid-cols-2">
+  <%# Panel identitas (hanya ≥1024 px). display:none di layar kecil + loading="lazy" → foto tidak diunduh di ponsel.
+      Judulnya <p>, bukan h1/h2: satu-satunya h1 adalah judul kartu, dan h2 yang mendahului h1 merusak urutan heading.
+      Overlay tak pernah di bawah 90 % hijau: teks redup/emas tetap ≥4,5:1 sekalipun piksel foto putih. %>
+  <header class="section-dark relative isolate hidden min-h-screen flex-col overflow-hidden border-r-4 border-accent p-12 lg:flex xl:p-16">
+    <img src="/img/hero-kampus.webp" alt="" width="1600" height="903" loading="lazy" decoding="async" class="absolute inset-0 -z-20 size-full object-cover">
+    <div class="absolute inset-0 -z-10 bg-linear-to-b from-brand/90 via-brand/90 to-brand" aria-hidden="true"></div>
 
-    <div class="card card-body">
-      <h1 class="text-lg font-semibold">Masuk ke akun Anda</h1>
-      <p class="mt-1 text-sm text-muted">Gunakan email dan password terdaftar.</p>
+    <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-16 object-contain">
 
-      <% if (typeof error !== 'undefined' && error) { %>
-        <div class="mt-4 flex gap-2 rounded-control border-l-4 border-danger-solid bg-danger-soft p-3 text-sm text-danger" role="alert">
-          <%- icon('error', 'size-5 shrink-0') %><%= error %>
-        </div>
-      <% } %>
+    <div class="my-auto max-w-lg py-12">
+      <p class="eyebrow">Panel admin</p>
+      <p class="mt-4 font-serif text-4xl leading-tight font-bold text-balance text-white xl:text-5xl">Bidang Akademik Universitas Jenderal Achmad Yani</p>
+      <p class="mt-5 text-lg text-on-dark-muted">Kelola konten dan layanan informasi akademik resmi UNJANI.</p>
+    </div>
 
-      <form action="/login" method="POST" class="mt-5 space-y-4" novalidate x-data="disclosure">
-        <%- include('../components/form-field', {
-          name: 'email', label: 'Email', type: 'email', required: true,
-          value: typeof values !== 'undefined' && values ? values.email : '',
-          autocomplete: 'email', placeholder: 'nama@unjani.ac.id',
-        }) %>
+    <p class="text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
+  </header>
 
-        <div>
-          <label for="f-password" class="field-label">Password <span class="text-danger" aria-hidden="true">*</span><span class="sr-only">(wajib)</span></label>
-          <div class="relative">
-            <input :type="open ? 'text' : 'password'" id="f-password" name="password" required autocomplete="current-password"
-                   class="field-control pr-11">
-            <button type="button" x-on:click="toggle" x-bind:aria-pressed="open" aria-label="Tampilkan password"
-                    class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted hover:text-ink">
-              <span x-show="!open"><%- icon('visibility', 'size-5') %></span>
-              <span x-show="open" x-cloak><%- icon('visibility_off', 'size-5') %></span>
-            </button>
-          </div>
-        </div>
+  <main class="flex min-h-screen items-center justify-center px-4 py-10 lg:px-12">
+    <div class="w-full max-w-sm">
+      <a href="/" class="mb-6 flex flex-col items-center gap-2 no-underline lg:hidden">
+        <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-14 object-contain">
+        <span class="text-center font-bold text-brand">Bidang Akademik<br><span class="text-sm font-medium text-muted">Universitas Jenderal Achmad Yani</span></span>
+      </a>
 
-        <% if (requireCaptcha) { %>
-          <div class="flex justify-center [&_iframe]:max-w-full">
-            <div class="g-recaptcha" data-sitekey="<%= recaptchaSiteKey %>"></div>
+      <div class="card card-body">
+        <h1 class="text-lg font-semibold">Masuk ke akun Anda</h1>
+        <p class="mt-1 text-sm text-muted">Gunakan email dan password terdaftar.</p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="mt-4 flex gap-2 rounded-control border-l-4 border-danger-solid bg-danger-soft p-3 text-sm text-danger" role="alert">
+            <%- icon('error', 'size-5 shrink-0') %><%= error %>
           </div>
         <% } %>
 
-        <button type="submit" class="btn btn-primary w-full">Masuk</button>
-      </form>
+        <form action="/login" method="POST" class="mt-5 space-y-4" novalidate x-data="disclosure">
+          <%- include('../components/form-field', {
+            name: 'email', label: 'Email', type: 'email', required: true,
+            value: typeof values !== 'undefined' && values ? values.email : '',
+            autocomplete: 'email', placeholder: 'nama@unjani.ac.id',
+            /* include mewarisi locals halaman: tanpa ini pesan gagal login tampil dua kali (juga di bawah field email). */
+            error: null,
+          }) %>
 
-      <a href="/" class="mt-4 flex min-h-6 items-center justify-center text-center text-sm font-medium text-muted hover:text-primary">Kembali ke beranda</a>
+          <div>
+            <label for="f-password" class="field-label">Password <span class="text-danger" aria-hidden="true">*</span><span class="sr-only">(wajib)</span></label>
+            <div class="relative">
+              <%# Ternary ini aman: parser @alpinejs/csp 3.17 mendukung ConditionalExpression dan literal string. %>
+              <input type="password" :type="open ? 'text' : 'password'" id="f-password" name="password" required autocomplete="current-password"
+                     class="field-control pr-11">
+              <button type="button" x-on:click="toggle" x-bind:aria-pressed="open" aria-label="Tampilkan password"
+                      class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted hover:text-ink">
+                <span x-show="!open"><%- icon('visibility', 'size-5') %></span>
+                <span x-show="open" x-cloak><%- icon('visibility_off', 'size-5') %></span>
+              </button>
+            </div>
+          </div>
+
+          <% if (requireCaptcha) { %>
+            <div class="flex justify-center [&_iframe]:max-w-full">
+              <div class="g-recaptcha" data-sitekey="<%= recaptchaSiteKey %>"></div>
+            </div>
+          <% } %>
+
+          <button type="submit" class="btn btn-primary w-full">Masuk</button>
+        </form>
+
+        <a href="/" class="mt-4 flex min-h-6 items-center justify-center text-center text-sm font-medium text-muted hover:text-primary">Kembali ke beranda</a>
+      </div>
+
+      <p class="mt-6 text-center text-xs text-muted lg:hidden">© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
     </div>
-
-    <p class="mt-6 text-center text-xs text-muted">© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
   </main>
 
   <% if (requireCaptcha) { %><script src="https://www.google.com/recaptcha/api.js?hl=id" async defer></script><% } %>

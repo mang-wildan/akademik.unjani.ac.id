@@ -62,11 +62,6 @@ project-root
 |-- middleware/
 |   `-- authMiddleware.js  # verifikasi JWT (Bearer header atau cookie)
 |-- views/
-|   |-- partials/
-|   |   |-- _footer.ejs
-|   |   |-- _header.ejs
-|   |   |-- _layout-end.ejs
-|   |   `-- _layout-start.ejs
 |   |-- auth/
 |   |   |-- login.ejs
 |   |   `-- register.ejs
@@ -126,7 +121,7 @@ curl http://localhost:3000/dashboard \
 ## Catatan pengembangan
 
 - Jangan pernah commit `.env` yang berisi secret.
-- Halaman lama (template) masih memakai `res.render` dan aset di `public/assets/`; keduanya diganti bertahap per halaman (lihat `docs/PLAN.md`).
+- Semua halaman memakai `res.renderPage` dengan `layouts/public` atau `layouts/admin`. Template lama (`views/partials/`, `public/assets/`) sudah dihapus di F7 R5; yang tersisa di `public/assets/landing-page/images/` hanya `favicon.ico` dan `logo.png` (masih dirujuk layout dan halaman error).
 - Proteksi CSRF: semua POST/PUT/DELETE dari origin lain ditolak (`middleware/verifyOrigin.js`). Di belakang reverse proxy, isi `APP_ORIGIN`.
 - Halaman baru dilindungi CSP ketat (`middleware/strictCsp.js`): tanpa skrip/gaya inline; perilaku UI ada di `public/js/app.js` (komponen Alpine).
 - Registrasi publik sudah dihapus; akun admin dibuat oleh Super Admin. reCAPTCHA hanya diminta setelah 3× login gagal.

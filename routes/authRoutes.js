@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { safeFilename, checkUploads } = require('../utils/upload');
+const { safeFilename, checkUploads, uploadErrorMessage } = require('../utils/upload');
 const authController = require('../controllers/authController');
 const { requireAuth } = require('../middleware/authMiddleware');
 
@@ -33,21 +33,27 @@ const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024 },
 });
 
-const profilePhotoUpload = (req, res, next) => {
-  upload.single('profilePhoto')(req, res, err => {
-    if (!err) return checkUploads(req, res, next);
+// Upload problems (wrong type, > 2 MB, forged content) are shown on the edit
+// form itself, with what the user typed, instead of the generic error page.
+const uploadErrorText = err => {
+  if (err.code === 'LIMIT_FILE_SIZE') return 'Ukuran foto profil maksimal 2 MB.';
+  if (err instanceof multer.MulterError) return uploadErrorMessage(err);
+  return err.message || 'Gagal mengunggah foto profil.';
+};
 
-    return res.status(400).render('admin/profile/edit', {
-      title: 'Edit Profil',
-      user: req.user,
-      values: {
-        name: req.body && req.body.name ? req.body.name : (req.user && req.user.name ? req.user.name : ''),
-        email: req.body && req.body.email ? req.body.email : (req.user && req.user.email ? req.user.email : ''),
-        profilePhoto: req.user && req.user.profilePhoto ? req.user.profilePhoto : '',
-      },
-      profile: req.user,
-      error: err.message || 'Gagal mengunggah foto profil.',
-    });
+const profilePhotoUpload = (req, res, next) => {
+  const showError = err => {
+    const body = req.body || {};
+    const values = {
+      name: String(body.name !== undefined ? body.name : req.user.name || ''),
+      email: String(body.email !== undefined ? body.email : req.user.email || ''),
+      removeProfilePhoto: String(body.removeProfilePhoto || '') === '1',
+    };
+    return authController.renderEditProfile(req, res, { values, errors: { profilePhoto: uploadErrorText(err) } }, 400);
+  };
+  upload.single('profilePhoto')(req, res, err => {
+    if (err) return showError(err);
+    return checkUploads(req, res, checkErr => (checkErr ? showError(checkErr) : next()));
   });
 };
 

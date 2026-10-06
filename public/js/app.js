@@ -9,6 +9,8 @@ document.addEventListener('alpine:init', () => {
     open: false,
     toggle() {
       this.open = !this.open;
+      // Off-canvas panels (admin sidebar) mark their first control x-ref="focusOnOpen".
+      if (this.open && this.$refs.focusOnOpen) this.$nextTick(() => this.$refs.focusOnOpen.focus());
     },
     close() {
       this.open = false;
@@ -17,6 +19,13 @@ document.addEventListener('alpine:init', () => {
       if (!this.open) return;
       this.open = false;
       if (this.$refs.trigger) this.$refs.trigger.focus();
+    },
+    // Escape for a menu nested inside another disclosure: only swallow the key
+    // when this menu is open, so a closed menu lets it reach the outer panel.
+    escapeIfOpen(event) {
+      if (!this.open) return;
+      event.stopPropagation();
+      this.closeAndFocus();
     },
   }));
 

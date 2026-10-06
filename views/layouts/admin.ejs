@@ -5,6 +5,10 @@
   const sidebar = adminNav
     .map(group => ({ ...group, items: group.items.filter(item => canSee(item, me)) }))
     .filter(group => group.items.length);
+  // Eyebrow di header = nama grup menu yang sedang aktif (mis. "Konten" untuk /admin/news/...).
+  const activeGroup = sidebar.find(group => group.items.some(item => isActive(item.href, currentPath)));
+  const eyebrowLabel = activeGroup ? activeGroup.group : 'Panel admin';
+  const avatarUrl = typeof me.profilePhoto === 'string' && me.profilePhoto.startsWith('/uploads/') ? me.profilePhoto : '';
 %>
 <!DOCTYPE html>
 <html lang="id">
@@ -21,36 +25,42 @@
 <body class="text-[15px]" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
   <a class="skip-link" href="#konten">Langsung ke konten utama</a>
 
-  <!-- Sidebar: fixed on desktop, overlay on mobile -->
+  <!-- Sidebar: fixed on desktop, overlay on mobile. Hijau tua (bg-brand) + .on-dark agar cincin fokus putih.
+       Kontras: putih/brand 9,1:1 · putih/hover (white/10) 7,0:1 · putih/aktif (white/15) 6,1:1 · on-dark-muted/brand 6,1:1 -->
   <div x-show="open" x-cloak x-on:click="close" class="fixed inset-0 z-40 bg-ink/50 lg:hidden"></div>
-  <aside id="sidebar-admin" class="fixed inset-y-0 left-0 z-50 w-72 -translate-x-full overflow-y-auto border-r border-line bg-surface transition-transform data-open:translate-x-0 lg:translate-x-0"
+  <aside id="sidebar-admin" class="on-dark fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col overflow-y-auto bg-brand text-white transition-[translate,visibility] max-lg:invisible data-open:visible data-open:transition-[translate] data-open:translate-x-0 lg:translate-x-0"
          x-bind:data-open="open" aria-label="Navigasi admin">
-    <div class="flex h-16 items-center justify-between gap-3 border-b border-line px-5">
-      <a href="/admin/dashboard" class="flex items-center gap-3 no-underline">
-        <img src="/img/lambang-unjani.png" alt="" width="36" height="35" class="size-9 object-contain">
-        <span class="leading-tight">
-          <span class="block font-bold text-brand">Admin Akademik</span>
-          <span class="block text-xs text-muted">Bidang Akademik UNJANI</span>
+    <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/15 px-5">
+      <a href="/admin/dashboard" class="flex min-w-0 items-center gap-3 text-white no-underline">
+        <img src="/img/lambang-unjani.png" alt="" width="36" height="35" class="size-9 shrink-0 object-contain">
+        <span class="min-w-0 leading-tight">
+          <span class="block truncate font-serif text-base font-semibold text-white lg:text-lg">Admin Akademik</span>
+          <span class="block truncate text-xs text-on-dark-muted">Bidang Akademik UNJANI</span>
         </span>
       </a>
-      <button type="button" class="btn-icon lg:hidden" x-on:click="close" aria-label="Tutup menu"><%- icon('close', 'size-6') %></button>
+      <button type="button" class="btn-icon shrink-0 text-white hover:bg-white/10 hover:text-white lg:hidden" x-ref="focusOnOpen" x-on:click="closeAndFocus" aria-label="Tutup menu"><%- icon('close', 'size-6') %></button>
     </div>
-    <nav class="px-3 py-4">
+    <nav class="flex flex-1 flex-col px-3 py-4">
       <% sidebar.forEach(group => { %>
-        <p class="px-3 pt-4 pb-1 text-xs font-semibold tracking-wide text-muted uppercase first:pt-0"><%= group.group %></p>
-        <ul>
+        <p class="px-3 pt-5 pb-1.5 text-xs font-semibold tracking-wider text-on-dark-muted uppercase first:pt-0"><%= group.group %></p>
+        <ul class="space-y-0.5">
           <% group.items.forEach(item => { const active = isActive(item.href, currentPath); %>
             <li>
-              <a href="<%= item.href %>" class="flex min-h-11 items-center gap-3 rounded-control px-3 font-medium no-underline <%= active ? 'bg-primary text-white' : 'text-ink hover:bg-sunken' %>"<%- active ? ' aria-current="page"' : '' %>>
+              <a href="<%= item.href %>" class="admin-nav-link"<%- active ? ' aria-current="page"' : '' %>>
                 <%- icon(item.icon, 'size-5') %><%= item.label %>
               </a>
             </li>
           <% }) %>
         </ul>
       <% }) %>
-      <a href="/" class="mt-6 flex min-h-11 items-center gap-3 rounded-control px-3 font-semibold no-underline hover:bg-primary-soft">
-        <%- icon('arrow_back', 'size-5') %>Kembali ke situs
-      </a>
+      <%# mt-auto menempelkan tautan ke dasar sidebar; pt-6 menjaga jarak saat menu panjang. %>
+      <div class="mt-auto pt-6">
+        <div class="border-t border-white/15 pt-3">
+          <a href="/" class="admin-nav-link">
+            <%- icon('arrow_back', 'size-5') %>Kembali ke situs
+          </a>
+        </div>
+      </div>
     </nav>
   </aside>
 
@@ -59,14 +69,22 @@
       <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="sidebar-admin" aria-label="Buka menu">
         <%- icon('menu', 'size-6') %>
       </button>
-      <p class="truncate text-lg font-semibold"><%= locals.title || 'Admin' %></p>
+      <%# Judul tetap <p>: setiap halaman merender h1 sendiri lewat page-header. %>
+      <div class="min-w-0 flex-1 leading-tight">
+        <p class="eyebrow max-w-full gap-2 text-xs tracking-[0.12em] before:w-5"><span class="truncate"><%= eyebrowLabel %></span></p>
+        <p class="truncate font-serif text-lg font-semibold"><%= locals.title || 'Admin' %></p>
+      </div>
 
-      <div class="relative ml-auto" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape.stop="closeAndFocus">
+      <div class="relative shrink-0" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="escapeIfOpen">
         <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true"
                 class="flex min-h-11 items-center gap-3 rounded-control px-2 hover:bg-sunken">
-          <span class="flex size-9 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon('person', 'size-5') %></span>
-          <span class="hidden text-left leading-tight sm:block">
-            <span class="block text-sm font-semibold"><%= me.name || me.email || 'Admin' %></span>
+          <% if (avatarUrl) { %>
+            <img src="<%= avatarUrl %>" alt="" width="36" height="36" class="size-9 shrink-0 rounded-full object-cover">
+          <% } else { %>
+            <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon('person', 'size-5') %></span>
+          <% } %>
+          <span class="sr-only text-left leading-tight sm:not-sr-only sm:block">
+            <span class="block max-w-40 truncate text-sm font-semibold"><%= me.name || me.email || 'Admin' %></span>
             <span class="block text-xs text-muted"><%= roleLabel %></span>
           </span>
           <%- icon('keyboard_arrow_down', 'size-5 text-muted') %>

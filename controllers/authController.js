@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
 const loginAttempts = require('../utils/loginAttempts');
 const { isStaff } = require('../utils/roles');
+const { validate, schemas } = require('../validators');
 
 const recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY;
 const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
@@ -179,190 +181,81 @@ exports.logout = (req, res) => {
   return res.redirect('/login');
 };
 
-const renderProfilePage = (res, view, payload = {}, statusCode = 200) =>
-  res.status(statusCode).render(`admin/profile/${view}`, {
-    title: payload.title || 'Profil Saya',
-    ...payload,
-  });
+// ---------------------------------------------------------------- profil sendiri
+// Halaman profil memakai layout admin; req.user sudah dimuat ulang dari DB
+// (tanpa password) oleh requireAuth di setiap request.
+const PROFILE_TITLES = { index: 'Profil Saya', edit: 'Ubah Profil', password: 'Ubah Password' };
 
-exports.getProfile = async (req, res) => {
-  const currentUser = await User.findById(req.user._id).select('-password').lean();
-  if (!currentUser) {
-    res.clearCookie('token');
-    return res.redirect('/login');
-  }
+const renderProfilePage = (res, view, locals = {}, statusCode = 200) =>
+  res.status(statusCode).renderPage(`admin/profile/${view}`, { title: PROFILE_TITLES[view], errors: {}, ...locals }, 'layouts/admin');
 
-  return renderProfilePage(res, 'index', {
-    title: 'Profil Saya',
-    user: req.user,
-    profile: currentUser,
-    success: req.query.success || '',
-    error: req.query.error || '',
-  });
+// Also used by routes/authRoutes.js when the photo upload itself fails.
+// values: what was submitted (defaults to the saved name/email); photoDropped:
+// a photo was chosen but not kept, so the page asks to pick it again.
+const renderEditProfile = (req, res, { values, errors = {}, photoDropped = false } = {}, statusCode = 200) =>
+  renderProfilePage(res, 'edit', {
+    profile: req.user,
+    values: values || { name: req.user.name || '', email: req.user.email || '' },
+    errors,
+    photoDropped,
+  }, statusCode);
+exports.renderEditProfile = renderEditProfile;
+
+// The photo just uploaded is not used when the form is rejected.
+const discardUpload = req => {
+  if (req.file && req.file.path) fs.unlink(req.file.path, () => {});
 };
 
-exports.getEditProfile = async (req, res) => {
-  const currentUser = await User.findById(req.user._id).select('-password').lean();
-  if (!currentUser) {
-    res.clearCookie('token');
-    return res.redirect('/login');
-  }
+exports.getProfile = (req, res) => renderProfilePage(res, 'index', { profile: req.user });
 
-  return renderProfilePage(res, 'edit', {
-    title: 'Edit Profil',
-    user: req.user,
-    values: {
-      name: currentUser.name || '',
-      email: currentUser.email || '',
-      profilePhoto: currentUser.profilePhoto || '',
-    },
-    profile: currentUser,
-    error: '',
-  });
-};
+exports.getEditProfile = (req, res) => renderEditProfile(req, res);
 
 exports.updateProfile = async (req, res) => {
-  const name = String(req.body.name || '').trim();
-  const email = String(req.body.email || '').trim().toLowerCase();
-  const removeProfilePhoto = String(req.body.removeProfilePhoto || '') === '1';
-  const uploadedPhoto = req.file || null;
+  const body = req.body || {};
+  const removeProfilePhoto = String(body.removeProfilePhoto || '') === '1';
+  const values = { name: String(body.name || ''), email: String(body.email || ''), removeProfilePhoto };
+
+  const result = validate(schemas.profileUpdate, values);
+  const errors = result.ok ? {} : { ...result.errors };
+  if (result.ok) {
+    const usedByAnotherUser = await User.exists({ email: result.data.email, _id: { $ne: req.user._id } });
+    if (usedByAnotherUser) errors.email = 'Email sudah digunakan oleh akun lain.';
+  }
+  if (Object.keys(errors).length) {
+    discardUpload(req);
+    return renderEditProfile(req, res, { values, errors, photoDropped: Boolean(req.file) }, 400);
+  }
 
   const currentUser = await User.findById(req.user._id);
   if (!currentUser) {
+    discardUpload(req);
     res.clearCookie('token');
     return res.redirect('/login');
   }
 
-  if (!name || !email) {
-    return renderProfilePage(
-      res,
-      'edit',
-      {
-        title: 'Edit Profil',
-        user: req.user,
-        values: {
-          name,
-          email,
-          profilePhoto: currentUser.profilePhoto || '',
-        },
-        profile: currentUser.toObject(),
-        error: 'Nama dan email wajib diisi.',
-      },
-      400
-    );
-  }
-
-  const usedByAnotherUser = await User.findOne({
-    email,
-    _id: { $ne: currentUser._id },
-  });
-  if (usedByAnotherUser) {
-    return renderProfilePage(
-      res,
-      'edit',
-      {
-        title: 'Edit Profil',
-        user: req.user,
-        values: {
-          name,
-          email,
-          profilePhoto: currentUser.profilePhoto || '',
-        },
-        profile: currentUser.toObject(),
-        error: 'Email sudah digunakan oleh akun lain.',
-      },
-      400
-    );
-  }
-
-  if (removeProfilePhoto) {
-    currentUser.profilePhoto = '';
-  }
-  if (uploadedPhoto && uploadedPhoto.path) {
-    currentUser.profilePhoto = toPublicUrl(uploadedPhoto.path);
-  }
-  currentUser.name = name;
-  currentUser.email = email;
+  if (removeProfilePhoto) currentUser.profilePhoto = '';
+  if (req.file && req.file.path) currentUser.profilePhoto = toPublicUrl(req.file.path);
+  currentUser.name = result.data.name;
+  currentUser.email = result.data.email;
   await currentUser.save();
 
-  if (req.user) {
-    req.user.name = currentUser.name;
-    req.user.email = currentUser.email;
-    req.user.profilePhoto = currentUser.profilePhoto;
-  }
-  if (res.locals.user) {
-    res.locals.user.name = currentUser.name;
-    res.locals.user.email = currentUser.email;
-    res.locals.user.profilePhoto = currentUser.profilePhoto;
+  // Keep the already-loaded session user in step for the rest of this request.
+  for (const target of [req.user, res.locals.user]) {
+    if (target) Object.assign(target, { name: currentUser.name, email: currentUser.email, profilePhoto: currentUser.profilePhoto });
   }
 
   return res.redirect('/profile?success=Profil berhasil diperbarui');
 };
 
-exports.getChangePassword = async (req, res) => {
-  return renderProfilePage(res, 'password', {
-    title: 'Ubah Password',
-    user: req.user,
-    error: '',
-  });
-};
+exports.getChangePassword = (req, res) => renderProfilePage(res, 'password');
 
 exports.updatePassword = async (req, res) => {
-  const currentPassword = String(req.body.currentPassword || '');
-  const newPassword = String(req.body.newPassword || '');
-  const confirmPassword = String(req.body.confirmPassword || '');
-
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    return renderProfilePage(
-      res,
-      'password',
-      {
-        title: 'Ubah Password',
-        user: req.user,
-        error: 'Semua field password wajib diisi.',
-      },
-      400
-    );
-  }
-
-  if (newPassword.length < 6) {
-    return renderProfilePage(
-      res,
-      'password',
-      {
-        title: 'Ubah Password',
-        user: req.user,
-        error: 'Password baru minimal 6 karakter.',
-      },
-      400
-    );
-  }
-
-  if (newPassword !== confirmPassword) {
-    return renderProfilePage(
-      res,
-      'password',
-      {
-        title: 'Ubah Password',
-        user: req.user,
-        error: 'Konfirmasi password baru tidak sesuai.',
-      },
-      400
-    );
-  }
-
-  if (currentPassword === newPassword) {
-    return renderProfilePage(
-      res,
-      'password',
-      {
-        title: 'Ubah Password',
-        user: req.user,
-        error: 'Password baru harus berbeda dari password saat ini.',
-      },
-      400
-    );
-  }
+  // Password fields are never sent back to the form. Missing fields count as
+  // empty so non-browser clients get the same Indonesian messages.
+  const body = req.body || {};
+  const input = Object.fromEntries(['currentPassword', 'newPassword', 'confirmPassword'].map(k => [k, String(body[k] || '')]));
+  const result = validate(schemas.passwordChange, input);
+  if (!result.ok) return renderProfilePage(res, 'password', { errors: result.errors }, 400);
 
   const currentUser = await User.findById(req.user._id);
   if (!currentUser) {
@@ -370,21 +263,11 @@ exports.updatePassword = async (req, res) => {
     return res.redirect('/login');
   }
 
-  const isCurrentPasswordValid = await currentUser.comparePassword(currentPassword);
-  if (!isCurrentPasswordValid) {
-    return renderProfilePage(
-      res,
-      'password',
-      {
-        title: 'Ubah Password',
-        user: req.user,
-        error: 'Password saat ini tidak sesuai.',
-      },
-      400
-    );
+  if (!(await currentUser.comparePassword(result.data.currentPassword))) {
+    return renderProfilePage(res, 'password', { errors: { currentPassword: 'Password saat ini tidak sesuai.' } }, 400);
   }
 
-  currentUser.password = newPassword;
+  currentUser.password = result.data.newPassword;
   await currentUser.save();
 
   return res.redirect('/profile?success=Password berhasil diperbarui');

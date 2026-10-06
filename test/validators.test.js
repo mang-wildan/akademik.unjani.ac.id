@@ -67,6 +67,18 @@ test('userCreate and passwordChange', () => {
   assert.equal(p.errors.confirmPassword, 'Konfirmasi password tidak sesuai.');
 });
 
+test('profileUpdate: own name & email, email normalised', () => {
+  const ok = validate(schemas.profileUpdate, { name: ' Rina Akademik ', email: ' Rina@UNJANI.ac.id ' });
+  assert.equal(ok.ok, true, JSON.stringify(ok.errors));
+  assert.deepEqual(ok.data, { name: 'Rina Akademik', email: 'rina@unjani.ac.id' });
+  assert.equal(validate(schemas.profileUpdate, { name: '  ', email: 'rina@unjani.ac.id' }).errors.name, 'Nama wajib diisi.');
+  assert.equal(validate(schemas.profileUpdate, { email: 'rina@unjani.ac.id' }).errors.name, 'Nama wajib diisi.');
+  assert.equal(validate(schemas.profileUpdate, { name: 'Rina', email: 'rina@' }).errors.email, 'Format email tidak valid.');
+  assert.equal(validate(schemas.profileUpdate, { name: 'x'.repeat(121), email: 'rina@unjani.ac.id' }).errors.name, 'Nama maksimal 120 karakter.');
+  // Role/status dari body diabaikan: pemilik akun tidak bisa menaikkan perannya sendiri.
+  assert.equal(validate(schemas.profileUpdate, { name: 'Rina', email: 'rina@unjani.ac.id', role: 'superadmin' }).data.role, undefined);
+});
+
 test('siteSetting & quickLink: URLs must be http(s) — they are rendered as href / iframe src', () => {
   for (const url of ['javascript:alert(1)', 'data:text/html,<script>alert(1)</script>', 'JavaScript:alert(1)', 'ftp://x.test/a']) {
     const r = validate(schemas.siteSetting, { socialFacebook: url, landingVideoUrl: url });

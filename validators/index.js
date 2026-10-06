@@ -232,7 +232,7 @@ const staff = z.object({
 });
 
 // ---------------------------------------------------------------- akun
-const password = z.string({ error: req('Password') }).min(8, 'Password minimal 8 karakter.').max(128);
+const password = z.string({ error: req('Password') }).min(8, 'Password minimal 8 karakter.').max(128, 'Password maksimal 128 karakter.');
 
 const userCreate = z.object({
   name: text('Nama', { max: 120 }),
@@ -252,6 +252,12 @@ const userUpdate = z.object({
   email: z.preprocess(v => (typeof v === 'string' ? v.trim().toLowerCase() : v), z.email('Format email tidak valid.')),
   role: choice('Role', ['superadmin', 'editor']),
   isActive: checkbox,
+});
+
+// Pemilik akun mengubah datanya sendiri (/profile/edit): tanpa role/status.
+const profileUpdate = z.object({
+  name: text('Nama', { max: 120 }),
+  email: z.preprocess(v => (typeof v === 'string' ? v.trim().toLowerCase() : v), z.email('Format email tidak valid.')),
 });
 
 const passwordChange = z
@@ -278,5 +284,5 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
-  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, siteSetting, quickLink, userCreate, userUpdate, resetPasswordByAdmin, passwordChange },
+  schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, siteSetting, quickLink, userCreate, userUpdate, profileUpdate, resetPasswordByAdmin, passwordChange },
 };

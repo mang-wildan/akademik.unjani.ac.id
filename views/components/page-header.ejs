@@ -6,6 +6,7 @@
     breadcrumb: [{ label: 'Akademik' }, { label: 'Kalender Akademik' }],   // Beranda ditambahkan otomatis
     actions: [{ label: 'Unduh PDF resmi', href: '/x.pdf', icon: 'download', variant: 'secondary' }],
     admin: false,                                                          // true: breadcrumb mulai dari Dasbor
+    eyebrow: 'Konten',                                                     // opsional, hanya admin: label kecil di atas h1
   })
   Publik (F7 R3): banner hijau tua selebar layar dengan kontainernya sendiri — sertakan di level atas view,
   bukan di dalam .container-content. Varian aksi dipetakan ke tombol latar gelap (primary → accent, lainnya → garis terang).
@@ -29,6 +30,9 @@
         <% }) %>
       </ol>
     </nav>
+    <%_ if (locals.eyebrow) { _%>
+    <p class="eyebrow mt-3"><%= locals.eyebrow %></p>
+    <%_ } _%>
     <h1 class="mt-2 text-3xl font-bold md:text-4xl"><%= locals.heading %></h1>
     <% if (locals.lead) { %><p class="mt-2 max-w-3xl text-muted"><%= locals.lead %></p><% } %>
   </div>
