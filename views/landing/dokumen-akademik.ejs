@@ -9,9 +9,9 @@
   <aside>
     <h2 class="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">Kategori</h2>
     <ul class="space-y-1">
-      <li><a href="/dokumen-akademik<%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between rounded-control px-3 text-sm font-medium <%= !filters.kategori ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-sunken' %>">Semua <span><%= totalDocsAll %></span></a></li>
+      <li><a href="/dokumen-akademik<%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between rounded-control px-3 text-sm font-medium <%= !filters.kategori ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-sunken' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>>Semua <span><%= totalDocsAll %></span></a></li>
       <% kategoriOptions.forEach(k => { %>
-        <li><a href="/dokumen-akademik?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between rounded-control px-3 text-sm font-medium <%= filters.kategori === String(k._id) ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-sunken' %>"><%= k.nama %> <span><%= k.total %></span></a></li>
+        <li><a href="/dokumen-akademik?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between rounded-control px-3 text-sm font-medium <%= filters.kategori === String(k._id) ? 'bg-primary-soft text-primary' : 'text-ink hover:bg-sunken' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><%= k.nama %> <span><%= k.total %></span></a></li>
       <% }) %>
     </ul>
   </aside>

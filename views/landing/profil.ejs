@@ -1,11 +1,13 @@
 <%# Profil Bidang Akademik (FR-L-02). %>
 <%- include('../components/page-header', {
   heading: profileContent.judulHalaman,
-  lead: profileContent.ringkasan,
+  lead: 'Visi, misi, tugas, dan layanan Bidang Akademik Universitas Jenderal Achmad Yani.',
   breadcrumb: [{ label: 'Profil' }],
 }) %>
 
 <div class="container-content pb-16">
+  <%# Ringkasan 300–1200 karakter: terlalu panjang untuk lead di banner (F7 R3), jadi paragraf pembuka di sini. %>
+  <p class="mb-8 max-w-3xl text-lg leading-relaxed text-ink"><%= profileContent.ringkasan %></p>
   <div class="grid gap-6 md:grid-cols-2">
     <div class="card card-body">
       <h2 class="mb-2 text-lg font-semibold">Visi</h2>

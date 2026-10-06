@@ -144,45 +144,88 @@
     <%- body %>
   </main>
 
-  <footer class="on-dark mt-16 bg-brand text-white">
-    <div class="container-content grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-4">
-      <div>
-        <div class="flex items-center gap-3">
-          <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-11 object-contain">
-          <p class="font-bold">Bidang Akademik<br><span class="text-sm font-medium text-on-dark-muted">Universitas Jenderal Achmad Yani</span></p>
+  <%
+    // Tautan cepat dari Pengaturan Situs: hanya http(s) atau path internal (validator kini memaksa http(s); ini menyaring nilai lama di DB).
+    // Cadangan dipakai setelah penyaringan, agar kolomnya tidak kosong bila semua tautan lama di DB tidak valid.
+    const quickLinksValid = (s.quickLinks || []).filter(link => link && link.label && /^(https?:\/\/|\/(?!\/))/i.test(link.url || ''));
+    const quickLinks = quickLinksValid.length ? quickLinksValid : [{ label: 'Portal UNJANI', url: 'https://unjani.ac.id', target: '_blank' }];
+    const jelajahi = [
+      { label: 'Kalender Akademik', href: '/kalender-akademik' },
+      { label: 'Kurikulum', href: '/kurikulum' },
+      { label: 'Dokumen Akademik', href: '/dokumen-akademik' },
+      { label: 'Akreditasi', href: '/akreditasi' },
+      { label: 'Pengumuman', href: '/pengumuman' },
+      { label: 'Berita', href: '/berita' },
+    ];
+  %>
+  <%# Footer (F7 R4). Band CTA berada di dalam <footer> agar tetap di landmark contentinfo. Tanpa margin atas:
+      setiap halaman sudah diakhiri padding/seksinya sendiri, sehingga tidak ada celah canvas di bawah pita berwarna. %>
+  <footer class="on-dark bg-brand text-white">
+    <section class="bg-primary" aria-labelledby="cta-layanan">
+      <div class="container-content flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-start gap-4">
+          <span class="flex size-14 shrink-0 items-center justify-center rounded-full bg-white/10 text-on-dark-accent"><%- icon('support_agent', 'size-7') %></span>
+          <div>
+            <h2 id="cta-layanan" class="text-2xl font-bold text-white md:text-3xl">Butuh layanan akademik?</h2>
+            <p class="mt-1 text-white">Hubungi Bidang Akademik pada jam layanan: <%= hours.replace(/[.\s]+$/, '') %>.</p>
+          </div>
         </div>
-        <p class="mt-4 text-sm text-on-dark-muted"><%= s.landingFooterDescription || 'Mengelola kurikulum, kalender akademik, dan layanan administrasi akademik agar proses belajar berjalan tertib dan bermutu.' %></p>
+        <div class="flex shrink-0 flex-wrap gap-3">
+          <a href="<%= phoneTo.href %>" class="btn btn-accent"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer"<% } %>><%- icon(phoneIcon) %><%= phoneTo.whatsapp ? 'Chat WhatsApp' : 'Telepon' %><% if (phoneTo.whatsapp) { %><span class="sr-only"> (membuka tab baru)</span><% } %></a>
+          <%# Hover digelapkan: hover bawaan (putih 10%) di atas hijau primary turun ke 4,2:1. %>
+          <a href="mailto:<%= email %>" class="btn btn-outline-light hover:bg-primary-hover"><%- icon('mail') %>Kirim Email</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="container-content grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.3fr_1fr]">
+      <div>
+        <a href="/" class="inline-flex items-center gap-3 text-white no-underline">
+          <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-12 object-contain">
+          <span class="leading-tight">
+            <span class="block font-serif text-lg font-bold">Bidang Akademik</span>
+            <span class="block text-xs font-medium tracking-wide text-on-dark-muted uppercase">Universitas Jenderal Achmad Yani</span>
+          </span>
+        </a>
+        <p class="mt-5 text-sm leading-relaxed text-on-dark-muted"><%= s.landingFooterDescription || 'Mengelola kurikulum, kalender akademik, dan layanan administrasi akademik agar proses belajar berjalan tertib dan bermutu.' %></p>
         <% if (socials.length) { %>
-          <ul class="mt-4 flex flex-wrap gap-2">
+          <ul class="mt-5 flex flex-wrap gap-2" aria-label="Media sosial">
             <% socials.forEach(item => { %>
-              <li><a href="<%= item.url %>" class="inline-flex min-h-11 items-center rounded-control px-3 text-sm font-semibold text-white underline-offset-2 hover:underline" target="_blank" rel="noopener noreferrer"><%= item.label %></a></li>
+              <li><a href="<%= item.url %>" class="inline-flex size-11 items-center justify-center rounded-full border border-white/25 text-white hover:border-on-dark-accent hover:text-on-dark-accent" target="_blank" rel="noopener noreferrer" title="<%= item.label %>" aria-label="<%= item.label %> (membuka tab baru)"><%- icon(item.icon, 'size-5') %></a></li>
             <% }) %>
           </ul>
         <% } %>
       </div>
 
-      <div>
-        <h2 class="text-base font-semibold text-white">Kontak &amp; Alamat</h2>
-        <ul class="mt-4 space-y-3 text-sm text-on-dark-muted">
-          <li class="flex gap-3"><%- icon('location_on', 'size-5 text-accent') %><span><%= s.alamat || 'Jl. Terusan Jend. Sudirman, Cibeber, Cimahi Selatan, Kota Cimahi, Jawa Barat' %></span></li>
-          <li class="flex items-center gap-3"><%- icon(phoneIcon, 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %>><%= phone %></a></li>
-          <li class="flex items-center gap-3"><%- icon('mail', 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="mailto:<%= email %>"><%= email %></a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h2 class="text-base font-semibold text-white">Jam Layanan</h2>
-        <p class="mt-4 flex gap-3 text-sm text-on-dark-muted"><%- icon('schedule', 'size-5 text-accent') %><span><%= hours %></span></p>
-      </div>
-
-      <div>
-        <h2 class="text-base font-semibold text-white">Tautan Cepat</h2>
-        <ul class="mt-2">
-          <% ((s.quickLinks && s.quickLinks.length) ? s.quickLinks : [{ label: 'Portal UNJANI', url: 'https://unjani.ac.id', target: '_blank' }]).forEach(link => { %>
-            <li><a href="<%= link.url %>" class="flex min-h-11 items-center gap-2 text-sm text-white no-underline hover:underline"<%- link.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '' %>><%- icon('chevron_right', 'size-4 text-accent') %><%= link.label %></a></li>
+      <nav aria-labelledby="footer-jelajahi">
+        <h2 id="footer-jelajahi" class="footer-title">Jelajahi</h2>
+        <ul>
+          <% jelajahi.forEach(link => { %>
+            <li><a href="<%= link.href %>" class="flex min-h-11 items-center gap-2 text-sm text-white no-underline hover:text-on-dark-accent hover:underline"><%- icon('chevron_right', 'size-4 text-on-dark-accent') %><%= link.label %></a></li>
           <% }) %>
         </ul>
+      </nav>
+
+      <div>
+        <h2 class="footer-title">Kontak &amp; Jam Layanan</h2>
+        <ul class="space-y-3 text-sm text-on-dark-muted">
+          <li class="flex gap-3"><%- icon('location_on', 'size-5 shrink-0 text-on-dark-accent') %><span><%= s.alamat || 'Jl. Terusan Jend. Sudirman, Cibeber, Cimahi Selatan, Kota Cimahi, Jawa Barat' %></span></li>
+          <li class="flex items-center gap-3"><%- icon(phoneIcon, 'size-5 text-on-dark-accent') %><a class="-my-3 inline-flex min-h-11 items-center text-white" href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %>><%= phone %></a></li>
+          <li class="flex items-center gap-3"><%- icon('mail', 'size-5 text-on-dark-accent') %><a class="-my-3 inline-flex min-h-11 min-w-0 items-center break-all text-white" href="mailto:<%= email %>"><%= email %></a></li>
+          <li class="flex gap-3"><%- icon('schedule', 'size-5 shrink-0 text-on-dark-accent') %><span><%= hours %></span></li>
+        </ul>
       </div>
+
+      <% if (quickLinks.length) { %>
+      <nav aria-labelledby="footer-tautan">
+        <h2 id="footer-tautan" class="footer-title">Tautan Cepat</h2>
+        <ul>
+          <% quickLinks.forEach(link => { %>
+            <li><a href="<%= link.url %>" class="flex min-h-11 items-center gap-2 text-sm text-white no-underline hover:text-on-dark-accent hover:underline"<%- link.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '' %>><%- icon(link.target === '_blank' ? 'open_in_new' : 'chevron_right', 'size-4 text-on-dark-accent') %><%= link.label %><% if (link.target === '_blank') { %><span class="sr-only"> (membuka tab baru)</span><% } %></a></li>
+          <% }) %>
+        </ul>
+      </nav>
+      <% } %>
     </div>
     <div class="border-t border-white/15">
       <p class="container-content py-5 text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Bidang Akademik Universitas Jenderal Achmad Yani</p>

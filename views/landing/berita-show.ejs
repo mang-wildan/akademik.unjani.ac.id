@@ -33,25 +33,6 @@
       <% } %>
     </article>
 
-    <aside>
-      <h2 class="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">Berita Lainnya</h2>
-      <% if (!lainnya.length) { %>
-        <p class="text-sm text-muted">Belum ada berita lain.</p>
-      <% } else { %>
-      <ul class="space-y-4">
-        <% lainnya.forEach(l => { %>
-          <li><a href="/berita/<%= l.slug %>" class="flex gap-3 rounded-control p-2 -m-2 hover:bg-sunken">
-            <span class="aspect-square w-16 shrink-0 overflow-hidden rounded-control bg-sunken">
-              <% if (l.featuredImage) { %><img src="<%= l.featuredImage %>" alt="" class="size-full object-cover"><% } %>
-            </span>
-            <span>
-              <span class="block text-xs text-muted"><%= formatTanggal(l.createdAt) %></span>
-              <span class="block line-clamp-2 text-sm font-medium text-ink"><%= l.title %></span>
-            </span>
-          </a></li>
-        <% }) %>
-      </ul>
-      <% } %>
-    </aside>
+    <%- include('../components/content-sidebar', { sideBase: '/berita', sideNoun: 'Berita', sideItems: lainnya, sideKategori: kategoriList, sideImages: true }) %>
   </div>
 </div>

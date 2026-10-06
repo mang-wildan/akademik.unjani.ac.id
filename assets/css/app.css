@@ -239,6 +239,24 @@
     @apply text-primary;
   }
 
+  /* Sidebar card heading (components/content-sidebar.ejs): rule + short gold bar */
+  .sidebar-title {
+    @apply relative mb-4 border-b border-line pb-3 text-lg;
+  }
+  .sidebar-title::after {
+    content: "";
+    @apply absolute -bottom-px left-0 h-0.5 w-12 bg-accent;
+  }
+
+  /* Footer column heading (layouts/public.ejs): white serif + short gold bar */
+  .footer-title {
+    @apply relative mb-4 pb-3 text-lg text-white;
+  }
+  .footer-title::after {
+    content: "";
+    @apply absolute bottom-0 left-0 h-0.5 w-10 bg-on-dark-accent;
+  }
+
   /* Section heading — markup lives in components/section-heading.ejs */
   .eyebrow {
     @apply inline-flex items-center gap-3 text-sm font-semibold tracking-[0.14em] text-primary uppercase;

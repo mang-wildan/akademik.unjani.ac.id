@@ -9,9 +9,9 @@
   <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <% if (kategoriList.length) { %>
     <div class="flex flex-wrap gap-2">
-      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= !filters.kategori ? 'badge-success' : 'badge-neutral' %>">Semua</a>
+      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= !filters.kategori ? 'badge-success' : 'badge-neutral' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>><% if (!filters.kategori) { %><%- icon('check', 'size-3.5') %><% } %>Semua</a>
       <% kategoriList.forEach(k => { %>
-        <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= filters.kategori === String(k._id) ? 'badge-success' : 'badge-neutral' %>"><%= k.nama %></a>
+        <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= filters.kategori === String(k._id) ? 'badge-success' : 'badge-neutral' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><% if (filters.kategori === String(k._id)) { %><%- icon('check', 'size-3.5') %><% } %><%= k.nama %></a>
       <% }) %>
     </div>
     <% } %>

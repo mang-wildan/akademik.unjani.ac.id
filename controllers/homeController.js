@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Book = require('../models/Book');
 const Accreditation = require('../models/Accreditation');
 const AcademicCalendar = require('../models/AcademicCalendar');
@@ -20,6 +21,10 @@ const { accreditationStatus, JENIS, PERINGKAT } = require('../utils/accreditatio
 const { SEMESTER, calendarEventStatus, currentAndNext, byStart } = require('../utils/calendar');
 const { jenjangFromNama } = require('../utils/prodi');
 const { sanitizeHtml } = require('../utils/html');
+
+// ?kategori= comes straight from the URL: a malformed id would make Mongoose throw a
+// CastError (HTTP 500), so anything that is not an ObjectId is treated as "no filter".
+const kategoriParam = value => (mongoose.isValidObjectId(String(value || '')) ? String(value) : '');
 
 // Beranda (FR-B-01..08). Since F7 the hero puts text over the photo behind a
 // near-opaque green overlay; every section degrades gracefully to nothing when
@@ -335,7 +340,7 @@ exports.getDokumenAkademikLanding = async (req, res) => {
   const limit = 12;
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
   const q = String(req.query.q || '').trim();
-  const kategoriId = String(req.query.kategori || '');
+  const kategoriId = kategoriParam(req.query.kategori);
 
   const filter = {};
   if (q) filter.$or = [{ name: { $regex: q, $options: 'i' } }, { keterangan: { $regex: q, $options: 'i' } }];
@@ -405,6 +410,22 @@ exports.getBeritaLanding = (req, res) =>
     noun: 'berita',
   });
 
+// Sidebar "Kategori" on the detail pages (F7 R3): active categories that have
+// at least one published item, with counts — an empty category would link to an empty list.
+const kategoriSidebar = async (Model, jenis) => {
+  const [list, counts] = await Promise.all([
+    Kategori.find({ jenis, isActive: true }, 'nama').sort({ urutan: 1 }).lean(),
+    Model.aggregate([
+      { $match: { status: 'published', kategori: { $ne: null } } },
+      { $group: { _id: '$kategori', total: { $sum: 1 } } },
+    ]),
+  ]);
+  const totalById = new Map(counts.map(c => [String(c._id), c.total]));
+  return list
+    .map(k => ({ _id: k._id, nama: k.nama, total: totalById.get(String(k._id)) || 0 }))
+    .filter(k => k.total > 0);
+};
+
 exports.getBeritaDetail = async (req, res) => {
   const item = await News.findOne({ slug: req.params.slug, status: 'published' })
     .populate('kategori', 'nama')
@@ -416,16 +437,20 @@ exports.getBeritaDetail = async (req, res) => {
   // Defense in depth: old content was saved before sanitizeHtml existed, and
   // the F4 admin form is the real write-time guard (NFR-S-06).
   item.body = sanitizeHtml(item.body);
-  const lainnya = await News.find({ status: 'published', _id: { $ne: item._id } })
-    .sort({ pinned: -1, createdAt: -1 })
-    .limit(4)
-    .lean();
+  const [lainnya, kategoriList] = await Promise.all([
+    News.find({ status: 'published', _id: { $ne: item._id } }, 'title slug createdAt featuredImage')
+      .sort({ pinned: -1, createdAt: -1 })
+      .limit(4)
+      .lean(),
+    kategoriSidebar(News, 'berita'),
+  ]);
 
   res.renderPage('landing/berita-show', {
     title: item.title,
     description: item.excerpt || item.title,
     item,
     lainnya,
+    kategoriList,
     basePath: '/berita',
   });
 };
@@ -433,7 +458,7 @@ exports.getBeritaDetail = async (req, res) => {
 // Shared by Pengumuman and Berita list pages (FR-P-01..02).
 const listContentPage = async (req, res, { Model, view, title, description, basePath, noun }) => {
   const q = String(req.query.q || '').trim();
-  const kategoriId = String(req.query.kategori || '');
+  const kategoriId = kategoriParam(req.query.kategori);
   const filter = { status: 'published' };
   if (q) filter.$or = [{ title: { $regex: q, $options: 'i' } }, { excerpt: { $regex: q, $options: 'i' } }];
   if (kategoriId) filter.kategori = kategoriId;
@@ -494,16 +519,20 @@ exports.getPengumumanDetail = async (req, res) => {
     return res.status(404).render('landing/error', { status: 404, heading: 'Pengumuman tidak ditemukan', message: 'Pengumuman yang Anda cari tidak tersedia atau sudah dihapus.' });
   }
   item.body = sanitizeHtml(item.body);
-  const lainnya = await Pengumuman.find({ status: 'published', _id: { $ne: item._id } })
-    .sort({ pinned: -1, createdAt: -1 })
-    .limit(4)
-    .lean();
+  const [lainnya, kategoriList] = await Promise.all([
+    Pengumuman.find({ status: 'published', _id: { $ne: item._id } }, 'title slug createdAt')
+      .sort({ pinned: -1, createdAt: -1 })
+      .limit(4)
+      .lean(),
+    kategoriSidebar(Pengumuman, 'pengumuman'),
+  ]);
 
   res.renderPage('landing/pengumuman-show', {
     title: item.title,
     description: item.excerpt || item.title,
     item,
     lainnya,
+    kategoriList,
     basePath: '/pengumuman',
   });
 };

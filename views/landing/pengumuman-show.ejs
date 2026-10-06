@@ -30,20 +30,6 @@
       <% } %>
     </article>
 
-    <aside>
-      <h2 class="mb-3 text-sm font-semibold tracking-wide text-muted uppercase">Pengumuman Lainnya</h2>
-      <% if (!lainnya.length) { %>
-        <p class="text-sm text-muted">Belum ada pengumuman lain.</p>
-      <% } else { %>
-      <ul class="space-y-4">
-        <% lainnya.forEach(l => { %>
-          <li><a href="/pengumuman/<%= l.slug %>" class="block rounded-control p-2 -m-2 hover:bg-sunken">
-            <span class="block text-xs text-muted"><%= formatTanggal(l.createdAt) %></span>
-            <span class="block font-medium text-ink"><%= l.title %></span>
-          </a></li>
-        <% }) %>
-      </ul>
-      <% } %>
-    </aside>
+    <%- include('../components/content-sidebar', { sideBase: '/pengumuman', sideNoun: 'Pengumuman', sideItems: lainnya, sideKategori: kategoriList, sideImages: false }) %>
   </div>
 </div>

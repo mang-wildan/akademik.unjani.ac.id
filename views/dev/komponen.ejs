@@ -1,11 +1,12 @@
 <%# Katalog komponen publik (hanya di development). Data contoh di sini fiktif. %>
-<div class="container-content py-8">
-  <%- include('../components/page-header', {
-    heading: 'Katalog Komponen',
-    lead: 'Semua komponen design system dalam satu halaman, untuk diuji kontras, fokus, dan tampilan HP.',
-    breadcrumb: [{ label: 'Pengembangan' }, { label: 'Komponen' }],
-    actions: [{ label: 'Unduh PDF resmi', href: '#tombol', icon: 'download', variant: 'secondary' }, { label: 'Contoh admin', href: '/dev/admin', icon: 'dashboard' }],
-  }) %>
+<%- include('../components/page-header', {
+  heading: 'Katalog Komponen',
+  lead: 'Semua komponen design system dalam satu halaman, untuk diuji kontras, fokus, dan tampilan HP.',
+  breadcrumb: [{ label: 'Pengembangan' }, { label: 'Komponen' }],
+  actions: [{ label: 'Unduh PDF resmi', href: '#tombol', icon: 'download', variant: 'secondary' }, { label: 'Contoh admin', href: '/dev/admin', icon: 'dashboard' }],
+}) %>
+
+<div class="container-content pb-8">
 
   <section class="space-y-10">
     <div id="tombol">

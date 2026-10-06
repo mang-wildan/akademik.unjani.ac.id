@@ -15,7 +15,7 @@ const ICONS = [
   'chevron_left', 'chevron_right', 'close', 'dashboard', 'delete', 'description', 'download', 'edit', 'error',
   'event', 'filter_list', 'groups', 'history', 'home', 'image', 'info', 'keep', 'keyboard_arrow_down', 'library_books', 'location_on',
   'logout', 'mail', 'menu', 'menu_book', 'more_vert', 'newspaper', 'notifications', 'open_in_new', 'person',
-  'picture_as_pdf', 'public', 'schedule', 'school', 'search', 'settings', 'trending_down', 'trending_flat', 'trending_up', 'upload',
+  'picture_as_pdf', 'public', 'schedule', 'school', 'search', 'settings', 'support_agent', 'trending_down', 'trending_flat', 'trending_up', 'upload',
   'verified', 'visibility', 'visibility_off', 'warning', 'workspace_premium',
 ];
 // Brand logos (simple-icons, CC0), stored as `brand-<name>`. LinkedIn is not in
