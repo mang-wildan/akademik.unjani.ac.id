@@ -261,3 +261,46 @@ Referensi visual tiap halaman ada di `docs/Design/<nama_layar>/screen.png`. Kore
 - [ ] Verifikasi semua kriteria penerimaan SRS §9
 - [ ] Panduan singkat admin (cara menambah pengumuman, kalender, akreditasi)
 - [ ] Ganti semua password admin dan matikan akun yang tidak dipakai
+
+---
+
+## F7 — Tampilan "lebih akademik" `[Sonnet 5.5 · medium]`
+
+Permintaan stakeholder (2026-10-06). Referensi struktur: template Qeducato di `Referensi/qeducato/` (lokal, **tidak di-commit**). Yang diambil hanya **pola layout**; CSS/JS/aset template tidak disalin (stack Bootstrap 4 + jQuery berbeda, lisensi ThemeForest). Palet tetap hijau/emas UNJANI. Berlaku untuk situs publik **dan** panel admin.
+
+### R0 — Fondasi `[Opus 5.5 · high]`
+- [x] Font judul serif **Source Serif 4** (self-hosted woff2, 2 ketebalan) untuk `h1`–`h3`; isi tetap Plus Jakarta Sans. Preload hanya bobot yang dipakai di atas lipatan — `@fontsource/source-serif-4` (devDependency) disalin `build:assets` ke `public/fonts/source-serif-4/` (600 + 700, ~21 KB/bobot); hanya 700 di-preload di layout publik. Berlaku global, termasuk admin dan login (disengaja: admin ikut F7). Semua heading di views memakai `font-semibold`/`font-bold`, jadi tidak ada bold sintetis
+- [x] Token baru: emas terang untuk teks di latar hijau tua (emas `#ca8a04` di atas `#14532d` hanya ~3:1, cukup untuk ikon/garis, tidak untuk teks kecil), varian latar seksi (terang/hijau muda/hijau tua) — `on-dark-accent` `#facc15` (5,9:1 di brand), `brand-tint` `#ecf6ef` (tint terpekat yang masih menjaga `text-primary` 4,5:1; `primary-soft` lama 1,00:1 terhadap canvas, tak terlihat sebagai pita)
+- [x] Komponen: `.eyebrow` (garis emas + label kecil di atas judul seksi — garis dipilih ganti ikon agar tidak perlu ikon per seksi), `.section-title`, `.section-dark` (on-dark), varian tombol untuk latar gelap — plus `.section`/`.section-surface`/`.section-soft`, `.section-lead`, `.section-link`, `.btn-accent`/`.btn-light`/`.btn-outline-light`, dan `components/section-heading.ejs`. Di dalam `.section-dark`: judul & tautan otomatis putih, tautan di dalam `<p>` bergaris bawah (WCAG 1.4.1), `.card` putih kembali ke warna terang termasuk ring fokus. **Aturan:** jangan pakai `text-muted`/`text-primary` pada teks langsung di `.section-dark` (utility menang atas komponen) — pakai `text-on-dark-muted`/`text-on-dark-accent`
+- [x] Contoh semua komponen baru di `/dev/komponen` — 3 pita (terang/hijau muda/hijau tua + kartu di dalamnya). **Verifikasi** (workflow 3 lensa + skeptis per temuan): 7 temuan terkonfirmasi; 4 diperbaiki di R0 (ring fokus putih di kartu dalam pita gelap 1:1 → hijau, override gelap bocor ke kartu 1,5:1, tautan inline di pita gelap hanya beda warna, deskripsi eyebrow), 2 dipindah ke R3 (di bawah), 1 sudah dikoreksi di teks ini. 13 rute publik + `/login` + 404 bersih di 390 & 1440 px (tanpa overflow, serif 600/700 `loaded`)
+
+### R1 — Header publik
+- [x] Top bar hijau tua: telepon, email, jam layanan, sosmed (dari `SiteSetting`); disembunyikan di HP — `<aside aria-label="Kontak dan media sosial">` di atas `<header>`, tampil ≥1024 px (jam layanan ≥1280 px), tinggi 44 px; email & jam terpotong rapi (`truncate` + `title`) bila panjang. Ikon sosmed: logo brand dari `simple-icons` (CC0, devDependency) disalin `build:assets` ke `utils/icons.json` sebagai `brand-*` (`{ viewBox, d }`, didukung `utils/icons.js`); LinkedIn tidak ada di simple-icons → ikon `public` + `title`. Di HP/tablet kontak pindah ke bawah panel menu
+- [x] Navbar putih: logo, menu, satu tombol CTA; hanya navbar yang sticky — wordmark serif, menu aktif bergaris emas (`.nav-active`), CTA dari `publicCta` di `utils/navigation.js` (sekarang "Dokumen & Formulir" → `/dokumen-akademik`, tampil ≥1280 px karena di 1024 px tidak muat; di HP jadi tombol penuh di panel menu). Panel menu HP pakai `100dvh`. **Verifikasi** (workflow 3 lensa + skeptis): 9 temuan low terkonfirmasi, 8 diperbaiki — termasuk **celah lama**: URL sosmed/tautan cepat/video di Pengaturan Situs menerima `javascript:`/`data:` (zod `z.url()` menerima skema apa pun, CSP mati) → validator kini hanya http/https + filter di layout untuk nilai lama di DB, tes ditambahkan (43/43 lulus)
+- [x] Nomor telepon di Pengaturan Situs berlabel "(Chat Only)" tetapi dirender sebagai tautan `tel:` (top bar, menu HP, footer — footer sudah begitu sejak F1) — **diputuskan pemilik (2026-10-06): tautan WhatsApp.** `utils/contact.js#phoneLink`: nomor yang mengandung kata "chat"/"WhatsApp"/"WA" → `https://wa.me/62…` (tab baru, logo WhatsApp, `aria-label` memuat teks nomor), selain itu tetap `tel:`. Tes `test/contact.test.js`
+
+### R2 — Beranda
+- [x] Hero foto penuh lebar + overlay hijau + teks di atas foto; 4 kartu akses cepat menumpuk ke tepi bawah hero — overlay `bg-brand/90` di <1024 px, gradien `from-brand 45% → brand/90 65% → brand/30` di ≥1024 px; kontras diukur dari piksel foto sebenarnya di 390–1920 px, semua teks hero ≥ 4,5:1. Ring fokus kartu digambar **di dalam** kartu (`-outline-offset-4`) karena separuh kartu menumpuk di atas hero gelap. SRS FR-B-01 diperbarui ("tanpa teks di atas foto" dicabut, syarat kontras ditambahkan)
+- [x] Latar seksi berselang-seling; Status Mutu + Statistik Lulusan di seksi hijau tua — urutan: hero (tua) → akses cepat/info/agenda (canvas) → pengumuman (muda) → mutu & lulusan (tua) → kegiatan (putih) → video (muda, atau putih bila tepat setelah pengumuman); diuji dengan 10+ variasi data, tidak pernah ada dua pita sama warna bersebelahan. Mutu & Lulusan = dua `<section>` berlabel di satu pita. Statistik lulusan: kolom mengikuti jumlah angka; di samping Mutu (≥1024 px) jadi baris label–nilai (3 sel sejajar terpotong); perubahan % pakai ikon arah + tanda minus asli, emas hanya bila naik. **Perbaikan data:** "distribusi prodi per peringkat" sebelumnya ikut menghitung unit non-prodi (Perpustakaan → "Unggul") dan sertifikat kedaluwarsa/riwayat — kini hanya sertifikat terbaru tiap prodi yang masih ada, yang berlaku (SRS FR-B-05 diperbarui). Data dev saat ini: kedua sertifikat prodi kedaluwarsa → baris distribusi tersembunyi (benar)
+- [x] Agenda Terdekat memakai blok tanggal menonjol; semua judul seksi memakai eyebrow — `date-block` varian `dateTone: 'solid'` (contoh di `/dev/komponen`; data dev belum punya agenda); angka hari di semua blok tanggal kini serif
+- [x] Tetap: setiap bagian hilang rapi bila datanya kosong (FR-B-01..08) — diverifikasi lewat render data palsu (kosong total, penuh, sebagian, data berbahaya). **Verifikasi R2:** 2 putaran workflow (3 lensa + skeptis, lalu re-cek terarah): 19 temuan terkonfirmasi, semua diperbaiki; termasuk bug lama `target="_blank"` di Informasi Penting yang ter-escape jadi atribut rusak, dan guard skema http(s) untuk `src` iframe video
+- [ ] **Tindak lanjut (di luar R2):** tile "Peringkat …" di `/akreditasi` memakai hitungan longgar yang sama (semua sertifikat non-institusi termasuk riwayat & kedaluwarsa) — samakan dengan logika Beranda; hapus Program Studi di admin tidak dicegah bila masih punya sertifikat akreditasi (rujukan menggantung; Beranda kini mengabaikannya)
+
+### R3 — Halaman dalam
+- [ ] `components/page-header.ejs` (publik) → banner hijau berisi judul + breadcrumb; mode `admin: true` tidak ikut berubah di sini. **Bug lama (sejak F1, ditemukan saat verifikasi R0):** di halaman publik `page-header` di-include langsung di `<main>` tanpa `.container-content`, sehingga breadcrumb/judul menempel ke tepi layar dan tidak sejajar dengan konten — banner baru wajib punya kontainer sendiri
+- [ ] `views/landing/error.ejs` (mandiri, CSS inline, tidak memuat `app.css`): judul masih sans sistem — samakan dengan serif/banner baru
+- [ ] Detail berita & pengumuman: sidebar (terbaru, kategori)
+
+### R4 — Footer
+- [ ] Band CTA "Butuh layanan akademik?" di atas footer (bukan newsletter — fiturnya tidak ada)
+- [ ] Rapikan footer 4 kolom (judul kolom bergaris emas, ikon sosmed)
+
+### R5 — Panel admin
+- [ ] Sidebar hijau tua, penanda menu aktif emas; header dan `page-header` admin memakai eyebrow
+- [ ] Halaman login split-screen (foto kampus + form)
+- [ ] **Migrasi `/profile`, `/profile/edit`, `/profile/password`** ke `layouts/admin.ejs` — ketiganya masih memakai template admin lama (Materio/Bootstrap via `partials/menu` & `partials/navbar`); setelahnya hapus partial dan aset lama yang jadi yatim
+
+### R6 — Verifikasi `[Opus 5.5 · high]`
+- [ ] `npm run build:css`, lalu `ux-ui-audit` publik + admin di 390 dan 1440 px
+- [ ] Kontras teks di seksi gelap & banner; A11y dan SEO Lighthouse tetap 100 di 4 halaman F5
+- [ ] Performa: ukuran font baru + hero penuh lebar tidak menurunkan skor dibanding F5

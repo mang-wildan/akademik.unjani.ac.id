@@ -32,6 +32,9 @@ exports.publicNav = [
   },
 ];
 
+// The one call-to-action button in the public navbar (F7 R1).
+exports.publicCta = { label: 'Dokumen & Formulir', href: '/dokumen-akademik', icon: 'download' };
+
 const SUPERADMIN = ['superadmin', 'admin']; // 'admin' = role lama sebelum migrasi F2
 
 exports.adminNav = [

@@ -1,12 +1,13 @@
 <%#
   Blok tanggal untuk daftar pengumuman & agenda.
   include('../components/date-block', { date: item.createdAt })
+  include('../components/date-block', { date: e.mulai, dateTone: 'solid' })   // hijau penuh, untuk agenda (F7)
 %>
-<% const block = tanggalBlok(locals.date); %>
+<% const block = tanggalBlok(locals.date); const solid = locals.dateTone === 'solid'; %>
 <% if (block) { %>
-  <time datetime="<%= block.iso %>" class="flex w-16 shrink-0 flex-col items-center rounded-control border border-line bg-surface py-2 leading-none">
-    <span class="text-xs font-semibold tracking-wide text-primary"><%= block.month %></span>
-    <span class="mt-1 text-2xl font-bold text-ink"><%= block.day %></span>
-    <span class="mt-1 text-xs text-muted"><%= block.year %></span>
+  <time datetime="<%= block.iso %>" class="flex w-16 shrink-0 flex-col items-center rounded-control py-2 leading-none <%= solid ? 'bg-primary text-white' : 'border border-line bg-surface' %>">
+    <span class="text-xs font-semibold tracking-wide <%= solid ? '' : 'text-primary' %>"><%= block.month %></span>
+    <span class="mt-1 font-serif text-2xl font-bold <%= solid ? '' : 'text-ink' %>"><%= block.day %></span>
+    <span class="mt-1 text-xs <%= solid ? '' : 'text-muted' %>"><%= block.year %></span>
   </time>
 <% } %>

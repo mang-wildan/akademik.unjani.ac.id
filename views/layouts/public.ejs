@@ -5,14 +5,18 @@
   const currentPath = locals.path || '/';
   const phone = s.kontakTelepon || '+62 (022) 6656190';
   const email = s.kontakEmail || 'akademik@unjani.ac.id';
+  const phoneTo = phoneLink(phone); // "(Chat Only)"/WhatsApp → wa.me, selain itu tel:
+  const phoneIcon = phoneTo.whatsapp ? 'brand-whatsapp' : 'call';
+  const waLabel = `${phone} — chat WhatsApp (membuka tab baru)`;
+  const hours = s.jamLayanan || 'Senin–Jumat, 08.00–15.30 WIB';
   const socials = [
-    { label: 'Facebook', url: s.socialFacebook },
-    { label: 'Instagram', url: s.socialInstagram },
-    { label: 'YouTube', url: s.socialYoutube },
-    { label: 'TikTok', url: s.socialTiktok },
-    { label: 'X', url: s.socialTwitter },
-    { label: 'LinkedIn', url: s.socialLinkedin },
-  ].filter(item => item.url);
+    { label: 'Facebook', url: s.socialFacebook, icon: 'brand-facebook' },
+    { label: 'Instagram', url: s.socialInstagram, icon: 'brand-instagram' },
+    { label: 'YouTube', url: s.socialYoutube, icon: 'brand-youtube' },
+    { label: 'TikTok', url: s.socialTiktok, icon: 'brand-tiktok' },
+    { label: 'X', url: s.socialTwitter, icon: 'brand-x' },
+    { label: 'LinkedIn', url: s.socialLinkedin, icon: 'public' },
+  ].filter(item => /^https?:\/\//i.test(item.url || '')); // validator enforces http(s) too; this also covers values saved before it did
 %>
 <!DOCTYPE html>
 <html lang="id">
@@ -35,6 +39,7 @@
   <% } %>
   <link rel="icon" href="<%= s.favicon || '/assets/landing-page/images/favicon.ico' %>">
   <link rel="preload" href="/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/source-serif-4/source-serif-4-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="<%= assetUrl('/css/app.css') %>">
   <script src="<%= assetUrl('/js/app.js') %>" defer></script>
   <script src="/js/vendor/alpine-csp.min.js" defer></script>
@@ -42,12 +47,30 @@
 <body class="flex min-h-screen flex-col">
   <a class="skip-link" href="#konten">Langsung ke konten utama</a>
 
-  <header class="sticky top-0 z-40 border-b border-line bg-surface" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
+  <%# Top bar (F7 R1): ikut tergulung, hanya navbar di bawahnya yang sticky. Desktop saja — di HP/tablet kontak ada di menu dan footer. %>
+  <aside class="on-dark hidden bg-brand text-sm text-on-dark-muted lg:block" aria-label="Kontak dan media sosial">
+    <div class="container-content flex h-11 items-center justify-between gap-6">
+      <ul class="flex min-w-0 items-center gap-x-6">
+        <li class="shrink-0"><a href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %> class="flex min-h-6 items-center gap-2 whitespace-nowrap text-white no-underline hover:underline"><%- icon(phoneIcon, 'size-4 text-on-dark-accent') %><%= phone %></a></li>
+        <li class="min-w-0"><a href="mailto:<%= email %>" class="flex min-h-6 min-w-0 items-center gap-2 text-white no-underline hover:underline"><%- icon('mail', 'size-4 text-on-dark-accent') %><span class="truncate" title="<%= email %>"><%= email %></span></a></li>
+        <li class="hidden min-w-0 items-center gap-2 xl:flex"><%- icon('schedule', 'size-4 text-on-dark-accent') %><span class="truncate" title="<%= hours %>"><%= hours %></span></li>
+      </ul>
+      <% if (socials.length) { %>
+        <ul class="flex shrink-0 items-center" aria-label="Media sosial">
+          <% socials.forEach(item => { %>
+            <li><a href="<%= item.url %>" class="inline-flex size-11 items-center justify-center rounded-control text-white hover:bg-white/10" target="_blank" rel="noopener noreferrer" title="<%= item.label %>" aria-label="<%= item.label %> (membuka tab baru)"><%- icon(item.icon, 'size-4') %></a></li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </aside>
+
+  <header class="sticky top-0 z-40 border-b border-line bg-surface shadow-card" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
     <div class="container-content flex h-18 items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-3 no-underline">
         <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-11 object-contain">
         <span class="leading-tight">
-          <span class="block font-bold text-brand">Bidang Akademik</span>
+          <span class="block font-serif text-lg font-bold text-brand">Bidang Akademik</span>
           <span class="block text-xs font-medium tracking-wide text-muted uppercase">Universitas Jenderal Achmad Yani</span>
         </span>
       </a>
@@ -58,7 +81,7 @@
             <% if (item.children) { const groupActive = item.children.some(c => isActive(c.href, currentPath)); %>
               <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
                 <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true"
-                        class="btn btn-tertiary px-3 <%= groupActive ? 'text-primary' : 'text-ink' %>">
+                        class="btn btn-tertiary px-3 <%= groupActive ? 'nav-active' : 'text-ink' %>">
                   <%= item.label %> <%- icon('keyboard_arrow_down', 'size-5') %>
                 </button>
                 <ul x-show="open" x-cloak class="absolute left-0 mt-1 min-w-64 rounded-card border border-line bg-surface p-2 shadow-raised">
@@ -68,7 +91,7 @@
                 </ul>
               </li>
             <% } else { %>
-              <li><a href="<%= item.href %>" class="btn btn-tertiary px-3 <%= isActive(item.href, currentPath) ? 'text-primary' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
+              <li><a href="<%= item.href %>" class="btn btn-tertiary px-3 <%= isActive(item.href, currentPath) ? 'nav-active' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
             <% } %>
           <% }) %>
         </ul>
@@ -76,6 +99,8 @@
 
       <div class="flex items-center gap-1">
         <a href="/cari" class="btn-icon" aria-label="Cari"><%- icon('search', 'size-6') %></a>
+        <%# CTA hanya di ≥1280px: di 1024px logo + 5 menu + CTA tidak muat satu baris. %>
+        <a href="<%= publicCta.href %>" class="btn btn-primary ml-2 hidden xl:inline-flex"><%- icon(publicCta.icon) %><%= publicCta.label %></a>
         <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="menu-hp" aria-label="Buka menu">
           <%- icon('menu', 'size-6') %>
         </button>
@@ -83,7 +108,7 @@
     </div>
 
     <!-- Menu HP: panel penuh di bawah header (FR-G-02) -->
-    <nav id="menu-hp" x-show="open" x-cloak class="max-h-[calc(100vh-4.5rem)] overflow-y-auto border-t border-line bg-surface lg:hidden" aria-label="Menu utama">
+    <nav id="menu-hp" x-show="open" x-cloak class="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-line bg-surface lg:hidden" aria-label="Menu utama">
       <ul class="container-content py-3">
         <% publicNav.forEach(item => { %>
           <% if (item.children) { %>
@@ -100,6 +125,14 @@
           <% } %>
         <% }) %>
       </ul>
+      <div class="container-content border-t border-line py-4">
+        <a href="<%= publicCta.href %>" class="btn btn-primary w-full"><%- icon(publicCta.icon) %><%= publicCta.label %></a>
+        <ul class="mt-3 text-sm">
+          <li><a href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %> class="flex min-h-11 items-center gap-3 px-3 font-medium text-ink no-underline"><%- icon(phoneIcon, 'size-5 text-primary') %><%= phone %></a></li>
+          <li><a href="mailto:<%= email %>" class="flex min-h-11 items-center gap-3 px-3 font-medium text-ink no-underline"><%- icon('mail', 'size-5 text-primary') %><%= email %></a></li>
+          <li class="flex min-h-11 items-center gap-3 px-3 text-muted"><%- icon('schedule', 'size-5 text-primary') %><%= hours %></li>
+        </ul>
+      </div>
     </nav>
   </header>
 
@@ -132,14 +165,14 @@
         <h2 class="text-base font-semibold text-white">Kontak &amp; Alamat</h2>
         <ul class="mt-4 space-y-3 text-sm text-on-dark-muted">
           <li class="flex gap-3"><%- icon('location_on', 'size-5 text-accent') %><span><%= s.alamat || 'Jl. Terusan Jend. Sudirman, Cibeber, Cimahi Selatan, Kota Cimahi, Jawa Barat' %></span></li>
-          <li class="flex items-center gap-3"><%- icon('call', 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="tel:<%= phone.replace(/[^\d+]/g, '') %>"><%= phone %></a></li>
+          <li class="flex items-center gap-3"><%- icon(phoneIcon, 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %>><%= phone %></a></li>
           <li class="flex items-center gap-3"><%- icon('mail', 'size-5 text-accent') %><a class="inline-flex min-h-11 items-center text-white" href="mailto:<%= email %>"><%= email %></a></li>
         </ul>
       </div>
 
       <div>
         <h2 class="text-base font-semibold text-white">Jam Layanan</h2>
-        <p class="mt-4 flex gap-3 text-sm text-on-dark-muted"><%- icon('schedule', 'size-5 text-accent') %><span><%= s.jamLayanan || 'Senin–Jumat, 08.00–15.30 WIB' %></span></p>
+        <p class="mt-4 flex gap-3 text-sm text-on-dark-muted"><%- icon('schedule', 'size-5 text-accent') %><span><%= hours %></span></p>
       </div>
 
       <div>

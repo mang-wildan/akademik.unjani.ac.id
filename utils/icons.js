@@ -7,12 +7,14 @@ const escapeAttr = value =>
 
 // icon('download')                      decorative, hidden from screen readers
 // icon('close', 'size-6', 'Tutup menu') meaningful on its own (icon-only button inside <a>/<button> should use aria-label there instead)
+// icon('brand-instagram')              brand logo (simple-icons): entry is { viewBox, d }
 module.exports = (name, className = 'size-5', label = '') => {
-  const d = paths[name];
-  if (!d) {
+  const entry = paths[name];
+  if (!entry) {
     if (process.env.NODE_ENV !== 'production') throw new Error(`Ikon tidak dikenal: "${name}" (tambahkan di scripts/build-assets.js)`);
     return '';
   }
+  const { d, viewBox } = typeof entry === 'string' ? { d: entry, viewBox: '0 -960 960 960' } : entry;
   const a11y = label ? `role="img" aria-label="${escapeAttr(label)}"` : 'aria-hidden="true" focusable="false"';
-  return `<svg class="${escapeAttr(className)} shrink-0" viewBox="0 -960 960 960" fill="currentColor" ${a11y}><path d="${d}"/></svg>`;
+  return `<svg class="${escapeAttr(className)} shrink-0" viewBox="${viewBox}" fill="currentColor" ${a11y}><path d="${d}"/></svg>`;
 };

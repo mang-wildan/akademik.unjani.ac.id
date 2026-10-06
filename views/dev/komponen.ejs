@@ -68,6 +68,15 @@
           </li>
         <% }) %>
       </ul>
+      <p class="mt-4 mb-2 text-sm font-semibold text-muted">Varian <code>dateTone: 'solid'</code> (agenda di Beranda)</p>
+      <div class="card card-body flex max-w-sm gap-4">
+        <%- include('../components/date-block', { date: '2026-06-29', dateTone: 'solid' }) %>
+        <div class="min-w-0">
+          <%- include('../components/badge', { text: 'Akan datang', tone: 'warning' }) %>
+          <p class="mt-2 font-semibold text-ink">Ujian Akhir Semester (UAS)</p>
+          <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal('2026-06-29', '2026-07-10') %></p>
+        </div>
+      </div>
     </div>
 
     <div>
@@ -141,3 +150,42 @@
     </div>
   </section>
 </div>
+
+<%# Seksi selebar layar (F7): .section + satu latar. Judul memakai components/section-heading. %>
+<section class="section section-surface" aria-labelledby="seksi-terang">
+  <div class="container-content">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Seksi terang', sectionHeading: 'Pengumuman Terbaru', sectionLead: 'Rata kiri, dengan tautan "lihat semua" di kanan pada layar lebar.', sectionLink: { label: 'Lihat semua pengumuman', href: '#seksi-terang' }, sectionId: 'seksi-terang' }) %>
+    <p class="max-w-3xl text-muted">Teks isi tetap Plus Jakarta Sans; hanya h1–h3 yang memakai Source Serif 4.</p>
+  </div>
+</section>
+
+<section class="section section-soft" aria-labelledby="seksi-hijau">
+  <div class="container-content">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Seksi hijau muda', sectionHeading: 'Layanan Akademik', sectionLead: 'Rata tengah. Kartu putih tetap terbaca di atas latar berwarna.', sectionAlign: 'center', sectionId: 'seksi-hijau' }) %>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <% ['Kalender Akademik', 'Dokumen & Formulir', 'Kurikulum'].forEach(label => { %>
+        <a href="#seksi-hijau" class="card card-body font-semibold text-ink no-underline hover:text-primary"><%= label %></a>
+      <% }) %>
+    </div>
+    <p class="mt-6 text-center"><a href="#seksi-hijau">Tautan biasa di latar hijau muda</a></p>
+  </div>
+</section>
+
+<section class="section section-dark" aria-labelledby="seksi-gelap">
+  <div class="container-content grid gap-10 lg:grid-cols-2 lg:items-center">
+    <div>
+      <%- include('../components/section-heading', { sectionEyebrow: 'Seksi hijau tua', sectionHeading: 'Status Mutu Institusi', sectionLead: 'Judul, eyebrow, pengantar, dan tautan berganti warna sendiri di dalam .section-dark.', sectionLink: { label: 'Lihat semua akreditasi', href: '#seksi-gelap' }, sectionId: 'seksi-gelap' }) %>
+      <p class="text-on-dark-muted">Teks sekunder memakai <code>text-on-dark-muted</code>, bukan <code>text-muted</code>. <a href="#seksi-gelap">Tautan biasa</a> otomatis putih.</p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#seksi-gelap" class="btn btn-accent">Tombol aksen<%- icon('arrow_forward') %></a>
+        <a href="#seksi-gelap" class="btn btn-light">Tombol terang</a>
+        <a href="#seksi-gelap" class="btn btn-outline-light">Tombol garis</a>
+      </div>
+    </div>
+    <div class="card card-body">
+      <h3 class="text-xl">Kartu di dalam seksi gelap</h3>
+      <p class="mt-2 text-muted">Warna kartu kembali normal: judul gelap, teks sekunder abu, <a href="#seksi-gelap">tautan hijau</a>.</p>
+      <div class="mt-3"><%- include('../components/badge', { text: 'Unggul', tone: 'gold', badgeIcon: 'workspace_premium' }) %></div>
+    </div>
+  </div>
+</section>

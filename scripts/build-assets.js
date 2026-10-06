@@ -15,9 +15,12 @@ const ICONS = [
   'chevron_left', 'chevron_right', 'close', 'dashboard', 'delete', 'description', 'download', 'edit', 'error',
   'event', 'filter_list', 'groups', 'history', 'home', 'image', 'info', 'keep', 'keyboard_arrow_down', 'library_books', 'location_on',
   'logout', 'mail', 'menu', 'menu_book', 'more_vert', 'newspaper', 'notifications', 'open_in_new', 'person',
-  'picture_as_pdf', 'schedule', 'school', 'search', 'settings', 'upload', 'verified', 'visibility', 'visibility_off',
-  'warning', 'workspace_premium',
+  'picture_as_pdf', 'public', 'schedule', 'school', 'search', 'settings', 'trending_down', 'trending_flat', 'trending_up', 'upload',
+  'verified', 'visibility', 'visibility_off', 'warning', 'workspace_premium',
 ];
+// Brand logos (simple-icons, CC0), stored as `brand-<name>`. LinkedIn is not in
+// simple-icons (removed at LinkedIn's request), so views fall back to 'public'.
+const BRAND_ICONS = ['facebook', 'instagram', 'tiktok', 'whatsapp', 'x', 'youtube'];
 
 const copy = (from, to) => {
   fs.mkdirSync(path.dirname(to), { recursive: true });
@@ -32,6 +35,12 @@ for (const weight of [400, 500, 600, 700]) {
   copy(path.join(fontDir, 'files', file), path.join(ROOT, 'public', 'fonts', 'plus-jakarta-sans', file));
 }
 copy(path.join(fontDir, 'LICENSE'), path.join(ROOT, 'public', 'fonts', 'plus-jakarta-sans', 'LICENSE'));
+const serifDir = path.join(NM, '@fontsource', 'source-serif-4');
+for (const weight of [600, 700]) {
+  const file = `source-serif-4-latin-${weight}-normal.woff2`;
+  copy(path.join(serifDir, 'files', file), path.join(ROOT, 'public', 'fonts', 'source-serif-4', file));
+}
+copy(path.join(serifDir, 'LICENSE'), path.join(ROOT, 'public', 'fonts', 'source-serif-4', 'LICENSE'));
 
 console.log('Alpine.js (CSP build)');
 copy(path.join(NM, '@alpinejs', 'csp', 'dist', 'cdn.min.js'), path.join(ROOT, 'public', 'js', 'vendor', 'alpine-csp.min.js'));
@@ -44,6 +53,13 @@ for (const name of ICONS) {
   icons[name] = [...svg.matchAll(/ d="([^"]+)"/g)].map(m => m[1]).join(' ');
   if (!icons[name]) throw new Error(`No path data in ${name}.svg`);
 }
+const brandDir = path.join(NM, 'simple-icons', 'icons');
+for (const name of BRAND_ICONS) {
+  const svg = fs.readFileSync(path.join(brandDir, `${name}.svg`), 'utf8');
+  const d = (svg.match(/ d="([^"]+)"/) || [])[1];
+  if (!d || !svg.includes('viewBox="0 0 24 24"')) throw new Error(`Unexpected simple-icons ${name}.svg`);
+  icons[`brand-${name}`] = { viewBox: '0 0 24 24', d };
+}
 const iconsOut = path.join(ROOT, 'utils', 'icons.json');
 fs.writeFileSync(iconsOut, `${JSON.stringify(icons, null, 1)}\n`);
-console.log(`  ${path.relative(ROOT, iconsOut)} (${ICONS.length} ikon)`);
+console.log(`  ${path.relative(ROOT, iconsOut)} (${ICONS.length} ikon + ${BRAND_ICONS.length} logo)`);

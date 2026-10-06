@@ -1,30 +1,66 @@
-<%# Beranda (FR-B-01..08). Setiap bagian hilang dengan rapi bila datanya kosong — tidak ada konten isian. %>
+<%# Beranda (FR-B-01..08). Setiap bagian hilang dengan rapi bila datanya kosong — tidak ada konten isian.
+    Urutan latar (F7 R2): hero (hijau tua) → akses cepat + info + agenda (canvas) → pengumuman (hijau muda)
+    → mutu & lulusan (hijau tua) → kegiatan (putih) → video (hijau muda, atau putih bila tepat setelah pengumuman). %>
+<%
+  const aksesCepat = [
+    { label: 'Kalender Akademik', desc: 'Jadwal kegiatan & masa perkuliahan', href: '/kalender-akademik', icon: 'event' },
+    { label: 'Dokumen & Formulir', desc: 'Unduh berkas dan formulir resmi', href: '/dokumen-akademik', icon: 'description' },
+    { label: 'Kurikulum', desc: 'Struktur kurikulum program studi', href: '/kurikulum', icon: 'menu_book' },
+    { label: 'Akreditasi', desc: 'Status akreditasi BAN-PT & LAM', href: '/akreditasi', icon: 'workspace_premium' },
+  ];
+  const adaMutu = institusiAcc.length || peringkatStats.length;
+  const adaPita = adaMutu || lulusan;
+  // Validator hanya menerima http(s); cek ulang di sini untuk nilai yang tersimpan sebelum itu.
+  const videoUrl = setting && /^https?:\/\//i.test(setting.landingVideoUrl || '') ? setting.landingVideoUrl : '';
+  const videoBand = pengumumanTerbaru.length && !adaPita && !kegiatanTerbaru.length ? 'section-surface' : 'section-soft';
+%>
 
-<section class="border-b border-line bg-surface">
-  <div class="container-content grid gap-8 py-10 lg:grid-cols-2 lg:items-center lg:py-16">
-    <div>
-      <h1 class="text-4xl font-bold text-ink lg:text-5xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
-      <p class="mt-4 max-w-xl text-lg text-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
-      <div class="mt-6 grid grid-cols-2 gap-3 sm:w-fit sm:grid-cols-4">
-        <a href="/kalender-akademik" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('event', 'size-6 text-primary') %><span class="text-sm font-medium">Kalender Akademik</span></a>
-        <a href="/dokumen-akademik" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('description', 'size-6 text-primary') %><span class="text-sm font-medium">Dokumen &amp; Formulir</span></a>
-        <a href="/kurikulum" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('menu_book', 'size-6 text-primary') %><span class="text-sm font-medium">Kurikulum</span></a>
-        <a href="/akreditasi" class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-4 text-center hover:bg-sunken"><%- icon('workspace_premium', 'size-6 text-primary') %><span class="text-sm font-medium">Akreditasi</span></a>
+<section class="section-dark relative isolate overflow-hidden">
+  <img src="/img/hero-kampus.webp" alt="" class="absolute inset-0 -z-20 size-full object-cover" width="1600" height="903" fetchpriority="high">
+  <%# Overlay: hijau (hampir) pekat di bawah kolom teks di semua lebar ≥1024 px agar kontras teks tidak bergantung pada foto. %>
+  <div class="absolute inset-0 -z-10 bg-brand/90 lg:bg-transparent lg:bg-linear-to-r lg:from-brand lg:from-45% lg:via-brand/90 lg:via-65% lg:to-brand/30" aria-hidden="true"></div>
+  <div class="container-content pt-16 pb-36 lg:pt-24 lg:pb-44">
+    <div class="max-w-2xl">
+      <p class="eyebrow">Portal resmi layanan akademik</p>
+      <h1 class="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
+      <p class="mt-5 max-w-xl text-lg text-on-dark-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/pengumuman" class="btn btn-accent">Pengumuman Terbaru<%- icon('arrow_forward') %></a>
+        <a href="/profil" class="btn btn-outline-light">Profil Bidang Akademik</a>
       </div>
     </div>
-    <img src="/img/hero-kampus.webp" alt="Kampus Universitas Jenderal Achmad Yani" class="aspect-[4/3] w-full rounded-card object-cover lg:aspect-video" width="1600" height="903" fetchpriority="high">
   </div>
 </section>
 
-<div class="container-content py-10">
+<div class="container-content relative z-10 -mt-24 lg:-mt-28">
+  <h2 class="sr-only">Akses cepat</h2>
+  <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <% aksesCepat.forEach(a => { %>
+      <li>
+        <%# Ring fokus di dalam kartu (offset negatif): separuh kartu menumpuk di atas hero gelap, ring di luar kartu tak terlihat di sana.
+            -4 (bukan -3) agar garis emas 4 px di atas kartu tetap terlihat saat fokus. %>
+        <a href="<%= a.href %>" class="card group flex h-full items-start gap-4 border-t-4 border-t-accent p-5 no-underline shadow-raised transition-shadow hover:shadow-modal focus-visible:outline-3 focus-visible:-outline-offset-4">
+          <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary group-hover:bg-primary group-hover:text-white"><%- icon(a.icon, 'size-6') %></span>
+          <span>
+            <span class="block font-semibold text-ink group-hover:text-primary"><%= a.label %></span>
+            <span class="mt-1 block text-sm text-muted"><%= a.desc %></span>
+          </span>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+</div>
 
+<% if (informasiPenting.length || agendaItems.length) { %>
+<div class="container-content space-y-14 pt-14 pb-14 lg:pb-20">
   <% if (informasiPenting.length) { %>
-  <section class="card card-body mb-10">
-    <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold"><%- icon('info', 'size-5 text-primary') %>Informasi Penting</h2>
+  <section class="card card-body border-l-4 border-l-accent" aria-labelledby="info-penting">
+    <p class="eyebrow">Perhatian</p>
+    <h2 id="info-penting" class="mt-2 mb-3 flex items-center gap-2 text-xl"><%- icon('info', 'size-5 text-primary') %>Informasi Penting</h2>
     <ul class="divide-y divide-line">
       <% informasiPenting.forEach(i => { %>
         <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
-          <a href="<%= i.href %>" class="flex items-center gap-2 font-medium text-ink hover:text-primary" <%= i.jenis === 'Dokumen' ? 'target="_blank" rel="noopener"' : '' %>>
+          <a href="<%= i.href %>" class="flex items-center gap-2 font-medium text-ink hover:text-primary"<%- i.jenis === 'Dokumen' ? ' target="_blank" rel="noopener"' : '' %>>
             <%- include('../components/badge', { text: i.jenis, tone: 'info' }) %><%= i.judul %>
           </a>
           <span class="text-sm text-muted"><%= formatTanggal(i.tanggal) %></span>
@@ -35,113 +71,142 @@
   <% } %>
 
   <% if (agendaItems.length) { %>
-  <section class="mb-10">
-    <div class="mb-4 flex items-end justify-between">
-      <h2 class="text-xl font-semibold">Agenda Akademik Terdekat</h2>
-      <a href="/kalender-akademik" class="text-sm font-semibold text-primary">Lihat kalender lengkap →</a>
-    </div>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <section aria-labelledby="agenda-judul">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Kalender akademik', sectionHeading: 'Agenda Akademik Terdekat', sectionLink: { label: 'Lihat kalender lengkap', href: '/kalender-akademik' }, sectionId: 'agenda-judul' }) %>
+    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <% agendaItems.forEach(e => { %>
-        <div class="card card-body">
-          <%- include('../components/badge', { text: e.status.label, tone: e.status.tone }) %>
-          <p class="mt-2 font-semibold text-ink"><%= e.nama %></p>
-          <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
-        </div>
+        <li class="card card-body flex gap-4">
+          <%- include('../components/date-block', { date: e.mulai, dateTone: 'solid' }) %>
+          <div class="min-w-0">
+            <%- include('../components/badge', { text: e.status.label, tone: e.status.tone }) %>
+            <p class="mt-2 font-semibold text-ink"><%= e.nama %></p>
+            <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
+          </div>
+        </li>
       <% }) %>
-    </div>
+    </ul>
   </section>
   <% } %>
+</div>
+<% } else { %>
+<div class="pb-14" aria-hidden="true"></div>
+<% } %>
 
-  <div class="grid gap-10 lg:grid-cols-2">
-    <% if (pengumumanTerbaru.length) { %>
-    <section>
-      <div class="mb-4 flex items-end justify-between">
-        <h2 class="text-xl font-semibold">Pengumuman Terbaru</h2>
-        <a href="/pengumuman" class="text-sm font-semibold text-primary">Lihat semua →</a>
-      </div>
-      <ul class="card divide-y divide-line">
-        <% pengumumanTerbaru.forEach(p => { %>
-          <li class="flex gap-4 p-4">
-            <%- include('../components/date-block', { date: p.createdAt }) %>
-            <a href="/pengumuman/<%= p.slug %>" class="min-w-0 flex-1 font-medium text-ink hover:text-primary"><%= p.title %></a>
+<% if (pengumumanTerbaru.length) { %>
+<section class="section section-soft" aria-labelledby="pengumuman-judul">
+  <div class="container-content">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Pengumuman', sectionHeading: 'Pengumuman Terbaru', sectionLead: 'Informasi resmi seputar administrasi dan layanan akademik.', sectionLink: { label: 'Lihat semua pengumuman', href: '/pengumuman' }, sectionId: 'pengumuman-judul' }) %>
+    <ul class="grid gap-4 md:grid-cols-2">
+      <% pengumumanTerbaru.forEach(p => { %>
+        <li class="card card-body flex gap-4">
+          <%- include('../components/date-block', { date: p.createdAt }) %>
+          <a href="/pengumuman/<%= p.slug %>" class="min-w-0 flex-1 self-center font-semibold text-ink hover:text-primary"><%= p.title %></a>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
+<% } %>
+
+<% if (adaPita) { %>
+<%# Satu pita, dua wilayah berlabel sendiri (mutu & lulusan) agar pembaca layar tidak mengumumkan statistik lulusan di bawah judul "Status Mutu". %>
+<div class="section section-dark">
+  <div class="container-content grid gap-12 <%= adaMutu && lulusan ? 'lg:grid-cols-2 lg:items-start' : '' %>">
+    <% if (adaMutu) { %>
+    <section aria-labelledby="mutu-judul">
+      <%- include('../components/section-heading', { sectionEyebrow: 'Penjaminan mutu', sectionHeading: 'Status Mutu Institusi', sectionLead: 'Peringkat dan masa berlaku diambil langsung dari sertifikat akreditasi.', sectionLink: { label: 'Lihat semua akreditasi', href: '/akreditasi' }, sectionId: 'mutu-judul' }) %>
+      <% if (institusiAcc.length) { %>
+      <ul class="grid gap-4 sm:grid-cols-2">
+        <% institusiAcc.forEach(a => { %>
+          <li class="card card-body">
+            <p class="text-sm font-medium text-muted">Akreditasi institusi</p>
+            <div class="mt-1 flex flex-wrap items-center gap-2">
+              <span class="font-serif text-3xl font-bold text-primary"><%= a.peringkat %></span>
+              <%- include('../components/badge', { text: a.status.label, tone: a.status.tone }) %>
+            </div>
+            <p class="mt-2 text-sm text-muted"><%= a.lembaga ? a.lembaga.singkatan : '—' %> · berlaku s.d. <%= formatTanggal(a.berlakuSampai) %></p>
           </li>
         <% }) %>
       </ul>
+      <% } %>
+      <% if (peringkatStats.length) { %>
+      <div class="mt-6">
+        <p class="text-sm font-semibold text-white">Akreditasi program studi yang berlaku</p>
+        <ul class="mt-3 flex flex-wrap gap-2">
+          <% peringkatStats.forEach(p => { %>
+            <li class="rounded-control border border-white/25 px-3 py-2 text-sm text-on-dark-muted"><span class="font-serif text-lg font-bold text-white"><%= p.total %></span> prodi <%= p.peringkat %></li>
+          <% }) %>
+        </ul>
+      </div>
+      <% } %>
     </section>
     <% } %>
 
-    <% if (institusiAcc.length || peringkatStats.length) { %>
-    <section>
-      <h2 class="mb-4 text-xl font-semibold">Status Mutu Institusi</h2>
-      <div class="card card-body">
-        <% institusiAcc.forEach(a => { %>
-          <div class="flex items-center justify-between gap-3 border-b border-line pb-4 last:border-0 last:pb-0">
-            <div>
-              <span class="text-2xl font-bold text-primary"><%= a.peringkat %></span>
-              <p class="text-xs text-muted"><%= a.lembaga ? a.lembaga.singkatan : '—' %> · s.d. <%= formatTanggal(a.berlakuSampai) %></p>
-            </div>
-            <%- include('../components/badge', { text: a.status.label, tone: a.status.tone }) %>
-          </div>
-        <% }) %>
-        <% if (peringkatStats.length) { %>
-        <div class="mt-4 flex flex-wrap gap-2 border-t border-line pt-4">
-          <% peringkatStats.forEach(p => { %><span class="badge badge-neutral"><%= p.peringkat %> <%= p.total %></span><% }) %>
+    <% if (lulusan) { %>
+    <%
+      const persen = lulusan.persenPerubahan;
+      const arah = persen === null ? null : persen > 0 ? 'naik' : persen < 0 ? 'turun' : 'tetap';
+      const persenTeks = persen === null ? '' : `${persen > 0 ? '+' : persen < 0 ? '−' : ''}${String(Math.abs(persen)).replace('.', ',')}%`;
+      // Berdampingan dengan Mutu (≥1024 px) kolomnya hanya ~450 px: tiga sel sejajar tidak muat,
+      // jadi di sana tiap angka menjadi satu baris (label kiri, nilai kanan).
+      const duaKolom = adaMutu;
+      const sel = `flex flex-col justify-between gap-1 bg-brand p-5 ${duaKolom ? 'lg:flex-row lg:items-center lg:gap-4' : ''}`;
+      const nilai = 'font-serif text-3xl font-bold tabular-nums xl:text-4xl';
+    %>
+    <section aria-labelledby="lulusan-judul">
+      <%- include('../components/section-heading', { sectionEyebrow: 'Lulusan', sectionHeading: 'Statistik Lulusan', sectionId: 'lulusan-judul' }) %>
+      <dl class="grid gap-px overflow-hidden rounded-card bg-white/15 <%= persen !== null ? 'sm:grid-cols-3' : 'sm:grid-cols-2' %> <%= duaKolom ? 'lg:grid-cols-1' : '' %>">
+        <div class="<%= sel %>">
+          <dt class="text-sm text-on-dark-muted">Lulusan tahun <%= lulusan.tahun %></dt>
+          <dd class="<%= nilai %> text-white"><%= formatAngka(lulusan.total) %></dd>
+        </div>
+        <div class="<%= sel %>">
+          <dt class="text-sm text-on-dark-muted">Total lulusan tercatat</dt>
+          <dd class="<%= nilai %> text-white"><%= formatAngka(lulusan.totalSemua) %></dd>
+        </div>
+        <% if (persen !== null) { %>
+        <div class="<%= sel %>">
+          <dt class="text-sm text-on-dark-muted">Dibanding tahun sebelumnya</dt>
+          <dd class="flex items-center gap-2 <%= nilai %> <%= arah === 'naik' ? 'text-on-dark-accent' : 'text-white' %>">
+            <%- icon(arah === 'naik' ? 'trending_up' : arah === 'turun' ? 'trending_down' : 'trending_flat', 'size-7') %><span><span class="sr-only"><%= arah %> </span><%= persenTeks %></span>
+          </dd>
         </div>
         <% } %>
-        <a href="/akreditasi" class="mt-4 inline-flex min-h-6 items-center text-sm font-semibold text-primary">Lihat semua akreditasi →</a>
-      </div>
+      </dl>
     </section>
     <% } %>
   </div>
+</div>
+<% } %>
 
-  <% if (kegiatanTerbaru.length) { %>
-  <section class="mt-10">
-    <div class="mb-4 flex items-end justify-between">
-      <h2 class="text-xl font-semibold">Kegiatan Akademik</h2>
-      <a href="/berita" class="text-sm font-semibold text-primary">Lihat semua →</a>
-    </div>
+<% if (kegiatanTerbaru.length) { %>
+<section class="section section-surface" aria-labelledby="kegiatan-judul">
+  <div class="container-content">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Berita', sectionHeading: 'Kegiatan Akademik', sectionLead: 'Dokumentasi kegiatan dan kabar akademik terbaru.', sectionLink: { label: 'Lihat semua berita', href: '/berita' }, sectionId: 'kegiatan-judul' }) %>
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <% kegiatanTerbaru.forEach(n => { %>
         <article class="card overflow-hidden">
-          <a href="/berita/<%= n.slug %>" class="block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
+          <a href="/berita/<%= n.slug %>" class="relative block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
             <% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-full object-cover" loading="lazy"><% } %>
           </a>
           <div class="card-body">
-            <p class="text-xs text-muted"><%= formatTanggal(n.createdAt) %></p>
-            <a href="/berita/<%= n.slug %>" class="mt-1 block line-clamp-2 font-semibold text-ink hover:text-primary"><%= n.title %></a>
+            <p class="text-xs font-semibold tracking-wide text-primary uppercase"><%= formatTanggal(n.createdAt) %></p>
+            <h3 class="mt-2 line-clamp-2 text-lg"><a href="/berita/<%= n.slug %>" class="text-ink hover:text-primary"><%= n.title %></a></h3>
           </div>
         </article>
       <% }) %>
     </div>
-  </section>
-  <% } %>
+  </div>
+</section>
+<% } %>
 
-  <% if (lulusan) { %>
-  <section class="mt-10 grid gap-4 sm:grid-cols-3">
-    <div class="card card-body text-center">
-      <p class="text-3xl font-bold tabular-nums text-primary"><%= formatAngka(lulusan.total) %></p>
-      <p class="text-sm text-muted">Lulusan tahun <%= lulusan.tahun %></p>
+<% if (videoUrl) { %>
+<section class="section <%= videoBand %>" aria-labelledby="video-judul">
+  <div class="container-content max-w-5xl">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Profil', sectionHeading: 'Video Profil', sectionAlign: 'center', sectionId: 'video-judul' }) %>
+    <div class="aspect-video overflow-hidden rounded-card border border-line shadow-raised">
+      <iframe src="<%= videoUrl %>" title="Video Profil Bidang Akademik" class="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
-    <div class="card card-body text-center">
-      <p class="text-3xl font-bold tabular-nums text-ink"><%= formatAngka(lulusan.totalSemua) %></p>
-      <p class="text-sm text-muted">Total lulusan tercatat</p>
-    </div>
-    <% if (lulusan.persenPerubahan !== null) { %>
-    <div class="card card-body text-center">
-      <p class="text-3xl font-bold tabular-nums <%= lulusan.persenPerubahan >= 0 ? 'text-success' : 'text-danger' %>"><%= lulusan.persenPerubahan >= 0 ? '+' : '' %><%= lulusan.persenPerubahan %>%</p>
-      <p class="text-sm text-muted">Dibanding tahun sebelumnya</p>
-    </div>
-    <% } %>
-  </section>
-  <% } %>
-
-  <% if (setting && setting.landingVideoUrl) { %>
-  <section class="mt-10">
-    <h2 class="mb-4 text-xl font-semibold">Video Profil</h2>
-    <div class="aspect-video overflow-hidden rounded-card border border-line">
-      <iframe src="<%= setting.landingVideoUrl %>" title="Video Profil Bidang Akademik" class="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-    </div>
-  </section>
-  <% } %>
-
-</div>
+  </div>
+</section>
+<% } %>

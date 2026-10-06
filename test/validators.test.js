@@ -66,3 +66,16 @@ test('userCreate and passwordChange', () => {
   const p = validate(schemas.passwordChange, { currentPassword: 'lama12345', newPassword: 'baru12345', confirmPassword: 'beda12345' });
   assert.equal(p.errors.confirmPassword, 'Konfirmasi password tidak sesuai.');
 });
+
+test('siteSetting & quickLink: URLs must be http(s) — they are rendered as href / iframe src', () => {
+  for (const url of ['javascript:alert(1)', 'data:text/html,<script>alert(1)</script>', 'JavaScript:alert(1)', 'ftp://x.test/a']) {
+    const r = validate(schemas.siteSetting, { socialFacebook: url, landingVideoUrl: url });
+    assert.equal(r.ok, false, url);
+    assert.ok(r.errors.socialFacebook && r.errors.landingVideoUrl, url);
+    assert.equal(validate(schemas.quickLink, { label: 'X', url, target: '_blank' }).ok, false, url);
+  }
+  const ok = validate(schemas.siteSetting, { socialFacebook: 'https://facebook.com/unjani', landingVideoUrl: 'https://www.youtube.com/embed/x', socialTiktok: '' });
+  assert.equal(ok.ok, true, JSON.stringify(ok.errors));
+  assert.equal(ok.data.socialTiktok, undefined);
+  assert.equal(validate(schemas.quickLink, { label: 'Portal', url: ' http://unjani.ac.id ', target: '_self' }).ok, true);
+});

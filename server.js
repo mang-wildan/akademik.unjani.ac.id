@@ -48,6 +48,7 @@ const { isStaff } = roles;
 const icon = require('./utils/icons');
 const format = require('./utils/format');
 const navigation = require('./utils/navigation');
+const { phoneLink } = require('./utils/contact');
 const { assetUrl } = require('./utils/assetVersion');
 const { accreditationStatus } = require('./utils/accreditation');
 const { calendarEventStatus } = require('./utils/calendar');
@@ -58,7 +59,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Helpers available in every view (new layouts & components).
-Object.assign(app.locals, { icon, ...format, ...navigation, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus, assetUrl });
+Object.assign(app.locals, { icon, ...format, ...navigation, phoneLink,isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus, assetUrl });
 
 // Behind a reverse proxy (Nginx, cPanel, etc.) set TRUST_PROXY to the number of
 // proxy hops so req.ip is the visitor's address; login attempt limits rely on it.

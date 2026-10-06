@@ -163,7 +163,9 @@ const kategori = z.object({
   isActive: checkbox,
 });
 
-const optionalUrl = label => z.preprocess(blankToUndefined, z.url(`${label} harus berupa URL yang valid.`).optional());
+// http(s) only: these URLs end up in href/iframe src, where javascript:/data: would run script.
+const httpUrl = message => z.url({ protocol: /^https?$/, error: message });
+const optionalUrl = label => z.preprocess(blankToUndefined, httpUrl(`${label} harus berupa URL yang valid (http/https).`).optional());
 const optionalEmail = label => z.preprocess(blankToUndefined, z.email(`${label} tidak valid.`).optional());
 
 // Hanya field yang benar-benar dipakai views/layouts/public.ejs (footer) dan
@@ -187,7 +189,7 @@ const siteSetting = z.object({
 
 const quickLink = z.object({
   label: text('Label', { max: 60 }),
-  url: z.preprocess(v => (typeof v === 'string' ? v.trim() : v), z.url('URL tidak valid.')),
+  url: z.preprocess(v => (typeof v === 'string' ? v.trim() : v), httpUrl('URL tidak valid (harus http/https).')),
   target: choice('Target', ['_self', '_blank']),
 });
 

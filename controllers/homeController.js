@@ -21,8 +21,9 @@ const { SEMESTER, calendarEventStatus, currentAndNext, byStart } = require('../u
 const { jenjangFromNama } = require('../utils/prodi');
 const { sanitizeHtml } = require('../utils/html');
 
-// Beranda (FR-B-01..08). Hero has no text-over-photo; every section degrades
-// gracefully to nothing when its data is empty, rather than showing filler.
+// Beranda (FR-B-01..08). Since F7 the hero puts text over the photo behind a
+// near-opaque green overlay; every section degrades gracefully to nothing when
+// its data is empty, rather than showing filler.
 exports.getLanding = async (req, res) => {
   const now = new Date();
   const setting = res.locals.siteSetting;
@@ -43,7 +44,9 @@ exports.getLanding = async (req, res) => {
     News.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
     Pengumuman.find({ status: 'published' }, 'title slug createdAt').sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
     Accreditation.find({ jenis: JENIS.INSTITUSI }, 'peringkat berlakuSampai lembaga').populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
-    Accreditation.find({ jenis: { $ne: JENIS.INSTITUSI }, peringkat: { $exists: true } }, 'peringkat').lean(),
+    // Newest first, with deterministic tie-breaks; populate drops links to deleted prodi (programStudi → null).
+    Accreditation.find({ jenis: JENIS.PRODI }, 'peringkat programStudi berlakuSampai')
+      .populate('programStudi', '_id').sort({ berlakuSampai: -1, tanggalBerlaku: -1, _id: -1 }).lean(),
     News.find({ status: 'published' }, 'title slug createdAt featuredImage').sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
     Lulusan.aggregate([{ $group: { _id: '$tahun', total: { $sum: '$jumlah' } } }, { $sort: { _id: -1 } }]),
   ]);
@@ -62,8 +65,21 @@ exports.getLanding = async (req, res) => {
   // "Status Mutu Institusi" (FR-B-05): every institutional record shown as-is
   // (see getAkreditasiLanding for why none is picked as "the" status).
   institusiAcc.forEach(a => { a.status = accreditationStatus(a.berlakuSampai); });
+  // Prodi distribution: only each existing program's newest certificate, and
+  // only while it is valid — older, expired or undated ones would claim a grade
+  // nobody can be shown to hold now. Rows arrive newest-first, so the first per prodi wins.
+  const terbaruPerProdi = new Map();
+  prodiPeringkat.forEach(a => {
+    if (!a.programStudi) return;
+    const key = String(a.programStudi._id);
+    if (!terbaruPerProdi.has(key)) terbaruPerProdi.set(key, a);
+  });
   const peringkatCounts = {};
-  prodiPeringkat.forEach(a => { peringkatCounts[a.peringkat] = (peringkatCounts[a.peringkat] || 0) + 1; });
+  terbaruPerProdi.forEach(a => {
+    const { key } = accreditationStatus(a.berlakuSampai, now);
+    if (!a.peringkat || (key !== 'berlaku' && key !== 'segera-berakhir')) return;
+    peringkatCounts[a.peringkat] = (peringkatCounts[a.peringkat] || 0) + 1;
+  });
   const peringkatStats = PERINGKAT.map(p => ({ peringkat: p, total: peringkatCounts[p] || 0 })).filter(p => p.total > 0);
 
   // Lulusan (FR-B-07): latest year vs the one before it.

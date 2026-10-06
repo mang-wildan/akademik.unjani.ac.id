@@ -105,11 +105,11 @@ Diringkas dari audit:
 
 | ID | Kebutuhan | Prio | Audit |
 |---|---|---|---|
-| FR-B-01 | Hero ringkas berisi judul, subjudul, satu foto kampus **asli**, dan 4 akses cepat (Kalender, Dokumen & Formulir, Kurikulum, Akreditasi). Tanpa teks di atas foto | Wajib | 04 |
+| FR-B-01 | Hero ringkas berisi judul, subjudul, satu foto kampus **asli**, dan 4 akses cepat (Kalender, Dokumen & Formulir, Kurikulum, Akreditasi). ~~Tanpa teks di atas foto~~ — *diubah 2026-10-06 (F7, permintaan stakeholder "lebih akademik"):* teks boleh di atas foto asalkan di balik overlay hijau yang hampir pekat sehingga kontras teks ≥ 4,5:1 tidak bergantung pada isi foto | Wajib | 04 |
 | FR-B-02 | Panel "Informasi Penting" berisi maksimal 3 konten yang disematkan, berupa baris teks dengan label kategori dan tanggal | Wajib | — |
 | FR-B-03 | "Agenda Akademik Terdekat" berisi 4 kegiatan kalender berikutnya, diambil otomatis dari data kalender (§3.3), dengan status Sedang berlangsung atau Akan datang | Wajib | — |
 | FR-B-04 | "Pengumuman Terbaru": 5 item dalam bentuk daftar teks dengan tanggal | Wajib | — |
-| FR-B-05 | Kartu "Status Mutu Institusi" berisi peringkat institusi, lembaga, dan tanggal berlaku, dengan status yang dihitung otomatis, plus jumlah prodi per peringkat | Wajib | 06 |
+| FR-B-05 | Kartu "Status Mutu Institusi" berisi peringkat institusi, lembaga, dan tanggal berlaku, dengan status yang dihitung otomatis, plus jumlah prodi per peringkat (*F7:* hanya sertifikat terbaru tiap prodi yang masih berlaku) | Wajib | 06 |
 | FR-B-06 | "Kegiatan Akademik": 3 berita terbaru, gambar di atas dan teks di bawah | Wajib | — |
 | FR-B-07 | Statistik lulusan berupa 2–3 angka ringkas dengan format `id-ID` (mis. 6.289) | Sebaiknya | 12 |
 | FR-B-08 | Bagian video profil hanya tampil bila URL video diisi dan valid | Sebaiknya | 18 |
