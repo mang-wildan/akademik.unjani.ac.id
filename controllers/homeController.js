@@ -44,6 +44,7 @@ exports.getLanding = async (req, res) => {
     prodiIds,
     kegiatanTerbaru,
     lulusanAgg,
+    units,
   ] = await Promise.all([
     AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
     Pengumuman.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
@@ -58,6 +59,7 @@ exports.getLanding = async (req, res) => {
     ProgramStudi.distinct('_id'),
     News.find({ status: 'published' }, 'title slug createdAt featuredImage').sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
     Lulusan.aggregate([{ $group: { _id: '$tahun', total: { $sum: '$jumlah' } } }, { $sort: { _id: -1 } }]),
+    Unit.find({}, 'nama img link').sort({ createdAt: -1 }).lean(),
   ]);
 
   // "Informasi Penting" (FR-B-02): newest 3 pinned items across the three content types.
@@ -109,6 +111,7 @@ exports.getLanding = async (req, res) => {
     institusiAcc,
     peringkatStats,
     kegiatanTerbaru,
+    units,
     lulusan: tahunTerbaru ? { tahun: tahunTerbaru._id, total: tahunTerbaru.total, totalSemua, persenPerubahan } : null,
   });
 };

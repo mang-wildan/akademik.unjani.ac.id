@@ -30,6 +30,61 @@ document.addEventListener('alpine:init', () => {
   }));
 
   // Tabs with arrow-key navigation (WAI-ARIA tabs pattern).
+  // Slideshow Unit Kerja (Beranda). Gulir & geser = CSS scroll-snap; di sini hanya tombol dan autoplay.
+  // Autoplay ±5 dtk: berhenti saat kursor/fokus di dalam, saat tab tersembunyi, dan mati bila prefers-reduced-motion.
+  window.Alpine.data('carousel', () => ({
+    playing: true,
+    canScroll: false,
+    held: false,
+    timer: null,
+    reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    get centerClass() {
+      return this.canScroll ? '' : 'justify-center'; // sedikit unit: kartu di tengah; banyak: mulai dari kiri agar bisa digulir
+    },
+    get toggleLabel() {
+      return this.playing ? 'Jeda slideshow' : 'Putar slideshow';
+    },
+    init() {
+      this.playing = !this.reduced;
+      this.measure();
+      window.addEventListener('resize', () => this.measure());
+      this.timer = setInterval(() => {
+        if (this.playing && this.canScroll && !this.held && !document.hidden) this.next();
+      }, 5000);
+    },
+    destroy() {
+      clearInterval(this.timer);
+    },
+    measure() {
+      const t = this.$refs.track;
+      this.canScroll = t.scrollWidth > t.clientWidth + 4;
+    },
+    step() {
+      const card = this.$refs.track.firstElementChild;
+      return card.offsetWidth + parseFloat(getComputedStyle(this.$refs.track).columnGap || 0);
+    },
+    go(left) {
+      this.$refs.track.scrollTo({ left, behavior: this.reduced ? 'auto' : 'smooth' });
+    },
+    next() {
+      const t = this.$refs.track;
+      this.go(t.scrollLeft + t.clientWidth >= t.scrollWidth - 4 ? 0 : t.scrollLeft + this.step());
+    },
+    prev() {
+      const t = this.$refs.track;
+      this.go(t.scrollLeft <= 4 ? t.scrollWidth : t.scrollLeft - this.step());
+    },
+    toggle() {
+      this.playing = !this.playing;
+    },
+    hold() {
+      this.held = true;
+    },
+    release() {
+      this.held = false;
+    },
+  }));
+
   window.Alpine.data('tabs', () => ({
     active: 0,
     init() {

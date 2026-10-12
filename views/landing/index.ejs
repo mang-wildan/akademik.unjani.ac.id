@@ -1,6 +1,7 @@
 <%# Beranda (FR-B-01..08). Setiap bagian hilang dengan rapi bila datanya kosong — tidak ada konten isian.
     Urutan latar (F7 R2): hero (hijau tua) → akses cepat + info + agenda (canvas) → pengumuman (hijau muda)
-    → mutu & lulusan (hijau tua) → kegiatan (putih) → video (hijau muda, atau putih bila tepat setelah pengumuman). %>
+    → mutu & lulusan (hijau tua) → kegiatan (putih) → unit kerja (hijau muda, atau putih bila tepat setelah pengumuman)
+    → video (hijau muda, atau putih bila tepat setelah pengumuman atau unit kerja berlatar hijau muda). %>
 <%
   const aksesCepat = [
     { label: 'Kalender Akademik', desc: 'Jadwal kegiatan & masa perkuliahan', href: '/kalender-akademik', icon: 'event' },
@@ -12,7 +13,9 @@
   const adaPita = adaMutu || lulusan;
   // Validator hanya menerima http(s); cek ulang di sini untuk nilai yang tersimpan sebelum itu.
   const videoUrl = setting && /^https?:\/\//i.test(setting.landingVideoUrl || '') ? setting.landingVideoUrl : '';
-  const videoBand = pengumumanTerbaru.length && !adaPita && !kegiatanTerbaru.length ? 'section-surface' : 'section-soft';
+  const sesudahPengumuman = pengumumanTerbaru.length && !adaPita && !kegiatanTerbaru.length; // pita sebelumnya = pengumuman (hijau muda)
+  const unitBand = sesudahPengumuman ? 'section-surface' : 'section-soft';
+  const videoBand = units.length ? (unitBand === 'section-soft' ? 'section-surface' : 'section-soft') : sesudahPengumuman ? 'section-surface' : 'section-soft';
 %>
 
 <section class="section-dark relative isolate overflow-hidden">
@@ -197,6 +200,34 @@
         </article>
       <% }) %>
     </div>
+  </div>
+</section>
+<% } %>
+
+<% if (units.length) { %>
+<section class="section <%= unitBand %>" aria-labelledby="unit-judul" aria-roledescription="carousel" x-data="carousel">
+  <div class="container-content">
+    <%- include('../components/section-heading', { sectionEyebrow: 'Unit kerja', sectionHeading: 'Unit Kerja Bidang Akademik', sectionLead: 'Unit yang melayani kebutuhan akademik sivitas akademika.', sectionId: 'unit-judul' }) %>
+    <div class="-mt-4 mb-4 flex justify-end gap-2" x-show="canScroll" x-cloak>
+      <button type="button" class="btn-icon border border-line bg-surface" @click="prev" aria-label="Unit sebelumnya"><%- icon('chevron_left') %></button>
+      <button type="button" class="btn-icon border border-line bg-surface" @click="toggle" :aria-label="toggleLabel">
+        <span x-show="playing"><%- icon('pause') %></span><span x-show="!playing"><%- icon('play_arrow') %></span>
+      </button>
+      <button type="button" class="btn-icon border border-line bg-surface" @click="next" aria-label="Unit berikutnya"><%- icon('chevron_right') %></button>
+    </div>
+    <%# Jalur gulir CSS (scroll-snap): sentuhan/geser native, tombol hanya memanggil scrollBy. Jeda otomatis saat kursor/fokus di dalam. %>
+    <ul x-ref="track" :class="centerClass" class="-mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-4 [scrollbar-width:none] motion-safe:scroll-smooth [&::-webkit-scrollbar]:hidden"
+        @mouseenter="hold" @mouseleave="release" @focusin="hold" @focusout="release">
+      <% units.forEach(u => { %>
+        <li class="group relative aspect-[4/3] shrink-0 basis-[85%] snap-start overflow-hidden rounded-card bg-brand shadow-raised sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
+          <img src="<%= u.img %>" alt="" class="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none" loading="lazy" width="900" height="675">
+          <div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-brand from-30% via-brand/80 to-transparent p-5 pt-16">
+            <h3 class="text-lg leading-snug font-semibold text-white"><%= u.nama %></h3>
+            <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="btn btn-accent mt-3 min-h-11 px-4">Kunjungi unit<span class="sr-only"> <%= u.nama %> (tab baru)</span><%- icon('open_in_new', 'size-4') %></a><% } %>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
   </div>
 </section>
 <% } %>

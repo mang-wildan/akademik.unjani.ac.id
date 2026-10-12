@@ -1,8 +1,10 @@
-// Admin CRUD untuk Unit (FR-M-10), ditampilkan di halaman Profil publik.
+// Admin CRUD untuk Unit (FR-M-10), ditampilkan di Profil, Struktur Organisasi, dan slideshow Beranda (F8).
+// Gambar dikecilkan ke WebP 900 px (kartu slideshow tidak butuh lebih).
 const fs = require('fs/promises');
 const path = require('path');
 const Unit = require('../models/Unit');
 const { validate, schemas } = require('../validators');
+const { processImage } = require('../utils/image');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
@@ -27,7 +29,7 @@ exports.create = async (req, res) => {
     await removeUploaded(req);
     return res.renderPage('admin/unit/form', { title: 'Tambah Unit', mode: 'create', values: req.body, errors: fieldErrors }, 'layouts/admin');
   }
-  await Unit.create({ ...data, img: toPublicUrl(req.file.path), createdBy: req.user._id, updatedBy: req.user._id });
+  await Unit.create({ ...data, img: toPublicUrl((await processImage(req.file.path, { maxWidth: 900 })).file), createdBy: req.user._id, updatedBy: req.user._id });
   res.redirect(`/admin/unit?success=${encodeURIComponent('Unit berhasil ditambahkan.')}`);
 };
 
@@ -54,7 +56,7 @@ exports.update = async (req, res) => {
     await removeUploaded(req);
     return res.renderPage('admin/unit/form', { title: 'Ubah Unit', mode: 'edit', item: item.toObject(), values: req.body, errors }, 'layouts/admin');
   }
-  if (req.file) item.img = toPublicUrl(req.file.path);
+  if (req.file) item.img = toPublicUrl((await processImage(req.file.path, { maxWidth: 900 })).file);
   Object.assign(item, data, { updatedBy: req.user._id });
   await item.save();
   res.redirect(`/admin/unit?success=${encodeURIComponent('Unit berhasil diperbarui.')}`);

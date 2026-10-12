@@ -5,13 +5,14 @@
   breadcrumb: [{ label: 'Profil' }, { label: 'Pimpinan & Staf' }],
 }) %>
 <%
-  // Per tingkat: grid kartu, ukuran foto, ukuran nama. Kunci = nilai tingkat.
+  // Per tingkat: lebar kartu, ukuran foto, ukuran nama. Kunci = nilai tingkat. Baris flex terpusat: sisa kartu di baris terakhir tetap di tengah.
+  const dua = 'w-[calc(50%-0.625rem)]'; // dua kartu per baris di HP
   const gaya = {
-    'wakil-rektor': { grid: 'mx-auto max-w-md grid-cols-1', foto: 'size-32', nama: 'text-xl' },
-    'kepala-biro': { grid: 'sm:grid-cols-2 lg:grid-cols-3', foto: 'size-24', nama: 'text-lg' },
-    'kepala-bagian': { grid: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4', foto: 'size-20', nama: 'text-base' },
-    'kepala-urusan': { grid: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4', foto: 'size-16', nama: 'text-base' },
-    'anggota': { grid: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5', foto: 'size-14', nama: 'text-sm' },
+    'wakil-rektor': { kartu: 'w-full max-w-md', foto: 'size-32', nama: 'text-xl' },
+    'kepala-biro': { kartu: 'w-full sm:w-80', foto: 'size-24', nama: 'text-lg' },
+    'kepala-bagian': { kartu: `${dua} sm:w-56`, foto: 'size-20', nama: 'text-base' },
+    'kepala-urusan': { kartu: `${dua} sm:w-52`, foto: 'size-16', nama: 'text-base' },
+    'anggota': { kartu: `${dua} sm:w-44`, foto: 'size-14', nama: 'text-sm' },
   };
 %>
 
@@ -24,9 +25,9 @@
       <%# Garis penghubung antartingkat: hanya hiasan. %>
       <% if (i) { %><span class="absolute top-0 left-1/2 h-8 w-px bg-accent" aria-hidden="true"></span><% } %>
       <h2 id="tingkat-<%= g.value %>" class="mb-6 text-center text-xl font-semibold"><span class="eyebrow"><%= g.label %></span></h2>
-      <ul class="grid gap-5 <%= s.grid %>">
+      <ul class="flex flex-wrap justify-center gap-5">
         <% g.items.forEach(p => { %>
-          <li class="card card-body flex flex-col items-center text-center">
+          <li class="card card-body flex flex-col items-center text-center <%= s.kartu %>">
             <img src="<%= p.foto %>" alt="" class="<%= s.foto %> rounded-full object-cover" loading="lazy">
             <p class="mt-3 font-semibold text-ink <%= s.nama %>"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
             <p class="text-sm text-muted"><%= p.jabatan %></p>
