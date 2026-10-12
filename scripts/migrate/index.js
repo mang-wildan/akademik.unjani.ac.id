@@ -34,6 +34,7 @@ const backup = (label, docs) => {
 };
 
 (async () => {
+  if (process.env.DNS_SERVERS) require('dns').setServers(process.env.DNS_SERVERS.split(',').map(s => s.trim()).filter(Boolean)); // lihat config/db.js
   await mongoose.connect(process.env.MONGO_URI);
   console.log(`${APPLY ? 'APPLY' : 'DRY-RUN (tambahkan --apply untuk menerapkan)'} · database: ${mongoose.connection.name}\n`);
 

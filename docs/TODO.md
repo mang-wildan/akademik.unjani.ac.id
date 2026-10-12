@@ -304,3 +304,24 @@ Permintaan stakeholder (2026-10-06). Referensi struktur: template Qeducato di `R
 - [x] `npm run build:css`, lalu `ux-ui-audit` publik + admin di 390 dan 1440 px — probe skill dijalankan via Playwright headless untuk 20 rute + 4 halaman admin (harness ber-stub; login sungguhan tidak dipakai karena DB = produksi): 0 gagal kontras dari ±2.900 node teks, 0 overflow, 1 `h1` per halaman. Ditemukan & diperbaiki: ring fokus `.btn` memudar dari `currentColor` 150 ms (`transition-colors` TW4 ikut `outline-color`), ring fokus kolom isian 20% (±1,2:1) → hijau solid 2 px. Detail: [AUDIT-UIUX-v3.md](AUDIT-UIUX-v3.md)
 - [x] Kontras teks di seksi gelap & banner; A11y dan SEO Lighthouse tetap 100 di 4 halaman F5 — 100/100 di keempatnya setelah memperbaiki penghitung tab semester `opacity-75` (3,54:1) di Kalender
 - [x] Performa: ukuran font baru + hero penuh lebar tidak menurunkan skor dibanding F5 — awalnya Beranda turun (±71 vs 76): hero 1600 px ikut terunduh di HP dan `.populate` di hitungan prodi R2 menambah round-trip DB. Diperbaiki (`hero-kampus-800.webp` 61 KB + `srcset`/`imagesrcset`; `ProgramStudi.distinct` paralel). Hasil akhir Lighthouse mobile vs F5: Beranda 80 (median 3×) vs 76, Kalender 87 vs 85, Akreditasi 84 vs 81, Dokumen 87 vs 84
+
+---
+
+## F8 — Hierarki Pimpinan & Slideshow Unit Kerja `[Sonnet 5.5 · medium]`
+
+Permintaan stakeholder (2026-10-12). Dua bagian, satu commit tiap bagian. Hierarki dikerjakan lebih dulu (lebih kecil). Hierarki = **tingkatan saja** (bukan pohon atasan–bawahan). Deploy ke dev-akademik hanya bila diminta.
+
+### H1 — Hierarki Pimpinan & Staf
+- [x] `utils/staffTingkat.js`: satu sumber daftar tingkat berurutan — `wakil-rektor`, `kepala-biro`, `kepala-bagian`, `kepala-urusan`, `anggota` (value + label)
+- [x] `models/Staff.js`: field `kelompok` (pimpinan/staf) diganti `tingkat` (enum dari `utils/staffTingkat.js`, default `anggota`); `jabatan` tetap teks bebas
+- [x] `validators/index.js` skema `staff`: `kelompok` → `tingkat`; update `test/validators.test.js`
+- [x] Admin: select "Kelompok" → "Tingkat" di `views/admin/staff/form.ejs`; kolom + urutan daftar (`list.ejs`, `staffController.list`) mengikuti tingkat lalu `nomorUrut`; default form baru `anggota`
+- [x] `homeController.getPimpinanStaffLanding`: kelompokkan per tingkat (fungsi murni + 1 tes); `views/landing/pimpinan-staff.ejs`: satu blok per tingkat dari atas ke bawah, kartu makin kecil ke bawah, garis penghubung vertikal tipis, tingkat kosong tidak ditampilkan
+- [x] Skrip migrasi `scripts/migrate/009-staff-tingkat.js` — tingkat ditebak dari awal teks jabatan (cadangan: pimpinan→wakil-rektor, staf→anggota); `scripts/migrate/index.js` kini memakai `DNS_SERVERS`. Dry-run OK (2 data: Wakil Rektor, Kepala Biro), `--apply` dijalankan 2026-10-12 atas izin pemilik, backup di `backups/` — (dry-run dulu): `staf` → `anggota`, `pimpinan` → `wakil-rektor` (tebakan — koreksi per orang lewat form admin). **Atlas dev = produksi: jangan `--apply` tanpa konfirmasi pemilik**
+- [ ] Verifikasi: render dengan data palsu (semua tingkat, sebagian kosong, kosong total) di 390 & 1440 px; `npm test` hijau; Lighthouse A11y/SEO tetap 100
+
+### H2 — Slideshow Unit Kerja di Beranda
+- [ ] `homeController`: tambah `Unit.find().sort({ createdAt: -1 }).lean()` ke `Promise.all` beranda; periksa apakah unggahan unit (maks. 5 MB) sudah dikecilkan — bila belum, `loading="lazy"` + `width`/`height` agar skor performa tidak turun
+- [ ] `views/landing/index.ejs`: section baru setelah "Kegiatan Akademik", sebelum video; hilang rapi bila tidak ada unit; kartu foto 4:3 + nama di atas gradien hijau + tombol "Kunjungi Unit" (hanya bila `link` terisi, tab baru `rel="noopener"`); 3 kartu ≥1024 px, 2 di tablet, 1 di HP; hover zoom foto halus. Tidak ada halaman detail unit
+- [ ] Carousel tanpa library: CSS scroll-snap + `scrollBy({ behavior: 'smooth' })`, logika di `Alpine.data` pada `public/js/app.js` (Alpine CSP: tanpa ekspresi inline). Autoplay ±5 dtk, kembali ke awal setelah kartu terakhir; berhenti saat hover/fokus; mati total bila `prefers-reduced-motion`; tombol panah kiri/kanan + tombol jeda (WCAG 2.2.2)
+- [ ] `npm run build:css`; verifikasi 390 & 1440 px (tanpa overflow, fokus keyboard terlihat, kontras teks di atas gradien ≥ 4,5:1); Lighthouse Beranda tidak turun dari 80

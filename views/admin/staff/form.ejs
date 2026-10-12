@@ -8,8 +8,8 @@
   <%- include('../../components/form-field', { name: 'gelar', label: 'Gelar', value: values.gelar, error: errors.gelar, help: 'Opsional, ditampilkan di depan nama.' }) %>
   <%- include('../../components/form-field', { name: 'jabatan', label: 'Jabatan', required: true, value: values.jabatan, error: errors.jabatan }) %>
   <%- include('../../components/form-field', {
-    name: 'kelompok', label: 'Kelompok', type: 'select', required: true, value: values.kelompok, error: errors.kelompok,
-    options: [{ value: 'pimpinan', label: 'Pimpinan' }, { value: 'staf', label: 'Staf' }],
+    name: 'tingkat', label: 'Tingkat', type: 'select', required: true, value: values.tingkat, error: errors.tingkat,
+    options: TINGKAT, help: 'Menentukan posisi di halaman publik, dari atas ke bawah.',
   }) %>
   <%- include('../../components/form-field', { name: 'email', label: 'Email', type: 'email', value: values.email, error: errors.email, help: 'Opsional.' }) %>
   <%- include('../../components/form-field', { name: 'nomorUrut', label: 'Urutan Tampil', type: 'number', value: values.nomorUrut, error: errors.nomorUrut, min: 0, max: 999 }) %>

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { VALUES } = require('../utils/staffTingkat');
 
 const StaffSchema = new mongoose.Schema(
   {
@@ -7,7 +8,7 @@ const StaffSchema = new mongoose.Schema(
     jabatan: { type: String, required: true, trim: true },
     foto: { type: String, required: true, trim: true }, // image path
     nomorUrut: { type: Number, default: 0 },
-    kelompok: { type: String, enum: ['pimpinan', 'staf'], default: 'staf' },
+    tingkat: { type: String, enum: VALUES, default: 'anggota' },
     gelar: { type: String, trim: true, maxlength: 80 },
     email: { type: String, trim: true, lowercase: true, maxlength: 160 },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

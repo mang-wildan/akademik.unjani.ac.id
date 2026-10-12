@@ -54,8 +54,8 @@ test('content: body of only empty tags counts as empty; checkbox parsed', () => 
 });
 
 test('staff: email optional but checked, urutan numeric', () => {
-  assert.equal(validate(schemas.staff, { nama: 'Rina', jabatan: 'Kepala', kelompok: 'pimpinan', email: '', nomorUrut: '' }).data.nomorUrut, 0);
-  assert.equal(validate(schemas.staff, { nama: 'Rina', jabatan: 'Kepala', kelompok: 'pimpinan', email: 'rina@' }).errors.email, 'Format email tidak valid.');
+  assert.equal(validate(schemas.staff, { nama: 'Rina', jabatan: 'Kepala', tingkat: 'kepala-biro', email: '', nomorUrut: '' }).data.nomorUrut, 0);
+  assert.equal(validate(schemas.staff, { nama: 'Rina', jabatan: 'Kepala', tingkat: 'kepala-biro', email: 'rina@' }).errors.email, 'Format email tidak valid.');
 });
 
 test('userCreate and passwordChange', () => {

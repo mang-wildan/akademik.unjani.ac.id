@@ -5,6 +5,7 @@ const { z } = require('zod');
 const { PERINGKAT, JENIS } = require('../utils/accreditation');
 const { SEMESTER } = require('../utils/calendar');
 const { parseTanggal } = require('../utils/calendarImport');
+const staffTingkat = require('../utils/staffTingkat');
 
 const req = label => `${label} wajib diisi.`;
 
@@ -225,7 +226,7 @@ const staff = z.object({
   nama: text('Nama', { max: 120 }),
   gelar: optionalText('Gelar', 80),
   jabatan: text('Jabatan', { max: 120 }),
-  kelompok: choice('Kelompok', ['pimpinan', 'staf']),
+  tingkat: choice('Tingkat', staffTingkat.VALUES),
   email: z.preprocess(blankToUndefined, z.email('Format email tidak valid.').optional()),
   nip: optionalText('NIP/NID', 40),
   nomorUrut: z.preprocess(v => (blankToUndefined(v) === undefined ? 0 : Number(v)), z.number().int('Urutan harus bilangan bulat.').min(0).max(999)),

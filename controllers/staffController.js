@@ -1,13 +1,13 @@
-// Admin CRUD untuk Pimpinan & Staf (FR-M-09). `kelompok` dan `gelar`
-// sebelumnya tidak pernah bisa diisi lewat form admin sama sekali, padahal
-// keduanya dipakai halaman publik (kelompok menentukan bagian Pimpinan vs
-// Staf, lihat getPimpinanStaffLanding; gelar ditampilkan di depan nama) --
-// celah itu ditutup di sini. NIP/NID boleh diisi admin (dipakai internal)
+// Admin CRUD untuk Pimpinan & Staf (FR-M-09). `tingkat` menentukan blok
+// hierarki di halaman publik (lihat utils/staffTingkat.js dan
+// getPimpinanStaffLanding); gelar ditampilkan di depan nama.
+// NIP/NID boleh diisi admin (dipakai internal)
 // tapi tidak pernah dikirim ke halaman publik (K-05).
 const fs = require('fs/promises');
 const path = require('path');
 const Staff = require('../models/Staff');
 const { validate, schemas } = require('../validators');
+const { rank } = require('../utils/staffTingkat');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
@@ -16,12 +16,12 @@ const removeUploaded = async req => {
 };
 
 exports.list = async (req, res) => {
-  const items = await Staff.find().sort({ kelompok: 1, nomorUrut: 1, createdAt: -1 }).lean();
+  const items = (await Staff.find().sort({ nomorUrut: 1, createdAt: -1 }).lean()).sort((a, b) => rank(a.tingkat) - rank(b.tingkat));
   res.renderPage('admin/staff/list', { title: 'Pimpinan & Staf', items }, 'layouts/admin');
 };
 
 exports.showCreate = (req, res) => {
-  res.renderPage('admin/staff/form', { title: 'Tambah Staf', mode: 'create', values: { kelompok: 'staf', nomorUrut: 0 }, errors: {} }, 'layouts/admin');
+  res.renderPage('admin/staff/form', { title: 'Tambah Staf', mode: 'create', values: { tingkat: 'anggota', nomorUrut: 0 }, errors: {} }, 'layouts/admin');
 };
 
 exports.create = async (req, res) => {

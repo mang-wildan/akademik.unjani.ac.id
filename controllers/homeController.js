@@ -11,6 +11,7 @@ const RplDocument = require('../models/RplDocument');
 const Lulusan = require('../models/Lulusan');
 const Staff = require('../models/Staff');
 const Unit = require('../models/Unit');
+const { groupByTingkat } = require('../utils/staffTingkat');
 const ProgramStudi = require('../models/ProgramStudi');
 const { getProfileSingleton } = require('./academicProfileController');
 const { normalizeTags } = require('../utils/tagNormalizer');
@@ -393,14 +394,13 @@ exports.getRplLanding = async (req, res) => {
 
 exports.getPimpinanStaffLanding = async (req, res) => {
   // NIP/NID is never sent to this view (K-05) — only fields the public page uses are selected.
-  const all = await Staff.find({}, 'nama gelar jabatan foto nomorUrut kelompok')
+  const all = await Staff.find({}, 'nama gelar jabatan foto nomorUrut tingkat')
     .sort({ nomorUrut: 1, createdAt: -1 })
     .lean();
   res.renderPage('landing/pimpinan-staff', {
     title: 'Pimpinan & Staf',
     description: 'Struktur kepemimpinan dan staf Bidang Akademik Universitas Jenderal Achmad Yani.',
-    pimpinan: all.filter(s => s.kelompok === 'pimpinan'),
-    staf: all.filter(s => s.kelompok !== 'pimpinan'),
+    grup: groupByTingkat(all),
   });
 };
 

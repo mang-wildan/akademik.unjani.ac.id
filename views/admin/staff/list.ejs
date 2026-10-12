@@ -15,14 +15,14 @@
   <% } else { %>
   <table class="data-table data-table--stack">
     <caption class="sr-only">Daftar pimpinan dan staf</caption>
-    <thead><tr><th scope="col">Foto</th><th scope="col">Nama</th><th scope="col">Jabatan</th><th scope="col">Kelompok</th><th scope="col">Urutan</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
+    <thead><tr><th scope="col">Foto</th><th scope="col">Nama</th><th scope="col">Jabatan</th><th scope="col">Tingkat</th><th scope="col">Urutan</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
         <tr>
           <td data-label="Foto"><img src="<%= item.foto %>" alt="" class="size-12 shrink-0 rounded-full border border-line object-cover"></td>
           <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.gelar ? `${item.gelar} ` : '' %><%= item.nama %></span></td>
           <td data-label="Jabatan"><%= item.jabatan %></td>
-          <td data-label="Kelompok"><span class="badge badge-neutral"><%= item.kelompok === 'pimpinan' ? 'Pimpinan' : 'Staf' %></span></td>
+          <td data-label="Tingkat"><span class="badge badge-neutral"><%= (TINGKAT.find(t => t.value === item.tingkat) || TINGKAT[TINGKAT.length - 1]).label %></span></td>
           <td data-label="Urutan"><%= item.nomorUrut %></td>
           <td data-label="Aksi">
             <div class="flex items-center gap-1 md:justify-end">
