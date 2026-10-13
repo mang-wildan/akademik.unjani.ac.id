@@ -5,6 +5,7 @@ const ProgramStudi = require('../models/ProgramStudi');
 const Faculty = require('../models/Faculty');
 const { validate, schemas } = require('../validators');
 const { parseLulusanCsv } = require('../utils/lulusanImport');
+const { escapeRegex } = require('../utils/regex');
 
 const refData = async () => {
   const [prodiList, fakultasList] = await Promise.all([
@@ -16,7 +17,16 @@ const refData = async () => {
 
 exports.list = async (req, res) => {
   const tahun = parseInt(req.query.tahun, 10) || null;
+  const q = String(req.query.q || '').trim();
   const filter = tahun ? { tahun } : {};
+  if (q) {
+    const rx = new RegExp(escapeRegex(q), 'i');
+    const [prodi, fakultas] = await Promise.all([
+      ProgramStudi.find({ $or: [{ nama: rx }, { singkatan: rx }] }, '_id').lean(),
+      Faculty.find({ $or: [{ nama: rx }, { singkatan: rx }] }, '_id').lean(),
+    ]);
+    filter.$or = [{ programStudi: { $in: prodi.map(p => p._id) } }, { fakultas: { $in: fakultas.map(f => f._id) } }];
+  }
   const limit = 20;
   const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
   const [tahunList, total] = await Promise.all([Lulusan.distinct('tahun'), Lulusan.countDocuments(filter)]);
@@ -34,7 +44,7 @@ exports.list = async (req, res) => {
   res.renderPage('admin/lulusan/list', {
     title: 'Data Lulusan', items, importErrors: null, importSummary: null,
     tahunList: tahunList.filter(Boolean).sort((a, b) => b - a),
-    filters: { tahun: tahun ? String(tahun) : '' },
+    filters: { tahun: tahun ? String(tahun) : '', q },
     pagination: { page: currentPage, totalPages, total, from, to },
   }, 'layouts/admin');
 };

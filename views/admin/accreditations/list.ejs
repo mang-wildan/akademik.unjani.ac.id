@@ -11,7 +11,7 @@
   <form method="get" class="flex flex-col gap-3 border-b border-line p-4 md:flex-row md:items-center">
     <nav aria-label="Status" class="flex flex-wrap gap-1">
       <% [['', 'Semua'], ['berlaku', 'Berlaku'], ['segera-berakhir', 'Segera berakhir'], ['kedaluwarsa', 'Kedaluwarsa']].forEach(([val, label]) => { %>
-        <a href="?status=<%= val %><%= filters.jenis ? '&jenis=' + filters.jenis : '' %>" class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"<%- filters.status === val ? ' aria-current="page"' : '' %>><%= label %></a>
+        <a href="?status=<%= val %><%= filters.jenis ? '&jenis=' + filters.jenis : '' %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"<%- filters.status === val ? ' aria-current="page"' : '' %>><%= label %></a>
       <% }) %>
     </nav>
     <select name="jenis" class="field-control md:ml-auto md:w-48">
@@ -21,14 +21,16 @@
       <option value="lainnya"<%= filters.jenis === 'lainnya' ? ' selected' : '' %>>Lainnya</option>
     </select>
     <% if (filters.status) { %><input type="hidden" name="status" value="<%= filters.status %>"><% } %>
+    <label for="q" class="sr-only">Cari program studi atau unit</label>
+    <input id="q" name="q" type="search" class="field-control md:w-64" placeholder="Cari program studi atau unit…" value="<%= filters.q %>">
     <button type="submit" class="btn btn-secondary"><%- icon('filter_list') %>Terapkan</button>
   </form>
 
   <% if (!items.length) { %>
     <div class="p-6">
       <%- include('../../components/empty-state', {
-        emptyIcon: 'workspace_premium', emptyTitle: filters.status || filters.jenis ? 'Tidak ada yang cocok' : 'Belum ada data akreditasi',
-        emptyAction: (filters.status || filters.jenis) ? { label: 'Hapus filter', href: '/admin/accreditations' } : { label: 'Tambah Akreditasi', href: '/admin/accreditations/new' },
+        emptyIcon: 'workspace_premium', emptyTitle: filters.status || filters.jenis || filters.q ? 'Tidak ada yang cocok' : 'Belum ada data akreditasi',
+        emptyAction: (filters.status || filters.jenis || filters.q) ? { label: 'Hapus filter', href: '/admin/accreditations' } : { label: 'Tambah Akreditasi', href: '/admin/accreditations/new' },
       }) %>
     </div>
   <% } else { %>
@@ -37,7 +39,7 @@
     <thead><tr><th scope="col">Objek</th><th scope="col">Peringkat</th><th scope="col">Lembaga</th><th scope="col">Berlaku Sampai</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Objek">
             <span class="font-medium"><%= item.jenis === 'prodi' ? (item.programStudi ? item.programStudi.nama : '—') : (item.namaUnit || '—') %></span>
             <span class="badge badge-neutral ml-1"><%= item.jenis === 'institusi' ? 'Institusi' : item.jenis === 'prodi' ? 'Prodi' : 'Lainnya' %></span>

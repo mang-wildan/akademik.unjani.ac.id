@@ -275,7 +275,8 @@ window.addEventListener('pageshow', event => {
   const guarded = form => form instanceof HTMLFormElement && form.method === 'post' && !form.hasAttribute('data-no-dirty') && !form.closest('dialog');
   const mark = event => {
     const form = event.target.closest && event.target.closest('form');
-    if (event.isTrusted && form && guarded(form)) dirty.add(form);
+    // Drag-and-drop file picks dispatch a synthetic change event, so file inputs are accepted too.
+    if ((event.isTrusted || event.target.type === 'file') && form && guarded(form)) dirty.add(form);
   };
   document.addEventListener('input', mark);
   document.addEventListener('change', mark);
@@ -324,3 +325,44 @@ document.addEventListener('change', event => {
     }
   }
 });
+
+// Highlight the row(s) saved just before this redirect (?success=). Server time (body[data-now]) is used,
+// not the browser clock, so a wrong device clock cannot hide or fake the highlight.
+(function flashSavedRows() {
+  if (!/[?&]success=/.test(window.location.search)) return;
+  const now = Number(document.body.dataset.now);
+  if (!now) return;
+  document.querySelectorAll('tr[data-updated]').forEach(row => {
+    const updated = Date.parse(row.dataset.updated);
+    if (updated && now - updated < 90000) row.classList.add('row-flash');
+  });
+})();
+
+// Drag-and-drop onto a file field (SRS FR-AD-13): fills the field's <input type="file"> and reuses its change checks.
+(function setupDropzone() {
+  const fieldOf = event => event.target.closest && event.target.closest('[data-file-field]');
+  const hasFiles = event => event.dataTransfer && [...event.dataTransfer.types].includes('Files');
+  document.addEventListener('dragover', event => {
+    const field = fieldOf(event);
+    if (!field || !hasFiles(event)) return;
+    event.preventDefault(); // allows the drop
+    field.classList.add('dropzone-active');
+  });
+  document.addEventListener('dragleave', event => {
+    const field = fieldOf(event);
+    if (field && !field.contains(event.relatedTarget)) field.classList.remove('dropzone-active');
+  });
+  document.addEventListener('drop', event => {
+    const field = fieldOf(event);
+    if (!field || !hasFiles(event)) return;
+    event.preventDefault();
+    field.classList.remove('dropzone-active');
+    const input = field.querySelector('input[type="file"]');
+    if (!input) return;
+    const files = [...event.dataTransfer.files];
+    const transfer = new DataTransfer();
+    (input.multiple ? files : files.slice(0, 1)).forEach(file => transfer.items.add(file));
+    input.files = transfer.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+})();

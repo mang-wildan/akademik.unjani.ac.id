@@ -6,8 +6,11 @@ const { validate, schemas } = require('../validators');
 const { isSuperadmin } = require('../utils/roles');
 
 exports.list = async (req, res) => {
-  const items = await User.find().select('-password').sort({ createdAt: -1 }).lean();
-  res.renderPage('admin/users/list', { title: 'Akun Admin', items, currentUserId: String(req.user._id) }, 'layouts/admin');
+  const q = String(req.query.q || '').trim();
+  const all = await User.find().select('-password').sort({ createdAt: -1 }).lean();
+  const needle = q.toLowerCase();
+  const items = q ? all.filter(u => `${u.name || ''} ${u.email || ''}`.toLowerCase().includes(needle)) : all;
+  res.renderPage('admin/users/list', { title: 'Akun Admin', items, q, currentUserId: String(req.user._id) }, 'layouts/admin');
 };
 
 exports.showCreate = (req, res) => {

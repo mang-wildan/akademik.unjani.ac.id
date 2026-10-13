@@ -15,7 +15,7 @@
     <thead><tr><th scope="col">Tahun Ajaran</th><th scope="col">Nomor SK</th><th scope="col">Kegiatan</th><th scope="col">Lampiran</th><th scope="col">Diperbarui</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Tahun Ajaran"><a href="/admin/academic-calendars/<%= item._id %>/edit" class="inline-flex min-h-6 items-center font-medium"><%= item.tahunAjaran %></a></td>
           <td data-label="Nomor SK"><%= item.nomorSK || '—' %></td>
           <td data-label="Kegiatan"><%= formatAngka(item.events.length) %></td>

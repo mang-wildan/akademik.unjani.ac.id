@@ -12,7 +12,7 @@
     <thead><tr><th scope="col">Gambar</th><th scope="col">Nama</th><th scope="col">Tautan</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Gambar"><img src="<%= item.img %>" alt="" class="h-12 w-16 shrink-0 rounded-control border border-line object-cover"></td>
           <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.nama %></span></td>
           <td data-label="Tautan"><% if (item.link) { %><a href="<%= item.link %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center text-sm"><%= item.link %></a><% } else { %><span class="text-muted">—</span><% } %></td>

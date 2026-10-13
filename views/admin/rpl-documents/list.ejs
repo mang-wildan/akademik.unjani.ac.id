@@ -12,7 +12,7 @@
     <thead><tr><th scope="col">Judul</th><th scope="col">Tahun</th><th scope="col">Ukuran</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Judul"><span class="line-clamp-1 font-medium"><%= item.judul %></span></td>
           <td data-label="Tahun"><%= item.tahun %></td>
           <td data-label="Ukuran"><%= item.fileSize ? formatUkuranFile(item.fileSize) : '—' %></td>

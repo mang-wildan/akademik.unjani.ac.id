@@ -39,20 +39,23 @@ const refData = async () => {
 exports.list = async (req, res) => {
   const statusFilter = String(req.query.status || '');
   const jenisFilter = String(req.query.jenis || '');
+  const q = String(req.query.q || '').trim().toLowerCase();
   const all = await Accreditation.find()
     .populate('lembaga', 'nama singkatan')
     .populate('programStudi', 'nama singkatan')
     .sort({ berlakuSampai: -1 })
     .lean();
   const withStatus = all.map(a => ({ ...a, status: accreditationStatus(a.berlakuSampai) }));
-  const items = withStatus.filter(a => (!statusFilter || a.status.key === statusFilter) && (!jenisFilter || a.jenis === jenisFilter));
+  const matchesQuery = a => !q || [a.programStudi && a.programStudi.nama, a.namaUnit, a.lembaga && a.lembaga.singkatan, a.peringkat]
+    .some(text => text && String(text).toLowerCase().includes(q));
+  const items = withStatus.filter(a => (!statusFilter || a.status.key === statusFilter) && (!jenisFilter || a.jenis === jenisFilter) && matchesQuery(a));
 
   res.renderPage(
     'admin/accreditations/list',
     {
       title: 'Akreditasi',
       items,
-      filters: { status: statusFilter, jenis: jenisFilter },
+      filters: { status: statusFilter, jenis: jenisFilter, q: String(req.query.q || '').trim() },
       counts: {
         berlaku: withStatus.filter(a => a.status.key === 'berlaku').length,
         segera: withStatus.filter(a => a.status.key === 'segera-berakhir').length,

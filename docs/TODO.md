@@ -338,7 +338,7 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 - [x] Komponen Alpine `reveal` di `public/js/app.js`: `IntersectionObserver` memasang kelas `is-visible`; elemen disembunyikan **oleh JS**, bukan CSS bawaan, dan tidak untuk elemen di atas lipatan — NFR-U-03 — diimplementasikan sebagai fungsi biasa (`setupReveal`) di `public/js/app.js`, bukan komponen Alpine: atribut `data-reveal` / `data-reveal-group` (stagger 60 ms); kelas dilepas setelah `transitionend` agar tidak bentrok dengan `.lift`
 - [x] Komponen Alpine `busyForm`: pada `submit` tombol kirim `disabled` + teks "Menyimpan…" + `aria-busy="true"` pada form; pulih bila halaman dimuat dari cache (`pageshow`) — FR-AD-09 · P1 — diimplementasikan sebagai pendengar `submit` global (tanpa ubah view): form POST, bukan di `<dialog>`, bukan `data-no-busy`; spinner + "Memproses…" (`data-busy-label` untuk label lain); dipulihkan lewat `pageshow`
 - [x] Utilitas `.lift` (kartu terangkat tipis saat hover/fokus), `.press` (keadaan `active` tombol), `.fade-in-up` (masuk 8 px) — NFR-U-04 — plus `.menu-enter` dan animasi `<dialog>` (fade + skala 0,98, `@starting-style` + `allow-discrete`)
-- [ ] Dokumentasi pola di `/dev/komponen`; tes unit untuk logika murni (bila ada); `npm run build:css`
+- [x] Dokumentasi pola di `/dev/komponen` (seksi "Gerak & umpan balik": reveal, lift, menu, spinner kirim lewat `POST /dev/komponen` 1,5 dtk, dialog, sorotan baris, unggah); tes unit untuk logika murni (`utils/videoEmbed`, `utils/regex`); `npm run build:css`
 
 ### R1 — Perbaikan S1 `[Sonnet 5.5 · medium]`
 - [x] **P1** Terapkan `busyForm` ke semua form admin dan login — semua `views/admin/**/form.ejs`, `views/auth/login.ejs`, form di `settings/edit.ejs` dan `academic-calendars/edit.ejs` — tercakup pendengar global; tidak ada perubahan view
@@ -346,7 +346,7 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 - [x] **P3** Filter `<select>` di daftar admin dan Kalender: hapus `onchange` submit-otomatis, ganti tombol "Terapkan" (sembunyikan label di layar kecil dengan `sr-only`) — WCAG 3.2.2 — Berita, Pengumuman, Akreditasi (admin) dan Kalender (publik); tombol "Terapkan" terlihat
 - [x] **L1** Tombol "Unduh" di Dokumen Akademik dan RPL: `aria-label="Unduh <nama>"`; tautan judul + tombol tidak lagi dua tab stop (tombol `tabindex` tetap, judul tautan ke file) — `aria-label="Unduh <nama>"`; tab stop ganda dipertahankan (judul = buka, tombol = unduh)
 - [x] **L2** `.prose-content`: `img{max-w-full h-auto rounded}`, `table` dibungkus/diguling horizontal, gaya `blockquote`, `hr` — uji dengan isi berita yang ditempel dari Word — `img`, `blockquote`, `hr`, `table` (gulir sendiri), `th/td`
-- [ ] Tes: `npm test` hijau; render ulang 5 halaman terdampak di 390 dan 1440 px
+- [x] Tes: `npm test` hijau (50); render ulang halaman terdampak lewat harness EJS dengan data tiruan (390/1440 px menunggu R4)
 
 ### R2 — Landing page `[Sonnet 5.5 · medium]`
 **UX**
@@ -359,7 +359,7 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 - [x] **L9** Riwayat akreditasi di HP: daftar sederhana, bukan tabel bersarang — daftar di HP, tabel di ≥768 px; sel `colspan` tidak lagi memakai kolom label kosong
 - [x] **L10** Tautan ke tab baru (buku, dokumen): `sr-only "(tab baru)"` + ikon — buku, buku wisuda, dokumen, RPL
 - [x] **L11** `/cari`: hapus `autofocus` pada layar sentuh — `autofocus` dihapus (tidak dibedakan sentuh/desktop agar sederhana)
-- [x] **L12–L14** Logo halaman error, font serif angka peringkat, banner ringkas untuk `/cari` — S3, kerjakan sambil menyentuh file terkait — L12 dan L13 selesai; L14 (banner ringkas untuk `/cari`) sengaja dilewati — S3 opsional, banner seragam dipertahankan
+ L12 logo error, L13 serif peringkat, L14 banner ringkas (`compact: true` di `page-header`, dipakai `/cari`)
 **Gerak** *(NFR-U-04, maksimal 1–2 elemen utama per layar)*
 - [x] Hero Beranda: teks masuk `fade-in-up` sekali saat dimuat (tidak menyentuh gambar LCP)
 - [x] Reveal bertahap (stagger 60 ms) untuk kartu akses cepat, pengumuman, dan kegiatan di Beranda — hanya di bawah lipatan — agenda, pengumuman, kegiatan Beranda, dan grid Berita
@@ -377,22 +377,22 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 - [x] **P8** `[high]` `dirtyForm`: peringatan sebelum meninggalkan halaman bila ada perubahan belum disimpan; terapkan di Pengaturan Situs dan form panjang — FR-AD-11 — diimplementasikan sebagai penjaga global `setupDirtyGuard` (`beforeunload`), bukan komponen Alpine `dirtyForm`: form POST yang diedit; kirim form A hanya membersihkan A; `data-no-dirty` untuk login
 - [x] **P9** `[high]` Editor teks: tombol tautan, ikon bergambar menggantikan huruf, teks bantuan akurat — FR-AD-12 — ikon bergambar (+9 ikon ke `scripts/build-assets.js`), tombol tautan dengan kolom URL sebaris (bukan `window.prompt`) dan tombol hapus tautan; `execCommand` dipertahankan (belum ada pengganti tanpa dependensi)
 - [x] **P10** Tombol "Pratinjau" (tab baru) untuk draf berita/pengumuman — rute baca-saja untuk admin — rute `GET /admin/{news,pengumuman}/:id/preview` memakai tampilan detail publik untuk draf, `noindex`, tombol di form mode ubah (membuka versi **tersimpan**, bukan isi form yang belum disimpan)
-- [x] **P11** `[high]` `file-upload`: periksa tipe dan ukuran di klien, pratinjau gambar, seret-lepas — FR-AD-13 — pemeriksaan tipe + ukuran dan pratinjau gambar (via `data:` URL karena CSP tanpa `blob:`); seret-lepas belum
-- [ ] **P12** Pencarian + pagination di Akun Admin dan Data Lulusan — Data Lulusan: filter tahun + pagination 20/halaman. Akun Admin sengaja tidak diberi pencarian/pagination (jumlah akun kecil). Pencarian teks Lulusan/Akreditasi belum
-- [ ] **P13** Satu pola aksi: ⋯ untuk semua aksi destruktif/sekunder — ditunda (S3): perubahan memengaruhi 12 daftar dan perlu keputusan produk soal aksi Sematkan
+; seret-lepas ke kolom (`setupDropzone`, `DataTransfer`), penjaga perubahan ikut menandai
+- [x] **P12** Pencarian + pagination di Akun Admin dan Data Lulusan — Lulusan: filter tahun + cari prodi/fakultas + pagination 20/halaman; Akun Admin: cari nama/email; Akreditasi admin: cari prodi/unit/lembaga/peringkat. Input pencarian di `$regex` lewat `utils/regex.js#escapeRegex` (+ tes)
+- [x] **P13** Satu pola aksi — ternyata pola sudah konsisten dengan aturan: ⋯ bila ≥2 aksi sekunder (Sematkan + Hapus; Reset + Hapus), ikon Hapus langsung bila hanya Hapus. Aturan ditulis di `docs/POLA-ADMIN.md`; tidak ada perubahan view
 - [x] **P14–P16** `order-first` mati di Dasbor, label tombol mata password dinamis + catatan reset password, eyebrow Profil — S3 — P14 `order-first` dihapus; P15 dinyatakan *bukan cacat*: tombol dengan `aria-pressed` justru harus berlabel tetap — diganti catatan "Lupa password?" di login; P16 profil memakai `page-header` + eyebrow
 **Gerak**
 - [x] Dialog: fade + skala 0,98→1 (masuk 200 ms, keluar 120 ms) lewat `@starting-style`/`allow-discrete`, cadangan tanpa animasi — tanpa pemeriksaan visual di browser — lihat catatan verifikasi
 - [x] Dropdown ⋯ dan menu akun: fade + geser ≤ 8 px
 - [x] Toast: masuk dari bawah, keluar memudar; tetap `role="status"`/`alert` — masuk saja (`fade-in-up`)
 - [x] Tombol kirim: keadaan "Menyimpan…" dengan spinner (`linear`, bukan ease) — lewat pendengar global (R0)
-- [ ] Baris tabel yang baru disimpan/diubah: sorotan hijau muda memudar 1,2 dtk (hanya saat `?success=`) — ditunda: redirect `?success=` tidak membawa id baris yang berubah
+- [x] Baris tabel yang baru disimpan/diubah: sorotan hijau muda memudar 1,8 dtk — `data-updated` di 17 daftar + `body[data-now]` (waktu server, bukan jam perangkat); hanya setelah redirect `?success=`
 - [x] Sidebar HP: geser masuk (sudah ada) + latar memudar — latar gelap memudar (`.panel-enter`); sidebar sudah bergeser
 
-> **Catatan status (2026-10-13):** R0, R1, R2, dan R3 (kecuali P12 sebagian, P13, sorotan baris, seret-lepas) selesai dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Server lokal juga tidak bisa dipakai untuk render halaman data nyata (MongoDB Atlas tidak terjangkau saat dites); render dicek lewat harness EJS dengan data tiruan.
+> **Catatan status (2026-10-13):** R0–R3 selesai seluruhnya dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Server lokal juga tidak bisa dipakai untuk render halaman data nyata (MongoDB Atlas tidak terjangkau saat dites); render dicek lewat harness EJS dengan data tiruan.
 
 ### R4 — Verifikasi `[Opus 5.5 · high]`
-- [ ] `npm run build:css`, `npm test`
+- [x] `npm run build:css`, `npm test` (50 lulus)
 - [ ] Probe audit (kontras, target sentuh, nama aksesibel, overflow) di 390 dan 1440 px: publik + `/dev/komponen` + `/dev/admin` + harness admin
 - [ ] Uji `prefers-reduced-motion: reduce`: tidak ada animasi berjalan; JavaScript dimatikan: semua konten terbaca
 - [ ] Lighthouse mobile 4 halaman: Performa tidak turun dari F7/F8, A11y/SEO tetap 100; CLS < 0,1

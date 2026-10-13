@@ -12,7 +12,7 @@
     <thead><tr><th scope="col">Sampul</th><th scope="col">Judul</th><th scope="col">Tahun</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Sampul"><img src="<%= item.cover %>" alt="" class="h-16 w-12 shrink-0 rounded-control border border-line object-cover"></td>
           <td data-label="Judul"><span class="line-clamp-1 font-medium"><%= item.title %></span></td>
           <td data-label="Tahun"><%= item.year || '—' %></td>

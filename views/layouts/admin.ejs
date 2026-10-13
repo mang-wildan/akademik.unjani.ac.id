@@ -22,7 +22,7 @@
   <script src="<%= assetUrl('/js/app.js') %>" defer></script>
   <script src="/js/vendor/alpine-csp.min.js" defer></script>
 </head>
-<body class="text-[15px]" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
+<body class="text-[15px]" data-now="<%= Date.now() %>" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
   <a class="skip-link" href="#konten">Langsung ke konten utama</a>
 
   <!-- Sidebar: fixed on desktop, overlay on mobile. Hijau tua (bg-brand) + .on-dark agar cincin fokus putih.

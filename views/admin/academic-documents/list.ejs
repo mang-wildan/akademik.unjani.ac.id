@@ -17,7 +17,7 @@
     <thead><tr><th scope="col">Nama</th><th scope="col">Kategori</th><th scope="col">Ukuran</th><th scope="col">Diperbarui</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Nama">
             <span class="flex items-center gap-1 font-medium">
               <% if (item.pinned) { %><%- icon('keep', 'size-4 text-accent shrink-0') %><% } %>

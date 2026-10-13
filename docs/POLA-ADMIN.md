@@ -30,7 +30,7 @@ module.exports = require('./adminContentController')({
 ## Konvensi list.ejs
 
 - 3 `stat-tile` (Terbit/Draf/Disematkan) dalam `grid-cols-3`.
-- Tab status (`role="tablist"`) + filter kategori (`onchange submit`) + pencarian — semua lewat `GET` querystring, **tanpa JS wajib**.
+- Tab status (`<nav>` + `aria-current`) + filter kategori (tombol "Terapkan") + pencarian — semua lewat `GET` querystring, **tanpa JS wajib**.
 - `<table class="data-table data-table--stack">` — lihat jebakan CSS di bawah.
 - Kolom "Aksi": tombol "Ubah" berlabel langsung terlihat; **Sematkan/Lepas sematan dan Hapus disembunyikan di belakang menu "⋯"** (`x-data="disclosure"`, `aria-haspopup="true"`, `aria-label="Aksi lain untuk <judul>"`). Hapus memakai `confirm-dialog` (`<dialog>` native + `data-dialog-open`).
 - Setiap aksi mutasi (sematkan, hapus) adalah **POST + redirect biasa**, bukan fetch/AJAX — supaya tetap berfungsi tanpa JavaScript aktif (lihat komentar di `togglePin`).
@@ -134,3 +134,15 @@ Bug "File saat ini" di atas lolos dari setiap probe F4 sebelumnya karena blok `l
 7. Jika ada lampiran: uji keep/hapus lampiran saat edit.
 8. Buka menu "⋯" → sematkan/lepas sematan → verifikasi batas 4 item (`PIN_LIMIT`) ditegakkan.
 9. Buka menu "⋯" → Hapus → verifikasi `<dialog>` konfirmasi muncul → konfirmasi → item hilang dari daftar.
+
+## Pembaruan F9 (audit UI/UX v4)
+
+- **Header halaman:** semua view admin memakai `components/page-header` varian `admin: true` (breadcrumb + h1 + `lead` + `actions`). Jangan menulis `<h1>` manual. Header lengket layout hanya memuat nama grup menu dan menu akun.
+- **Tab status/jenis:** tautan biasa dalam `<nav aria-label>` dengan `aria-current="page"` pada yang aktif. Jangan memakai `role="tablist"` untuk tautan (hanya untuk tab Alpine sungguhan seperti di Kalender publik).
+- **Filter:** `<select>` tidak mengirim form otomatis; selalu ada tombol "Terapkan" (WCAG 3.2.2).
+- **Menu aksi baris:** tombol "Ubah" selalu terlihat. Bila baris punya **dua aksi sekunder atau lebih** (mis. Sematkan + Hapus, Reset Password + Hapus), letakkan di menu "⋯". Bila hanya **Hapus**, pakai tombol ikon sampah berlabel `aria-label`. Hapus selalu lewat `confirm-dialog`.
+- **Form:** kirim ganda dicegah otomatis (`app.js`: tombol dinonaktifkan + "Memproses…"); halaman memperingatkan bila ada perubahan belum tersimpan (opt-out `data-no-dirty`). Unggah memeriksa tipe/ukuran di klien, menampilkan pratinjau gambar, dan menerima seret-lepas — komponen `file-upload` (atau tambahkan `data-file-field` + `data-max-mb` untuk input mentah).
+- **Aksi yang menimpa data** (mis. impor kegiatan kalender) memakai dialog konfirmasi yang menyebut jumlah data terdampak.
+- **Pratinjau draf:** `GET /admin/<modul>/:id/preview` (berita, pengumuman) memakai tampilan publik dan `noindex`.
+- **Sorotan baris:** setiap `<tr>` daftar membawa `data-updated`; setelah redirect `?success=` baris yang diperbarui <90 detik sebelumnya menyala sebentar.
+- **Pencarian teks pada input pengguna** yang masuk ke `$regex` harus lewat `utils/regex.js#escapeRegex`.

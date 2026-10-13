@@ -23,17 +23,25 @@
 </div>
 
 <div class="card">
-  <% if ((locals.tahunList || []).length > 1) { %>
-  <form method="get" class="flex flex-wrap items-end gap-3 border-b border-line p-4">
+  <% if (locals.filters) { %>
+  <form method="get" class="flex flex-col gap-3 border-b border-line p-4 md:flex-row md:items-end">
+    <% if ((locals.tahunList || []).length > 1) { %>
     <div>
       <label for="tahun" class="field-label">Tahun</label>
-      <select id="tahun" name="tahun" class="field-control w-auto">
+      <select id="tahun" name="tahun" class="field-control md:w-40">
         <option value="">Semua tahun</option>
-        <% tahunList.forEach(y => { %><option value="<%= y %>"<%= locals.filters && filters.tahun === String(y) ? ' selected' : '' %>><%= y %></option><% }) %>
+        <% tahunList.forEach(y => { %><option value="<%= y %>"<%= filters.tahun === String(y) ? ' selected' : '' %>><%= y %></option><% }) %>
       </select>
     </div>
-    <button type="submit" class="btn btn-secondary"><%- icon('filter_list') %>Terapkan</button>
-    <% if (locals.filters && filters.tahun) { %><a href="/admin/lulusan" class="btn btn-secondary">Reset</a><% } %>
+    <% } %>
+    <div class="md:w-72">
+      <label for="q" class="field-label">Cari</label>
+      <input id="q" name="q" type="search" class="field-control" placeholder="Program studi atau fakultas…" value="<%= filters.q %>">
+    </div>
+    <div class="flex gap-2">
+      <button type="submit" class="btn btn-secondary"><%- icon('filter_list') %>Terapkan</button>
+      <% if (filters.tahun || filters.q) { %><a href="/admin/lulusan" class="btn btn-secondary">Reset</a><% } %>
+    </div>
   </form>
   <% } %>
   <% if (!items.length) { %>
@@ -46,7 +54,7 @@
     <thead><tr><th scope="col">Program Studi</th><th scope="col">Fakultas</th><th scope="col">Periode</th><th scope="col">Tahun</th><th scope="col">Jumlah</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Program Studi"><%= item.programStudi ? item.programStudi.nama : '—' %></td>
           <td data-label="Fakultas"><%= item.fakultas ? item.fakultas.nama : '—' %></td>
           <td data-label="Periode"><%= item.periode %></td>

@@ -190,3 +190,52 @@
     </div>
   </div>
 </section>
+
+<%# Gerak & umpan balik (F9, SRS §6.7). Halaman uji untuk R4: aktifkan prefers-reduced-motion di DevTools untuk memastikan semuanya diam. %>
+<section class="section section-surface" aria-labelledby="seksi-gerak">
+  <div class="container-content space-y-10">
+    <h2 id="seksi-gerak" class="text-2xl">Gerak &amp; umpan balik</h2>
+
+    <div>
+      <h3 class="mb-3 text-lg">Reveal saat gulir (<code>data-reveal-group</code>, stagger 60 ms)</h3>
+      <p class="mb-3 text-muted">Kartu di bawah muncul bertahap saat masuk layar. Tanpa JavaScript atau dengan reduced-motion, semuanya langsung terlihat.</p>
+      <ul data-reveal-group class="grid gap-4 sm:grid-cols-3">
+        <% for (let i = 1; i <= 6; i += 1) { %><li class="card card-body lift">Kartu <%= i %> (<code>.lift</code>: terangkat 2 px saat hover/fokus)</li><% } %>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="mb-3 text-lg">Masuk saat dimuat (<code>.fade-in-up</code>) dan menu (<code>.menu-enter</code>)</h3>
+      <div class="fade-in-up card card-body max-w-md">Panel ini memudar naik sekali saat halaman dimuat.</div>
+      <div class="mt-4 max-w-xs" x-data="disclosure">
+        <button type="button" class="btn btn-secondary" x-on:click="toggle" x-bind:aria-expanded="open">Buka menu contoh</button>
+        <ul x-show="open" x-cloak class="menu-enter mt-2 rounded-card border border-line bg-surface p-2 shadow-raised">
+          <li class="flex min-h-11 items-center px-3 text-sm">Menu masuk dengan fade + geser 4 px</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="mb-3 text-lg">Kirim form (<code>busy</code>), dialog, dan sorotan baris</h3>
+      <form method="post" action="/dev/komponen" class="flex flex-wrap items-center gap-3" data-no-dirty>
+        <button type="submit" class="btn btn-primary">Simpan (spinner + "Memproses…")</button>
+        <button type="button" class="btn btn-secondary" data-dialog-open="dialog-contoh">Buka dialog</button>
+        <button type="button" class="btn btn-secondary">Tekan saya (<code>:active</code> turun 1 px)</button>
+      </form>
+      <%- include('../components/confirm-dialog', { dialogId: 'dialog-contoh', dialogTitle: 'Dialog contoh?', dialogText: 'Dialog memudar + skala 0,98 → 1; latar ikut memudar.', action: '/dev/komponen', confirmLabel: 'Hapus' }) %>
+      <div class="mt-4 max-w-md overflow-hidden rounded-card border border-line">
+        <table class="data-table"><tbody>
+          <tr class="row-flash"><td>Baris dengan <code>.row-flash</code> (menyala 1,8 dtk lalu memudar)</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div data-file-field>
+      <h3 class="mb-3 text-lg">Unggah: pemeriksaan klien, pratinjau, seret-lepas</h3>
+      <input type="file" id="f-uji" accept="image/png,image/jpeg,image/webp" data-max-mb="5" class="block w-full max-w-md rounded-control border border-dashed border-control bg-surface p-2 text-sm text-muted file:mr-3 file:min-h-10 file:cursor-pointer file:rounded-control file:border-0 file:bg-primary-soft file:px-4 file:font-semibold file:text-primary" aria-label="Gambar uji">
+      <p class="field-help">JPG/PNG/WEBP, maks. 5 MB. Bisa juga diseret ke kolom ini.</p>
+      <p class="field-error" data-file-error role="alert" hidden></p>
+      <img data-file-preview alt="Pratinjau gambar yang dipilih" class="mt-2 max-h-40 rounded-control border border-line" hidden>
+    </div>
+  </div>
+</section>

@@ -2,13 +2,22 @@
 <%- include('../../components/page-header', { admin: true, heading: 'Akun Admin', lead: 'Kelola akun Super Admin dan Editor.', breadcrumb: [{ label: 'Akun Admin' }], actions: [{ label: 'Tambah Akun', href: '/admin/users/new', icon: 'add' }] }) %>
 
 <div class="card">
+  <form method="get" role="search" class="flex gap-2 border-b border-line p-4">
+    <label for="q" class="sr-only">Cari nama atau email</label>
+    <input id="q" name="q" type="search" class="field-control md:w-72" placeholder="Cari nama atau email…" value="<%= locals.q || '' %>">
+    <button type="submit" class="btn btn-secondary"><%- icon('search') %>Cari</button>
+    <% if (locals.q) { %><a href="/admin/users" class="btn btn-secondary">Reset</a><% } %>
+  </form>
+  <% if (!items.length) { %>
+    <div class="p-6"><%- include('../../components/empty-state', { emptyIcon: 'search', emptyTitle: 'Akun tidak ditemukan', emptyText: 'Coba kata kunci lain.', emptyAction: { label: 'Hapus pencarian', href: '/admin/users' } }) %></div>
+  <% } else { %>
   <table class="data-table data-table--stack">
     <caption class="sr-only">Daftar akun admin</caption>
     <thead><tr><th scope="col">Nama</th><th scope="col">Email</th><th scope="col">Peran</th><th scope="col">Status</th><th scope="col">Masuk Terakhir</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
         <% const self = String(item._id) === currentUserId; %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.name || '—' %></span><% if (self) { %> <span class="badge badge-info">Anda</span><% } %></td>
           <td data-label="Email"><%= item.email %></td>
           <td data-label="Peran"><span class="badge badge-neutral"><%= roleLabel(item) %></span></td>
@@ -39,4 +48,5 @@
       <% }) %>
     </tbody>
   </table>
+  <% } %>
 </div>

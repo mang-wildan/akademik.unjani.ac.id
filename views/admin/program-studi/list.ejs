@@ -30,7 +30,7 @@
     <thead><tr><th scope="col">Nama</th><th scope="col">Singkatan</th><th scope="col">Fakultas</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.nama %></span></td>
           <td data-label="Singkatan"><%= item.singkatan %></td>
           <td data-label="Fakultas"><%= item.fakultas ? item.fakultas.nama : '—' %></td>

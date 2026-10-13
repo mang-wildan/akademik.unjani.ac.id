@@ -12,7 +12,7 @@
     <thead><tr><th scope="col">Program Studi</th><th scope="col">Fakultas</th><th scope="col">Tahun</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
     <tbody>
       <% items.forEach(item => { %>
-        <tr>
+        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
           <td data-label="Program Studi"><span class="font-medium"><%= item.prodi ? item.prodi.nama : (item.programStudi || '—') %></span></td>
           <td data-label="Fakultas"><%= item.prodi && item.prodi.fakultas ? item.prodi.fakultas.nama : (item.fakultas || '—') %></td>
           <td data-label="Tahun"><%= item.tahun %></td>

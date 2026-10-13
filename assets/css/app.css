@@ -464,6 +464,15 @@
   .panel-enter {
     animation: panel-enter var(--dur-base) var(--ease-enter) both;
   }
+  /* Row just saved (public/js/app.js adds .row-flash after a ?success= redirect) */
+  .row-flash {
+    animation: row-flash 1.8s var(--ease-enter) both;
+  }
+  /* File drop target (FR-AD-13) */
+  [data-file-field].dropzone-active input[type="file"] {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+  }
   .menu-enter {
     animation: menu-enter var(--dur-base) var(--ease-enter) both;
   }
@@ -503,6 +512,10 @@
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
+}
+@keyframes row-flash {
+  from { background-color: var(--color-success-soft); }
+  to { background-color: transparent; }
 }
 @keyframes panel-enter {
   from { opacity: 0; }
