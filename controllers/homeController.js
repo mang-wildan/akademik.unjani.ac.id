@@ -50,7 +50,7 @@ exports.getLanding = async (req, res) => {
     Pengumuman.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
     AcademicDocument.find({ pinned: true }, 'name file createdAt').sort({ createdAt: -1 }).limit(3).lean(),
     News.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
-    Pengumuman.find({ status: 'published' }, 'title slug createdAt').sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
+    Pengumuman.find({ status: 'published' }, 'title slug createdAt excerpt pinned kategori').populate('kategori', 'nama').sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
     Accreditation.find({ jenis: JENIS.INSTITUSI }, 'peringkat berlakuSampai lembaga').populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
     // Newest first, with deterministic tie-breaks. Existing prodi ids come from a parallel
     // query (not .populate, which would add a sequential round-trip) to skip links to deleted prodi.

@@ -100,14 +100,55 @@
 <section class="section section-soft" aria-labelledby="pengumuman-judul">
   <div class="container-content">
     <%- include('../components/section-heading', { sectionEyebrow: 'Pengumuman', sectionHeading: 'Pengumuman Terbaru', sectionLead: 'Informasi resmi seputar administrasi dan layanan akademik.', sectionLink: { label: 'Lihat semua pengumuman', href: '/pengumuman' }, sectionId: 'pengumuman-judul' }) %>
-    <ul data-reveal-group class="grid gap-4 md:grid-cols-2">
-      <% pengumumanTerbaru.forEach(p => { %>
-        <li class="card card-body flex gap-4">
-          <%- include('../components/date-block', { date: p.createdAt }) %>
-          <a href="/pengumuman/<%= p.slug %>" class="min-w-0 flex-1 self-center font-semibold text-ink hover:text-primary"><%= p.title %></a>
-        </li>
-      <% }) %>
-    </ul>
+    <%
+      // Satu pengumuman utama (disematkan/terbaru) + daftar ringkas sisanya. Seluruh kartu/baris bisa diklik
+      // lewat tautan judul yang direntangkan (after:inset-0), jadi tetap satu tab stop per pengumuman.
+      const [utama, ...lain] = pengumumanTerbaru;
+      const tujuhHari = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const baru = p => new Date(p.createdAt).getTime() >= tujuhHari;
+    %>
+    <div data-reveal-group class="grid gap-6 <%= lain.length ? 'lg:grid-cols-[1.1fr_1fr]' : '' %>">
+      <article class="card lift group relative flex flex-col overflow-hidden border-t-4 border-t-accent">
+        <div class="flex flex-1 flex-col p-6 lg:p-8">
+          <div class="flex flex-wrap items-center gap-2">
+            <% if (utama.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
+            <% if (utama.kategori) { %><%- include('../components/badge', { text: utama.kategori.nama, tone: 'info' }) %><% } %>
+            <% if (baru(utama)) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
+          </div>
+          <div class="mt-5 flex items-start gap-4">
+            <%- include('../components/date-block', { date: utama.createdAt, dateTone: 'solid' }) %>
+            <h3 class="min-w-0 text-xl leading-snug lg:text-2xl">
+              <a href="/pengumuman/<%= utama.slug %>" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= utama.title %></a>
+            </h3>
+          </div>
+          <% if (utama.excerpt) { %><p class="mt-4 line-clamp-4 text-muted"><%= utama.excerpt %></p><% } %>
+          <p class="mt-auto flex items-center gap-1 pt-6 text-sm font-semibold text-primary" aria-hidden="true">Baca selengkapnya<%- icon('arrow_forward', 'size-4 transition-transform group-hover:translate-x-1') %></p>
+        </div>
+      </article>
+
+      <% if (lain.length) { %>
+      <ul class="card divide-y divide-line self-start">
+        <% lain.forEach(p => { %>
+          <li class="group relative flex items-center gap-4 p-4 transition-colors hover:bg-sunken sm:p-5">
+            <%- include('../components/date-block', { date: p.createdAt }) %>
+            <div class="min-w-0 flex-1">
+              <% if (p.pinned || p.kategori || baru(p)) { %>
+              <div class="mb-1 flex flex-wrap items-center gap-1.5">
+                <% if (p.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
+                <% if (p.kategori) { %><%- include('../components/badge', { text: p.kategori.nama, tone: 'info' }) %><% } %>
+                <% if (baru(p)) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
+              </div>
+              <% } %>
+              <h3 class="font-sans text-base leading-snug font-semibold">
+                <a href="/pengumuman/<%= p.slug %>" class="line-clamp-2 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= p.title %></a>
+              </h3>
+            </div>
+            <%- icon('chevron_right', 'size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary') %>
+          </li>
+        <% }) %>
+      </ul>
+      <% } %>
+    </div>
   </div>
 </section>
 <% } %>
