@@ -289,11 +289,6 @@
     content: "";
     @apply h-0.5 w-8 shrink-0 rounded-full bg-accent;
   }
-  /* Centered eyebrow: a second rule on the right keeps it symmetric */
-  .eyebrow-center::after {
-    content: "";
-    @apply h-0.5 w-8 shrink-0 rounded-full bg-accent;
-  }
   .section-title {
     @apply text-3xl font-bold md:text-4xl;
   }
@@ -307,8 +302,7 @@
   .section-dark .section-link {
     @apply text-on-dark-accent;
   }
-  .section-dark .eyebrow::before,
-  .section-dark .eyebrow-center::after {
+  .section-dark .eyebrow::before {
     @apply bg-on-dark-accent;
   }
   .section-dark .section-lead {

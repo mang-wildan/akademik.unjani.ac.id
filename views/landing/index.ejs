@@ -21,15 +21,14 @@
 <section class="section-dark relative isolate overflow-hidden">
   <%# srcset: HP memakai versi 800 px (61 KB, bukan 210 KB) — foto di sana tertutup overlay 90%, dan ini elemen LCP. Samakan dengan preload di layouts/public.ejs. %>
   <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="100vw" alt="" class="absolute inset-0 -z-20 size-full object-cover" width="1600" height="903" fetchpriority="high">
-  <%# Overlay merata ≥90 % di semua lebar: teks kini di tengah, jadi gradasi kiri→kanan lama (pekat hanya di kiri)
-      akan menaruh teks di atas foto yang hanya 30 % tertutup. Sisi bawah sedikit lebih pekat untuk kartu akses cepat. %>
-  <div class="absolute inset-0 -z-10 bg-linear-to-b from-brand/90 via-brand/90 to-brand" aria-hidden="true"></div>
+  <%# Overlay: hijau (hampir) pekat di bawah kolom teks di semua lebar ≥1024 px agar kontras teks tidak bergantung pada foto. %>
+  <div class="absolute inset-0 -z-10 bg-brand/90 lg:bg-transparent lg:bg-linear-to-r lg:from-brand lg:from-45% lg:via-brand/90 lg:via-65% lg:to-brand/30" aria-hidden="true"></div>
   <div class="container-content pt-16 pb-36 lg:pt-24 lg:pb-44">
-    <div class="fade-in-up mx-auto flex max-w-3xl flex-col items-center text-center">
-      <p class="eyebrow eyebrow-center">Portal resmi layanan akademik</p>
+    <div class="fade-in-up max-w-2xl">
+      <p class="eyebrow">Portal resmi layanan akademik</p>
       <h1 class="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
       <p class="mt-5 max-w-xl text-lg text-on-dark-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <div class="mt-8 flex flex-wrap gap-3">
         <a href="/pengumuman" class="btn btn-accent">Pengumuman Terbaru<%- icon('arrow_forward') %></a>
         <a href="/profil" class="btn btn-outline-light">Profil Bidang Akademik</a>
       </div>
