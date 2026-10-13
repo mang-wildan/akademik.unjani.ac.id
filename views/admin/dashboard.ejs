@@ -1,10 +1,10 @@
 <%# Dasbor admin (FR-DS-01..04). "Perlu Perhatian" tampil lebih dulu di HP. %>
 <div class="mx-auto max-w-6xl">
-  <h1 class="text-2xl font-bold">Dasbor</h1>
+  <h1 class="text-2xl font-bold md:text-3xl">Dasbor</h1>
   <p class="mb-6 text-muted">Selamat datang, <%= user.name || user.email %>.</p>
 
   <% if (issues.length) { %>
-  <section class="order-first mb-6 card card-body border-l-4 border-warning">
+  <section class="mb-6 card card-body border-l-4 border-warning">
     <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold"><%- icon('warning', 'size-5 text-warning') %>Perlu Perhatian</h2>
     <ul class="divide-y divide-line">
       <% issues.forEach(iss => { %>

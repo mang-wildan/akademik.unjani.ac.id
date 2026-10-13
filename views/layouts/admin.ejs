@@ -27,7 +27,7 @@
 
   <!-- Sidebar: fixed on desktop, overlay on mobile. Hijau tua (bg-brand) + .on-dark agar cincin fokus putih.
        Kontras: putih/brand 9,1:1 · putih/hover (white/10) 7,0:1 · putih/aktif (white/15) 6,1:1 · on-dark-muted/brand 6,1:1 -->
-  <div x-show="open" x-cloak x-on:click="close" class="fixed inset-0 z-40 bg-ink/50 lg:hidden"></div>
+  <div x-show="open" x-cloak x-on:click="close" class="panel-enter fixed inset-0 z-40 bg-ink/50 lg:hidden"></div>
   <aside id="sidebar-admin" class="on-dark fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col overflow-y-auto bg-brand text-white transition-[translate,visibility] max-lg:invisible data-open:visible data-open:transition-[translate] data-open:translate-x-0 lg:translate-x-0"
          x-bind:data-open="open" aria-label="Navigasi admin">
     <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/15 px-5">
@@ -72,7 +72,6 @@
       <%# Judul tetap <p>: setiap halaman merender h1 sendiri lewat page-header. %>
       <div class="min-w-0 flex-1 leading-tight">
         <p class="eyebrow max-w-full gap-2 text-xs tracking-[0.12em] before:w-5"><span class="truncate"><%= eyebrowLabel %></span></p>
-        <p class="truncate font-serif text-lg font-semibold"><%= locals.title || 'Admin' %></p>
       </div>
 
       <div class="relative shrink-0" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="escapeIfOpen">

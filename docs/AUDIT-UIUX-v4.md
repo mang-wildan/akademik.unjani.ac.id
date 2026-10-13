@@ -51,7 +51,7 @@ Kekuatan: login split-screen; sidebar berkelompok dengan penanda aktif non-warna
 | P12 | S2 | Akun Admin dan Data Lulusan tanpa pencarian/pagination | `admin/users/list.ejs`, `lulusan/list.ejs` |
 | P13 | S3 | Aksi sekunder tidak seragam (Sematkan di ⋯; Hapus ikon langsung di sebagian modul, di ⋯ di lainnya) | daftar admin |
 | P14 | S3 | `order-first` di Dasbor tidak berefek (induk bukan flex/grid) | `admin/dashboard.ejs` |
-| P15 | S3 | Label tombol mata password statis; tidak ada petunjuk lupa password | `auth/login.ejs` |
+| P15 | S3 | ~~Label tombol mata password statis~~ (koreksi: label tetap memang benar untuk tombol `aria-pressed`, bukan cacat); tidak ada petunjuk lupa password | `auth/login.ejs` |
 | P16 | S3 | Profil Saya memakai eyebrow + h1 `text-3xl`, modul lain tidak | `admin/profile/index.ejs` |
 
 ## Prioritas

@@ -1,11 +1,5 @@
 <%# Daftar akreditasi — status (Berlaku/Segera berakhir/Kedaluwarsa) selalu dihitung dari berlakuSampai, tidak pernah disimpan. %>
-<div class="mb-6 flex flex-wrap items-start justify-between gap-3">
-  <div>
-    <h1 class="text-2xl font-bold">Akreditasi</h1>
-    <p class="text-muted">Kelola akreditasi institusi, program studi, dan unit.</p>
-  </div>
-  <a href="/admin/accreditations/new" class="btn btn-primary"><%- icon('add') %>Tambah Akreditasi</a>
-</div>
+<%- include('../../components/page-header', { admin: true, heading: 'Akreditasi', lead: 'Kelola akreditasi institusi, program studi, dan unit.', breadcrumb: [{ label: 'Akreditasi' }], actions: [{ label: 'Tambah Akreditasi', href: '/admin/accreditations/new', icon: 'add' }] }) %>
 
 <div class="mb-4 grid grid-cols-3 gap-3">
   <%- include('../../components/stat-tile', { statLabel: 'Berlaku', statValue: formatAngka(counts.berlaku), statIcon: 'check_circle' }) %>

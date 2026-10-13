@@ -31,6 +31,7 @@ router.get('/', newsController.list);
 router.get('/new', newsController.newForm);
 router.post('/', uploadFields, checkUploads, newsController.create);
 router.get('/:id/edit', newsController.editForm);
+router.get('/:id/preview', newsController.preview);
 router.post('/:id', uploadFields, checkUploads, newsController.update);
 router.post('/:id/pin', newsController.togglePin);
 router.post('/:id/delete', newsController.destroy);

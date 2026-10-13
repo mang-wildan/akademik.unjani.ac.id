@@ -1,11 +1,5 @@
 <%# Daftar unit — tampil di halaman Profil publik. FR-M-10. %>
-<div class="mb-6 flex flex-wrap items-start justify-between gap-3">
-  <div>
-    <h1 class="text-2xl font-bold">Unit</h1>
-    <p class="text-muted">Kelola unit yang tampil di halaman Profil.</p>
-  </div>
-  <a href="/admin/unit/new" class="btn btn-primary"><%- icon('add') %>Tambah Unit</a>
-</div>
+<%- include('../../components/page-header', { admin: true, heading: 'Unit', lead: 'Kelola unit yang tampil di halaman Profil.', breadcrumb: [{ label: 'Unit' }], actions: [{ label: 'Tambah Unit', href: '/admin/unit/new', icon: 'add' }] }) %>
 
 <div class="card">
   <% if (!items.length) { %>

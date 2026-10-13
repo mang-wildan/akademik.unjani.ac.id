@@ -8,6 +8,7 @@ const Kategori = require('../models/Kategori');
 const { validate, schemas } = require('../validators');
 const { uniqueSlug } = require('../utils/slug');
 const { processImage } = require('../utils/image');
+const { sanitizeHtml } = require('../utils/html');
 
 const PIN_LIMIT = 4;
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
@@ -235,5 +236,30 @@ module.exports = ({ Model, jenis, basePath, listLabel, singularLabel, requireFea
     res.redirect(`/admin/${basePath}?success=${encodeURIComponent(pin ? 'Disematkan.' : 'Sematan dilepas.')}`);
   };
 
-  return { list, newForm, editForm, create, update, destroy, togglePin };
+  // Pratinjau (FR-AD-12): memakai tampilan detail publik, tetapi juga untuk draf; hanya admin yang bisa membukanya.
+  const preview = async (req, res) => {
+    const item = await Model.findById(req.params.id)
+      .populate('kategori', 'nama')
+      .populate('createdBy', 'name')
+      .lean();
+    if (!item) {
+      const err = new Error(`${singularLabel} tidak ditemukan.`);
+      err.status = 404;
+      err.expose = true;
+      throw err;
+    }
+    item.body = sanitizeHtml(item.body);
+    res.renderPage(jenis === 'berita' ? 'landing/berita-show' : 'landing/pengumuman-show', {
+      title: `Pratinjau: ${item.title}`,
+      description: item.title,
+      item,
+      lainnya: [],
+      kategoriList: [],
+      basePath: jenis === 'berita' ? '/berita' : '/pengumuman',
+      noindex: true,
+      alertSuccess: item.status === 'published' ? 'Pratinjau. Halaman ini sudah terbit.' : 'Pratinjau draf. Halaman ini belum terbit dan hanya terlihat oleh admin.',
+    });
+  };
+
+  return { list, newForm, editForm, create, update, destroy, togglePin, preview };
 };

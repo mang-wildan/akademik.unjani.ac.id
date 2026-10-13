@@ -11,22 +11,34 @@
   </label>
   <div class="flex flex-wrap gap-1 rounded-t-control border border-b-0 border-control bg-sunken p-1.5" role="toolbar" aria-label="Format teks">
     <% [
-      { cmd: 'bold', label: 'Tebal', icon: 'B', class: 'font-bold' },
-      { cmd: 'italic', label: 'Miring', icon: 'I', class: 'italic' },
-      { cmd: 'insertUnorderedList', label: 'Daftar poin', icon: '•' },
-      { cmd: 'insertOrderedList', label: 'Daftar bernomor', icon: '1.' },
-      { cmd: 'formatBlock', value: 'h3', label: 'Subjudul', icon: 'H' },
-      { cmd: 'formatBlock', value: 'p', label: 'Paragraf normal', icon: 'P' },
+      { cmd: 'bold', label: 'Tebal', icon: 'format_bold' },
+      { cmd: 'italic', label: 'Miring', icon: 'format_italic' },
+      { cmd: 'insertUnorderedList', label: 'Daftar poin', icon: 'format_list_bulleted' },
+      { cmd: 'insertOrderedList', label: 'Daftar bernomor', icon: 'format_list_numbered' },
+      { cmd: 'formatBlock', value: 'h3', label: 'Subjudul', icon: 'title' },
+      { cmd: 'formatBlock', value: 'p', label: 'Paragraf normal', icon: 'format_paragraph' },
+      { cmd: 'unlink', label: 'Hapus tautan', icon: 'link_off' },
     ].forEach(btn => { %>
       <button type="button" data-cmd="<%= btn.cmd %>"<% if (btn.value) { %> data-value="<%= btn.value %>"<% } %> x-on:click="exec"
-              class="btn-icon <%= btn.class || '' %>" aria-label="<%= btn.label %>" title="<%= btn.label %>"><%= btn.icon %></button>
+              class="btn-icon" aria-label="<%= btn.label %>" title="<%= btn.label %>"><%- icon(btn.icon, 'size-5') %></button>
     <% }) %>
+    <button type="button" x-on:click="openLink" class="btn-icon" aria-label="Tambah tautan" title="Tambah tautan" x-bind:aria-expanded="linkOpen"><%- icon('link', 'size-5') %></button>
+  </div>
+  <%# Tautan: kolom isian sebaris (bukan window.prompt). Pilihan teks disimpan saat tombol ditekan. %>
+  <div x-show="linkOpen" x-cloak class="menu-enter flex flex-wrap items-start gap-2 border border-b-0 border-control bg-surface p-2" x-on:keydown.escape.stop="closeLink">
+    <div class="min-w-0 flex-1">
+      <label for="<%= id %>-tautan" class="sr-only">Alamat tautan</label>
+      <input id="<%= id %>-tautan" type="url" x-ref="linkUrl" class="field-control" placeholder="https://contoh.ac.id/halaman" x-on:keydown.enter.prevent="applyLink">
+      <p class="field-error" x-show="linkError" x-text="linkError" role="alert"></p>
+    </div>
+    <button type="button" class="btn btn-primary" x-on:click="applyLink">Pasang</button>
+    <button type="button" class="btn btn-secondary" x-on:click="closeLink">Batal</button>
   </div>
   <div id="<%= id %>-editor" x-ref="editor" contenteditable="true" x-on:input="sync" x-on:blur="sync"
        class="field-control min-h-48 rounded-t-none [&_h3]:text-lg [&_h3]:font-semibold [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6"
        aria-describedby="<%= id %>-help<%= locals.error ? ` ${id}-error` : '' %>"<%- locals.error ? ' aria-invalid="true"' : '' %>
        role="textbox" aria-multiline="true"></div>
   <input type="hidden" id="<%= id %>" name="<%= locals.name %>" x-ref="hidden" value="<%= locals.value || '' %>">
-  <p id="<%= id %>-help" class="field-help">Pilih teks lalu klik tombol format. Tautan dan gambar bisa ditempel langsung.</p>
+  <p id="<%= id %>-help" class="field-help">Pilih teks lalu klik tombol format. Pilih teks dan klik tombol tautan untuk menautkannya ke alamat web atau email.</p>
   <% if (locals.error) { %><p id="<%= id %>-error" class="field-error"><%= locals.error %></p><% } %>
 </div>

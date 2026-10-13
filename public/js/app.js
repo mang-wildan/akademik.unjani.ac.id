@@ -126,6 +126,44 @@ document.addEventListener('alpine:init', () => {
       this.sync();
       this.$refs.editor.focus();
     },
+    // Link UI: the inline URL field steals focus, so remember the selection when it opens.
+    linkOpen: false,
+    linkError: '',
+    saved: null,
+    openLink() {
+      const sel = window.getSelection();
+      this.saved = sel.rangeCount && this.$refs.editor.contains(sel.anchorNode) ? sel.getRangeAt(0).cloneRange() : null;
+      this.linkOpen = true;
+      this.linkError = '';
+      this.$nextTick(() => this.$refs.linkUrl.focus());
+    },
+    closeLink() {
+      this.linkOpen = false;
+      this.linkError = '';
+      this.$refs.linkUrl.value = '';
+      this.$refs.editor.focus();
+    },
+    applyLink() {
+      const url = this.$refs.linkUrl.value.trim();
+      if (!/^(https?:\/\/|mailto:|\/(?!\/))/i.test(url)) {
+        this.linkError = 'Tulis alamat lengkap, diawali https://, mailto: atau /.';
+        return;
+      }
+      this.$refs.editor.focus();
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      if (this.saved) sel.addRange(this.saved);
+      if (sel.isCollapsed) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.textContent = url;
+        document.execCommand('insertHTML', false, a.outerHTML);
+      } else {
+        document.execCommand('createLink', false, url);
+      }
+      this.sync();
+      this.closeLink();
+    },
     sync() {
       this.$refs.hidden.value = this.$refs.editor.innerHTML;
     },
@@ -155,14 +193,6 @@ document.addEventListener('click', event => {
   }
   const closer = event.target.closest('[data-dialog-close]');
   if (closer) closer.closest('dialog')?.close();
-});
-
-// Lightweight native confirm for low-stakes row deletes where a per-row
-// <dialog> would be excessive (e.g. one calendar event among many). Degrades
-// to a plain submit without JS, same as every other mutation in the admin.
-document.addEventListener('submit', event => {
-  const message = event.target.dataset && event.target.dataset.confirm;
-  if (message && !window.confirm(message)) event.preventDefault();
 });
 
 // Busy form (SRS FR-AD-09): after a real POST submit, disable the submit button, show a spinner and
@@ -236,3 +266,61 @@ window.addEventListener('pageshow', event => {
     observer.observe(el);
   });
 })();
+
+// Unsaved-changes guard (SRS FR-AD-11): warn before leaving a page whose POST form was edited.
+// Submitting a form clears only that form, so adding a quick link while the main form is dirty still warns.
+// Opt out with data-no-dirty (login, search). Forms inside dialogs are ignored.
+(function setupDirtyGuard() {
+  const dirty = new Set();
+  const guarded = form => form instanceof HTMLFormElement && form.method === 'post' && !form.hasAttribute('data-no-dirty') && !form.closest('dialog');
+  const mark = event => {
+    const form = event.target.closest && event.target.closest('form');
+    if (event.isTrusted && form && guarded(form)) dirty.add(form);
+  };
+  document.addEventListener('input', mark);
+  document.addEventListener('change', mark);
+  document.addEventListener('submit', event => dirty.delete(event.target));
+  window.addEventListener('beforeunload', event => {
+    if (!dirty.size) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
+})();
+
+// File input checks in the browser (SRS FR-AD-13): size and type are verified before the upload starts,
+// instead of after a slow request. Image picks get a preview (data: URL, because the CSP has no blob:).
+// The server still validates everything; this only saves the admin a wasted upload.
+document.addEventListener('change', event => {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement) || input.type !== 'file') return;
+  const field = input.closest('[data-file-field]');
+  if (!field) return;
+  const error = field.querySelector('[data-file-error]');
+  const preview = field.querySelector('[data-file-preview]');
+  const accepts = (input.accept || '').split(',').map(a => a.trim().toLowerCase()).filter(Boolean);
+  const maxBytes = Number(input.dataset.maxMb || 0) * 1024 * 1024;
+  const matchesType = file => !accepts.length || accepts.some(a => (a.startsWith('.') ? file.name.toLowerCase().endsWith(a) : file.type === a));
+  let message = '';
+  for (const file of input.files) {
+    if (!matchesType(file)) message = `"${file.name}" bukan jenis file yang diterima.`;
+    else if (maxBytes && file.size > maxBytes) message = `"${file.name}" berukuran ${(file.size / 1048576).toFixed(1).replace('.', ',')} MB, melebihi batas ${input.dataset.maxMb} MB.`;
+    if (message) break;
+  }
+  if (error) {
+    error.textContent = message;
+    error.hidden = !message;
+  }
+  if (message) input.value = '';
+  if (preview) {
+    preview.hidden = true;
+    const file = !message && input.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.hidden = false;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+});

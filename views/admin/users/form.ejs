@@ -1,7 +1,4 @@
-<div class="mb-6">
-  <a href="/admin/users" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Akun Admin</a>
-  <h1 class="text-2xl font-bold"><%= mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun' %></h1>
-</div>
+<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun', breadcrumb: [{ label: 'Akun Admin', href: '/admin/users' }, { label: mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun' }] }) %>
 
 <% if (errors._form) { %>
   <div class="mb-6"><%- include('../../components/alert', { alertTone: 'danger', alertTitle: 'Tidak bisa disimpan', alertText: errors._form }) %></div>

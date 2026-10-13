@@ -15,12 +15,28 @@ const refData = async () => {
 };
 
 exports.list = async (req, res) => {
-  const items = await Lulusan.find()
+  const tahun = parseInt(req.query.tahun, 10) || null;
+  const filter = tahun ? { tahun } : {};
+  const limit = 20;
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+  const [tahunList, total] = await Promise.all([Lulusan.distinct('tahun'), Lulusan.countDocuments(filter)]);
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
+  const currentPage = Math.min(page, totalPages);
+  const items = await Lulusan.find(filter)
     .populate('programStudi', 'nama singkatan')
     .populate('fakultas', 'nama singkatan')
     .sort({ tahun: -1, periode: 1, createdAt: -1 })
+    .skip((currentPage - 1) * limit)
+    .limit(limit)
     .lean();
-  res.renderPage('admin/lulusan/list', { title: 'Data Lulusan', items, importErrors: null, importSummary: null }, 'layouts/admin');
+  const from = total === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const to = Math.min(currentPage * limit, total);
+  res.renderPage('admin/lulusan/list', {
+    title: 'Data Lulusan', items, importErrors: null, importSummary: null,
+    tahunList: tahunList.filter(Boolean).sort((a, b) => b - a),
+    filters: { tahun: tahun ? String(tahun) : '' },
+    pagination: { page: currentPage, totalPages, total, from, to },
+  }, 'layouts/admin');
 };
 
 exports.showCreate = async (req, res) => {

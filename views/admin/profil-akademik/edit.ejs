@@ -1,8 +1,5 @@
 <%# Profil Bidang Akademik -- dokumen singleton, satu halaman lihat+ubah. FR-M-10b. %>
-<div class="mb-6">
-  <h1 class="text-2xl font-bold">Profil Bidang Akademik</h1>
-  <p class="text-muted">Terakhir diperbarui <%= formatTanggal(lastUpdatedAt, { long: true }) %>.</p>
-</div>
+<%- include('../../components/page-header', { admin: true, heading: 'Profil Bidang Akademik', lead: `Terakhir diperbarui ${formatTanggal(lastUpdatedAt, { long: true })}.`, breadcrumb: [{ label: 'Profil Bidang Akademik' }] }) %>
 
 <form method="POST" action="/admin/profil-akademik" class="card card-body grid gap-5">
   <%- include('../../components/form-field', { name: 'judulHalaman', label: 'Judul Halaman', required: true, value: values.judulHalaman, error: errors.judulHalaman }) %>

@@ -5,11 +5,7 @@
   const superadmin = isSuperadmin(profile);
 %>
 <div class="max-w-3xl">
-  <div class="mb-6">
-    <p class="eyebrow">Akun</p>
-    <h1 class="mt-2 text-2xl font-bold md:text-3xl">Profil Saya</h1>
-    <p class="mt-1 text-muted">Data akun yang Anda pakai untuk masuk ke panel admin.</p>
-  </div>
+  <%- include('../../components/page-header', { admin: true, eyebrow: 'Akun', heading: 'Profil Saya', lead: 'Data akun yang Anda pakai untuk masuk ke panel admin.', breadcrumb: [{ label: 'Profil Saya' }] }) %>
 
   <section class="card" aria-labelledby="profil-nama">
     <div class="card-body flex flex-col gap-5 sm:flex-row sm:items-center">

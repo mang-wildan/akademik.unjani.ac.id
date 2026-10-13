@@ -1,7 +1,4 @@
-<div class="mb-6">
-  <a href="/admin/lulusan" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Data Lulusan</a>
-  <h1 class="text-2xl font-bold"><%= mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan' %></h1>
-</div>
+<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan', breadcrumb: [{ label: 'Data Lulusan', href: '/admin/lulusan' }, { label: mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan' }] }) %>
 
 <form method="POST" action="/admin/lulusan<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid gap-5 md:grid-cols-2">
   <%- include('../../components/form-field', {

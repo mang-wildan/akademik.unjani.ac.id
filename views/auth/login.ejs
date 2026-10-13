@@ -49,7 +49,7 @@
           </div>
         <% } %>
 
-        <form action="/login" method="POST" class="mt-5 space-y-4" novalidate x-data="disclosure">
+        <form action="/login" method="POST" class="mt-5 space-y-4" novalidate data-no-dirty x-data="disclosure">
           <%- include('../components/form-field', {
             name: 'email', label: 'Email', type: 'email', required: true,
             value: typeof values !== 'undefined' && values ? values.email : '',
@@ -81,6 +81,7 @@
           <button type="submit" class="btn btn-primary w-full">Masuk</button>
         </form>
 
+        <p class="mt-4 text-center text-sm text-muted">Lupa password? Hubungi Super Admin untuk mengatur ulang.</p>
         <a href="/" class="mt-4 flex min-h-6 items-center justify-center text-center text-sm font-medium text-muted hover:text-primary">Kembali ke beranda</a>
       </div>
 

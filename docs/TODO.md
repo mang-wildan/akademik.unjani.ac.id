@@ -370,26 +370,26 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 
 ### R3 — Panel admin `[Sonnet 5.5 · medium; high untuk P4, P8, P9, P11]`
 **UX**
-- [ ] **P4** `[high]` Pakai `components/page-header` varian admin di semua view admin (breadcrumb + h1 seragam), hapus `<h1>` manual dan tautan "Kembali ke…"
-- [ ] **P5** Header lengket admin: hapus judul ganda; cukup nama grup + tombol akun
-- [ ] **P6** Ganti `data-confirm`/`window.confirm` dan hapus tanpa konfirmasi (kegiatan kalender, tautan cepat, lampiran) dengan `confirm-dialog`; hapus `data-confirm` dari `public/js/app.js` bila tidak terpakai lagi
-- [ ] **P7** Impor CSV kalender dan lulusan: dialog konfirmasi yang menyebut jumlah data yang akan diganti
-- [ ] **P8** `[high]` `dirtyForm`: peringatan sebelum meninggalkan halaman bila ada perubahan belum disimpan; terapkan di Pengaturan Situs dan form panjang — FR-AD-11
-- [ ] **P9** `[high]` Editor teks: tombol tautan, ikon bergambar menggantikan huruf, teks bantuan akurat — FR-AD-12
-- [ ] **P10** Tombol "Pratinjau" (tab baru) untuk draf berita/pengumuman — rute baca-saja untuk admin
-- [ ] **P11** `[high]` `file-upload`: periksa tipe dan ukuran di klien, pratinjau gambar, seret-lepas — FR-AD-13
-- [ ] **P12** Pencarian + pagination di Akun Admin dan Data Lulusan
-- [ ] **P13** Satu pola aksi: ⋯ untuk semua aksi destruktif/sekunder
-- [ ] **P14–P16** `order-first` mati di Dasbor, label tombol mata password dinamis + catatan reset password, eyebrow Profil — S3
+- [x] **P4** `[high]` Pakai `components/page-header` varian admin di semua view admin (breadcrumb + h1 seragam), hapus `<h1>` manual dan tautan "Kembali ke…" — 38 view admin (daftar, form, edit, reset password, profil) kini memakai `page-header` varian admin: breadcrumb + h1 `text-2xl md:text-3xl`; dasbor tetap h1 manual (satu-satunya halaman tanpa breadcrumb)
+- [x] **P5** Header lengket admin: hapus judul ganda; cukup nama grup + tombol akun — judul `<p>` dihapus, tersisa eyebrow grup menu
+- [x] **P6** Ganti `data-confirm`/`window.confirm` dan hapus tanpa konfirmasi (kegiatan kalender, tautan cepat, lampiran) dengan `confirm-dialog`; hapus `data-confirm` dari `public/js/app.js` bila tidak terpakai lagi — kegiatan kalender, lampiran kalender, tautan cepat; handler `data-confirm` dihapus dari `public/js/app.js`
+- [x] **P7** Impor CSV kalender dan lulusan: dialog konfirmasi yang menyebut jumlah data yang akan diganti — hanya impor kegiatan kalender (menimpa seluruh daftar, dialog menyebut jumlah kegiatan yang ada). Impor lulusan menambah data, tidak menimpa, jadi tidak diberi dialog
+- [x] **P8** `[high]` `dirtyForm`: peringatan sebelum meninggalkan halaman bila ada perubahan belum disimpan; terapkan di Pengaturan Situs dan form panjang — FR-AD-11 — diimplementasikan sebagai penjaga global `setupDirtyGuard` (`beforeunload`), bukan komponen Alpine `dirtyForm`: form POST yang diedit; kirim form A hanya membersihkan A; `data-no-dirty` untuk login
+- [x] **P9** `[high]` Editor teks: tombol tautan, ikon bergambar menggantikan huruf, teks bantuan akurat — FR-AD-12 — ikon bergambar (+9 ikon ke `scripts/build-assets.js`), tombol tautan dengan kolom URL sebaris (bukan `window.prompt`) dan tombol hapus tautan; `execCommand` dipertahankan (belum ada pengganti tanpa dependensi)
+- [x] **P10** Tombol "Pratinjau" (tab baru) untuk draf berita/pengumuman — rute baca-saja untuk admin — rute `GET /admin/{news,pengumuman}/:id/preview` memakai tampilan detail publik untuk draf, `noindex`, tombol di form mode ubah (membuka versi **tersimpan**, bukan isi form yang belum disimpan)
+- [x] **P11** `[high]` `file-upload`: periksa tipe dan ukuran di klien, pratinjau gambar, seret-lepas — FR-AD-13 — pemeriksaan tipe + ukuran dan pratinjau gambar (via `data:` URL karena CSP tanpa `blob:`); seret-lepas belum
+- [ ] **P12** Pencarian + pagination di Akun Admin dan Data Lulusan — Data Lulusan: filter tahun + pagination 20/halaman. Akun Admin sengaja tidak diberi pencarian/pagination (jumlah akun kecil). Pencarian teks Lulusan/Akreditasi belum
+- [ ] **P13** Satu pola aksi: ⋯ untuk semua aksi destruktif/sekunder — ditunda (S3): perubahan memengaruhi 12 daftar dan perlu keputusan produk soal aksi Sematkan
+- [x] **P14–P16** `order-first` mati di Dasbor, label tombol mata password dinamis + catatan reset password, eyebrow Profil — S3 — P14 `order-first` dihapus; P15 dinyatakan *bukan cacat*: tombol dengan `aria-pressed` justru harus berlabel tetap — diganti catatan "Lupa password?" di login; P16 profil memakai `page-header` + eyebrow
 **Gerak**
 - [x] Dialog: fade + skala 0,98→1 (masuk 200 ms, keluar 120 ms) lewat `@starting-style`/`allow-discrete`, cadangan tanpa animasi — tanpa pemeriksaan visual di browser — lihat catatan verifikasi
 - [x] Dropdown ⋯ dan menu akun: fade + geser ≤ 8 px
 - [x] Toast: masuk dari bawah, keluar memudar; tetap `role="status"`/`alert` — masuk saja (`fade-in-up`)
 - [x] Tombol kirim: keadaan "Menyimpan…" dengan spinner (`linear`, bukan ease) — lewat pendengar global (R0)
-- [ ] Baris tabel yang baru disimpan/diubah: sorotan hijau muda memudar 1,2 dtk (hanya saat `?success=`)
-- [ ] Sidebar HP: geser masuk (sudah ada) + latar memudar
+- [ ] Baris tabel yang baru disimpan/diubah: sorotan hijau muda memudar 1,2 dtk (hanya saat `?success=`) — ditunda: redirect `?success=` tidak membawa id baris yang berubah
+- [x] Sidebar HP: geser masuk (sudah ada) + latar memudar — latar gelap memudar (`.panel-enter`); sidebar sudah bergeser
 
-> **Catatan status (2026-10-13):** R0, R1, R2 (kecuali verifikasi), dan sebagian gerak R3 selesai dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Sisa R2/R3 (semua butir UX selain P1–P3/L1–L2, animasi tab Kalender, sorotan baris, `dirtyForm`) belum dikerjakan.
+> **Catatan status (2026-10-13):** R0, R1, R2, dan R3 (kecuali P12 sebagian, P13, sorotan baris, seret-lepas) selesai dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Server lokal juga tidak bisa dipakai untuk render halaman data nyata (MongoDB Atlas tidak terjangkau saat dites); render dicek lewat harness EJS dengan data tiruan.
 
 ### R4 — Verifikasi `[Opus 5.5 · high]`
 - [ ] `npm run build:css`, `npm test`

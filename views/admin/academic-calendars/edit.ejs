@@ -1,8 +1,5 @@
 <%# Kalender akademik — tahap 2: kelola kegiatan (manual/CSV) & lampiran surat edaran untuk satu tahun ajaran. %>
-<div class="mb-6">
-  <a href="/admin/academic-calendars" class="mb-2 inline-flex min-h-6 items-center gap-1 text-sm font-medium text-muted hover:text-ink"><%- icon('arrow_back', 'size-4') %>Kembali ke Kalender Akademik</a>
-  <h1 class="text-2xl font-bold">Kalender <%= item.tahunAjaran %></h1>
-</div>
+<%- include('../../components/page-header', { admin: true, heading: `Kalender ${item.tahunAjaran}`, breadcrumb: [{ label: 'Kalender Akademik', href: '/admin/academic-calendars' }, { label: `Kalender ${item.tahunAjaran}` }] }) %>
 
 <div class="grid gap-6 lg:grid-cols-3">
   <%# --- Data tahun ajaran --- %>
@@ -48,9 +45,12 @@
               <td data-label="Mulai"><%= formatTanggal(ev.mulai) %></td>
               <td data-label="Selesai"><%= ev.selesai ? formatTanggal(ev.selesai) : '—' %></td>
               <td data-label="Aksi">
-                <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events/<%= ev._id %>/delete" data-confirm="Hapus kegiatan &quot;<%= ev.nama %>&quot;?">
-                  <button type="submit" class="btn-icon text-danger hover:bg-danger-soft" aria-label="Hapus kegiatan <%= ev.nama %>"><%- icon('delete', 'size-5') %></button>
-                </form>
+                <button type="button" class="btn-icon text-danger hover:bg-danger-soft" data-dialog-open="hapus-ev-<%= ev._id %>" aria-label="Hapus kegiatan <%= ev.nama %>"><%- icon('delete', 'size-5') %></button>
+                <%- include('../../components/confirm-dialog', {
+                  dialogId: `hapus-ev-${ev._id}`, dialogTitle: 'Hapus kegiatan?',
+                  dialogText: `"${ev.nama}" akan dihapus dari kalender ini dan tidak bisa dikembalikan.`,
+                  action: `/admin/academic-calendars/${item._id}/events/${ev._id}/delete`, confirmLabel: 'Hapus',
+                }) %>
               </td>
             </tr>
           <% }) %>
@@ -76,11 +76,28 @@
 
       <details class="rounded-control border border-line">
         <summary class="min-h-11 cursor-pointer select-none px-4 py-2.5 text-sm font-semibold">+ Impor dari CSV/Excel</summary>
-        <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events/import" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
+        <form id="impor-kegiatan" method="POST" action="/admin/academic-calendars/<%= item._id %>/events/import" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
           <p class="field-help">Mengimpor akan <strong>mengganti seluruh daftar kegiatan</strong> yang sudah ada untuk tahun ajaran ini. Gunakan template di atas.</p>
           <%- include('../../components/file-upload', { name: 'csv', label: 'File CSV', accept: '.csv,text/csv', required: true, limitText: 'CSV sesuai template.' }) %>
-          <div class="flex justify-end"><button type="submit" class="btn btn-secondary">Impor &amp; Ganti Daftar Kegiatan</button></div>
+          <div class="flex justify-end"><button type="button" class="btn btn-secondary" data-dialog-open="konfirmasi-impor">Impor &amp; Ganti Daftar Kegiatan</button></div>
         </form>
+        <%# Konfirmasi: impor menimpa seluruh kegiatan. Tombol kirim di dalam dialog menunjuk form di atas lewat atribut form. %>
+        <dialog id="konfirmasi-impor" aria-labelledby="konfirmasi-impor-judul"
+                class="m-auto w-[calc(100%-2rem)] max-w-md rounded-card border border-line bg-surface p-0 text-ink shadow-modal backdrop:bg-ink/50">
+          <div class="p-6">
+            <div class="flex items-start gap-4">
+              <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-warning-soft text-warning"><%- icon('warning', 'size-6') %></span>
+              <div>
+                <h2 id="konfirmasi-impor-judul" class="text-lg font-semibold">Ganti seluruh kegiatan?</h2>
+                <p class="mt-1 text-sm text-muted"><%= formatAngka(item.events.length) %> kegiatan yang ada di tahun ajaran ini akan diganti dengan isi file CSV. Tindakan ini tidak bisa dibatalkan.</p>
+              </div>
+            </div>
+            <div class="mt-6 flex justify-end gap-2">
+              <button type="button" class="btn btn-secondary" data-dialog-close autofocus>Batal</button>
+              <button type="submit" form="impor-kegiatan" class="btn btn-danger">Ganti Kegiatan</button>
+            </div>
+          </div>
+        </dialog>
       </details>
     </div>
 
@@ -96,9 +113,12 @@
                 <a href="<%= l.file %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center line-clamp-1 font-medium"><%= l.judul %></a>
                 <p class="truncate text-xs text-muted"><%= l.nomorSurat || '—' %><% if (l.tanggal) { %> · <%= formatTanggal(l.tanggal) %><% } %></p>
               </div>
-              <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran/<%= l._id %>/delete">
-                <button type="submit" class="btn-icon shrink-0 text-danger hover:bg-danger-soft" aria-label="Hapus lampiran <%= l.judul %>"><%- icon('delete', 'size-5') %></button>
-              </form>
+              <button type="button" class="btn-icon shrink-0 text-danger hover:bg-danger-soft" data-dialog-open="hapus-lamp-<%= l._id %>" aria-label="Hapus lampiran <%= l.judul %>"><%- icon('delete', 'size-5') %></button>
+              <%- include('../../components/confirm-dialog', {
+                dialogId: `hapus-lamp-${l._id}`, dialogTitle: 'Hapus lampiran?',
+                dialogText: `"${l.judul}" akan dihapus permanen dan tidak bisa dikembalikan.`,
+                action: `/admin/academic-calendars/${item._id}/lampiran/${l._id}/delete`, confirmLabel: 'Hapus',
+              }) %>
             </li>
           <% }) %>
         </ul>
