@@ -58,16 +58,37 @@
 <% if (informasiPenting.length || agendaItems.length) { %>
 <div class="container-content space-y-14 pt-14 pb-14 lg:pb-20">
   <% if (informasiPenting.length) { %>
-  <section class="card card-body border-l-4 border-l-accent" aria-labelledby="info-penting">
-    <p class="eyebrow">Perhatian</p>
-    <h2 id="info-penting" class="mt-2 mb-3 flex items-center gap-2 text-xl"><%- icon('info', 'size-5 text-primary') %>Informasi Penting</h2>
+  <%
+    // Ikon + warna per jenis agar jenis terbaca sekilas (tidak hanya lewat warna: label jenis tetap tertulis).
+    const gayaJenis = {
+      Pengumuman: { icon: 'campaign', tile: 'bg-gold-soft text-gold', badge: 'gold' },
+      Dokumen: { icon: 'description', tile: 'bg-info-soft text-info', badge: 'info' },
+      Berita: { icon: 'newspaper', tile: 'bg-primary-soft text-primary', badge: 'success' },
+    };
+  %>
+  <section class="card overflow-hidden lg:grid lg:grid-cols-[17rem_1fr]" aria-labelledby="info-penting">
+    <%# Kolom judul: pita emas lembut, ikon perhatian. Di HP menjadi kepala kartu. %>
+    <div class="flex items-center gap-4 border-b border-line bg-gold-soft p-5 lg:flex-col lg:items-start lg:justify-center lg:border-r lg:border-b-0 lg:p-8">
+      <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-card"><%- icon('info', 'size-6') %></span>
+      <div>
+        <p class="text-xs font-semibold tracking-[0.14em] text-gold uppercase">Perhatian</p>
+        <h2 id="info-penting" class="mt-1 text-xl lg:text-2xl">Informasi Penting</h2>
+        <p class="mt-1 hidden text-sm text-muted lg:block">Pengumuman, dokumen, dan berita yang disematkan Bidang Akademik.</p>
+      </div>
+    </div>
+
     <ul class="divide-y divide-line">
-      <% informasiPenting.forEach(i => { %>
-        <li class="flex flex-wrap items-center justify-between gap-2 py-3 first:pt-0 last:pb-0">
-          <a href="<%= i.href %>" class="flex items-center gap-2 font-medium text-ink hover:text-primary"<%- i.jenis === 'Dokumen' ? ' target="_blank" rel="noopener"' : '' %>>
-            <%- include('../components/badge', { text: i.jenis, tone: 'info' }) %><%= i.judul %>
-          </a>
-          <span class="text-sm text-muted"><%= formatTanggal(i.tanggal) %></span>
+      <% informasiPenting.forEach(i => { const g = gayaJenis[i.jenis] || gayaJenis.Pengumuman; const pdf = i.jenis === 'Dokumen'; %>
+        <li class="group relative flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sunken lg:px-6">
+          <span class="flex size-11 shrink-0 items-center justify-center rounded-control <%= g.tile %>"><%- icon(g.icon, 'size-6') %></span>
+          <div class="min-w-0 flex-1">
+            <a href="<%= i.href %>" class="line-clamp-2 font-semibold text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"<%- pdf ? ' target="_blank" rel="noopener"' : '' %>><%= i.judul %><% if (pdf) { %><span class="sr-only"> (PDF, tab baru)</span><% } %></a>
+            <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+              <%- include('../components/badge', { text: i.jenis, tone: g.badge }) %>
+              <time datetime="<%= new Date(i.tanggal).toISOString() %>"><%= formatTanggal(i.tanggal) %></time>
+            </p>
+          </div>
+          <%- icon(pdf ? 'open_in_new' : 'chevron_right', 'size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary') %>
         </li>
       <% }) %>
     </ul>
