@@ -57,7 +57,7 @@ exports.getLanding = async (req, res) => {
     Accreditation.find({ jenis: JENIS.PRODI }, 'peringkat programStudi berlakuSampai')
       .sort({ berlakuSampai: -1, tanggalBerlaku: -1, _id: -1 }).lean(),
     ProgramStudi.distinct('_id'),
-    News.find({ status: 'published' }, 'title slug createdAt featuredImage').sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
+    News.find({ status: 'published' }, 'title slug createdAt featuredImage excerpt pinned kategori').populate('kategori', 'nama').sort({ pinned: -1, createdAt: -1 }).limit(3).lean(),
     Lulusan.aggregate([{ $group: { _id: '$tahun', total: { $sum: '$jumlah' } } }, { $sort: { _id: -1 } }]),
     Unit.find({}, 'nama img link').sort({ createdAt: -1 }).lean(),
   ]);

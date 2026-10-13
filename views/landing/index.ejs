@@ -250,18 +250,47 @@
 <section class="section section-surface" aria-labelledby="kegiatan-judul">
   <div class="container-content">
     <%- include('../components/section-heading', { sectionEyebrow: 'Berita', sectionHeading: 'Kegiatan Akademik', sectionLead: 'Dokumentasi kegiatan dan kabar akademik terbaru.', sectionLink: { label: 'Lihat semua berita', href: '/berita' }, sectionId: 'kegiatan-judul' }) %>
-    <div data-reveal-group class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <% kegiatanTerbaru.forEach(n => { %>
-        <article class="card lift overflow-hidden">
-          <a href="/berita/<%= n.slug %>" class="relative block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
-            <% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-full object-cover" loading="lazy"><% } %>
-          </a>
-          <div class="card-body">
-            <p class="text-xs font-semibold tracking-wide text-primary uppercase"><%= formatTanggal(n.createdAt) %></p>
-            <h3 class="mt-2 line-clamp-2 text-lg"><a href="/berita/<%= n.slug %>" class="text-ink hover:text-primary"><%= n.title %></a></h3>
+    <%
+      // Tata letak majalah: satu berita utama besar + sisanya sebagai kartu mendatar di kolom kanan (≥1024 px),
+      // bertumpuk di HP. Seluruh kartu bisa diklik lewat tautan judul yang direntangkan (satu tab stop per berita).
+      // Berita tanpa gambar memakai bidang hijau muda berikon, bukan kotak abu kosong.
+      const [beritaUtama, ...beritaLain] = kegiatanTerbaru;
+    %>
+    <div data-reveal-group class="grid gap-6 <%= beritaLain.length ? 'lg:grid-cols-[1.6fr_1fr]' : '' %>">
+      <article class="card lift group relative flex flex-col overflow-hidden">
+        <div class="aspect-video overflow-hidden bg-sunken"><% if (beritaUtama.featuredImage) { %><img src="<%= beritaUtama.featuredImage %>" alt="" class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" loading="lazy"><% } else { %><span class="flex size-full items-center justify-center bg-linear-to-br from-brand-tint to-primary-soft text-primary/40"><%- icon('newspaper', 'size-12') %></span><% } %></div>
+        <div class="flex flex-1 flex-col p-6">
+          <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
+            <% if (beritaUtama.kategori) { %><%- include('../components/badge', { text: beritaUtama.kategori.nama, tone: 'success' }) %><% } %>
+            <time datetime="<%= new Date(beritaUtama.createdAt).toISOString() %>" class="inline-flex items-center gap-1"><%- icon('schedule', 'size-4') %><%= formatTanggal(beritaUtama.createdAt, { long: true }) %></time>
           </div>
-        </article>
-      <% }) %>
+          <h3 class="mt-3 text-xl leading-snug lg:text-2xl">
+            <a href="/berita/<%= beritaUtama.slug %>" class="line-clamp-3 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= beritaUtama.title %></a>
+          </h3>
+          <% if (beritaUtama.excerpt) { %><p class="mt-3 line-clamp-3 text-muted"><%= beritaUtama.excerpt %></p><% } %>
+          <p class="mt-auto flex items-center gap-1 pt-5 text-sm font-semibold text-primary" aria-hidden="true">Baca berita<%- icon('arrow_forward', 'size-4 transition-transform group-hover:translate-x-1') %></p>
+        </div>
+      </article>
+
+      <% if (beritaLain.length) { %>
+      <div class="grid content-start gap-6">
+        <% beritaLain.forEach(n => { %>
+          <article class="card lift group relative flex overflow-hidden">
+            <div class="w-32 shrink-0 overflow-hidden bg-sunken sm:w-44"><% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" loading="lazy"><% } else { %><span class="flex size-full items-center justify-center bg-linear-to-br from-brand-tint to-primary-soft text-primary/40"><%- icon('newspaper', 'size-12') %></span><% } %></div>
+            <div class="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+              <div class="flex flex-wrap items-center gap-2 text-xs text-muted">
+                <% if (n.kategori) { %><%- include('../components/badge', { text: n.kategori.nama, tone: 'success' }) %><% } %>
+                <time datetime="<%= new Date(n.createdAt).toISOString() %>"><%= formatTanggal(n.createdAt) %></time>
+              </div>
+              <h3 class="mt-2 font-sans text-base leading-snug font-semibold">
+                <a href="/berita/<%= n.slug %>" class="line-clamp-3 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= n.title %></a>
+              </h3>
+              <% if (n.excerpt) { %><p class="mt-1 line-clamp-2 text-sm text-muted max-sm:hidden"><%= n.excerpt %></p><% } %>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+      <% } %>
     </div>
   </div>
 </section>
