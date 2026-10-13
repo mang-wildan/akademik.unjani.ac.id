@@ -35,10 +35,11 @@
         <a href="<%= b.src %>" target="_blank" rel="noopener" class="block overflow-hidden rounded-card border border-line bg-sunken shadow-card" aria-hidden="true" tabindex="-1">
           <img src="<%= b.cover %>" alt="" class="aspect-[3/4] w-full object-cover">
         </a>
-        <a href="<%= b.src %>" target="_blank" rel="noopener" class="mt-2 inline-block line-clamp-2 py-1 text-sm font-semibold text-ink hover:text-primary"><%= b.title %></a>
+        <a href="<%= b.src %>" target="_blank" rel="noopener" class="mt-2 inline-block line-clamp-2 py-1 text-sm font-semibold text-ink hover:text-primary"><%= b.title %><span class="sr-only"> (PDF, tab baru)</span></a>
         <p class="text-xs text-muted">Periode <%= b.periode %> · Tahun <%= b.year %></p>
       </article>
     <% }) %>
   </div>
+  <%- include('../components/pagination', { ...pagination, noun: 'buku wisuda', path: '/buku-wisuda', query: filters }) %>
   <% } %>
 </div>

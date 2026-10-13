@@ -58,7 +58,7 @@
       <% }) %>
     </div>
     <% bySemester.forEach((s, i) => { %>
-      <div role="tabpanel" id="panel-<%= i %>" aria-labelledby="tab-<%= i %>" data-index="<%= i %>" x-show="isActive" tabindex="0">
+      <div role="tabpanel" id="panel-<%= i %>" aria-labelledby="tab-<%= i %>" data-index="<%= i %>" x-show="isActive" tabindex="0" class="panel-enter">
         <% if (!s.events.length) { %>
           <div class="p-6">
             <%- include('../components/empty-state', { emptyIcon: 'event', emptyTitle: `Belum ada kegiatan ${s.label.toLowerCase()}` }) %>

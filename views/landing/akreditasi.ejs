@@ -13,7 +13,7 @@
       <div class="card card-body">
         <p class="text-sm font-medium text-muted">Akreditasi Institusi</p>
         <div class="mt-1 flex flex-wrap items-center gap-3">
-          <span class="text-3xl font-bold text-primary"><%= a.peringkat %></span>
+          <span class="font-serif text-3xl font-bold text-primary"><%= a.peringkat %></span>
           <%- include('../components/badge', { text: a.status.label, tone: a.status.tone }) %>
         </div>
         <p class="mt-2 text-sm text-muted">
@@ -95,10 +95,21 @@
           </tr>
           <% if (r.history.length) { %>
           <tr>
-            <td colspan="7" class="!py-0">
+            <td colspan="7" class="!py-0 max-md:!block">
               <details class="py-2">
                 <summary class="cursor-pointer py-2 text-sm font-semibold text-primary">Riwayat (<%= r.history.length %>)</summary>
-                <table class="data-table data-table--stack mb-2">
+                <%# HP: daftar sederhana (tabel bersarang menjadi kartu di dalam kartu). Desktop: tabel. %>
+                <ul class="mb-2 divide-y divide-line md:hidden">
+                  <% r.history.forEach(h => { %>
+                    <li class="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 text-sm">
+                      <span class="badge badge-neutral"><%= h.peringkat %></span>
+                      <%- include('../components/badge', { text: accreditationStatus(h.berlakuSampai).label, tone: accreditationStatus(h.berlakuSampai).tone }) %>
+                      <span class="w-full text-muted"><%= formatRentangTanggal(h.tanggalBerlaku, h.berlakuSampai) %></span>
+                      <a href="<%= h.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 font-semibold"><%- icon('picture_as_pdf', 'size-4') %>Lihat sertifikat<span class="sr-only"> <%= h.peringkat %> (tab baru)</span></a>
+                    </li>
+                  <% }) %>
+                </ul>
+                <table class="data-table mb-2 max-md:hidden">
                   <caption class="sr-only">Riwayat akreditasi <%= r.label %></caption>
                   <thead><tr><th scope="col">Peringkat</th><th scope="col">Berlaku</th><th scope="col">Status</th><th scope="col">Sertifikat</th></tr></thead>
                   <tbody>

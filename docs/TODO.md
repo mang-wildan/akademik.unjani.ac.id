@@ -350,22 +350,22 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 
 ### R2 — Landing page `[Sonnet 5.5 · medium]`
 **UX**
-- [ ] **L3** Video profil: konversi otomatis URL YouTube/Vimeo biasa ke URL embed (fungsi murni di `utils/` + tes); bantuan di Pengaturan Situs menyebut format yang diterima
-- [ ] **L4** Satukan pola filter: tombol "Terapkan" eksplisit di Kalender, Akreditasi, Kurikulum, Buku Wisuda
-- [ ] **L5** Pagination di `/buku-wisuda`
-- [ ] **L6** Chip tahun `/buku`: `aria-current` + ikon centang seperti chip kategori
-- [ ] **L7** Sidebar kategori Dokumen Akademik di <1024 px jadi `<select>`/baris chip yang bisa digulir; daftar dokumen tampil lebih dulu
-- [ ] **L8** Footer "Jelajahi": tambah Profil, Pimpinan & Staf, Struktur Organisasi, RPL, Buku, Buku Wisuda (dua kolom kecil bila perlu)
-- [ ] **L9** Riwayat akreditasi di HP: daftar sederhana, bukan tabel bersarang
-- [ ] **L10** Tautan ke tab baru (buku, dokumen): `sr-only "(tab baru)"` + ikon
-- [ ] **L11** `/cari`: hapus `autofocus` pada layar sentuh
-- [ ] **L12–L14** Logo halaman error, font serif angka peringkat, banner ringkas untuk `/cari` — S3, kerjakan sambil menyentuh file terkait
+- [x] **L3** Video profil: konversi otomatis URL YouTube/Vimeo biasa ke URL embed (fungsi murni di `utils/` + tes); bantuan di Pengaturan Situs menyebut format yang diterima — `utils/videoEmbed.js` (+ 2 tes): watch/youtu.be/shorts/embed → `youtube-nocookie.com/embed/<id>` — yang diizinkan CSP `frame-src`; tautan non-YouTube tidak diubah; Vimeo sengaja tidak dikonversi karena CSP tidak mengizinkannya; bantuan di Pengaturan Situs diperbarui
+- [x] **L4** Satukan pola filter: tombol "Terapkan" eksplisit di Kalender, Akreditasi, Kurikulum, Buku Wisuda — Kalender kini memakai tombol "Tampilkan" permanen; Akreditasi, Kurikulum, Buku Wisuda sudah memakai tombol "Terapkan"; Berita/Pengumuman/Dokumen tetap chip + kolom cari (pola berbeda, memang tombol/tautan eksplisit)
+- [x] **L5** Pagination di `/buku-wisuda` — 15 buku per halaman, `homeController.getBukuWisudaLanding`
+- [x] **L6** Chip tahun `/buku`: `aria-current` + ikon centang seperti chip kategori
+- [x] **L7** Sidebar kategori Dokumen Akademik di <1024 px jadi `<select>`/baris chip yang bisa digulir; daftar dokumen tampil lebih dulu — chip yang bisa digulir horizontal di <1024 px; daftar tetap tampil tepat di bawahnya
+- [x] **L8** Footer "Jelajahi": tambah Profil, Pimpinan & Staf, Struktur Organisasi, RPL, Buku, Buku Wisuda (dua kolom kecil bila perlu) — 12 tautan, dua kolom di HP
+- [x] **L9** Riwayat akreditasi di HP: daftar sederhana, bukan tabel bersarang — daftar di HP, tabel di ≥768 px; sel `colspan` tidak lagi memakai kolom label kosong
+- [x] **L10** Tautan ke tab baru (buku, dokumen): `sr-only "(tab baru)"` + ikon — buku, buku wisuda, dokumen, RPL
+- [x] **L11** `/cari`: hapus `autofocus` pada layar sentuh — `autofocus` dihapus (tidak dibedakan sentuh/desktop agar sederhana)
+- [x] **L12–L14** Logo halaman error, font serif angka peringkat, banner ringkas untuk `/cari` — S3, kerjakan sambil menyentuh file terkait — L12 dan L13 selesai; L14 (banner ringkas untuk `/cari`) sengaja dilewati — S3 opsional, banner seragam dipertahankan
 **Gerak** *(NFR-U-04, maksimal 1–2 elemen utama per layar)*
 - [x] Hero Beranda: teks masuk `fade-in-up` sekali saat dimuat (tidak menyentuh gambar LCP)
 - [x] Reveal bertahap (stagger 60 ms) untuk kartu akses cepat, pengumuman, dan kegiatan di Beranda — hanya di bawah lipatan — agenda, pengumuman, kegiatan Beranda, dan grid Berita
 - [x] `.lift` pada kartu berita, pengumuman, akses cepat; `.press` pada tombol — kartu akses cepat Beranda, kegiatan Beranda, dan grid Berita; `.press` lewat `.btn:active`
 - [x] Menu HP dan dropdown navbar: fade + geser ≤ 8 px (masuk 200 ms, keluar 120 ms) — `.menu-enter` (masuk saja); keluar seketika karena `x-show` Alpine
-- [ ] Panel tab semester Kalender: memudar saat berganti
+- [x] Panel tab semester Kalender: memudar saat berganti — `.panel-enter` (hanya `opacity`, 200 ms)
 - [ ] Verifikasi 390 & 1440 px; Lighthouse Beranda tidak turun dari 80; CLS < 0,1
 
 ### R3 — Panel admin `[Sonnet 5.5 · medium; high untuk P4, P8, P9, P11]`
@@ -389,7 +389,7 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 - [ ] Baris tabel yang baru disimpan/diubah: sorotan hijau muda memudar 1,2 dtk (hanya saat `?success=`)
 - [ ] Sidebar HP: geser masuk (sudah ada) + latar memudar
 
-> **Catatan status (2026-10-13):** R0, R1, dan sebagian gerak R2/R3 selesai dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Sisa R2/R3 (semua butir UX selain P1–P3/L1–L2, animasi tab Kalender, sorotan baris, `dirtyForm`) belum dikerjakan.
+> **Catatan status (2026-10-13):** R0, R1, R2 (kecuali verifikasi), dan sebagian gerak R3 selesai dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Sisa R2/R3 (semua butir UX selain P1–P3/L1–L2, animasi tab Kalender, sorotan baris, `dirtyForm`) belum dikerjakan.
 
 ### R4 — Verifikasi `[Opus 5.5 · high]`
 - [ ] `npm run build:css`, `npm test`

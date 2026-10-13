@@ -12,7 +12,7 @@
   const adaMutu = institusiAcc.length || peringkatStats.length;
   const adaPita = adaMutu || lulusan;
   // Validator hanya menerima http(s); cek ulang di sini untuk nilai yang tersimpan sebelum itu.
-  const videoUrl = setting && /^https?:\/\//i.test(setting.landingVideoUrl || '') ? setting.landingVideoUrl : '';
+  const videoUrl = setting && /^https?:\/\//i.test(setting.landingVideoUrl || '') ? videoEmbedUrl(setting.landingVideoUrl) : '';
   const sesudahPengumuman = pengumumanTerbaru.length && !adaPita && !kegiatanTerbaru.length; // pita sebelumnya = pengumuman (hijau muda)
   const unitBand = sesudahPengumuman ? 'section-surface' : 'section-soft';
   const videoBand = units.length ? (unitBand === 'section-soft' ? 'section-surface' : 'section-soft') : sesudahPengumuman ? 'section-surface' : 'section-soft';

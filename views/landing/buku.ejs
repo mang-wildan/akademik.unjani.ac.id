@@ -8,8 +8,8 @@
 <div class="container-content pb-16">
   <% if (tahunList.length > 1) { %>
   <div class="mb-6 flex flex-wrap gap-2">
-    <a href="/buku" class="badge <%= !filters.tahun ? 'badge-success' : 'badge-neutral' %>">Semua tahun</a>
-    <% tahunList.forEach(y => { %><a href="/buku?tahun=<%= y %>" class="badge <%= filters.tahun === String(y) ? 'badge-success' : 'badge-neutral' %>"><%= y %></a><% }) %>
+    <a href="/buku" class="badge <%= !filters.tahun ? 'badge-success' : 'badge-neutral' %>"<%- !filters.tahun ? ' aria-current="true"' : '' %>><% if (!filters.tahun) { %><%- icon('check', 'size-3.5') %><% } %>Semua tahun</a>
+    <% tahunList.forEach(y => { %><a href="/buku?tahun=<%= y %>" class="badge <%= filters.tahun === String(y) ? 'badge-success' : 'badge-neutral' %>"<%- filters.tahun === String(y) ? ' aria-current="true"' : '' %>><% if (filters.tahun === String(y)) { %><%- icon('check', 'size-3.5') %><% } %><%= y %></a><% }) %>
   </div>
   <% } %>
 
@@ -23,7 +23,7 @@
         <a href="<%= b.src %>" target="_blank" rel="noopener" class="block overflow-hidden rounded-card border border-line bg-sunken shadow-card" aria-hidden="true" tabindex="-1">
           <img src="<%= b.cover %>" alt="" class="aspect-[3/4] w-full object-cover">
         </a>
-        <a href="<%= b.src %>" target="_blank" rel="noopener" class="mt-2 inline-block line-clamp-2 py-1 text-sm font-semibold text-ink hover:text-primary"><%= b.title %></a>
+        <a href="<%= b.src %>" target="_blank" rel="noopener" class="mt-2 inline-block line-clamp-2 py-1 text-sm font-semibold text-ink hover:text-primary"><%= b.title %><span class="sr-only"> (PDF, tab baru)</span></a>
         <% if (b.year) { %><p class="text-xs text-muted">Tahun <%= b.year %></p><% } %>
       </article>
     <% }) %>

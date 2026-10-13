@@ -177,11 +177,22 @@ exports.getBukuWisudaLanding = async (req, res) => {
   const filter = {};
   if (tahunFilter) filter.year = tahunFilter;
   if (periodeFilter) filter.periode = periodeFilter;
+  const limit = 15;
+  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
 
-  const [tahunList, gradBooks] = await Promise.all([
+  const [tahunList, total] = await Promise.all([
     GraduationBook.distinct('year'),
-    GraduationBook.find(filter).sort({ year: -1, periode: 1, createdAt: -1 }).lean(),
+    GraduationBook.countDocuments(filter),
   ]);
+  const totalPages = Math.max(Math.ceil(total / limit), 1);
+  const currentPage = Math.min(page, totalPages);
+  const gradBooks = await GraduationBook.find(filter)
+    .sort({ year: -1, periode: 1, createdAt: -1 })
+    .skip((currentPage - 1) * limit)
+    .limit(limit)
+    .lean();
+  const from = total === 0 ? 0 : (currentPage - 1) * limit + 1;
+  const to = Math.min(currentPage * limit, total);
 
   res.renderPage('landing/buku-wisuda', {
     title: 'Buku Wisuda',
@@ -189,6 +200,7 @@ exports.getBukuWisudaLanding = async (req, res) => {
     gradBooks,
     tahunList: tahunList.filter(Boolean).sort((a, b) => b - a),
     filters: { tahun: tahunFilter ? String(tahunFilter) : '', periode: periodeFilter },
+    pagination: { page: currentPage, totalPages, total, from, to },
   });
 };
 

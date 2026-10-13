@@ -25,7 +25,7 @@
       <li class="flex items-start gap-4 p-4">
         <%- icon('picture_as_pdf', 'size-8 shrink-0 text-primary') %>
         <div class="min-w-0 flex-1">
-          <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-block py-1.5 font-semibold text-ink hover:text-primary"><%= d.judul %></a>
+          <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-block py-1.5 font-semibold text-ink hover:text-primary"><%= d.judul %><span class="sr-only"> (PDF, tab baru)</span></a>
           <% if (d.deskripsi) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.deskripsi %></p><% } %>
           <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
             <%- include('../components/badge', { text: d.status ? 'Aktif' : 'Arsip', tone: d.status ? 'success' : 'neutral' }) %>

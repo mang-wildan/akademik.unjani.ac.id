@@ -461,6 +461,9 @@
     animation: spin 0.7s linear infinite;
   }
   /* Menus and toasts: fade + small slide. Alpine x-show toggles display, so entry uses an animation. */
+  .panel-enter {
+    animation: panel-enter var(--dur-base) var(--ease-enter) both;
+  }
   .menu-enter {
     animation: menu-enter var(--dur-base) var(--ease-enter) both;
   }
@@ -500,6 +503,10 @@
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
+}
+@keyframes panel-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes menu-enter {
   from { opacity: 0; transform: translateY(-4px); }
