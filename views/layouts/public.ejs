@@ -150,19 +150,15 @@
     // Cadangan dipakai setelah penyaringan, agar kolomnya tidak kosong bila semua tautan lama di DB tidak valid.
     const quickLinksValid = (s.quickLinks || []).filter(link => link && link.label && /^(https?:\/\/|\/(?!\/))/i.test(link.url || ''));
     const quickLinks = quickLinksValid.length ? quickLinksValid : [{ label: 'Portal UNJANI', url: 'https://unjani.ac.id', target: '_blank' }];
+    // Hanya 6 tujuan yang paling sering dicari; halaman lain tetap lewat menu header. 12 tautan membuat kolom ini
+    // jauh lebih panjang dari kolom lain (target sentuh 44 px per tautan).
     const jelajahi = [
-      { label: 'Profil', href: '/profil' },
-      { label: 'Struktur Organisasi', href: '/struktur-organisasi' },
-      { label: 'Pimpinan & Staf', href: '/pimpinan-dan-staff' },
       { label: 'Kalender Akademik', href: '/kalender-akademik' },
-      { label: 'Kurikulum', href: '/kurikulum' },
       { label: 'Dokumen Akademik', href: '/dokumen-akademik' },
-      { label: 'RPL', href: '/rpl' },
+      { label: 'Kurikulum', href: '/kurikulum' },
       { label: 'Akreditasi', href: '/akreditasi' },
       { label: 'Pengumuman', href: '/pengumuman' },
       { label: 'Berita', href: '/berita' },
-      { label: 'Buku', href: '/buku' },
-      { label: 'Buku Wisuda', href: '/buku-wisuda' },
     ];
   %>
   <%# Footer (F7 R4). Band CTA berada di dalam <footer> agar tetap di landmark contentinfo. Tanpa margin atas:

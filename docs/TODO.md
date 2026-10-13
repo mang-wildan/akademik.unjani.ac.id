@@ -355,7 +355,7 @@ Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdas
 - [x] **L5** Pagination di `/buku-wisuda` — 15 buku per halaman, `homeController.getBukuWisudaLanding`
 - [x] **L6** Chip tahun `/buku`: `aria-current` + ikon centang seperti chip kategori
 - [x] **L7** Sidebar kategori Dokumen Akademik di <1024 px jadi `<select>`/baris chip yang bisa digulir; daftar dokumen tampil lebih dulu — chip yang bisa digulir horizontal di <1024 px; daftar tetap tampil tepat di bawahnya
-- [x] **L8** Footer "Jelajahi": tambah Profil, Pimpinan & Staf, Struktur Organisasi, RPL, Buku, Buku Wisuda (dua kolom kecil bila perlu) — 12 tautan, dua kolom di HP
+- [x] **L8** Footer "Jelajahi" — sempat 12 tautan; dikembalikan ke 6 tujuan utama (Kalender, Dokumen, Kurikulum, Akreditasi, Pengumuman, Berita) atas masukan pemilik (2026-10-13): 12 tautan × 44 px membuat kolom terlalu panjang. Halaman lain tetap di menu header; dua kolom di HP dipertahankan
 - [x] **L9** Riwayat akreditasi di HP: daftar sederhana, bukan tabel bersarang — daftar di HP, tabel di ≥768 px; sel `colspan` tidak lagi memakai kolom label kosong
 - [x] **L10** Tautan ke tab baru (buku, dokumen): `sr-only "(tab baru)"` + ikon — buku, buku wisuda, dokumen, RPL
 - [x] **L11** `/cari`: hapus `autofocus` pada layar sentuh — `autofocus` dihapus (tidak dibedakan sentuh/desktop agar sederhana)
