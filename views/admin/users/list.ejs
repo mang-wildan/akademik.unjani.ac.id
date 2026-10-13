@@ -25,7 +25,7 @@
               <a href="/admin/users/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah akun <%= item.email %>"><%- icon('edit') %>Ubah</a>
               <div class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
                 <button type="button" class="btn-icon" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true" aria-label="Aksi lain untuk akun <%= item.email %>"><%- icon('more_vert') %></button>
-                <div x-show="open" x-cloak class="absolute right-0 z-10 mt-1 w-48 rounded-card border border-line bg-surface p-2 shadow-raised">
+                <div x-show="open" x-cloak class="menu-enter absolute right-0 z-10 mt-1 w-48 rounded-card border border-line bg-surface p-2 shadow-raised">
                   <a href="/admin/users/<%= item._id %>/reset-password" class="flex min-h-11 w-full items-center gap-2 rounded-control px-3 text-left text-sm font-medium text-ink hover:bg-sunken"><%- icon('settings', 'size-5') %>Reset Password</a>
                   <% if (!self) { %>
                     <button type="button" class="flex min-h-11 w-full items-center gap-2 rounded-control px-3 text-sm font-medium text-danger hover:bg-danger-soft" data-dialog-open="hapus-<%= item._id %>"><%- icon('delete', 'size-5') %>Hapus</button>

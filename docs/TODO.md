@@ -324,4 +324,77 @@ Permintaan stakeholder (2026-10-12). Dua bagian, satu commit tiap bagian. Hierar
 - [x] `homeController`: tambah `Unit.find().sort({ createdAt: -1 }).lean()` ke `Promise.all` beranda; periksa apakah unggahan unit (maks. 5 MB) sudah dikecilkan — bila belum, `loading="lazy"` + `width`/`height` agar skor performa tidak turun — **hasil:** unggahan unit belum pernah dikecilkan (±500 KB/gambar) → `unitController` kini memproses gambar baru lewat `processImage` (WebP ≤900 px); gambar lama dibiarkan (`loading="lazy"`)
 - [x] `views/landing/index.ejs`: section baru setelah "Kegiatan Akademik", sebelum video; hilang rapi bila tidak ada unit; kartu foto 4:3 + nama di atas gradien hijau + tombol "Kunjungi Unit" (hanya bila `link` terisi, tab baru `rel="noopener"`); 3 kartu ≥1024 px, 2 di tablet, 1 di HP; hover zoom foto halus. Tidak ada halaman detail unit — pita latar mengikuti pola F7 (hijau muda, putih bila tepat setelah Pengumuman; video menyesuaikan). Bila unit sedikit (tidak perlu gulir) kartu dipusatkan, tombol panah/jeda disembunyikan
 - [x] Carousel tanpa library: CSS scroll-snap + `scrollBy({ behavior: 'smooth' })`, logika di `Alpine.data` pada `public/js/app.js` (Alpine CSP: tanpa ekspresi inline). Autoplay ±5 dtk, kembali ke awal setelah kartu terakhir; berhenti saat hover/fokus; mati total bila `prefers-reduced-motion`; tombol panah kiri/kanan + tombol jeda (WCAG 2.2.2) — komponen `carousel` di `public/js/app.js`; ikon `pause`/`play_arrow` ditambah ke `scripts/build-assets.js`
-- [ ] `npm run build:css` (sudah); verifikasi 390 & 1440 px (sebagian: Playwright — tanpa galat konsol/overflow, autoplay & geser di 390 px jalan; sisa: fokus keyboard, kontras, Lighthouse) (tanpa overflow, fokus keyboard terlihat, kontras teks di atas gradien ≥ 4,5:1); Lighthouse Beranda tidak turun dari 80
+- [x] `npm run build:css` (sudah); verifikasi 390 & 1440 px (sebagian: Playwright — tanpa galat konsol/overflow, autoplay & geser di 390 px jalan; sisa: fokus keyboard, kontras, Lighthouse) (tanpa overflow, fokus keyboard terlihat, kontras teks di atas gradien ≥ 4,5:1); Lighthouse Beranda tidak turun dari 80
+
+---
+
+## F9 — Peningkatan UX & gerak (audit v4) `[Opus 5.5 · high → Sonnet 5.5 · medium]`
+
+Permintaan stakeholder (2026-10-13): tingkatkan UX dan tambahkan animasi, berdasarkan [AUDIT-UIUX-v4.md](AUDIT-UIUX-v4.md) (L1–L14 landing, P1–P16 panel; S1 = merusak fungsi/aksesibilitas, S2 = gesekan nyata, S3 = polish). Persyaratan: SRS §6.7 (NFR-U-01..07) dan FR-AD-09..13. Tanpa library baru. Satu commit per rangkaian (R0–R4).
+
+### R0 — Fondasi gerak & umpan balik `[Opus 5.5 · high]`
+- [x] Token gerak di `assets/css/app.css` (`@theme`): `--ease-out`, `--ease-in`, `--dur-fast` 120 ms, `--dur-base` 200 ms, `--dur-slow` 400 ms — NFR-U-01 — `:root` di `@layer base` (nama `--ease-enter/--ease-exit`, bukan `--ease-out`, agar tidak menimpa utilitas `ease-out` Tailwind)
+- [x] Satu blok `@media (prefers-reduced-motion: reduce)` yang mematikan semua gerak baru (animasi `none`, transisi `0.01ms`, `.reveal` langsung terlihat) — NFR-U-02 — blok lama `*{...!important}` sudah mematikan semua transisi/animasi; ditambah override `.reveal-pending`; JS reveal tidak berjalan sama sekali bila reduced-motion
+- [x] Komponen Alpine `reveal` di `public/js/app.js`: `IntersectionObserver` memasang kelas `is-visible`; elemen disembunyikan **oleh JS**, bukan CSS bawaan, dan tidak untuk elemen di atas lipatan — NFR-U-03 — diimplementasikan sebagai fungsi biasa (`setupReveal`) di `public/js/app.js`, bukan komponen Alpine: atribut `data-reveal` / `data-reveal-group` (stagger 60 ms); kelas dilepas setelah `transitionend` agar tidak bentrok dengan `.lift`
+- [x] Komponen Alpine `busyForm`: pada `submit` tombol kirim `disabled` + teks "Menyimpan…" + `aria-busy="true"` pada form; pulih bila halaman dimuat dari cache (`pageshow`) — FR-AD-09 · P1 — diimplementasikan sebagai pendengar `submit` global (tanpa ubah view): form POST, bukan di `<dialog>`, bukan `data-no-busy`; spinner + "Memproses…" (`data-busy-label` untuk label lain); dipulihkan lewat `pageshow`
+- [x] Utilitas `.lift` (kartu terangkat tipis saat hover/fokus), `.press` (keadaan `active` tombol), `.fade-in-up` (masuk 8 px) — NFR-U-04 — plus `.menu-enter` dan animasi `<dialog>` (fade + skala 0,98, `@starting-style` + `allow-discrete`)
+- [ ] Dokumentasi pola di `/dev/komponen`; tes unit untuk logika murni (bila ada); `npm run build:css`
+
+### R1 — Perbaikan S1 `[Sonnet 5.5 · medium]`
+- [x] **P1** Terapkan `busyForm` ke semua form admin dan login — semua `views/admin/**/form.ejs`, `views/auth/login.ejs`, form di `settings/edit.ejs` dan `academic-calendars/edit.ejs` — tercakup pendengar global; tidak ada perubahan view
+- [x] **P2** Hapus `role="tablist"` pada tautan filter; ganti `<nav aria-label="Status">` + `aria-current="page"` — `pengumuman/list.ejs`, `news/list.ejs`, `kategori/list.ejs`, `accreditations/list.ejs` — 4 daftar admin → `<nav>` + `aria-current="page"`
+- [x] **P3** Filter `<select>` di daftar admin dan Kalender: hapus `onchange` submit-otomatis, ganti tombol "Terapkan" (sembunyikan label di layar kecil dengan `sr-only`) — WCAG 3.2.2 — Berita, Pengumuman, Akreditasi (admin) dan Kalender (publik); tombol "Terapkan" terlihat
+- [x] **L1** Tombol "Unduh" di Dokumen Akademik dan RPL: `aria-label="Unduh <nama>"`; tautan judul + tombol tidak lagi dua tab stop (tombol `tabindex` tetap, judul tautan ke file) — `aria-label="Unduh <nama>"`; tab stop ganda dipertahankan (judul = buka, tombol = unduh)
+- [x] **L2** `.prose-content`: `img{max-w-full h-auto rounded}`, `table` dibungkus/diguling horizontal, gaya `blockquote`, `hr` — uji dengan isi berita yang ditempel dari Word — `img`, `blockquote`, `hr`, `table` (gulir sendiri), `th/td`
+- [ ] Tes: `npm test` hijau; render ulang 5 halaman terdampak di 390 dan 1440 px
+
+### R2 — Landing page `[Sonnet 5.5 · medium]`
+**UX**
+- [ ] **L3** Video profil: konversi otomatis URL YouTube/Vimeo biasa ke URL embed (fungsi murni di `utils/` + tes); bantuan di Pengaturan Situs menyebut format yang diterima
+- [ ] **L4** Satukan pola filter: tombol "Terapkan" eksplisit di Kalender, Akreditasi, Kurikulum, Buku Wisuda
+- [ ] **L5** Pagination di `/buku-wisuda`
+- [ ] **L6** Chip tahun `/buku`: `aria-current` + ikon centang seperti chip kategori
+- [ ] **L7** Sidebar kategori Dokumen Akademik di <1024 px jadi `<select>`/baris chip yang bisa digulir; daftar dokumen tampil lebih dulu
+- [ ] **L8** Footer "Jelajahi": tambah Profil, Pimpinan & Staf, Struktur Organisasi, RPL, Buku, Buku Wisuda (dua kolom kecil bila perlu)
+- [ ] **L9** Riwayat akreditasi di HP: daftar sederhana, bukan tabel bersarang
+- [ ] **L10** Tautan ke tab baru (buku, dokumen): `sr-only "(tab baru)"` + ikon
+- [ ] **L11** `/cari`: hapus `autofocus` pada layar sentuh
+- [ ] **L12–L14** Logo halaman error, font serif angka peringkat, banner ringkas untuk `/cari` — S3, kerjakan sambil menyentuh file terkait
+**Gerak** *(NFR-U-04, maksimal 1–2 elemen utama per layar)*
+- [x] Hero Beranda: teks masuk `fade-in-up` sekali saat dimuat (tidak menyentuh gambar LCP)
+- [x] Reveal bertahap (stagger 60 ms) untuk kartu akses cepat, pengumuman, dan kegiatan di Beranda — hanya di bawah lipatan — agenda, pengumuman, kegiatan Beranda, dan grid Berita
+- [x] `.lift` pada kartu berita, pengumuman, akses cepat; `.press` pada tombol — kartu akses cepat Beranda, kegiatan Beranda, dan grid Berita; `.press` lewat `.btn:active`
+- [x] Menu HP dan dropdown navbar: fade + geser ≤ 8 px (masuk 200 ms, keluar 120 ms) — `.menu-enter` (masuk saja); keluar seketika karena `x-show` Alpine
+- [ ] Panel tab semester Kalender: memudar saat berganti
+- [ ] Verifikasi 390 & 1440 px; Lighthouse Beranda tidak turun dari 80; CLS < 0,1
+
+### R3 — Panel admin `[Sonnet 5.5 · medium; high untuk P4, P8, P9, P11]`
+**UX**
+- [ ] **P4** `[high]` Pakai `components/page-header` varian admin di semua view admin (breadcrumb + h1 seragam), hapus `<h1>` manual dan tautan "Kembali ke…"
+- [ ] **P5** Header lengket admin: hapus judul ganda; cukup nama grup + tombol akun
+- [ ] **P6** Ganti `data-confirm`/`window.confirm` dan hapus tanpa konfirmasi (kegiatan kalender, tautan cepat, lampiran) dengan `confirm-dialog`; hapus `data-confirm` dari `public/js/app.js` bila tidak terpakai lagi
+- [ ] **P7** Impor CSV kalender dan lulusan: dialog konfirmasi yang menyebut jumlah data yang akan diganti
+- [ ] **P8** `[high]` `dirtyForm`: peringatan sebelum meninggalkan halaman bila ada perubahan belum disimpan; terapkan di Pengaturan Situs dan form panjang — FR-AD-11
+- [ ] **P9** `[high]` Editor teks: tombol tautan, ikon bergambar menggantikan huruf, teks bantuan akurat — FR-AD-12
+- [ ] **P10** Tombol "Pratinjau" (tab baru) untuk draf berita/pengumuman — rute baca-saja untuk admin
+- [ ] **P11** `[high]` `file-upload`: periksa tipe dan ukuran di klien, pratinjau gambar, seret-lepas — FR-AD-13
+- [ ] **P12** Pencarian + pagination di Akun Admin dan Data Lulusan
+- [ ] **P13** Satu pola aksi: ⋯ untuk semua aksi destruktif/sekunder
+- [ ] **P14–P16** `order-first` mati di Dasbor, label tombol mata password dinamis + catatan reset password, eyebrow Profil — S3
+**Gerak**
+- [x] Dialog: fade + skala 0,98→1 (masuk 200 ms, keluar 120 ms) lewat `@starting-style`/`allow-discrete`, cadangan tanpa animasi — tanpa pemeriksaan visual di browser — lihat catatan verifikasi
+- [x] Dropdown ⋯ dan menu akun: fade + geser ≤ 8 px
+- [x] Toast: masuk dari bawah, keluar memudar; tetap `role="status"`/`alert` — masuk saja (`fade-in-up`)
+- [x] Tombol kirim: keadaan "Menyimpan…" dengan spinner (`linear`, bukan ease) — lewat pendengar global (R0)
+- [ ] Baris tabel yang baru disimpan/diubah: sorotan hijau muda memudar 1,2 dtk (hanya saat `?success=`)
+- [ ] Sidebar HP: geser masuk (sudah ada) + latar memudar
+
+> **Catatan status (2026-10-13):** R0, R1, dan sebagian gerak R2/R3 selesai dan lolos `npm run build:css`, kompilasi EJS 7 view terdampak, `npm test` (47 lulus), serta render HTML Beranda/Dokumen/Kalender lewat server lokal (kelas baru ada, status 200). **Belum diverifikasi di browser** — Chrome tidak bisa menjangkau server lokal dari sandbox, jadi perilaku visual (reveal, dialog, spinner, hover) dan Lighthouse masuk R4. Sisa R2/R3 (semua butir UX selain P1–P3/L1–L2, animasi tab Kalender, sorotan baris, `dirtyForm`) belum dikerjakan.
+
+### R4 — Verifikasi `[Opus 5.5 · high]`
+- [ ] `npm run build:css`, `npm test`
+- [ ] Probe audit (kontras, target sentuh, nama aksesibel, overflow) di 390 dan 1440 px: publik + `/dev/komponen` + `/dev/admin` + harness admin
+- [ ] Uji `prefers-reduced-motion: reduce`: tidak ada animasi berjalan; JavaScript dimatikan: semua konten terbaca
+- [ ] Lighthouse mobile 4 halaman: Performa tidak turun dari F7/F8, A11y/SEO tetap 100; CLS < 0,1
+- [ ] Uji keyboard penuh: dialog (fokus masuk/kembali), dropdown, tab, peringatan perubahan belum tersimpan
+- [ ] Tulis hasil ke `docs/AUDIT-UIUX-v4.md` (bagian "Hasil F9") dan centang NFR-U-01..07

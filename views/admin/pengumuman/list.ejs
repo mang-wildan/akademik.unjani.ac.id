@@ -15,14 +15,14 @@
 
 <div class="card">
   <form method="get" class="flex flex-col gap-3 border-b border-line p-4 md:flex-row md:items-center">
-    <div role="tablist" aria-label="Status" class="flex gap-1">
+    <nav aria-label="Status" class="flex gap-1">
       <% [['', 'Semua'], ['published', 'Terbit'], ['draft', 'Draf']].forEach(([val, label]) => { %>
         <a href="?status=<%= val %><%= filters.kategori ? '&kategori=' + filters.kategori : '' %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>"
-           class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"><%= label %></a>
+           class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"<%- filters.status === val ? ' aria-current="page"' : '' %>><%= label %></a>
       <% }) %>
-    </div>
+    </nav>
     <% if (kategoriList.length) { %>
-    <select name="kategori" class="field-control md:w-48" onchange="this.form.submit()">
+    <select name="kategori" class="field-control md:w-48">
       <option value="">Semua kategori</option>
       <% kategoriList.forEach(k => { %><option value="<%= k._id %>"<%= filters.kategori === String(k._id) ? ' selected' : '' %>><%= k.nama %></option><% }) %>
     </select>
@@ -30,7 +30,7 @@
     <% if (filters.status) { %><input type="hidden" name="status" value="<%= filters.status %>"><% } %>
     <label for="q" class="sr-only">Cari judul</label>
     <input id="q" name="q" type="search" class="field-control md:ml-auto md:w-64" placeholder="Cari judul <%= listLabel.toLowerCase() %>…" value="<%= filters.q %>">
-    <button type="submit" class="btn btn-secondary"><%- icon('search') %><span class="sr-only">Cari</span></button>
+    <button type="submit" class="btn btn-secondary"><%- icon('filter_list') %>Terapkan</button>
   </form>
 
   <% if (!items.length) { %>
@@ -64,7 +64,7 @@
               <a href="/admin/<%= basePath %>/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah <%= item.title %>"><%- icon('edit') %>Ubah</a>
               <div class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
                 <button type="button" class="btn-icon" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true" aria-label="Aksi lain untuk <%= item.title %>"><%- icon('more_vert') %></button>
-                <div x-show="open" x-cloak class="absolute right-0 z-10 mt-1 w-48 rounded-card border border-line bg-surface p-2 shadow-raised">
+                <div x-show="open" x-cloak class="menu-enter absolute right-0 z-10 mt-1 w-48 rounded-card border border-line bg-surface p-2 shadow-raised">
                   <form action="/admin/<%= basePath %>/<%= item._id %>/pin" method="POST">
                     <button type="submit" class="flex min-h-11 w-full items-center gap-2 rounded-control px-3 text-left text-sm font-medium text-ink hover:bg-sunken"><%- icon('keep', 'size-5') %><%= item.pinned ? 'Lepas sematan' : 'Sematkan' %></button>
                   </form>

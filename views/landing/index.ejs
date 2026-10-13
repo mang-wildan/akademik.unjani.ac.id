@@ -24,7 +24,7 @@
   <%# Overlay: hijau (hampir) pekat di bawah kolom teks di semua lebar ≥1024 px agar kontras teks tidak bergantung pada foto. %>
   <div class="absolute inset-0 -z-10 bg-brand/90 lg:bg-transparent lg:bg-linear-to-r lg:from-brand lg:from-45% lg:via-brand/90 lg:via-65% lg:to-brand/30" aria-hidden="true"></div>
   <div class="container-content pt-16 pb-36 lg:pt-24 lg:pb-44">
-    <div class="max-w-2xl">
+    <div class="fade-in-up max-w-2xl">
       <p class="eyebrow">Portal resmi layanan akademik</p>
       <h1 class="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
       <p class="mt-5 max-w-xl text-lg text-on-dark-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
@@ -43,7 +43,7 @@
       <li>
         <%# Ring fokus di dalam kartu (offset negatif): separuh kartu menumpuk di atas hero gelap, ring di luar kartu tak terlihat di sana.
             -4 (bukan -3) agar garis emas 4 px di atas kartu tetap terlihat saat fokus. %>
-        <a href="<%= a.href %>" class="card group flex h-full items-start gap-4 border-t-4 border-t-accent p-5 no-underline shadow-raised transition-shadow hover:shadow-modal focus-visible:outline-3 focus-visible:-outline-offset-4">
+        <a href="<%= a.href %>" class="card group flex h-full items-start gap-4 border-t-4 border-t-accent p-5 no-underline shadow-raised lift hover:shadow-modal focus-visible:outline-3 focus-visible:-outline-offset-4">
           <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary group-hover:bg-primary group-hover:text-white"><%- icon(a.icon, 'size-6') %></span>
           <span>
             <span class="block font-semibold text-ink group-hover:text-primary"><%= a.label %></span>
@@ -77,7 +77,7 @@
   <% if (agendaItems.length) { %>
   <section aria-labelledby="agenda-judul">
     <%- include('../components/section-heading', { sectionEyebrow: 'Kalender akademik', sectionHeading: 'Agenda Akademik Terdekat', sectionLink: { label: 'Lihat kalender lengkap', href: '/kalender-akademik' }, sectionId: 'agenda-judul' }) %>
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul data-reveal-group class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <% agendaItems.forEach(e => { %>
         <li class="card card-body flex gap-4">
           <%- include('../components/date-block', { date: e.mulai, dateTone: 'solid' }) %>
@@ -100,7 +100,7 @@
 <section class="section section-soft" aria-labelledby="pengumuman-judul">
   <div class="container-content">
     <%- include('../components/section-heading', { sectionEyebrow: 'Pengumuman', sectionHeading: 'Pengumuman Terbaru', sectionLead: 'Informasi resmi seputar administrasi dan layanan akademik.', sectionLink: { label: 'Lihat semua pengumuman', href: '/pengumuman' }, sectionId: 'pengumuman-judul' }) %>
-    <ul class="grid gap-4 md:grid-cols-2">
+    <ul data-reveal-group class="grid gap-4 md:grid-cols-2">
       <% pengumumanTerbaru.forEach(p => { %>
         <li class="card card-body flex gap-4">
           <%- include('../components/date-block', { date: p.createdAt }) %>
@@ -187,9 +187,9 @@
 <section class="section section-surface" aria-labelledby="kegiatan-judul">
   <div class="container-content">
     <%- include('../components/section-heading', { sectionEyebrow: 'Berita', sectionHeading: 'Kegiatan Akademik', sectionLead: 'Dokumentasi kegiatan dan kabar akademik terbaru.', sectionLink: { label: 'Lihat semua berita', href: '/berita' }, sectionId: 'kegiatan-judul' }) %>
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div data-reveal-group class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <% kegiatanTerbaru.forEach(n => { %>
-        <article class="card overflow-hidden">
+        <article class="card lift overflow-hidden">
           <a href="/berita/<%= n.slug %>" class="relative block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
             <% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-full object-cover" loading="lazy"><% } %>
           </a>

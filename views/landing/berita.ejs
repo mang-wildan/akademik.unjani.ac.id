@@ -30,9 +30,9 @@
       emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus pencarian', href: basePath } : null,
     }) %>
   <% } else { %>
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <div data-reveal-group class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
     <% items.forEach(item => { %>
-      <article class="card overflow-hidden">
+      <article class="card lift overflow-hidden">
         <%# Dekoratif: judul di bawah membawa tautan yang sama dan bisa diakses, menghindari tab stop ganda ke tujuan yang sama. %>
         <a href="<%= basePath %>/<%= item.slug %>" class="block aspect-video bg-sunken" aria-hidden="true" tabindex="-1">
           <% if (item.featuredImage) { %>

@@ -111,6 +111,14 @@
 }
 
 @layer base {
+  /* Motion tokens (SRS NFR-U-01). Exit is shorter than enter; only opacity/transform are animated. */
+  :root {
+    --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+    --dur-fast: 120ms;
+    --dur-base: 200ms;
+    --dur-slow: 400ms;
+  }
   html {
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
@@ -406,4 +414,104 @@
   .prose-content :where(h2) { @apply mt-8 mb-3 text-2xl; }
   .prose-content :where(h3) { @apply mt-6 mb-2 text-xl; }
   .prose-content :where(a) { @apply underline underline-offset-2; }
+  /* Pasted/uploaded content (utils/html.js allows img, table, blockquote, hr) */
+  .prose-content :where(img) { @apply my-4 h-auto max-w-full rounded-card; }
+  .prose-content :where(blockquote) { @apply my-4 border-l-4 border-accent bg-brand-tint py-2 pl-4 text-muted; }
+  .prose-content :where(hr) { @apply my-8 border-line; }
+  /* Tables scroll on their own instead of widening the page */
+  .prose-content :where(table) { @apply my-4 block max-w-full overflow-x-auto text-sm; }
+  .prose-content :where(th, td) { @apply border border-line px-3 py-2 text-left align-top; }
+  .prose-content :where(th) { @apply bg-sunken font-semibold; }
+}
+
+/* ---- Motion (F9, SRS §6.7). Progressive: nothing here hides content unless JS adds .reveal-pending. ---- */
+@layer components {
+  /* Scroll reveal: public/js/app.js adds .reveal-pending only to elements still below the fold, then .is-visible */
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .reveal-pending.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--dur-slow) var(--ease-enter) var(--reveal-delay, 0ms),
+                transform var(--dur-slow) var(--ease-enter) var(--reveal-delay, 0ms);
+  }
+  .fade-in-up {
+    animation: fade-in-up var(--dur-slow) var(--ease-enter) both;
+  }
+  /* Linked cards: hover/focus lift. Opt in with .lift; hover-capable devices only. */
+  .lift {
+    transition: transform var(--dur-base) var(--ease-enter), box-shadow var(--dur-base) var(--ease-enter);
+  }
+  @media (hover: hover) {
+    .lift:hover,
+    .lift:focus-within {
+      transform: translateY(-2px);
+    }
+  }
+  /* Pressed state for buttons */
+  .btn:active:not(:disabled),
+  .btn-icon:active {
+    transform: translateY(1px);
+  }
+  /* Busy form (public/js/app.js): spinner is linear because it is constant-rate progress */
+  .spinner {
+    @apply inline-block size-4 rounded-full border-2 border-current border-t-transparent;
+    animation: spin 0.7s linear infinite;
+  }
+  /* Menus and toasts: fade + small slide. Alpine x-show toggles display, so entry uses an animation. */
+  .menu-enter {
+    animation: menu-enter var(--dur-base) var(--ease-enter) both;
+  }
+  /* Native <dialog> (confirm-dialog): fade + tiny scale. allow-discrete lets the exit play before display:none;
+     browsers without it simply show/hide instantly. */
+  dialog {
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity var(--dur-fast) var(--ease-exit), transform var(--dur-fast) var(--ease-exit),
+                overlay var(--dur-fast) allow-discrete, display var(--dur-fast) allow-discrete;
+  }
+  dialog[open] {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--dur-base);
+    transition-timing-function: var(--ease-enter);
+  }
+  dialog::backdrop {
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-exit), overlay var(--dur-fast) allow-discrete, display var(--dur-fast) allow-discrete;
+  }
+  dialog[open]::backdrop {
+    opacity: 1;
+    transition-duration: var(--dur-base);
+  }
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes menu-enter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-pending,
+  .reveal-pending.is-visible {
+    opacity: 1;
+    transform: none;
+  }
 }

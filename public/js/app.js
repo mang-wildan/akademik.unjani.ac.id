@@ -164,3 +164,75 @@ document.addEventListener('submit', event => {
   const message = event.target.dataset && event.target.dataset.confirm;
   if (message && !window.confirm(message)) event.preventDefault();
 });
+
+// Busy form (SRS FR-AD-09): after a real POST submit, disable the submit button, show a spinner and
+// mark the form aria-busy so a slow upload cannot be sent twice. Opt out with data-no-busy.
+// Restored on pageshow (back/forward cache) so the button is not left disabled.
+document.addEventListener('submit', event => {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement) || event.defaultPrevented) return;
+  if (form.method !== 'post' || form.hasAttribute('data-no-busy') || form.closest('dialog')) return;
+  if (form.getAttribute('aria-busy') === 'true') {
+    event.preventDefault(); // second click while the first request is still running
+    return;
+  }
+  const button = event.submitter || form.querySelector('button[type="submit"]');
+  form.setAttribute('aria-busy', 'true');
+  if (!button) return;
+  const original = button.innerHTML;
+  button.dataset.busyOriginal = original;
+  // Disable after the form data has been collected (the browser reads the submitter's name/value right after this handler).
+  setTimeout(() => {
+    button.disabled = true;
+    button.innerHTML = `<span class="spinner" aria-hidden="true"></span>${button.dataset.busyLabel || 'Memproses…'}`;
+  }, 0);
+});
+window.addEventListener('pageshow', event => {
+  if (!event.persisted) return;
+  document.querySelectorAll('form[aria-busy="true"]').forEach(form => {
+    form.removeAttribute('aria-busy');
+    form.querySelectorAll('button[data-busy-original]').forEach(button => {
+      button.disabled = false;
+      button.innerHTML = button.dataset.busyOriginal;
+      delete button.dataset.busyOriginal;
+    });
+  });
+});
+
+// Scroll reveal (SRS NFR-U-03): content is visible by default. Only elements that start below the fold
+// get .reveal-pending, then .is-visible when they enter the viewport. Nothing happens under
+// prefers-reduced-motion or without IntersectionObserver. [data-reveal-group] staggers its direct children.
+(function setupReveal() {
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const targets = [];
+  document.querySelectorAll('[data-reveal-group]').forEach(group => {
+    [...group.children].forEach((child, i) => {
+      child.style.setProperty('--reveal-delay', `${Math.min(i, 5) * 60}ms`);
+      targets.push(child);
+    });
+  });
+  document.querySelectorAll('[data-reveal]').forEach(el => targets.push(el));
+  if (!targets.length) return;
+  const fold = window.innerHeight;
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.classList.add('is-visible');
+      observer.unobserve(el);
+      // Drop the reveal classes once done so their transition/delay never interferes with hover effects (.lift).
+      el.addEventListener('transitionend', function done(e) {
+        if (e.target !== el || e.propertyName !== 'transform') return;
+        el.removeEventListener('transitionend', done);
+        el.classList.remove('reveal-pending', 'is-visible');
+        el.style.removeProperty('--reveal-delay');
+      });
+    });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  targets.forEach(el => {
+    if (el.getBoundingClientRect().top < fold) return; // above the fold: never hidden
+    el.classList.add('reveal-pending');
+    observer.observe(el);
+  });
+})();

@@ -84,7 +84,7 @@
                         class="btn btn-tertiary px-3 <%= groupActive ? 'nav-active' : 'text-ink' %>">
                   <%= item.label %> <%- icon('keyboard_arrow_down', 'size-5') %>
                 </button>
-                <ul x-show="open" x-cloak class="absolute left-0 mt-1 min-w-64 rounded-card border border-line bg-surface p-2 shadow-raised">
+                <ul x-show="open" x-cloak class="menu-enter absolute left-0 mt-1 min-w-64 rounded-card border border-line bg-surface p-2 shadow-raised">
                   <% item.children.forEach(child => { %>
                     <li><a href="<%= child.href %>" class="flex min-h-11 items-center rounded-control px-3 text-sm font-medium no-underline hover:bg-sunken <%= isActive(child.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
                   <% }) %>
@@ -108,7 +108,7 @@
     </div>
 
     <!-- Menu HP: panel penuh di bawah header (FR-G-02) -->
-    <nav id="menu-hp" x-show="open" x-cloak class="max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-line bg-surface lg:hidden" aria-label="Menu utama">
+    <nav id="menu-hp" x-show="open" x-cloak class="menu-enter max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-line bg-surface lg:hidden" aria-label="Menu utama">
       <ul class="container-content py-3">
         <% publicNav.forEach(item => { %>
           <% if (item.children) { %>

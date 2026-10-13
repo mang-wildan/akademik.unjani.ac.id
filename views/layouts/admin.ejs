@@ -89,7 +89,7 @@
           </span>
           <%- icon('keyboard_arrow_down', 'size-5 text-muted') %>
         </button>
-        <div x-show="open" x-cloak class="absolute right-0 mt-1 w-56 rounded-card border border-line bg-surface p-2 shadow-raised">
+        <div x-show="open" x-cloak class="menu-enter absolute right-0 mt-1 w-56 rounded-card border border-line bg-surface p-2 shadow-raised">
           <a href="/profile" class="flex min-h-11 items-center gap-3 rounded-control px-3 text-sm font-medium text-ink no-underline hover:bg-sunken"><%- icon('person', 'size-5') %>Profil saya</a>
           <a href="/profile/password" class="flex min-h-11 items-center gap-3 rounded-control px-3 text-sm font-medium text-ink no-underline hover:bg-sunken"><%- icon('settings', 'size-5') %>Ubah password</a>
           <form action="/logout" method="POST">

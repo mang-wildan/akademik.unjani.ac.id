@@ -34,6 +34,7 @@ Aturan praktis: **rancang dengan Opus, kerjakan massal dengan Sonnet, rapikan de
 | F4 | Panel admin | Sonnet 5.5 | medium (high untuk pola CRUD pertama) | 7–9 hari | F1, F2 |
 | F5 | Performa, SEO, aksesibilitas | Sonnet 5.5 + Opus 5.5 (audit) | medium / high | 2–3 hari | F3, F4 |
 | F6 | Konten, migrasi produksi, QA, rilis | Opus 5.5 + Haiku 4.5 | xhigh / low | 3–4 hari | F5 |
+| F9 | Peningkatan UX & gerak (audit v4) | Opus 5.5 → Sonnet 5.5 | high → medium | 5–7 hari | F7, F8 |
 
 \*Estimasi kasar untuk satu developer yang dibantu Claude Code. F3 dan F4 bisa berjalan paralel setelah F2 selesai.
 
@@ -135,6 +136,22 @@ Aturan praktis: **rancang dengan Opus, kerjakan massal dengan Sonnet, rapikan de
 
 ---
 
+## F9 — Peningkatan UX & gerak (audit v4)
+
+**Tujuan:** menutup 30 temuan audit UI/UX v4 (14 landing, 16 panel) dan menambah gerak yang memberi umpan balik, tanpa library baru dan tanpa menurunkan skor F7/F8. F7 dan F8 dilacak di [TODO.md](TODO.md).
+
+| | |
+|---|---|
+| Model | **Opus 5.5 · high** untuk R0 (token gerak, pola umpan balik kirim, kerangka reveal, karena ikut tersalin ke semua halaman) dan R4 (verifikasi). **Sonnet 5.5 · medium** untuk R1–R3 yang menerapkan pola itu. **Sonnet 5.5 · high** hanya untuk tugas yang menyentuh perilaku baru lintas file: pemeriksaan unggahan di klien, peringatan perubahan belum tersimpan, penyatuan header admin |
+| Alasan | Kebanyakan temuan kecil dan terisolasi (label, ARIA, kelas CSS), tetapi tiga pola (token gerak, penjaga kirim, reveal) dipakai puluhan halaman. Salah di pola itu menyebar ke semuanya |
+| Urutan | R0 fondasi gerak & umpan balik → R1 perbaikan S1 (P1, P2, P3, L1, L2) → R2 landing → R3 panel → R4 verifikasi. R2 dan R3 bisa paralel setelah R0 |
+| Keluaran | Token gerak di `app.css`; komponen Alpine `reveal`, `busyForm`, `dirtyForm`; `docs/AUDIT-UIUX-v4.md`; seluruh temuan S1 ditutup, S2 ditutup atau dicatat alasannya; SRS §6.7 terpenuhi |
+| Selesai bila | Probe audit 0 kegagalan di 390 dan 1440 px; Lighthouse Performa Beranda ≥ 80 dan A11y/SEO tetap 100; seluruh animasi mati di bawah `prefers-reduced-motion`; halaman tetap terbaca penuh dengan JavaScript dimatikan |
+
+**Catatan:** stack tidak berubah (EJS + Tailwind v4 + Alpine CSP). Library animasi seperti GSAP **tidak dipakai**: pola yang dibutuhkan (fade, geser kecil, stagger, dialog, toast) cukup dengan CSS `transition`/`@keyframes` dan satu `IntersectionObserver`, sedangkan GSAP menambah puluhan KB dan memperumit CSP.
+
+---
+
 ## Risiko utama
 
 | Risiko | Dampak | Mitigasi |
@@ -144,3 +161,5 @@ Aturan praktis: **rancang dengan Opus, kerjakan massal dengan Sonnet, rapikan de
 | Tim BAA tidak sempat menginput kalender per kegiatan | Halaman kalender kosong | Impor CSV + template Excel. PDF tetap tersedia sebagai cadangan |
 | Fitur tambahan dari desain Stitch ikut dibangun | Waktu membengkak | Patuhi daftar "Ditolak" di SRS §7.3 |
 | Keputusan terbuka (SRS §10) belum dijawab | Pekerjaan diulang | Jawab K-01 sampai K-07 sebelum F2 dimulai |
+| Animasi memperlambat Beranda atau mengganggu pengguna yang peka gerak (F9) | Skor Performa turun, keluhan kenyamanan | Hanya `opacity`/`transform`, paling banyak 1–2 elemen per layar, mati total di `prefers-reduced-motion`, ukur Lighthouse sebelum dan sesudah |
+| Reveal menyembunyikan konten bila JS gagal (F9) | Halaman tampak kosong | Konten terlihat secara bawaan; kelas sembunyi hanya dipasang oleh JS setelah observer siap, dan tidak untuk elemen di atas lipatan |

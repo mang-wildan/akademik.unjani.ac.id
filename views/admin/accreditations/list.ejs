@@ -15,18 +15,19 @@
 
 <div class="card">
   <form method="get" class="flex flex-col gap-3 border-b border-line p-4 md:flex-row md:items-center">
-    <div role="tablist" aria-label="Status" class="flex flex-wrap gap-1">
+    <nav aria-label="Status" class="flex flex-wrap gap-1">
       <% [['', 'Semua'], ['berlaku', 'Berlaku'], ['segera-berakhir', 'Segera berakhir'], ['kedaluwarsa', 'Kedaluwarsa']].forEach(([val, label]) => { %>
-        <a href="?status=<%= val %><%= filters.jenis ? '&jenis=' + filters.jenis : '' %>" class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"><%= label %></a>
+        <a href="?status=<%= val %><%= filters.jenis ? '&jenis=' + filters.jenis : '' %>" class="btn <%= filters.status === val ? 'btn-primary' : 'btn-secondary' %>"<%- filters.status === val ? ' aria-current="page"' : '' %>><%= label %></a>
       <% }) %>
-    </div>
-    <select name="jenis" class="field-control md:ml-auto md:w-48" onchange="this.form.submit()">
+    </nav>
+    <select name="jenis" class="field-control md:ml-auto md:w-48">
       <option value="">Semua jenis</option>
       <option value="institusi"<%= filters.jenis === 'institusi' ? ' selected' : '' %>>Institusi</option>
       <option value="prodi"<%= filters.jenis === 'prodi' ? ' selected' : '' %>>Program Studi</option>
       <option value="lainnya"<%= filters.jenis === 'lainnya' ? ' selected' : '' %>>Lainnya</option>
     </select>
     <% if (filters.status) { %><input type="hidden" name="status" value="<%= filters.status %>"><% } %>
+    <button type="submit" class="btn btn-secondary"><%- icon('filter_list') %>Terapkan</button>
   </form>
 
   <% if (!items.length) { %>

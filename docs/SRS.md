@@ -189,6 +189,11 @@ Diringkas dari audit:
 | FR-AD-06 | Pola form: label dengan tanda `*` untuk wajib isi, teks bantuan, validasi inline (server dan klien), tombol Batal dan Simpan, serta pesan sukses dalam bentuk toast | Wajib | — |
 | FR-AD-07 | Unggah file dengan drag-and-drop, menampilkan batas ukuran dan tipe file. Batas: PDF 10 MB, gambar 5 MB | Wajib | 07 |
 | FR-AD-08 | Jejak perubahan (siapa, kapan, aksi apa) per konten, ditampilkan di "Aktivitas Terbaru" | Sebaiknya | — |
+| FR-AD-09 | *(F9)* Setiap form yang mengirim data menonaktifkan tombol kirim, menampilkan "Menyimpan…", dan menandai form `aria-busy` selama permintaan berjalan, agar unggahan besar tidak terkirim dua kali | Wajib | U-P1 |
+| FR-AD-10 | *(F9)* Aksi destruktif memakai satu pola: `<dialog>` konfirmasi berlabel jelas. Tidak ada `window.confirm` dan tidak ada hapus tanpa konfirmasi. Impor yang menimpa data menyebut jumlah data yang akan diganti | Wajib | U-P6, U-P7 |
+| FR-AD-11 | *(F9)* Form berisi perubahan yang belum disimpan memperingatkan pengguna sebelum meninggalkan halaman, termasuk saat menambah tautan cepat atau kegiatan lewat form pendamping | Sebaiknya | U-P8 |
+| FR-AD-12 | *(F9)* Form berita dan pengumuman punya tombol "Pratinjau" (tab baru) untuk draf; editor teks punya tombol tautan dan ikon bergambar | Sebaiknya | U-P9, U-P10 |
+| FR-AD-13 | *(F9)* Kolom unggah memeriksa tipe dan ukuran di klien sebelum dikirim, menampilkan pratinjau gambar, dan menerima seret-lepas (melengkapi FR-AD-07) | Sebaiknya | U-P11 |
 
 ### 4.2 Dasbor
 
@@ -289,6 +294,19 @@ Setiap perubahan skema disertai **skrip migrasi** yang bisa dijalankan ulang tan
 - **NFR-M-03.** Tersedia tes otomatis minimal untuk aturan bisnis (status akreditasi, status kalender, pembuatan excerpt) dan smoke test semua rute.
 - **NFR-M-04.** Lingkungan development, staging, dan produksi memakai database terpisah.
 
+### 6.7 Interaksi dan gerak *(F9)*
+Gerak dipakai untuk memberi tahu perubahan keadaan, bukan untuk menghias. Pedoman: durasi dan easing diambil dari token bersama, paling banyak 1–2 elemen utama yang dianimasikan per layar, dan hanya properti `opacity` dan `transform` yang dianimasikan (bukan `width`/`height`/`top`).
+
+| ID | Kebutuhan | Prio |
+|---|---|---|
+| NFR-U-01 | Token gerak bersama di `assets/css/app.css`: `--ease-out` (masuk), `--ease-in` (keluar), `--dur-fast` 120 ms (umpan balik tekan/hover), `--dur-base` 200 ms (buka/tutup menu, dialog, toast), `--dur-slow` 400 ms (pengungkapan konten). Durasi keluar lebih pendek dari masuk | Wajib |
+| NFR-U-02 | Semua gerak mati atau jadi seketika di bawah `prefers-reduced-motion: reduce`, tanpa kehilangan informasi (melengkapi NFR-A-06) | Wajib |
+| NFR-U-03 | Pengungkapan saat gulir (reveal) bersifat peningkatan progresif: konten **terlihat penuh tanpa JavaScript** dan tanpa animasi; elemen di atas lipatan tidak pernah disembunyikan; tidak menimbulkan pergeseran tata letak (CLS tetap < 0,1) | Wajib |
+| NFR-U-04 | Umpan balik interaksi: kartu tertaut terangkat tipis saat hover/fokus; tombol punya keadaan tekan (`active`); menu, dropdown, dialog, dan toast masuk dengan fade + geser ≤ 8 px; tab semester memudar saat berganti panel | Wajib |
+| NFR-U-05 | Animasi tidak menambah beban kritis: tanpa library animasi baru (hanya CSS + Alpine yang sudah ada), tanpa menurunkan skor Lighthouse Performa halaman utama dari F7/F8, dan tanpa mengubah LCP Beranda | Wajib |
+| NFR-U-06 | Setiap kontrol yang berubah keadaan menyampaikannya ke teknologi bantu (`aria-current`, `aria-selected`, `aria-busy`, label yang berubah mengikuti keadaan, `role="status"` untuk toast) dan tidak hanya lewat warna | Wajib |
+| NFR-U-07 | Tombol yang tujuannya sama di banyak baris (Unduh, Ubah, Hapus) membawa nama objek di nama aksesibelnya; tautan yang membuka tab baru memberi tahu hal itu | Wajib |
+
 ---
 
 ## 7. Desain Antarmuka
@@ -377,6 +395,8 @@ Elemen berikut muncul di desain Stitch tetapi **tidak** dibangun: sinkronisasi F
 | 16 | FR-AD-05, NFR-A-05 |
 | 17 | FR-DS-04, §2.2 |
 | 18 | FR-B-08, FR-DS-02 |
+| U-L1..L14 (audit v4, landing) | NFR-U-03, NFR-U-04, NFR-U-07, FR-G-08; rincian di [TODO.md](TODO.md) F9 R2 |
+| U-P1..P16 (audit v4, panel) | FR-AD-09..13, NFR-U-04, NFR-U-06, NFR-U-07; rincian di [TODO.md](TODO.md) F9 R1/R3 |
 | A1–A6 | NFR-A-01..06 |
 
 ## Lampiran B — Daftar Istilah

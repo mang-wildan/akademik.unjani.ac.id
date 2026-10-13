@@ -17,12 +17,12 @@
   <% if (calendars.length > 1) { %>
   <form method="get" class="mb-6 flex items-center gap-3">
     <label for="tahun" class="text-sm font-medium text-muted">Tahun Ajaran</label>
-    <select id="tahun" name="tahun" class="field-control w-auto" onchange="this.form.submit()">
+    <select id="tahun" name="tahun" class="field-control w-auto">
       <% calendars.forEach(c => { %>
         <option value="<%= c.tahunAjaran %>"<%= c.tahunAjaran === calendar.tahunAjaran ? ' selected' : '' %>><%= c.tahunAjaran %></option>
       <% }) %>
     </select>
-    <noscript><button type="submit" class="btn btn-secondary">Tampilkan</button></noscript>
+    <button type="submit" class="btn btn-secondary">Tampilkan</button>
   </form>
   <% } %>
 

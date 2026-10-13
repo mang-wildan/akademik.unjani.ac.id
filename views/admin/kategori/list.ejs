@@ -7,11 +7,11 @@
   <a href="/admin/kategori/new?jenis=<%= jenis %>" class="btn btn-primary"><%- icon('add') %>Tambah Kategori</a>
 </div>
 
-<div class="mb-4 flex gap-1" role="tablist" aria-label="Jenis">
+<nav class="mb-4 flex gap-1" aria-label="Jenis kategori">
   <% ['pengumuman', 'dokumen', 'berita'].forEach(j => { %>
-    <a href="?jenis=<%= j %>" class="btn <%= jenis === j ? 'btn-primary' : 'btn-secondary' %>"><%= jenisLabel[j] %></a>
+    <a href="?jenis=<%= j %>" class="btn <%= jenis === j ? 'btn-primary' : 'btn-secondary' %>"<%- jenis === j ? ' aria-current="page"' : '' %>><%= jenisLabel[j] %></a>
   <% }) %>
-</div>
+</nav>
 
 <div class="card">
   <% if (!items.length) { %>
