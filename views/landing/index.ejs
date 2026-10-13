@@ -1,5 +1,5 @@
 <%# Beranda (FR-B-01..08). Setiap bagian hilang dengan rapi bila datanya kosong — tidak ada konten isian.
-    Urutan latar (F7 R2): hero (hijau tua) → akses cepat + info + agenda (canvas) → pengumuman (hijau muda)
+    Urutan latar (F7 R2): hero + akses cepat (hijau tua) → info + agenda (canvas) → pengumuman (hijau muda)
     → mutu & lulusan (hijau tua) → kegiatan (putih) → unit kerja (hijau muda, atau putih bila tepat setelah pengumuman)
     → video (hijau muda, atau putih bila tepat setelah pengumuman atau unit kerja berlatar hijau muda). %>
 <%
@@ -23,7 +23,9 @@
   <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="100vw" alt="" class="absolute inset-0 -z-20 size-full object-cover" width="1600" height="903" fetchpriority="high">
   <%# Overlay: hijau (hampir) pekat di bawah kolom teks di semua lebar ≥1024 px agar kontras teks tidak bergantung pada foto. %>
   <div class="absolute inset-0 -z-10 bg-brand/90 lg:bg-transparent lg:bg-linear-to-r lg:from-brand lg:from-45% lg:via-brand/90 lg:via-65% lg:to-brand/30" aria-hidden="true"></div>
-  <div class="container-content pt-16 pb-36 lg:pt-24 lg:pb-44">
+  <%# ≥1024 px: bawah hero dipekatkan lagi karena ubin akses cepat membentang sampai sisi kanan yang overlay-nya hanya 30 %. %>
+  <div class="absolute inset-x-0 bottom-0 -z-10 hidden h-1/2 bg-linear-to-t from-brand from-60% to-transparent lg:block" aria-hidden="true"></div>
+  <div class="container-content pt-16 pb-10 lg:pt-24 lg:pb-14">
     <div class="fade-in-up max-w-2xl">
       <p class="eyebrow">Portal resmi layanan akademik</p>
       <h1 class="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
@@ -33,27 +35,25 @@
         <a href="/profil" class="btn btn-outline-light">Profil Bidang Akademik</a>
       </div>
     </div>
+
+    <%# Akses cepat: ubin kaca di dalam hero (bukan kartu putih yang menumpuk setengah di tepi hero).
+        Latar putih 10 % di atas hijau ≥90 %: teks putih ≥7:1, deskripsi on-dark-muted ≥5:1. 2 kolom di HP (deskripsi disembunyikan), 4 di ≥1024 px. %>
+    <h2 class="sr-only">Akses cepat</h2>
+    <ul class="mt-12 grid grid-cols-2 gap-3 border-t border-white/15 pt-8 sm:gap-4 lg:mt-16 lg:grid-cols-4">
+      <% aksesCepat.forEach(a => { %>
+        <li>
+          <a href="<%= a.href %>" class="group flex h-full flex-col gap-3 rounded-card border border-white/15 bg-white/10 p-4 text-white no-underline backdrop-blur-sm transition-[background-color,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-on-dark-accent/60 hover:bg-white/15 sm:p-5 lg:flex-row lg:items-start lg:gap-4">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-on-dark-accent text-brand"><%- icon(a.icon, 'size-6') %></span>
+            <span class="min-w-0">
+              <span class="flex items-center gap-1 font-semibold text-white"><%= a.label %><%- icon('arrow_forward', 'size-4 shrink-0 opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 max-lg:hidden') %></span>
+              <span class="mt-1 hidden text-sm text-on-dark-muted sm:block"><%= a.desc %></span>
+            </span>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
   </div>
 </section>
-
-<div class="container-content relative z-10 -mt-24 lg:-mt-28">
-  <h2 class="sr-only">Akses cepat</h2>
-  <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    <% aksesCepat.forEach(a => { %>
-      <li>
-        <%# Ring fokus di dalam kartu (offset negatif): separuh kartu menumpuk di atas hero gelap, ring di luar kartu tak terlihat di sana.
-            -4 (bukan -3) agar garis emas 4 px di atas kartu tetap terlihat saat fokus. %>
-        <a href="<%= a.href %>" class="card group flex h-full items-start gap-4 border-t-4 border-t-accent p-5 no-underline shadow-raised lift hover:shadow-modal focus-visible:outline-3 focus-visible:-outline-offset-4">
-          <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary group-hover:bg-primary group-hover:text-white"><%- icon(a.icon, 'size-6') %></span>
-          <span>
-            <span class="block font-semibold text-ink group-hover:text-primary"><%= a.label %></span>
-            <span class="mt-1 block text-sm text-muted"><%= a.desc %></span>
-          </span>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
-</div>
 
 <% if (informasiPenting.length || agendaItems.length) { %>
 <div class="container-content space-y-14 pt-14 pb-14 lg:pb-20">
@@ -92,7 +92,8 @@
   </section>
   <% } %>
 </div>
-<% } else { %>
+<% } else if (!pengumumanTerbaru.length && adaPita) { %>
+<%# Dua pita hijau tua (hero lalu mutu) tidak boleh menempel: sisakan jeda canvas. %>
 <div class="pb-14" aria-hidden="true"></div>
 <% } %>
 
