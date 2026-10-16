@@ -2,11 +2,14 @@ const express = require('express');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const homeController = require('../controllers/homeController');
 const seoController = require('../controllers/seoController');
+const chatController = require('../controllers/chatController');
 
 const router = express.Router();
 
 router.get('/robots.txt', seoController.robotsTxt);
 router.get('/sitemap.xml', seoController.sitemap);
+
+router.post('/api/chat', chatController.ask);
 
 router.get('/', homeController.getLanding);
 router.get('/profil', homeController.getProfil);

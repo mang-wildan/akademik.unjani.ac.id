@@ -1,0 +1,37 @@
+<%#
+  Asisten Akademik: tombol mengambang + panel tanya-jawab (POST /api/chat).
+  Perilakunya ada di komponen Alpine "chat" (public/js/app.js); pesan dibangun
+  dengan textContent, jadi jawaban model tidak pernah dianggap HTML.
+  Hanya dirender bila GEMINI_API_KEY diisi (app.locals.chatEnabled).
+%>
+<div x-data="chat" x-on:keydown.escape.window="close" class="fixed right-4 bottom-4 z-50 print:hidden">
+  <section id="chat-panel" x-show="open" x-cloak role="dialog" aria-labelledby="chat-title"
+           class="menu-enter absolute right-0 bottom-16 flex h-[min(34rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-card border border-line bg-surface shadow-modal">
+    <header class="flex items-center justify-between gap-2 bg-brand px-4 py-2 text-white">
+      <h2 id="chat-title" class="flex items-center gap-2 text-base font-semibold text-white"><%- icon('support_agent', 'size-5 text-on-dark-accent') %>Asisten Akademik</h2>
+      <button type="button" x-on:click="close" class="inline-flex size-11 items-center justify-center rounded-control text-white hover:bg-white/10" aria-label="Tutup asisten"><%- icon('close', 'size-5') %></button>
+    </header>
+
+    <div x-ref="log" role="log" aria-live="polite" aria-label="Percakapan" tabindex="0" class="flex flex-1 flex-col gap-3 overflow-y-auto bg-canvas p-4"></div>
+
+    <div class="border-t border-line bg-surface p-3">
+      <p class="mb-2 text-xs leading-relaxed text-muted">
+        Dijawab AI dari konten situs ini dan bisa keliru; periksa tautan sumbernya. Jangan mengetik data pribadi (NIM, kata sandi). Pertanyaan dicatat untuk perbaikan layanan.
+        Butuh staf?
+        <a href="<%= phoneTo.href %>" class="font-medium text-primary underline"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer"<% } %>><%= phoneTo.whatsapp ? 'WhatsApp' : 'Telepon' %><% if (phoneTo.whatsapp) { %><span class="sr-only"> (membuka tab baru)</span><% } %></a>
+        atau <a href="mailto:<%= email %>" class="font-medium text-primary underline">email</a>.
+      </p>
+      <form x-on:submit.prevent="send" class="flex gap-2">
+        <label for="chat-input" class="sr-only">Pertanyaan Anda</label>
+        <input id="chat-input" x-ref="input" type="text" maxlength="500" autocomplete="off" placeholder="Tulis pertanyaan…"
+               class="min-h-11 min-w-0 flex-1 rounded-control border border-control bg-surface px-3 text-sm text-ink placeholder:text-placeholder">
+        <button type="submit" class="btn btn-primary px-4" x-bind:disabled="busy" aria-label="Kirim pertanyaan"><%- icon('arrow_forward', 'size-5') %></button>
+      </form>
+    </div>
+  </section>
+
+  <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="chat-panel"
+          class="btn btn-primary h-14 rounded-full px-5 shadow-modal">
+    <%- icon('support_agent', 'size-6') %>Tanya Asisten
+  </button>
+</div>

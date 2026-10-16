@@ -62,6 +62,8 @@ const PORT = process.env.PORT || 3000;
 
 // Helpers available in every view (new layouts & components).
 Object.assign(app.locals, { icon, ...format, ...navigation, phoneLink, videoEmbedUrl, TINGKAT, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus, assetUrl });
+// Widget Asisten Akademik hanya tampil bila kunci Gemini diisi (tanpa kunci = fitur mati).
+app.locals.chatEnabled = Boolean(process.env.GEMINI_API_KEY);
 
 // Behind a reverse proxy (Nginx, cPanel, etc.) set TRUST_PROXY to the number of
 // proxy hops so req.ip is the visitor's address; login attempt limits rely on it.

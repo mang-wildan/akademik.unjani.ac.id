@@ -181,6 +181,105 @@ document.addEventListener('alpine:init', () => {
       this.visible = false;
     },
   }));
+
+  // Asisten Akademik (views/components/chat-widget.ejs): tanya-jawab lewat POST /api/chat.
+  // Pesan dibangun dengan createElement + textContent, bukan x-html/x-for: teks jawaban
+  // tidak pernah dianggap HTML, dan tautan sumber hanya path internal ("/..." bukan "//...").
+  window.Alpine.data('chat', () => ({
+    open: false,
+    busy: false,
+    history: [],
+    suggestions: [
+      'Kapan jadwal kegiatan akademik terdekat?',
+      'Dokumen akademik apa saja yang tersedia?',
+      'Bagaimana status akreditasi UNJANI?',
+    ],
+    init() {
+      this.say('bot', 'Halo! Saya asisten virtual Bidang Akademik UNJANI. Tanyakan hal umum tentang kalender akademik, pengumuman, dokumen, kurikulum, atau akreditasi.');
+      const row = document.createElement('div');
+      row.className = 'flex flex-col items-start gap-2';
+      for (const question of this.suggestions) {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.textContent = question;
+        chip.className = 'min-h-11 rounded-full border border-primary bg-surface px-4 py-2 text-left text-sm font-medium text-primary hover:bg-primary-soft';
+        chip.addEventListener('click', () => {
+          row.remove();
+          this.ask(question);
+        });
+        row.appendChild(chip);
+      }
+      this.$refs.log.appendChild(row);
+    },
+    toggle() {
+      this.open = !this.open;
+      if (this.open) this.$nextTick(() => this.$refs.input.focus());
+    },
+    close() {
+      if (!this.open) return;
+      this.open = false;
+      this.$refs.trigger.focus();
+    },
+    say(role, text, sources = [], isError = false) {
+      const bubble = document.createElement('div');
+      const tone = role === 'user' ? 'ml-auto bg-primary text-white' : isError ? 'mr-auto bg-danger-soft text-danger' : 'mr-auto border border-line bg-surface text-ink';
+      bubble.className = `max-w-[90%] rounded-card px-3 py-2 text-sm leading-relaxed break-words whitespace-pre-line ${tone}`;
+      bubble.textContent = text;
+      const safe = sources.filter(s => s && typeof s.url === 'string' && /^\/(?!\/)/.test(s.url));
+      if (safe.length) {
+        const list = document.createElement('ul');
+        list.className = 'mt-2 border-t border-line pt-2 text-xs text-muted';
+        const heading = document.createElement('li');
+        heading.textContent = 'Sumber:';
+        list.appendChild(heading);
+        for (const source of safe) {
+          const item = document.createElement('li');
+          const link = document.createElement('a');
+          link.href = source.url;
+          link.textContent = source.judul || source.url;
+          link.className = 'inline-flex min-h-6 items-center font-medium text-primary underline';
+          item.appendChild(link);
+          list.appendChild(item);
+        }
+        bubble.appendChild(list);
+      }
+      this.$refs.log.appendChild(bubble);
+      this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
+      return bubble;
+    },
+    send() {
+      const text = this.$refs.input.value.trim();
+      if (text) this.ask(text);
+    },
+    async ask(text) {
+      if (this.busy) return;
+      this.busy = true;
+      this.$refs.input.value = '';
+      this.say('user', text);
+      const waiting = this.say('bot', 'Sedang mencari jawaban…');
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: this.history.slice(-4) }),
+        });
+        const data = await res.json().catch(() => ({}));
+        waiting.remove();
+        if (res.ok && data.answer) {
+          this.say('bot', data.answer, data.sources || []);
+          this.history.push({ role: 'user', text }, { role: 'bot', text: data.answer });
+        } else {
+          this.say('bot', data.error || 'Maaf, terjadi kesalahan. Silakan coba lagi nanti atau hubungi Bidang Akademik.', [], true);
+        }
+      } catch (_err) {
+        waiting.remove();
+        this.say('bot', 'Koneksi terputus. Periksa jaringan Anda lalu coba lagi.', [], true);
+      } finally {
+        this.busy = false;
+        this.$refs.input.focus();
+      }
+    },
+  }));
 });
 
 // Confirmation dialogs: <button data-dialog-open="id"> opens <dialog id="id">.

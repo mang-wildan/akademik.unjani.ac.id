@@ -234,5 +234,9 @@
       <p class="container-content py-5 text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Bidang Akademik Universitas Jenderal Achmad Yani</p>
     </div>
   </footer>
+
+  <% if (chatEnabled) { %>
+    <%- include('../components/chat-widget', { phoneTo, phoneIcon, email, phone }) %>
+  <% } %>
 </body>
 </html>
