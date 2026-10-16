@@ -62,7 +62,7 @@ exports.ask = async (req, res) => {
   } catch (err) {
     const code = String((err && err.code) || (err && err.name) || 'unknown').slice(0, 40);
     // eslint-disable-next-line no-console
-    console.error('[chat] gagal menjawab:', code);
+    console.error('[chat] gagal menjawab:', code, (err && err.status) || '', (err && err.detail) || '');
     record({ question: parsed.message, status: 'error', error: code, ipHash });
     return send(502, { error: ERRORS.failed });
   }

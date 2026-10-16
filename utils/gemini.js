@@ -8,13 +8,33 @@ const TIMEOUT_MS = 20000;
 const MAX_OUTPUT_TOKENS = 600;
 
 class GeminiError extends Error {
-  constructor(code, status) {
+  constructor(code, status, detail) {
     super(code);
     this.name = 'GeminiError';
     this.code = code;
     this.status = status;
+    this.detail = detail || '';
   }
 }
+
+// Pesan error Google (mis. "PERMISSION_DENIED API key not valid") ikut dicatat di log server
+// untuk diagnosis. Pola kunci disamarkan, dan hanya 160 karakter pertama yang diambil.
+const redact = text =>
+  String(text || '')
+    .replace(/AQ\.[\w.-]+|AIza[\w-]+/g, '[kunci]')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 160);
+
+const errorDetail = async res => {
+  try {
+    const body = await res.json();
+    const e = (body && body.error) || {};
+    return redact(`${e.status || ''} ${e.message || ''}`);
+  } catch (_err) {
+    return '';
+  }
+};
 
 const codeForStatus = status => {
   if (status === 429) return 'quota';
@@ -44,7 +64,7 @@ const generate = async ({ system, contents }) => {
   } catch (err) {
     throw new GeminiError(err && err.name === 'TimeoutError' ? 'timeout' : 'network');
   }
-  if (!res.ok) throw new GeminiError(codeForStatus(res.status), res.status);
+  if (!res.ok) throw new GeminiError(codeForStatus(res.status), res.status, await errorDetail(res));
 
   const data = await res.json().catch(() => null);
   const candidate = data && data.candidates && data.candidates[0];
@@ -55,4 +75,4 @@ const generate = async ({ system, contents }) => {
   return text;
 };
 
-module.exports = { generate, GeminiError, DEFAULT_MODEL };
+module.exports = { generate, GeminiError, DEFAULT_MODEL, redact };

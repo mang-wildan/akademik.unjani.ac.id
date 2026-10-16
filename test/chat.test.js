@@ -3,6 +3,15 @@ const assert = require('node:assert/strict');
 const { stem, keywords, parseChatBody, selectItems, buildSystemPrompt, finalizeAnswer } = require('../utils/chat');
 const { createLimiter } = require('../utils/chatLimits');
 const { akreditasiItems, kalenderItems } = require('../utils/chatKnowledge');
+const { redact } = require('../utils/gemini');
+
+test('redact: pola kunci Gemini disamarkan dan pesan dipangkas 160 karakter', () => {
+  assert.equal(redact('PERMISSION_DENIED key AIzaSyA-b_c123 ditolak'), 'PERMISSION_DENIED key [kunci] ditolak');
+  assert.equal(redact('UNAUTHENTICATED AQ.Ab8RN6-x.y_z bukan OAuth'), 'UNAUTHENTICATED [kunci] bukan OAuth');
+  assert.equal(redact('  spasi\n  banyak  '), 'spasi banyak');
+  assert.equal(redact('x'.repeat(500)).length, 160);
+  assert.equal(redact(undefined), '');
+});
 
 test('stem: imbuhan umum dikupas, kata dasar pendek dibiarkan', () => {
   assert.equal(stem('pendaftaran'), 'daftar');
