@@ -493,7 +493,9 @@ const listContentPage = async (req, res, { Model, view, title, description, base
   const totalPages = Math.max(Math.ceil(total / limit), 1);
   const currentPage = Math.min(page, totalPages);
 
+  // The list never shows body, and one news body can be hundreds of KB.
   const items = await Model.find(filter)
+    .select('-body')
     .sort({ pinned: -1, createdAt: -1 })
     .skip((currentPage - 1) * limit)
     .limit(limit)
@@ -666,8 +668,8 @@ exports.getCari = async (req, res) => {
 
   const rx = { $regex: q, $options: 'i' };
   const [pengumuman, berita, dokumen, kurikulum] = await Promise.all([
-    Pengumuman.find({ status: 'published', $or: [{ title: rx }, { excerpt: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
-    News.find({ status: 'published', $or: [{ title: rx }, { excerpt: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
+    Pengumuman.find({ status: 'published', $or: [{ title: rx }, { excerpt: rx }] }, 'title slug createdAt').sort({ createdAt: -1 }).limit(8).lean(),
+    News.find({ status: 'published', $or: [{ title: rx }, { excerpt: rx }] }, 'title slug createdAt').sort({ createdAt: -1 }).limit(8).lean(),
     AcademicDocument.find({ $or: [{ name: rx }, { keterangan: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
     Kurikulum.find({ $or: [{ nama: rx }, { programStudi: rx }] }).sort({ createdAt: -1 }).limit(8).lean(),
   ]);

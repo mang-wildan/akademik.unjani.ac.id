@@ -115,6 +115,38 @@ app.use(cookieParser());
 // assetUrl() with a content-hash query string -- both are safe to cache
 // for a year because their URL changes whenever their content does.
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: '1y', immutable: true }));
+
+// Speculation rules (Chrome/Edge; other browsers ignore them): prerender a
+// public page once the visitor hovers its link, so the click feels instant.
+// Sent as a header pointing at a JSON file, so no inline script is needed.
+// Admin, account and file links are never prerendered.
+const speculationRules = JSON.stringify({
+  prerender: [
+    {
+      where: {
+        and: [
+          { href_matches: '/*' },
+          { not: { href_matches: '/admin' } },
+          { not: { href_matches: '/admin/*' } },
+          { not: { href_matches: '/dashboard' } },
+          { not: { href_matches: '/login' } },
+          { not: { href_matches: '/profile*' } },
+          { not: { href_matches: '/uploads/*' } },
+          { not: { selector_matches: '[download], [target=_blank], [rel~=nofollow]' } },
+        ],
+      },
+      eagerness: 'moderate',
+    },
+  ],
+});
+app.get('/speculationrules.json', (_req, res) => {
+  res.type('application/speculationrules+json').set('Cache-Control', 'public, max-age=3600').send(speculationRules);
+});
+app.use((_req, res, next) => {
+  res.set('Speculation-Rules', '"/speculationrules.json"');
+  next();
+});
+
 app.use(verifyOrigin);
 app.use(renderPage);
 app.use(
@@ -194,8 +226,8 @@ app.use(async (req, res, next) => {
 
   try {
     const [newsItems, pengumumanItems, docItems, calendarItems] = await Promise.all([
-      News.find().sort({ updatedAt: -1, createdAt: -1 }).limit(4).lean(),
-      Pengumuman.find().sort({ updatedAt: -1, createdAt: -1 }).limit(4).lean(),
+      News.find({}, 'title status updatedAt createdAt').sort({ updatedAt: -1, createdAt: -1 }).limit(4).lean(),
+      Pengumuman.find({}, 'title status updatedAt createdAt').sort({ updatedAt: -1, createdAt: -1 }).limit(4).lean(),
       AcademicDocument.find().sort({ updatedAt: -1, createdAt: -1 }).limit(4).lean(),
       AcademicCalendar.find().sort({ updatedAt: -1, createdAt: -1 }).limit(4).lean(),
     ]);

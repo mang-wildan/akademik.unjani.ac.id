@@ -38,6 +38,7 @@ module.exports = ({ Model, jenis, basePath, listLabel, singularLabel, requireFea
     const totalPages = Math.max(Math.ceil(total / limit), 1);
     const currentPage = Math.min(page, totalPages);
     const items = await Model.find(filter)
+      .select('-body')
       .sort({ pinned: -1, createdAt: -1 })
       .skip((currentPage - 1) * limit)
       .limit(limit)
