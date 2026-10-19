@@ -1,48 +1,67 @@
-<%# Pengumuman (FR-P-01..02): daftar dengan blok tanggal, tanpa gambar, tanpa sidebar. %>
+<%# Pengumuman (FR-P-01..02): satu tautan per item, mencakup judul dan ajakan baca. %>
 <%- include('../components/page-header', {
   heading: 'Pengumuman',
-  lead: 'Pengumuman resmi akademik.',
+  lead: 'Informasi resmi tentang perkuliahan, administrasi, dan layanan akademik.',
   breadcrumb: [{ label: 'Publikasi' }, { label: 'Pengumuman' }],
+  compact: true,
 }) %>
 
 <div class="container-content pb-16">
-  <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <% if (kategoriList.length) { %>
-    <div class="flex flex-wrap gap-2">
-      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= !filters.kategori ? 'badge-success' : 'badge-neutral' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>><% if (!filters.kategori) { %><%- icon('check', 'size-3.5') %><% } %>Semua</a>
-      <% kategoriList.forEach(k => { %>
-        <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="badge <%= filters.kategori === String(k._id) ? 'badge-success' : 'badge-neutral' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><% if (filters.kategori === String(k._id)) { %><%- icon('check', 'size-3.5') %><% } %><%= k.nama %></a>
-      <% }) %>
-    </div>
-    <% } %>
-    <form method="get" role="search" class="flex gap-2">
+  <div class="card mb-8 p-5 sm:p-6">
+    <form method="get" role="search" aria-label="Cari pengumuman" class="flex flex-wrap items-end gap-3">
       <% if (filters.kategori) { %><input type="hidden" name="kategori" value="<%= filters.kategori %>"><% } %>
-      <label for="q" class="sr-only">Cari pengumuman</label>
-      <input id="q" name="q" type="search" class="field-control sm:w-64" placeholder="Cari pengumuman…" value="<%= filters.q %>">
-      <button type="submit" class="btn btn-secondary" aria-label="Cari"><%- icon('search') %></button>
+      <div class="min-w-0 flex-1">
+        <label for="q" class="field-label">Cari pengumuman</label>
+        <input id="q" name="q" type="search" class="field-control" placeholder="Ketik judul atau kata kunci…" value="<%= filters.q %>">
+      </div>
+      <button type="submit" class="btn btn-primary shrink-0"><%- icon('search') %>Cari</button>
+      <% if (filters.q || filters.kategori) { %><a href="<%= basePath %>" class="btn btn-tertiary w-full shrink-0 sm:w-auto">Hapus filter</a><% } %>
     </form>
+    <% if (kategoriList.length) { %>
+    <nav aria-label="Filter kategori pengumuman" class="mt-5 border-t border-line pt-4">
+      <p class="mb-2 text-sm font-semibold text-muted">Kategori</p>
+      <div class="flex flex-wrap gap-2">
+      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="btn btn-secondary px-3 <%= !filters.kategori ? 'border-primary bg-primary-soft text-primary' : '' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>><% if (!filters.kategori) { %><%- icon('check', 'size-4') %><% } %>Semua</a>
+      <% kategoriList.forEach(k => { %>
+        <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="btn btn-secondary max-w-full px-3 <%= filters.kategori === String(k._id) ? 'border-primary bg-primary-soft text-primary' : '' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><% if (filters.kategori === String(k._id)) { %><%- icon('check', 'size-4') %><% } %><span class="min-w-0 break-words"><%= k.nama %></span></a>
+      <% }) %>
+      </div>
+    </nav>
+    <% } %>
   </div>
 
+  <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h2 id="daftar-pengumuman" class="text-xl font-bold">Daftar pengumuman</h2>
+      <p class="mt-1 break-words text-sm text-muted"><%= formatAngka(pagination.total) %> pengumuman<% if (filters.q) { %> untuk “<%= filters.q %>”<% } %><% if (filters.kategori) { %> pada kategori terpilih<% } %>.</p>
+    </div>
+    <p class="text-sm text-muted">Disematkan lebih dahulu, lalu terbaru</p>
+  </div>
   <% if (!items.length) { %>
     <%- include('../components/empty-state', {
       emptyIcon: 'campaign', emptyTitle: filters.q || filters.kategori ? 'Pengumuman tidak ditemukan' : 'Belum ada pengumuman',
-      emptyText: filters.q ? `Tidak ada pengumuman yang cocok dengan "${filters.q}".` : null,
-      emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus pencarian', href: basePath } : null,
+      emptyText: filters.q || filters.kategori ? 'Coba kata kunci lain atau hapus filter untuk melihat semua pengumuman.' : 'Pengumuman resmi akan ditampilkan di sini setelah diterbitkan.',
+      emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus filter', href: basePath } : null,
     }) %>
   <% } else { %>
-  <ul class="card divide-y divide-line">
-    <% items.forEach(item => { %>
-      <li class="flex gap-4 p-4">
-        <%- include('../components/date-block', { date: item.createdAt }) %>
+  <ul class="space-y-4" aria-labelledby="daftar-pengumuman">
+    <% items.forEach((item, index) => { %>
+      <li class="card">
+      <a href="<%= basePath %>/<%= item.slug %>" aria-labelledby="pengumuman-judul-<%= index %> pengumuman-baca-<%= index %>" class="group grid grid-cols-[auto_minmax(0,1fr)] items-start gap-4 rounded-card p-4 no-underline transition-[background-color] hover:bg-primary-soft focus-visible:bg-primary-soft sm:gap-6 sm:p-6">
+        <%- include('../components/date-block', { date: item.createdAt, dateTone: item.pinned ? 'solid' : undefined }) %>
         <div class="min-w-0 flex-1">
+          <% if (item.pinned || item.kategori || item.isBaru) { %>
           <div class="flex flex-wrap items-center gap-2">
             <% if (item.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
-            <% if (item.kategori) { %><%- include('../components/badge', { text: item.kategori.nama, tone: 'info' }) %><% } %>
+            <% if (item.kategori) { %><%- include('../components/badge', { text: item.kategori.nama, tone: 'neutral' }) %><% } %>
             <% if (item.isBaru) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
           </div>
-          <a href="<%= basePath %>/<%= item.slug %>" class="mt-1 block font-semibold text-ink hover:text-primary"><%= item.title %></a>
-          <% if (item.excerpt) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= item.excerpt %></p><% } %>
+          <% } %>
+          <h3 id="pengumuman-judul-<%= index %>" class="mt-2 break-words font-sans text-lg leading-snug font-semibold text-ink group-hover:text-primary group-focus-visible:text-primary sm:text-xl"><%= item.title %></h3>
+          <% if (item.excerpt) { %><p class="mt-2 max-w-prose line-clamp-2 break-words text-sm leading-relaxed text-muted"><%= item.excerpt %></p><% } %>
+          <span id="pengumuman-baca-<%= index %>" class="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary underline-offset-4 group-hover:underline group-focus-visible:underline">Baca selengkapnya<%- icon('arrow_forward', 'size-4 transition-transform motion-safe:group-hover:translate-x-1') %></span>
         </div>
+      </a>
       </li>
     <% }) %>
   </ul>
