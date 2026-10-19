@@ -465,3 +465,29 @@ document.addEventListener('change', event => {
     input.dispatchEvent(new Event('change', { bubbles: true }));
   });
 })();
+(function setupLoginCaptcha() {
+  const container = document.querySelector('[data-login-captcha]');
+  if (!container) return;
+  window.onLoginCaptchaReady = () => {
+    let widgetId, currentSize;
+    const render = () => {
+      const size = container.clientWidth >= 304 ? 'normal' : 'compact';
+      if (size === currentSize) return;
+      if (widgetId !== undefined) window.grecaptcha.reset(widgetId);
+      const target = document.createElement('div');
+      container.replaceChildren(target);
+      widgetId = window.grecaptcha.render(target, { sitekey: container.dataset.sitekey, size });
+      currentSize = size;
+    };
+    render();
+    window.addEventListener('resize', render);
+  };
+  const script = document.createElement('script');
+  script.src = 'https://www.google.com/recaptcha/api.js?onload=onLoginCaptchaReady&render=explicit&hl=id';
+  script.async = true;
+  script.defer = true;
+  script.addEventListener('error', () => {
+    container.textContent = 'Verifikasi gagal dimuat. Muat ulang halaman dan coba masuk kembali.';
+  });
+  document.head.append(script);
+})();

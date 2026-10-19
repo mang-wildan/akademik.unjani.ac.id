@@ -1,11 +1,11 @@
-// Tracks failed login attempts per IP and per email so reCAPTCHA is only
-// required after repeated failures. Kept in memory: counts reset on restart and
-// are not shared between processes (fine for a single Node instance).
+// shortcut: bounded process-local tracking resets on restart; use a shared persistent store for multiple workers or restart-safe bans.
 const WINDOW_MS = 15 * 60 * 1000;
-const CAPTCHA_AFTER_FAILURES = 3;
+const CAPTCHA_AFTER_FAILURES = 2;
+const BLOCK_AFTER_FAILURES = 10;
+const BLOCK_MS = 60 * 60 * 1000;
 const MAX_TRACKED_KEYS = 10000;
 
-const attempts = new Map(); // key -> { count, firstAt }
+const attempts = new Map(); // key -> { count, firstAt, blockedUntil }
 
 const keysFor = ({ ip, email }) => {
   const keys = [];
@@ -14,21 +14,24 @@ const keysFor = ({ ip, email }) => {
   return keys;
 };
 
-const countFor = (key, now) => {
+const entryFor = (key, now) => {
   const entry = attempts.get(key);
-  if (!entry) return 0;
-  if (now - entry.firstAt > WINDOW_MS) {
+  if (!entry) return undefined;
+  if (entry.blockedUntil ? now >= entry.blockedUntil : now - entry.firstAt >= WINDOW_MS) {
     attempts.delete(key);
-    return 0;
+    return undefined;
   }
-  return entry.count;
+  return entry;
 };
 
 // Drop expired entries; if a flood of distinct keys still fills the map,
 // evict the oldest ones (Map keeps insertion order) so memory stays bounded.
 const prune = now => {
+  for (const key of attempts.keys()) entryFor(key, now);
+  // Prefer dropping failure history over an active block when the cache is full.
   for (const [key, entry] of attempts) {
-    if (now - entry.firstAt > WINDOW_MS) attempts.delete(key);
+    if (attempts.size < MAX_TRACKED_KEYS) return;
+    if (!entry.blockedUntil) attempts.delete(key);
   }
   for (const key of attempts.keys()) {
     if (attempts.size < MAX_TRACKED_KEYS) break;
@@ -37,22 +40,31 @@ const prune = now => {
 };
 
 exports.captchaRequired = (who, now = Date.now()) =>
-  keysFor(who).some(key => countFor(key, now) >= CAPTCHA_AFTER_FAILURES);
+  Boolean(who.email && (entryFor(`email:${who.email}`, now)?.count || 0) >= CAPTCHA_AFTER_FAILURES);
+
+exports.retryAfter = (who, now = Date.now()) =>
+  Math.max(0, ...keysFor(who).map(key => Math.ceil(((entryFor(key, now)?.blockedUntil || 0) - now) / 1000)));
 
 exports.recordFailure = (who, now = Date.now()) => {
-  if (attempts.size >= MAX_TRACKED_KEYS) prune(now);
   for (const key of keysFor(who)) {
-    if (countFor(key, now) === 0) {
-      attempts.set(key, { count: 1, firstAt: now });
-    } else {
-      attempts.get(key).count += 1;
+    let entry = entryFor(key, now);
+    if (entry?.blockedUntil) continue;
+    if (!entry) {
+      if (attempts.size >= MAX_TRACKED_KEYS) prune(now);
+      entry = { count: 0, firstAt: now, blockedUntil: 0 };
+      attempts.set(key, entry);
     }
+    entry.count += 1;
+    if (entry.count >= BLOCK_AFTER_FAILURES) entry.blockedUntil = now + BLOCK_MS;
   }
 };
 
-exports.reset = who => {
-  for (const key of keysFor(who)) attempts.delete(key);
+exports.reset = (who, now = Date.now()) => {
+  for (const key of keysFor(who)) {
+    if (!entryFor(key, now)?.blockedUntil) attempts.delete(key);
+  }
 };
 
 exports.CAPTCHA_AFTER_FAILURES = CAPTCHA_AFTER_FAILURES;
 exports.WINDOW_MS = WINDOW_MS;
+exports.BLOCK_MS = BLOCK_MS;

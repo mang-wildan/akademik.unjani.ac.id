@@ -30,8 +30,18 @@ const renderLogin = (res, statusCode = 200, payload = {}) =>
     title: 'Masuk',
     recaptchaSiteKey,
     requireCaptcha: false,
+    loginBlocked: false,
     ...payload,
   });
+
+const renderBlockedLogin = (res, retryAfter, email = '') => {
+  res.set('Retry-After', String(retryAfter));
+  return renderLogin(res, 429, {
+    error: `Terlalu banyak percobaan masuk yang gagal. Akses masuk diblokir 1 jam. Coba lagi dalam ${Math.ceil(retryAfter / 60)} menit.`,
+    values: { email },
+    loginBlocked: true,
+  });
+};
 
 const normalizeToken = (token) => {
   if (Array.isArray(token)) {
@@ -123,22 +133,30 @@ exports.getLogin = (req, res) => {
   if (targetUser) {
     return res.redirect(isStaff(targetUser) ? '/admin/dashboard' : '/dashboard');
   }
-  return renderLogin(res, 200, { requireCaptcha: loginAttempts.captchaRequired({ ip: req.ip }) });
+  const retryAfter = loginAttempts.retryAfter({ ip: req.ip });
+  if (retryAfter) return renderBlockedLogin(res, retryAfter);
+  return renderLogin(res);
 };
 
-// reCAPTCHA is only demanded once this IP or this email has failed
+// reCAPTCHA is only demanded once this email has failed
 // CAPTCHA_AFTER_FAILURES times within the attempt window.
 exports.login = async (req, res) => {
   const email = String(req.body.email || '').trim().toLowerCase();
   const password = String(req.body.password || '');
   const who = { ip: req.ip, email };
+  const retryAfter = loginAttempts.retryAfter(who);
+  if (retryAfter) return renderBlockedLogin(res, retryAfter, email);
 
-  const fail = message =>
-    renderLogin(res, 400, {
+  const fail = message => {
+    loginAttempts.recordFailure(who);
+    const remaining = loginAttempts.retryAfter(who);
+    if (remaining) return renderBlockedLogin(res, remaining, email);
+    return renderLogin(res, 400, {
       error: message,
       values: { email },
       requireCaptcha: loginAttempts.captchaRequired(who),
     });
+  };
 
   if (loginAttempts.captchaRequired(who)) {
     const recaptchaToken = req.body['g-recaptcha-response'] || req.body.recaptcha_token;
@@ -155,19 +173,17 @@ exports.login = async (req, res) => {
     ? await user.comparePassword(password)
     : await bcrypt.compare(password, DUMMY_PASSWORD_HASH);
 
+  const remaining = loginAttempts.retryAfter(who);
+  if (remaining) return renderBlockedLogin(res, remaining, email);
   if (!user || !isMatch) {
-    loginAttempts.recordFailure(who);
-    const message = loginAttempts.captchaRequired(who)
-      ? 'Email atau password salah. Demi keamanan, selesaikan verifikasi reCAPTCHA sebelum mencoba lagi.'
-      : 'Email atau password salah.';
-    return fail(message);
+    return fail('Email atau password salah.');
   }
 
-  loginAttempts.reset(who);
   // Checked after the password so a wrong guess can't tell an inactive account apart.
   if (user.isActive === false) {
     return fail('Akun ini dinonaktifkan. Hubungi Super Admin Bidang Akademik.');
   }
+  loginAttempts.reset(who);
   await User.updateOne({ _id: user._id }, { $set: { lastLoginAt: new Date() } });
   return sendTokenResponse(user, req, res, 200, 'Login berhasil');
 };
