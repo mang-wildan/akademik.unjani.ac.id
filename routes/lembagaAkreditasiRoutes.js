@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use(requireAuth, requireSuperadmin);
 
+router.post('/bulk', lembagaAkreditasiController.bulk);
 router.get('/', lembagaAkreditasiController.list);
 router.get('/new', lembagaAkreditasiController.showCreate);
 router.post('/', lembagaAkreditasiController.create);

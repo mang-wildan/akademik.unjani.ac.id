@@ -1,0 +1,57 @@
+<%#
+  Bilah filter daftar (DESIGN §7.4, SPEC FR-ADM-21). Form GET; urutan aktif ikut lewat input tersembunyi,
+  halaman kembali ke 1 setiap kali filter berubah.
+  Params:
+    state (dari parseListQuery), searchLabel (wajib, juga jadi placeholder), action='' (halaman ini)
+    statusTabs? = { name='status', label='Status', options: [{ value, label }] }  (value '' = Semua)
+    filters? = [{ name, label, options: [{ value, label }] }]
+  Di bawah 1024px filter pilihan dilipat di balik tombol "Filter" (butuh JS; pencarian dan tab status selalu tampil).
+%>
+<%
+  const state = locals.state || {};
+  const tabs = locals.statusTabs;
+  const tabName = tabs && (tabs.name || 'status');
+  const filters = locals.filters || [];
+  const activeFilters = filters.filter(f => state[f.name]).length;
+  const filtered = Boolean(state.q || activeFilters || (tabs && state[tabName]));
+%>
+<form method="get" action="<%= locals.action || '' %>" data-filter-bar x-data="filterBar" class="flex flex-col gap-2 border-b border-line p-3 lg:flex-row lg:flex-wrap lg:items-center">
+  <% if (tabs) { %>
+    <nav aria-label="<%= tabs.label || 'Status' %>" class="flex w-fit max-w-full shrink-0 overflow-x-auto rounded-control bg-sunken p-0.5">
+      <% tabs.options.forEach(option => { const current = String(state[tabName] || '') === String(option.value); %>
+        <a href="<%= listHref(state, { [tabName]: option.value }) %>"<%- current ? ' aria-current="page"' : '' %> class="inline-flex h-10 shrink-0 items-center rounded-[5px] px-3 text-sm font-medium no-underline lg:h-7 <%= current ? 'bg-surface text-ink ring-1 ring-line-strong' : 'text-muted hover:text-ink' %>"><%= option.label %></a>
+      <% }) %>
+    </nav>
+    <% if (state[tabName]) { %><input type="hidden" name="<%= tabName %>" value="<%= state[tabName] %>"><% } %>
+  <% } %>
+
+  <div class="flex gap-2 lg:contents">
+    <div class="relative min-w-0 flex-1 lg:order-last lg:ml-auto lg:w-64 lg:flex-none">
+      <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted"><%- icon('search', 'size-4') %></span>
+      <input type="search" id="cari-daftar" name="q" value="<%= state.q || '' %>" aria-label="<%= locals.searchLabel %>" placeholder="<%= locals.searchLabel %>…" class="field-control pl-9">
+    </div>
+    <% if (filters.length) { %>
+      <button type="button" x-on:click="toggle" x-bind:aria-expanded="open" aria-expanded="false" aria-controls="filter-pilihan" x-cloak class="btn btn-secondary lg:hidden">
+        <%- icon('filter_list', 'size-5') %>Filter<% if (activeFilters) { %> (<%= activeFilters %>)<% } %>
+      </button>
+    <% } %>
+  </div>
+
+  <% if (filters.length) { %>
+    <div id="filter-pilihan" x-bind:data-collapsed="collapsed" class="flex flex-col gap-2 max-lg:data-collapsed:hidden lg:flex-row lg:items-center">
+      <% filters.forEach(f => { %>
+        <label for="filter-<%= f.name %>" class="sr-only"><%= f.label %></label>
+        <select id="filter-<%= f.name %>" name="<%= f.name %>" class="field-control lg:w-44">
+          <option value="">Semua <%= f.label.toLowerCase() %></option>
+          <% f.options.forEach(option => { %><option value="<%= option.value %>"<%= String(state[f.name] || '') === String(option.value) ? ' selected' : '' %>><%= option.label %></option><% }) %>
+        </select>
+      <% }) %>
+      <button type="submit" class="btn btn-secondary">Terapkan</button>
+    </div>
+  <% } %>
+
+  <% if (state.sort) { %><input type="hidden" name="sort" value="<%= state.sort %>"><input type="hidden" name="dir" value="<%= state.dir %>"><% } %>
+  <% if (filtered) { %>
+    <a href="<%= listHref({ sort: state.sort, dir: state.dir }) %>" class="inline-flex min-h-11 items-center text-sm text-primary lg:min-h-0">Hapus filter</a>
+  <% } %>
+</form>

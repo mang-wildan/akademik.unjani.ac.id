@@ -1,0 +1,15 @@
+<%# Params: label, variant=primary (secondary|ghost|danger|icon), buttonIcon?, ariaLabel? (wajib untuk icon), href?, type=button, disabled?, busy?, name?, value?, form?, title?,
+   slideOver? (tautan dibuka di _ui/slide-over), shortcut? (mis. 'new' → tombol N, DESIGN §8). %>
+<%
+  const variant = ['primary', 'secondary', 'ghost', 'danger', 'icon'].includes(locals.variant) ? locals.variant : 'primary';
+  if (variant === 'icon' && !locals.ariaLabel) throw new Error('Tombol ikon wajib memiliki ariaLabel');
+  const disabled = Boolean(locals.disabled || locals.busy);
+%>
+<% if (locals.href && !disabled) { %>
+<a href="<%= locals.href %>" class="btn btn-<%= variant %>"<% if (locals.ariaLabel) { %> aria-label="<%= locals.ariaLabel %>"<% } %><% if (locals.title) { %> title="<%= locals.title %>"<% } %><% if (locals.slideOver) { %> data-slide-over<% } %><% if (locals.shortcut) { %> data-shortcut="<%= locals.shortcut %>"<% } %>>
+<% } else { %>
+<button type="<%= locals.href ? 'button' : (locals.type || 'button') %>" class="btn btn-<%= variant %>"<% if (disabled) { %> disabled<% } %><% if (locals.busy) { %> aria-busy="true"<% } %><% if (locals.ariaLabel) { %> aria-label="<%= locals.ariaLabel %>"<% } %><% if (locals.title) { %> title="<%= locals.title %>"<% } %><% if (locals.name) { %> name="<%= locals.name %>" value="<%= locals.value ?? '' %>"<% } %><% if (locals.form) { %> form="<%= locals.form %>"<% } %><% if (locals.shortcut) { %> data-shortcut="<%= locals.shortcut %>"<% } %>>
+<% } %>
+  <% if (locals.busy) { %><span class="spinner" aria-hidden="true"></span><% } else if (locals.buttonIcon) { %><%- icon(locals.buttonIcon, 'size-5 lg:size-[18px]') %><% } %>
+  <% if (variant !== 'icon') { %><%= locals.label %><% } %>
+<% if (locals.href && !disabled) { %></a><% } else { %></button><% } %>

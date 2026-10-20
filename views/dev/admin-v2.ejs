@@ -1,0 +1,58 @@
+<%# Katalog shell dan komponen dasar admin v2 (development saja, data fiktif). %>
+<%# data-list-region dimuat ulang oleh slide-over setelah simpan; panelnya sendiri di luar region. %>
+<div data-list-region>
+<%- include('../admin/_ui/page-header', { heading: 'Kelola Pengumuman', count: list.total, actions: [{ label: 'Tambah pengumuman', href: '/dev/admin-v2/contoh/new', buttonIcon: 'add', slideOver: true, shortcut: 'new', title: 'Tambah pengumuman (N)' }] }) %>
+
+<%# Pola halaman daftar: kartu overflow-clip (header tabel tetap sticky) berisi filter, tabel, pagination. %>
+<div data-bulk-list x-data="bulkBar" x-on:table-selection="selection" x-bind:data-bulk-active="active" class="overflow-clip rounded-card border border-line-strong bg-surface">
+  <%- include('../admin/_ui/bulk-bar', { id: 'bulk-contoh', action: '/dev/komponen', noun: 'pengumuman', total: list.total, state: list.state, actions: [{ value: 'publish', label: 'Terbitkan' }, { value: 'unpublish', label: 'Jadikan draf' }, { value: 'delete', label: 'Hapus' }] }) %>
+  <%- include('../admin/_ui/filter-bar', {
+    state: list.state,
+    searchLabel: 'Cari judul pengumuman',
+    statusTabs: { name: 'status', options: [{ value: '', label: 'Semua' }, { value: 'published', label: 'Terbit' }, { value: 'draft', label: 'Draf' }] },
+    filters: [{ name: 'kategori', label: 'Kategori', options: list.kategoriOptions }],
+  }) %>
+  <% if (list.items.length) { %>
+    <%- include('../admin/_ui/data-table', {
+      caption: 'Daftar pengumuman contoh',
+      state: list.state,
+      items: list.items,
+      bulkForm: 'bulk-contoh',
+      columns: [
+        { key: 'title', label: 'Judul', sortable: true, primary: true },
+        { key: 'kategori', label: 'Kategori', mobile: 'hidden', cell: item => include('../admin/_ui/badge', { text: list.kategoriOptions.find(k => k.value === item.kategori).label, tone: 'info' }) },
+        { key: 'status', label: 'Status', cell: item => include('../admin/_ui/badge', { text: item.status === 'published' ? 'Terbit' : 'Draf', tone: item.status === 'published' ? 'success' : 'neutral' }) },
+        { key: 'updatedAt', label: 'Diperbarui', sortable: true, firstDir: 'desc', cell: item => `<span class="tabular-nums">${formatTanggal(item.updatedAt)}</span>` },
+      ],
+      rowHref: item => `/dev/admin-v2/contoh/${item._id}/edit`,
+      slideOver: true,
+      actions: item => include('../admin/_ui/button', { variant: 'icon', buttonIcon: 'more_horiz', ariaLabel: `Aksi lain untuk ${item.title}` }),
+    }) %>
+    <%- include('../admin/_ui/pagination', { page: list.page, totalPages: list.totalPages, total: list.total, pageSize: list.limit, noun: 'pengumuman', state: list.state }) %>
+  <% } else { %>
+    <div class="p-4"><%- include('../admin/_ui/empty-state', { text: 'Tidak ada pengumuman yang cocok.', emptyIcon: 'campaign', action: { label: 'Hapus filter', href: '?' } }) %></div>
+  <% } %>
+</div>
+</div>
+<%- include('../admin/_ui/slide-over', { editUrl: '/dev/admin-v2/contoh/:id/edit', newUrl: '/dev/admin-v2/contoh/new' }) %>
+
+<section class="mt-6 max-w-form space-y-4" aria-labelledby="contoh-komponen">
+  <h2 id="contoh-komponen" class="text-md font-semibold">Komponen dasar</h2>
+  <div class="flex flex-wrap gap-2">
+    <% ['primary', 'secondary', 'ghost', 'danger'].forEach(variant => { %><%- include('../admin/_ui/button', { label: variant, variant }) %><% }) %>
+    <%- include('../admin/_ui/button', { variant: 'icon', buttonIcon: 'edit', ariaLabel: 'Ubah contoh' }) %>
+    <%- include('../admin/_ui/button', { label: 'Menyimpan', busy: true }) %>
+  </div>
+  <div class="flex flex-wrap gap-2"><% ['neutral', 'success', 'warning', 'danger', 'info'].forEach(tone => { %><%- include('../admin/_ui/badge', { text: tone, tone }) %><% }) %></div>
+  <form id="contoh-form" method="POST" action="/dev/komponen" class="space-y-4 rounded-card border border-line bg-surface p-4">
+    <%- include('../admin/_ui/error-summary', { errors: { judul: 'Judul wajib diisi' } }) %>
+    <%- include('../admin/_ui/field', { name: 'judul', label: 'Judul', required: true, help: 'Tulis judul pengumuman.', error: 'Judul wajib diisi' }) %>
+    <%- include('../admin/_ui/field', { name: 'status', label: 'Status', type: 'select', value: 'draft', options: [{ value: 'draft', label: 'Draf' }, { value: 'published', label: 'Terbit' }] }) %>
+    <%- include('../admin/_ui/field', { name: 'isi', label: 'Isi', type: 'textarea', value: 'Contoh isi pengumuman.' }) %>
+    <%- include('../admin/_ui/button', { label: 'Simpan contoh', type: 'submit', buttonIcon: 'check' }) %>
+  </form>
+  <%- include('../admin/_ui/empty-state', { text: 'Belum ada pengumuman.', emptyIcon: 'campaign', action: { label: 'Tambah pengumuman', href: '#contoh-form' } }) %>
+  <%- include('../admin/_ui/confirm-dialog', { dialogId: 'hapus-contoh', dialogTitle: 'Hapus pengumuman contoh?', dialogText: 'Tidak bisa dikembalikan. Contoh ini tidak menghapus data.', action: '/dev/komponen' }) %>
+</section>
+
+<p class="mt-6 text-sm text-muted">Paksa tampilan: <a class="text-primary" href="?theme=dark">gelap</a> · <a class="text-primary" href="?theme=light">terang</a> · <a class="text-primary" href="?sidebar=collapsed">sidebar ciut</a> · <a class="text-primary" href="?success=3%20pengumuman%20diterbitkan">toast</a></p>

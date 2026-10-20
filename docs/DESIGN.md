@@ -24,8 +24,10 @@ Semua warna adalah variabel CSS di `@theme` `admin.css`. Komponen hanya memakai
 nama token, tidak pernah heksadesimal langsung. Mode gelap menimpa variabel yang
 sama, jadi komponen tidak perlu varian `dark:`.
 
-Nilai kontras di bawah adalah target. **Verifikasi ulang dengan checker kontras
-pada tugas F1-02 sebelum token dikunci.**
+Kontras semua pasangan token di kedua tema diuji otomatis oleh
+`test/adminTokens.test.js` (WCAG 2.2 AA: teks ≥4.5:1, komponen UI ≥3:1; warna
+semi-transparan dinilai setelah ditumpuk di atas `surface`). Mengubah warna
+di sini berarti mengubah `assets/css/admin.css` lalu menjalankan `npm test`.
 
 ### Netral
 

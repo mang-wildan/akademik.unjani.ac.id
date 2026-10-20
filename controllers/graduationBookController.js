@@ -3,7 +3,9 @@
 const fs = require('fs/promises');
 const path = require('path');
 const GraduationBook = require('../models/GraduationBook');
+const { removeUploadFiles } = require('../utils/upload');
 const { validate, schemas } = require('../validators');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
@@ -12,13 +14,12 @@ const removeUploaded = async req => {
   await Promise.all(files.map(f => fs.unlink(f.path).catch(() => {})));
 };
 
-exports.list = async (req, res) => {
-  const items = await GraduationBook.find().sort({ year: -1, periode: 1, createdAt: -1 }).lean();
-  res.renderPage('admin/graduation-books/list', { title: 'Buku Wisuda', items }, 'layouts/admin');
-};
+const admin = require('../utils/academicAdmin')({ Model: GraduationBook, basePath: 'graduation-books', title: 'Buku Wisuda', query: {sortable:['title','year','periode','updatedAt'],defaultSort:{year:-1,periode:1,createdAt:-1},searchFields:['title'],filters:{periode:['I','II','III']}}, files:i=>[i.src,i.cover] });
+exports.list = admin.list;
+exports.bulk = admin.bulk;
 
 exports.showCreate = (req, res) => {
-  res.renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: {}, errors: {} }, 'layouts/admin');
+  res.renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: {}, errors: {} }, ADMIN_LAYOUT);
 };
 
 exports.create = async (req, res) => {
@@ -30,10 +31,10 @@ exports.create = async (req, res) => {
   if (!cover) fieldErrors.cover = 'Gambar sampul wajib diisi.';
   if (!ok || fieldErrors.file || fieldErrors.cover) {
     await removeUploaded(req);
-    return res.renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: req.body, errors: fieldErrors }, 'layouts/admin');
+    return res.status(422).renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: req.body, errors: fieldErrors }, ADMIN_LAYOUT);
   }
-  await GraduationBook.create({ ...data, src: toPublicUrl(file.path), cover: toPublicUrl(cover.path), createdBy: req.user._id, updatedBy: req.user._id });
-  res.redirect(`/admin/graduation-books?success=${encodeURIComponent('Buku wisuda berhasil ditambahkan.')}`);
+  try { await GraduationBook.create({ ...data, src: toPublicUrl(file.path), cover: toPublicUrl(cover.path), createdBy: req.user._id, updatedBy: req.user._id }); } catch (err) { await removeUploaded(req); throw err; }
+  admin.success(req, res, 'Buku wisuda berhasil ditambahkan.');
 };
 
 const findOrThrow = async id => {
@@ -48,27 +49,26 @@ const findOrThrow = async id => {
 };
 
 exports.showEdit = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
-  res.renderPage('admin/graduation-books/form', { title: 'Ubah Buku Wisuda', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {} }, 'layouts/admin');
+  const item = await findOrThrow(req.params.id).catch(async err => { await removeUploaded(req); throw err; });
+  res.renderPage('admin/graduation-books/form', { title: 'Ubah Buku Wisuda', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {} }, ADMIN_LAYOUT);
 };
 
 exports.update = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
+  const item = await findOrThrow(req.params.id).catch(async err => { await removeUploaded(req); throw err; });
   const { data, errors, ok } = validate(schemas.graduationBook, req.body);
   if (!ok) {
     await removeUploaded(req);
-    return res.renderPage('admin/graduation-books/form', { title: 'Ubah Buku Wisuda', mode: 'edit', item: item.toObject(), values: req.body, errors }, 'layouts/admin');
+    return res.status(422).renderPage('admin/graduation-books/form', { title: 'Ubah Buku Wisuda', mode: 'edit', item: item.toObject(), values: req.body, errors }, ADMIN_LAYOUT);
   }
+  const previousFiles = [item.src, item.cover];
   const file = req.files?.file?.[0];
   const cover = req.files?.cover?.[0];
   if (file) item.src = toPublicUrl(file.path);
   if (cover) item.cover = toPublicUrl(cover.path);
   Object.assign(item, data, { updatedBy: req.user._id });
-  await item.save();
-  res.redirect(`/admin/graduation-books?success=${encodeURIComponent('Buku wisuda berhasil diperbarui.')}`);
+  try { await item.save(); } catch (err) { await removeUploaded(req); throw err; }
+  await removeUploadFiles('graduation-books', previousFiles.filter(url => url && ![item.src, item.cover].includes(url)));
+  admin.success(req, res, 'Buku wisuda berhasil diperbarui.');
 };
 
-exports.destroy = async (req, res) => {
-  await GraduationBook.findByIdAndDelete(req.params.id);
-  res.redirect(`/admin/graduation-books?success=${encodeURIComponent('Buku wisuda berhasil dihapus.')}`);
-};
+exports.destroy = admin.destroy;

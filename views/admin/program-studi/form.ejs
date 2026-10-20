@@ -1,14 +1,14 @@
-<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? 'Ubah Program Studi' : 'Tambah Program Studi', breadcrumb: [{ label: 'Program Studi', href: '/admin/program-studi' }, { label: mode === 'edit' ? 'Ubah Program Studi' : 'Tambah Program Studi' }] }) %>
-
-<form method="POST" action="/admin/program-studi<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid max-w-xl gap-5">
-  <%- include('../../components/form-field', { name: 'nama', label: 'Nama', required: true, value: values.nama, error: errors.nama }) %>
-  <%- include('../../components/form-field', { name: 'singkatan', label: 'Singkatan', required: true, value: values.singkatan, error: errors.singkatan }) %>
-  <%- include('../../components/form-field', {
-    name: 'fakultas', label: 'Fakultas', type: 'select', required: true, value: values.fakultas && String(values.fakultas._id || values.fakultas), error: errors.fakultas,
-    placeholder: 'Pilih fakultas', options: facultyList.map(f => ({ value: f._id, label: f.nama })),
-  }) %>
-  <div class="flex justify-end gap-2 border-t border-line pt-5">
-    <a href="/admin/program-studi" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary">Simpan</button>
+<% const heading=mode==='edit'?'Ubah Program Studi':'Tambah Program Studi'; %>
+<% if(!locals.partial){ %><%- include('../_ui/page-header',{heading}) %><% } %>
+<form method="POST" action="/admin/program-studi<%= mode==='edit'?`/${item._id}`:'' %>" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial?'':'max-w-form rounded-card border border-line bg-surface' %>">
+  <div class="space-y-5 p-4">
+    <%- include('../_ui/error-summary',{errors}) %>
+    <%- include('../_ui/field',{name:'nama',label:'Nama',required:true,value:values.nama,error:errors.nama}) %>
+    <%- include('../_ui/field',{name:'singkatan',label:'Singkatan',required:true,value:values.singkatan,error:errors.singkatan}) %>
+    <%- include('../_ui/field',{name:'fakultas',label:'Fakultas',type:'select',required:true,value:values.fakultas && String(values.fakultas._id || values.fakultas),error:errors.fakultas,placeholder:'Pilih fakultas',options:facultyList.map(f=>({value:String(f._id),label:f.nama}))}) %>
+  </div>
+  <div class="form-actions<%= locals.partial?'':' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
+    <a href="/admin/program-studi" data-slide-close class="btn btn-secondary">Batal</a>
+    <%- include('../_ui/button',{label:'Simpan',type:'submit',buttonIcon:'check'}) %>
   </div>
 </form>

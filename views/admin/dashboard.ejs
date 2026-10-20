@@ -1,61 +1,48 @@
-<%# Dasbor admin (FR-DS-01..04). "Perlu Perhatian" tampil lebih dulu di HP. %>
-<div class="mx-auto max-w-6xl">
-  <h1 class="text-2xl font-bold md:text-3xl">Dasbor</h1>
-  <p class="mb-6 text-muted">Selamat datang, <%= user.name || user.email %>.</p>
-
-  <% if (issues.length) { %>
-  <section class="mb-6 card card-body border-l-4 border-warning">
-    <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold"><%- icon('warning', 'size-5 text-warning') %>Perlu Perhatian</h2>
-    <ul class="divide-y divide-line">
-      <% issues.forEach(iss => { %>
-        <li class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
-          <div class="flex items-start gap-3">
-            <%- icon(iss.icon, 'size-5 shrink-0 text-warning mt-0.5') %>
-            <div>
-              <p class="font-medium text-ink"><%= iss.title %></p>
-              <% if (iss.text) { %><p class="line-clamp-1 text-sm text-muted"><%= iss.text %></p><% } %>
-            </div>
-          </div>
-          <a href="<%= iss.href %>" class="btn btn-secondary shrink-0 px-3 py-1.5 text-sm"><%= iss.label %></a>
-        </li>
-      <% }) %>
-    </ul>
+<%- include('_ui/page-header', { heading: 'Dasbor' }) %>
+<div class="space-y-4">
+  <section aria-labelledby="perlu-perhatian" class="rounded-card border border-line bg-surface p-4">
+    <h2 id="perlu-perhatian" class="mb-3 text-md font-semibold">Perlu perhatian</h2>
+    <% if (issues.length) { %>
+      <ul class="divide-y divide-line">
+        <% issues.forEach(issue => { %>
+          <li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
+            <%- icon(issue.icon, 'mt-1 size-5 shrink-0 text-warning') %>
+            <div class="min-w-0 flex-1"><p class="text-sm font-medium"><%= issue.title %></p><% if (issue.text) { %><p class="mt-1 break-words text-xs text-muted"><%= issue.text %></p><% } %></div>
+            <%- include('_ui/button', { label: issue.label, href: issue.href, variant: 'secondary' }) %>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %><p class="text-sm text-muted">Tidak ada hal yang memerlukan perhatian.</p><% } %>
   </section>
-  <% } %>
-
-  <div class="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-    <%- include('../components/stat-tile', { statLabel: 'Berita Terbit', statValue: formatAngka(stats.beritaTerbit), statIcon: 'newspaper', statHref: '/admin/news' }) %>
-    <%- include('../components/stat-tile', { statLabel: 'Pengumuman Aktif', statValue: formatAngka(stats.pengumumanAktif), statIcon: 'campaign', statHref: '/admin/pengumuman' }) %>
-    <%- include('../components/stat-tile', { statLabel: 'Dokumen Akademik', statValue: formatAngka(stats.dokCount), statIcon: 'description', statHref: '/admin/academic-documents' }) %>
-    <%- include('../components/stat-tile', {
-      statLabel: 'Akreditasi Kedaluwarsa', statValue: formatAngka(stats.akreditasiKedaluwarsa),
-      statIcon: 'workspace_premium', statHref: '/admin/accreditations', statLinkLabel: 'Perbarui',
-      statTone: stats.akreditasiKedaluwarsa > 0 ? 'danger' : undefined,
-    }) %>
-  </div>
-
-  <div class="mb-6 flex flex-wrap gap-2">
-    <a href="/admin/pengumuman/new" class="btn btn-primary"><%- icon('add') %>Pengumuman</a>
-    <a href="/admin/news/new" class="btn btn-secondary"><%- icon('add') %>Berita</a>
-    <a href="/admin/academic-documents/new" class="btn btn-secondary"><%- icon('add') %>Dokumen</a>
-  </div>
-
-  <section>
-    <h2 class="mb-3 text-lg font-semibold">Aktivitas Terbaru</h2>
-    <% if (!recentActivities.length) { %>
-      <p class="text-sm text-muted">Belum ada aktivitas.</p>
-    <% } else { %>
-    <ul class="card divide-y divide-line">
-      <% recentActivities.forEach(a => { %>
-        <li class="flex items-center gap-3 p-4">
-          <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon(a.icon, 'size-5') %></span>
-          <div class="min-w-0 flex-1">
-            <a href="<%= a.href %>" class="line-clamp-1 font-medium text-ink hover:text-primary"><%= a.title %></a>
-            <p class="text-xs text-muted"><%= a.label %> · <%= formatTanggal(a.date) %></p>
-          </div>
-        </li>
-      <% }) %>
-    </ul>
-    <% } %>
+  <section aria-labelledby="buat-cepat" class="rounded-card border border-line bg-surface p-4">
+    <h2 id="buat-cepat" class="mb-3 text-md font-semibold">Buat cepat</h2>
+    <div class="flex flex-wrap gap-2">
+      <%- include('_ui/button', { label: 'Pengumuman', href: '/admin/pengumuman/new', buttonIcon: 'add' }) %>
+      <%- include('_ui/button', { label: 'Berita', href: '/admin/news/new', buttonIcon: 'add', variant: 'secondary' }) %>
+      <%- include('_ui/button', { label: 'Dokumen', href: '/admin/academic-documents/new', buttonIcon: 'add', variant: 'secondary' }) %>
+    </div>
+  </section>
+  <section aria-labelledby="draf-terakhir" class="rounded-card border border-line bg-surface p-4">
+    <h2 id="draf-terakhir" class="mb-3 text-md font-semibold">Draf terakhir</h2>
+    <% if (drafts.length) { %><ul class="divide-y divide-line">
+      <% drafts.forEach(item => { %><li class="flex flex-wrap items-center gap-2 py-2"><a href="<%= item.href %>" class="min-w-0 flex-1 break-words text-sm font-medium text-ink hover:text-primary"><%= item.title %></a><%- include('_ui/badge', { text: item.label, tone: 'neutral' }) %><span class="text-xs text-muted"><%= formatTanggal(item.updatedAt) %></span></li><% }) %>
+    </ul><% } else { %><p class="text-sm text-muted">Belum ada draf.</p><% } %>
+  </section>
+  <section aria-labelledby="statistik">
+    <h2 id="statistik" class="mb-3 text-md font-semibold">Statistik</h2>
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <% [
+        { label: 'Berita terbit', value: stats.beritaTerbit, href: '/admin/news?status=published', icon: 'newspaper' },
+        { label: 'Pengumuman terbit', value: stats.pengumumanAktif, href: '/admin/pengumuman?status=published', icon: 'campaign' },
+        { label: 'Dokumen akademik', value: stats.dokCount, href: '/admin/academic-documents', icon: 'description' },
+        { label: 'Akreditasi kedaluwarsa', value: stats.akreditasiKedaluwarsa, href: '/admin/accreditations?status=kedaluwarsa', icon: 'workspace_premium' },
+      ].forEach(stat => { %><a href="<%= stat.href %>" class="rounded-card border border-line bg-surface p-4 text-ink no-underline hover:border-line-strong"><%- icon(stat.icon, 'mb-2 size-5 text-muted') %><p class="text-xl font-semibold tabular-nums"><%= formatAngka(stat.value) %></p><p class="mt-1 text-xs text-muted"><%= stat.label %></p></a><% }) %>
+    </div>
+  </section>
+  <section aria-labelledby="aktivitas-terbaru" class="rounded-card border border-line bg-surface p-4">
+    <h2 id="aktivitas-terbaru" class="mb-3 text-md font-semibold">Aktivitas terbaru</h2>
+    <% if (recentActivities.length) { %><ul class="divide-y divide-line">
+      <% recentActivities.forEach(item => { %><li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0"><%- icon(item.icon, 'mt-1 size-5 shrink-0 text-muted') %><div class="min-w-0"><a href="<%= item.href %>" class="break-words text-sm font-medium text-ink hover:text-primary"><%= item.title %></a><p class="mt-1 text-xs text-muted"><%= item.label %> · <%= formatTanggal(item.date) %></p></div></li><% }) %>
+    </ul><% } else { %><p class="text-sm text-muted">Belum ada aktivitas.</p><% } %>
   </section>
 </div>

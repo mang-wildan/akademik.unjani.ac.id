@@ -27,6 +27,8 @@ const uploadFields = upload.fields([{ name: 'file', maxCount: 1 }, { name: 'cove
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', graduationBookController.bulk);
+
 router.get('/', graduationBookController.list);
 router.get('/new', graduationBookController.showCreate);
 router.post('/', uploadFields, checkUploads, graduationBookController.create);

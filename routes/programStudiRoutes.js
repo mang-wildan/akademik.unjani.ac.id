@@ -31,6 +31,7 @@ router.get('/', programStudiController.list);
 router.get('/new', programStudiController.showCreate);
 router.post('/', programStudiController.create);
 router.post('/import', upload.fields([{ name: 'csv', maxCount: 1 }]), checkUploads, programStudiController.importCsv);
+router.post('/bulk', programStudiController.bulk);
 router.get('/:id/edit', programStudiController.showEdit);
 router.post('/:id', programStudiController.update);
 router.post('/:id/delete', programStudiController.destroy);

@@ -1,0 +1,20 @@
+<%# Form contoh untuk slide-over (development saja). Satu template untuk halaman penuh dan isi panel (?partial=1).
+   novalidate hanya di contoh ini, agar validasi server (422) bisa dicoba. %>
+<% const heading = isNew ? 'Tambah pengumuman contoh' : 'Ubah pengumuman contoh'; %>
+<% if (!locals.partial) { %><%- include('../admin/_ui/page-header', { heading }) %><% } %>
+<form method="POST" action="<%= action %>" novalidate data-save-form data-panel-title="<%= heading %>"
+      x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload"
+      class="<%= locals.partial ? '' : 'max-w-form rounded-card border border-line bg-surface' %>">
+  <div class="space-y-4 p-4">
+    <%- include('../admin/_ui/error-summary', { errors }) %>
+    <%- include('../admin/_ui/field', { name: 'title', label: 'Judul', required: true, value: values.title, error: errors.title, help: 'Maksimal 120 karakter.' }) %>
+    <div class="grid gap-4 md:grid-cols-2">
+      <%- include('../admin/_ui/field', { name: 'status', label: 'Status', type: 'select', value: values.status, options: [{ value: 'draft', label: 'Draf' }, { value: 'published', label: 'Terbit' }] }) %>
+      <%- include('../admin/_ui/field', { name: 'kategori', label: 'Kategori', type: 'select', value: values.kategori, options: kategoriOptions }) %>
+    </div>
+  </div>
+  <div class="form-actions">
+    <a href="/dev/admin-v2" data-slide-close class="btn btn-ghost">Batal</a>
+    <%- include('../admin/_ui/button', { label: 'Simpan', type: 'submit', buttonIcon: 'check', title: 'Simpan (Ctrl+S)' }) %>
+  </div>
+</form>

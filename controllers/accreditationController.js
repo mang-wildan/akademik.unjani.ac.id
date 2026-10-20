@@ -9,7 +9,9 @@ const path = require('path');
 const Accreditation = require('../models/Accreditation');
 const LembagaAkreditasi = require('../models/LembagaAkreditasi');
 const ProgramStudi = require('../models/ProgramStudi');
+const { removeUploadFiles } = require('../utils/upload');
 const { validate, schemas } = require('../validators');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 const { PERINGKAT, JENIS, accreditationStatus } = require('../utils/accreditation');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
@@ -36,38 +38,30 @@ const refData = async () => {
   };
 };
 
-exports.list = async (req, res) => {
-  const statusFilter = String(req.query.status || '');
-  const jenisFilter = String(req.query.jenis || '');
-  const q = String(req.query.q || '').trim().toLowerCase();
-  const all = await Accreditation.find()
-    .populate('lembaga', 'nama singkatan')
-    .populate('programStudi', 'nama singkatan')
-    .sort({ berlakuSampai: -1 })
-    .lean();
-  const withStatus = all.map(a => ({ ...a, status: accreditationStatus(a.berlakuSampai) }));
-  const matchesQuery = a => !q || [a.programStudi && a.programStudi.nama, a.namaUnit, a.lembaga && a.lembaga.singkatan, a.peringkat]
-    .some(text => text && String(text).toLowerCase().includes(q));
-  const items = withStatus.filter(a => (!statusFilter || a.status.key === statusFilter) && (!jenisFilter || a.jenis === jenisFilter) && matchesQuery(a));
-
-  res.renderPage(
-    'admin/accreditations/list',
-    {
-      title: 'Akreditasi',
-      items,
-      filters: { status: statusFilter, jenis: jenisFilter, q: String(req.query.q || '').trim() },
-      counts: {
-        berlaku: withStatus.filter(a => a.status.key === 'berlaku').length,
-        segera: withStatus.filter(a => a.status.key === 'segera-berakhir').length,
-        kedaluwarsa: withStatus.filter(a => a.status.key === 'kedaluwarsa').length,
-      },
-    },
-    'layouts/admin'
-  );
+const { dayKey } = require('../utils/dates');
+const resolveFilters = async (filter, state) => {
+  if (state.q) {
+    const rx = filter.$or[0].namaUnit;
+    const [prodi, lembaga] = await Promise.all([
+      ProgramStudi.find({ nama: rx }).lean(), LembagaAkreditasi.find({ singkatan: rx }).lean(),
+    ]);
+    filter.$or.push({ programStudi: { $in: prodi.map(p=>p._id) } }, { lembaga: { $in: lembaga.map(l=>l._id) } });
+  }
+  const status = filter.status;
+  delete filter.status;
+  const start = new Date(dayKey(new Date())+'T00:00:00+07:00');
+  const end = new Date(start.getTime()+91*86400000);
+  if(status==='kedaluwarsa') filter.berlakuSampai = { $lt:start };
+  if(status==='segera-berakhir') filter.berlakuSampai = { $gte:start,$lt:end };
+  if(status==='berlaku') filter.berlakuSampai = { $gte:end };
+  if(status==='tidak-diketahui') filter.berlakuSampai = null;
 };
+const admin = require('../utils/academicAdmin')({ Model: Accreditation, basePath: 'accreditations', title: 'Akreditasi', query: {sortable:['namaUnit','berlakuSampai','updatedAt'],defaultSort:{berlakuSampai:-1},searchFields:['namaUnit','peringkat'],filters:{jenis:['institusi','prodi','lainnya'],isActive:[true,false],status:['berlaku','segera-berakhir','kedaluwarsa','tidak-diketahui']}}, populate:['programStudi','lembaga'],files:i=>[i.sertifikat],resolve:resolveFilters,decorate:i=>({...i,status:accreditationStatus(i.berlakuSampai)}),actions:{activate:{label:'diaktifkan',update:{isActive:true}},deactivate:{label:'dinonaktifkan',update:{isActive:false}}} });
+exports.list = admin.list;
+exports.bulk = admin.bulk;
 
 exports.showCreate = async (req, res) => {
-  res.renderPage('admin/accreditations/form', { title: 'Tambah Akreditasi', mode: 'create', values: {}, errors: {}, ...(await refData()) }, 'layouts/admin');
+  res.renderPage('admin/accreditations/form', { title: 'Tambah Akreditasi', mode: 'create', values: {}, errors: {}, ...(await refData()) }, ADMIN_LAYOUT);
 };
 
 exports.create = async (req, res) => {
@@ -77,10 +71,10 @@ exports.create = async (req, res) => {
   if (!file) fieldErrors.sertifikat = 'File sertifikat (PDF) wajib diisi.';
   if (!ok || fieldErrors.sertifikat) {
     await removeUploaded(req);
-    return res.renderPage('admin/accreditations/form', { title: 'Tambah Akreditasi', mode: 'create', values: req.body, errors: fieldErrors, ...(await refData()) }, 'layouts/admin');
+    return res.status(422).renderPage('admin/accreditations/form', { title: 'Tambah Akreditasi', mode: 'create', values: req.body, errors: fieldErrors, ...(await refData()) }, ADMIN_LAYOUT);
   }
-  await Accreditation.create({ ...data, sertifikat: toPublicUrl(file.path), createdBy: req.user._id, updatedBy: req.user._id });
-  res.redirect(`/admin/accreditations?success=${encodeURIComponent('Akreditasi berhasil ditambahkan.')}`);
+  try { await Accreditation.create({ ...data, sertifikat: toPublicUrl(file.path), createdBy: req.user._id, updatedBy: req.user._id }); } catch (err) { await removeUploaded(req); throw err; }
+  admin.success(req, res, 'Akreditasi berhasil ditambahkan.');
 };
 
 const findOrThrow = async id => {
@@ -95,25 +89,27 @@ const findOrThrow = async id => {
 };
 
 exports.showEdit = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
-  res.renderPage('admin/accreditations/form', { title: 'Ubah Akreditasi', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, ...(await refData()) }, 'layouts/admin');
+  const item = await findOrThrow(req.params.id).catch(async err => { await removeUploaded(req); throw err; });
+  const values = item.toObject();
+  values.tanggalBerlaku = item.tanggalBerlaku && dayKey(item.tanggalBerlaku);
+  values.berlakuSampai = item.berlakuSampai && dayKey(item.berlakuSampai);
+  res.renderPage('admin/accreditations/form', { title: 'Ubah Akreditasi', mode: 'edit', item: item.toObject(), values, errors: {}, ...(await refData()) }, ADMIN_LAYOUT);
 };
 
 exports.update = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
+  const item = await findOrThrow(req.params.id).catch(async err => { await removeUploaded(req); throw err; });
   const { data, errors, ok } = validate(schemas.accreditation, req.body);
   if (!ok) {
     await removeUploaded(req);
-    return res.renderPage('admin/accreditations/form', { title: 'Ubah Akreditasi', mode: 'edit', item: item.toObject(), values: req.body, errors, ...(await refData()) }, 'layouts/admin');
+    return res.status(422).renderPage('admin/accreditations/form', { title: 'Ubah Akreditasi', mode: 'edit', item: item.toObject(), values: req.body, errors, ...(await refData()) }, ADMIN_LAYOUT);
   }
+  const previousFiles = [item.sertifikat];
   const file = req.files?.sertifikat?.[0];
   if (file) item.sertifikat = toPublicUrl(file.path);
   Object.assign(item, data, { updatedBy: req.user._id });
-  await item.save();
-  res.redirect(`/admin/accreditations?success=${encodeURIComponent('Akreditasi berhasil diperbarui.')}`);
+  try { await item.save(); } catch (err) { await removeUploaded(req); throw err; }
+  await removeUploadFiles('accreditations', previousFiles.filter(url => url && ![item.sertifikat].includes(url)));
+  admin.success(req, res, 'Akreditasi berhasil diperbarui.');
 };
 
-exports.destroy = async (req, res) => {
-  await Accreditation.findByIdAndDelete(req.params.id);
-  res.redirect(`/admin/accreditations?success=${encodeURIComponent('Akreditasi berhasil dihapus.')}`);
-};
+exports.destroy = admin.destroy;

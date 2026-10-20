@@ -32,6 +32,7 @@ router.use(requireAuth, requireAdmin);
 router.get('/', pengumumanController.list);
 router.get('/new', pengumumanController.newForm);
 router.post('/', uploadFields, checkUploads, pengumumanController.create);
+router.post('/bulk', pengumumanController.bulk);
 router.get('/:id/edit', pengumumanController.editForm);
 router.get('/:id/preview', pengumumanController.preview);
 router.post('/:id', uploadFields, checkUploads, pengumumanController.update);

@@ -5,10 +5,10 @@
   const superadmin = isSuperadmin(profile);
 %>
 <div class="max-w-3xl">
-  <%- include('../../components/page-header', { admin: true, eyebrow: 'Akun', heading: 'Profil Saya', lead: 'Data akun yang Anda pakai untuk masuk ke panel admin.', breadcrumb: [{ label: 'Profil Saya' }] }) %>
+  <%- include('../_ui/page-header', { admin: true, eyebrow: 'Akun', heading: 'Profil Saya', lead: 'Data akun yang Anda pakai untuk masuk ke panel admin.', breadcrumb: [{ label: 'Profil Saya' }] }) %>
 
-  <section class="card" aria-labelledby="profil-nama">
-    <div class="card-body flex flex-col gap-5 sm:flex-row sm:items-center">
+  <section class="rounded-card border border-line bg-surface" aria-labelledby="profil-nama">
+    <div class="p-4 flex flex-col gap-5 sm:flex-row sm:items-center">
       <% if (profile.profilePhoto) { %>
         <img src="<%= profile.profilePhoto %>" alt="" width="96" height="96" class="size-24 shrink-0 rounded-full border border-line object-cover">
       <% } else { %>
@@ -17,7 +17,7 @@
       <div class="min-w-0">
         <h2 id="profil-nama" class="text-xl font-bold break-words"><%= nama || 'Tanpa nama' %></h2>
         <p class="break-all text-muted"><%= profile.email %></p>
-        <p class="mt-2"><%- include('../../components/badge', { text: roleLabel(profile), tone: superadmin ? 'gold' : 'info', badgeIcon: superadmin ? 'verified' : 'person' }) %></p>
+        <p class="mt-2"><%- include('../_ui/badge', { text: roleLabel(profile), tone: superadmin ? 'gold' : 'info', badgeIcon: superadmin ? 'verified' : 'person' }) %></p>
       </div>
     </div>
 

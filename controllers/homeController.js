@@ -22,6 +22,9 @@ const { accreditationStatus, JENIS, PERINGKAT } = require('../utils/accreditatio
 const { SEMESTER, calendarEventStatus, currentAndNext, byStart } = require('../utils/calendar');
 const { jenjangFromNama } = require('../utils/prodi');
 const { sanitizeHtml } = require('../utils/html');
+const { dayKey } = require('../utils/dates');
+const { isSuperadmin } = require('../utils/roles');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 
 // ?kategori= comes straight from the URL: a malformed id would make Mongoose throw a
 // CastError (HTTP 500), so anything that is not an ObjectId is treated as "no filter".
@@ -571,16 +574,20 @@ const isValidHttpUrl = value => {
 
 exports.getDashboard = async (req, res) => {
   const now = new Date();
+  const today = dayKey(now);
+  const dayStart = new Date(`${today}T00:00:00+07:00`);
+  const dueDate = new Date(new Date(`${today}T23:59:59.999+07:00`).getTime() + 90 * 86400000);
+  const oldDate = new Date(now.getTime() - 30 * 86400000);
   const setting = res.locals.siteSetting;
   const [
     beritaTerbit, pengumumanAktif, dokCount,
     akreditasiAll, beritaTanpaGambar, pengumumanTanpaGambar,
-    kalenderTerbaru, aktivitas,
+    kalenderTerbaru, aktivitas, sematanLama, draftGroups, akreditasiExpired,
   ] = await Promise.all([
     News.countDocuments({ status: 'published' }),
     Pengumuman.countDocuments({ status: 'published' }),
     AcademicDocument.countDocuments(),
-    Accreditation.find({ berlakuSampai: { $exists: true } }, 'namaUnit unit institusi berlakuSampai jenis').lean(),
+    Accreditation.find({ berlakuSampai: { $type: 'date', $lte: dueDate } }, 'namaUnit unit institusi berlakuSampai jenis').lean(),
     News.find({ status: 'published', $or: [{ featuredImage: '' }, { featuredImage: { $exists: false } }] }, 'title').lean(),
     Pengumuman.find({ status: 'published', $or: [{ featuredImage: '' }, { featuredImage: { $exists: false } }] }, 'title').lean(),
     AcademicCalendar.findOne().sort({ tahunAjaran: -1 }).lean(),
@@ -593,11 +600,20 @@ exports.getDashboard = async (req, res) => {
       Accreditation.find({}, 'namaUnit peringkat createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(3).lean().then(rows => rows.map(r => ({ ...r, title: r.namaUnit || r.peringkat || 'Akreditasi', label: 'Akreditasi', href: '/admin/accreditations' }))),
       Staff.find({}, 'nama createdAt updatedAt createdBy updatedBy').populate('createdBy updatedBy', 'name').sort({ updatedAt: -1 }).limit(3).lean().then(rows => rows.map(r => ({ ...r, title: r.nama, label: 'Pimpinan & Staf', href: '/admin/staff' }))),
     ]),
+    Pengumuman.find({ pinned: true, createdAt: { $lt: oldDate } }, 'title').sort({ createdAt: 1 }).lean(),
+    Promise.all([
+      News.find({ status: 'draft' }, 'title updatedAt').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(row => ({ ...row, label: 'Berita', href: `/admin/news/${row._id}/edit` }))),
+      Pengumuman.find({ status: 'draft' }, 'title updatedAt').sort({ updatedAt: -1 }).limit(5).lean().then(rows => rows.map(row => ({ ...row, label: 'Pengumuman', href: `/admin/pengumuman/${row._id}/edit` }))),
+    ]),
+    Accreditation.countDocuments({ berlakuSampai: { $type: 'date', $lt: dayStart } }),
   ]);
 
   const akreditasiKedaluwarsa = akreditasiAll.filter(a => accreditationStatus(a.berlakuSampai).key !== 'berlaku');
 
   const issues = [];
+  if (sematanLama.length) {
+    issues.push({ icon: 'keep', title: `${sematanLama.length} pengumuman tersemat berusia lebih dari 30 hari`, text: sematanLama.slice(0, 3).map(item => item.title).join(', '), href: `/admin/pengumuman/${sematanLama[0]._id}/edit`, label: 'Tinjau' });
+  }
   if (akreditasiKedaluwarsa.length) {
     issues.push({
       icon: 'warning', title: `${akreditasiKedaluwarsa.length} akreditasi kedaluwarsa atau segera berakhir`,
@@ -612,7 +628,7 @@ exports.getDashboard = async (req, res) => {
       text: tanpaGambar.slice(0, 3).join(', '), href: '/admin/news', label: 'Lihat',
     });
   }
-  if (!isValidHttpUrl(setting?.landingVideoUrl)) {
+  if (isSuperadmin(req.user) && !isValidHttpUrl(setting?.landingVideoUrl)) {
     issues.push({ icon: 'error', title: 'URL video profil tidak valid', text: setting.landingVideoUrl, href: '/admin/settings/edit', label: 'Perbaiki' });
   }
   const tahunBerjalan = `${now.getFullYear()}/${now.getFullYear() + 1}`;
@@ -650,12 +666,13 @@ exports.getDashboard = async (req, res) => {
       title: 'Dasbor',
       stats: {
         beritaTerbit, pengumumanAktif, dokCount,
-        akreditasiKedaluwarsa: akreditasiKedaluwarsa.length,
+        akreditasiKedaluwarsa: akreditasiExpired,
       },
       issues,
       recentActivities,
+      drafts: draftGroups.flat().sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).slice(0, 5),
     },
-    'layouts/admin'
+    ADMIN_LAYOUT
   );
 };
 

@@ -40,10 +40,11 @@ const SUPERADMIN = ['superadmin', 'admin']; // 'admin' = role lama sebelum migra
 exports.adminNav = [
   { group: 'Ringkasan', items: [{ label: 'Dasbor', href: '/admin/dashboard', icon: 'dashboard' }] },
   {
-    group: 'Konten',
+    group: 'Publikasi',
     items: [
-      { label: 'Berita', href: '/admin/news', icon: 'newspaper' },
       { label: 'Pengumuman', href: '/admin/pengumuman', icon: 'campaign' },
+      { label: 'Berita', href: '/admin/news', icon: 'newspaper' },
+      { label: 'Buku', href: '/admin/books', icon: 'library_books' },
     ],
   },
   {
@@ -53,13 +54,18 @@ exports.adminNav = [
       { label: 'Kurikulum', href: '/admin/kurikulum', icon: 'menu_book' },
       { label: 'Dokumen Akademik', href: '/admin/academic-documents', icon: 'description' },
       { label: 'RPL', href: '/admin/rpl-documents', icon: 'verified' },
-      { label: 'Akreditasi', href: '/admin/accreditations', icon: 'workspace_premium' },
     ],
   },
   {
-    group: 'Publikasi',
+    group: 'Akreditasi',
     items: [
-      { label: 'Buku', href: '/admin/books', icon: 'library_books' },
+      { label: 'Akreditasi Prodi', href: '/admin/accreditations', icon: 'workspace_premium' },
+      { label: 'Lembaga Akreditasi', href: '/admin/lembaga-akreditasi', icon: 'verified', roles: SUPERADMIN },
+    ],
+  },
+  {
+    group: 'Wisuda',
+    items: [
       { label: 'Buku Wisuda', href: '/admin/graduation-books', icon: 'school' },
       { label: 'Data Lulusan', href: '/admin/lulusan', icon: 'groups' },
     ],
@@ -67,17 +73,24 @@ exports.adminNav = [
   {
     group: 'Organisasi',
     items: [
+      { label: 'Profil Bidang', href: '/admin/profil-akademik', icon: 'info' },
       { label: 'Pimpinan & Staf', href: '/admin/staff', icon: 'person' },
       { label: 'Unit', href: '/admin/unit', icon: 'apartment' },
-      { label: 'Profil Bidang', href: '/admin/profil-akademik', icon: 'info' },
     ],
   },
   {
-    group: 'Pengaturan',
+    group: 'Data Master',
     items: [
-      { label: 'Pengaturan Situs', href: '/admin/settings', icon: 'settings', roles: SUPERADMIN },
       { label: 'Fakultas', href: '/admin/faculties', icon: 'apartment', roles: SUPERADMIN },
       { label: 'Program Studi', href: '/admin/program-studi', icon: 'school', roles: SUPERADMIN },
+      { label: 'Kategori', href: '/admin/kategori', icon: 'filter_list', roles: SUPERADMIN },
+    ],
+  },
+  {
+    group: 'Sistem',
+    items: [
+      { label: 'Akun Pengguna', href: '/admin/users', icon: 'person', roles: SUPERADMIN },
+      { label: 'Pengaturan Situs', href: '/admin/settings', icon: 'settings', roles: SUPERADMIN },
     ],
   },
 ];

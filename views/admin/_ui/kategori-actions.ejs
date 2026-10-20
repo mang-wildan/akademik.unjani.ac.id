@@ -1,0 +1,9 @@
+<div class="flex items-center justify-end gap-1">
+  <span class="max-md:hidden"><%- include('button', { label: 'Ubah', variant: 'ghost', href: `/admin/kategori/${item._id}/edit`, title: `Ubah ${item.nama}`, slideOver: true }) %></span>
+  <details class="relative text-left">
+    <summary class="btn btn-icon btn-ghost list-none" aria-label="Aksi untuk <%= item.nama %>"><%- icon('more_horiz', 'size-5') %></summary>
+    <div class="absolute right-0 z-20 flex flex-col whitespace-normal w-60 rounded-card border border-line-strong bg-surface p-2 shadow-overlay">
+      <%- include('confirm-dialog', { dialogId: `hapus-${item._id}`, dialogTitle: `Hapus kategori ${item.nama}?`, dialogText: 'Konten yang memakai kategori ini akan tampil tanpa kategori. Tindakan ini tidak bisa dibatalkan.', action: `/admin/kategori/${item._id}/delete` }) %>
+    </div>
+  </details>
+</div>

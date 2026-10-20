@@ -1,35 +1,5 @@
-<%# Daftar unit — tampil di halaman Profil publik. FR-M-10. %>
-<%- include('../../components/page-header', { admin: true, heading: 'Unit', lead: 'Kelola unit yang tampil di halaman Profil.', breadcrumb: [{ label: 'Unit' }], actions: [{ label: 'Tambah Unit', href: '/admin/unit/new', icon: 'add' }] }) %>
-
-<div class="card">
-  <% if (!items.length) { %>
-    <div class="p-6">
-      <%- include('../../components/empty-state', { emptyIcon: 'apartment', emptyTitle: 'Belum ada unit', emptyAction: { label: 'Tambah Unit', href: '/admin/unit/new' } }) %>
-    </div>
-  <% } else { %>
-  <table class="data-table data-table--stack">
-    <caption class="sr-only">Daftar unit</caption>
-    <thead><tr><th scope="col">Gambar</th><th scope="col">Nama</th><th scope="col">Tautan</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
-    <tbody>
-      <% items.forEach(item => { %>
-        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
-          <td data-label="Gambar"><img src="<%= item.img %>" alt="" class="h-12 w-16 shrink-0 rounded-control border border-line object-cover"></td>
-          <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.nama %></span></td>
-          <td data-label="Tautan"><% if (item.link) { %><a href="<%= item.link %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center text-sm"><%= item.link %></a><% } else { %><span class="text-muted">—</span><% } %></td>
-          <td data-label="Aksi">
-            <div class="flex items-center gap-1 md:justify-end">
-              <a href="/admin/unit/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah <%= item.nama %>"><%- icon('edit') %>Ubah</a>
-              <button type="button" class="btn-icon text-danger hover:bg-danger-soft" data-dialog-open="hapus-<%= item._id %>" aria-label="Hapus <%= item.nama %>"><%- icon('delete') %></button>
-            </div>
-            <%- include('../../components/confirm-dialog', {
-              dialogId: `hapus-${item._id}`, dialogTitle: `Hapus ${item.nama}?`,
-              dialogText: 'Unit ini akan dihapus permanen dan tidak bisa dikembalikan.',
-              action: `/admin/unit/${item._id}/delete`, confirmLabel: 'Hapus',
-            }) %>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } %>
-</div>
+<%- include('../_ui/academic-list',{basePath:'unit',slideOver:true,columns:[
+  {key:'nama',label:'Nama Unit',sortable:true},
+  {key:'deskripsi',label:'Deskripsi'},
+  {key:'updatedAt',label:'Diperbarui',sortable:true,cell:item=>formatTanggal(item.updatedAt)},
+]}) %>

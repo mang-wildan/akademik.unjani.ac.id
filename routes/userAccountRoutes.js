@@ -9,6 +9,7 @@ router.use(requireAuth, requireSuperadmin);
 router.get('/', userAccountController.list);
 router.get('/new', userAccountController.showCreate);
 router.post('/', userAccountController.create);
+router.post('/bulk', userAccountController.bulk);
 router.get('/:id/edit', userAccountController.showEdit);
 router.post('/:id', userAccountController.update);
 router.get('/:id/reset-password', userAccountController.resetPasswordForm);

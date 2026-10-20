@@ -1,21 +1,24 @@
-<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan', breadcrumb: [{ label: 'Data Lulusan', href: '/admin/lulusan' }, { label: mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan' }] }) %>
-
-<form method="POST" action="/admin/lulusan<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid gap-5 md:grid-cols-2">
-  <%- include('../../components/form-field', {
+<% const heading = mode === 'edit' ? 'Ubah Data Lulusan' : 'Tambah Data Lulusan'; %>
+<% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
+<form method="POST" action="/admin/lulusan<%= mode === 'edit' ? `/${item._id}` : '' %>" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form rounded-card border border-line bg-surface' %>">
+<div class="space-y-5 p-4">
+<%- include('../_ui/error-summary', { errors }) %>
+  <%- include('../_ui/field', {
     name: 'programStudi', label: 'Program Studi', type: 'select', required: true, value: values.programStudi && String(values.programStudi._id || values.programStudi), error: errors.programStudi,
     placeholder: 'Pilih program studi', options: prodiList.map(p => ({ value: p._id, label: p.fakultas ? `${p.nama} (${p.fakultas.nama})` : p.nama })),
   }) %>
-  <%- include('../../components/form-field', {
+  <%- include('../_ui/field', {
     name: 'fakultas', label: 'Fakultas', type: 'select', required: true, value: values.fakultas && String(values.fakultas._id || values.fakultas), error: errors.fakultas,
     placeholder: 'Pilih fakultas', options: fakultasList.map(f => ({ value: f._id, label: f.nama })),
   }) %>
-  <%- include('../../components/form-field', { name: 'periode', label: 'Periode', required: true, value: values.periode, error: errors.periode, placeholder: 'mis. I, II, III' }) %>
-  <%- include('../../components/form-field', { name: 'tahun', label: 'Tahun', type: 'number', required: true, value: values.tahun, error: errors.tahun, min: 1950, max: 2100 }) %>
+  <%- include('../_ui/field', { name: 'periode', label: 'Periode', required: true, value: values.periode, error: errors.periode, placeholder: 'mis. I, II, III' }) %>
+  <%- include('../_ui/field', { name: 'tahun', label: 'Tahun', type: 'number', required: true, value: values.tahun, error: errors.tahun, min: 1950, max: 2100 }) %>
   <div class="md:col-span-2">
-    <%- include('../../components/form-field', { name: 'jumlah', label: 'Jumlah Lulusan', type: 'number', required: true, value: values.jumlah, error: errors.jumlah, min: 0 }) %>
+    <%- include('../_ui/field', { name: 'jumlah', label: 'Jumlah Lulusan', type: 'number', required: true, value: values.jumlah, error: errors.jumlah, min: 0 }) %>
   </div>
-  <div class="flex justify-end gap-2 border-t border-line pt-5 md:col-span-2">
-    <a href="/admin/lulusan" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary">Simpan</button>
+</div>
+  <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
+    <a href="/admin/lulusan" data-slide-close class="btn btn-secondary">Batal</a>
+    <%- include('../_ui/button', { label: 'Simpan', type: 'submit', buttonIcon: 'check' }) %>
   </div>
 </form>

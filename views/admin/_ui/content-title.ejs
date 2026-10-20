@@ -1,0 +1,5 @@
+<span class="flex items-center gap-2">
+  <% if (item.featuredImage) { %><img src="<%= item.featuredImage %>" alt="" class="size-10 shrink-0 rounded-control object-cover"><% } %>
+  <% if (item.pinned) { %><span title="Disematkan"><%- icon('keep', 'size-4 text-primary') %><span class="sr-only">Disematkan:</span></span><% } %>
+  <span class="min-w-0 truncate"><%= item.title %></span>
+</span>

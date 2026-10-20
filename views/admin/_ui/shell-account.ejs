@@ -1,0 +1,50 @@
+<%#
+  Menu akun di header (DESIGN §7.1): profil, password, pilihan tema, keluar.
+  include('../admin/_ui/shell-account', { me, theme })
+  setTheme dan themeLight/Dark/System berasal dari adminShell di <body>.
+%>
+<%
+  const avatarUrl = typeof me.profilePhoto === 'string' && me.profilePhoto.startsWith('/uploads/') ? me.profilePhoto : '';
+  const themes = [
+    { value: 'light', label: 'Terang', icon: 'light_mode', pressed: 'themeLight' },
+    { value: 'dark', label: 'Gelap', icon: 'dark_mode', pressed: 'themeDark' },
+    { value: 'system', label: 'Sistem', icon: 'contrast', pressed: 'themeSystem' },
+  ];
+  const itemClass = 'flex h-11 w-full items-center gap-2.5 rounded-control px-2 text-sm font-medium no-underline lg:h-8';
+%>
+<div class="relative shrink-0" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="escapeIfOpen">
+  <button type="button" x-ref="trigger" x-on:click="toggle" aria-expanded="false" x-bind:aria-expanded="open" aria-haspopup="true" aria-controls="menu-akun"
+          class="flex h-11 items-center gap-2 rounded-control px-1.5 hover:bg-sunken lg:h-9">
+    <% if (avatarUrl) { %>
+      <img src="<%= avatarUrl %>" alt="" width="28" height="28" class="size-7 shrink-0 rounded-full object-cover">
+    <% } else { %>
+      <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon('person', 'size-4') %></span>
+    <% } %>
+    <span class="sr-only text-left leading-tight sm:not-sr-only sm:block">
+      <span class="block max-w-40 truncate text-sm font-medium"><%= me.name || me.email || 'Admin' %></span>
+      <span class="block text-xs text-muted"><%= roleLabel(me) %></span>
+    </span>
+    <%- icon('keyboard_arrow_down', 'size-4 text-muted') %>
+  </button>
+
+  <div id="menu-akun" x-show="open" x-cloak class="absolute right-0 z-30 mt-1 w-64 rounded-card border border-line bg-surface p-1.5 shadow-overlay">
+    <a href="/profile" class="<%= itemClass %> text-ink hover:bg-sunken"><%- icon('person', 'size-5 text-muted') %>Profil saya</a>
+    <a href="/profile/password" class="<%= itemClass %> text-ink hover:bg-sunken"><%- icon('settings', 'size-5 text-muted') %>Ubah password</a>
+
+    <div role="group" aria-labelledby="label-tema" class="mt-1.5 border-t border-line px-1 pt-2 pb-1">
+      <p id="label-tema" class="mb-1.5 px-1 text-xs font-medium text-muted">Tema</p>
+      <div class="grid grid-cols-3 gap-1">
+        <% themes.forEach(t => { %>
+          <button type="button" data-theme="<%= t.value %>" x-on:click="setTheme" aria-pressed="<%= theme === t.value %>" x-bind:aria-pressed="<%= t.pressed %>"
+                  class="flex h-14 flex-col items-center justify-center gap-0.5 rounded-control border border-line text-xs font-medium text-muted hover:bg-sunken aria-pressed:border-primary aria-pressed:bg-primary-soft aria-pressed:text-primary lg:h-12">
+            <%- icon(t.icon, 'size-5') %><%= t.label %>
+          </button>
+        <% }) %>
+      </div>
+    </div>
+
+    <form action="/logout" method="POST" class="mt-1 border-t border-line pt-1">
+      <button type="submit" class="<%= itemClass %> text-danger hover:bg-danger-soft"><%- icon('logout', 'size-5') %>Keluar</button>
+    </form>
+  </div>
+</div>

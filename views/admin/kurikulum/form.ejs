@@ -1,19 +1,22 @@
-<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? 'Ubah Kurikulum' : 'Tambah Kurikulum', breadcrumb: [{ label: 'Kurikulum', href: '/admin/kurikulum' }, { label: mode === 'edit' ? 'Ubah Kurikulum' : 'Tambah Kurikulum' }] }) %>
-
-<form method="POST" action="/admin/kurikulum<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" class="card card-body grid max-w-xl gap-5">
-  <%- include('../../components/form-field', {
+<% const heading = mode === 'edit' ? 'Ubah Kurikulum' : 'Tambah Kurikulum'; %>
+<% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
+<form method="POST" action="/admin/kurikulum<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form rounded-card border border-line bg-surface' %>">
+<div class="space-y-5 p-4">
+<%- include('../_ui/error-summary', { errors }) %>
+  <%- include('../_ui/field', {
     name: 'prodi', label: 'Program Studi', type: 'select', required: true, value: values.prodi && String(values.prodi._id || values.prodi), error: errors.prodi,
     placeholder: 'Pilih program studi', options: prodiList.map(p => ({ value: p._id, label: p.labelFakultas })),
   }) %>
-  <%- include('../../components/form-field', {
+  <%- include('../_ui/field', {
     name: 'tahun', label: 'Tahun Kurikulum', required: true, value: values.tahun, error: errors.tahun, placeholder: '2025/2026', help: 'Ditulis seperti 2021 atau 2025/2026.',
   }) %>
-  <%- include('../../components/file-upload', {
+  <%- include('../_ui/upload-field', {
     name: 'file', label: 'File Kurikulum (PDF)', accept: 'application/pdf', error: errors.file,
     limitText: 'PDF, maks. 10 MB.', current: (mode === 'edit' && item.file) ? { label: 'File saat ini', href: item.file } : null,
   }) %>
-  <div class="flex justify-end gap-2 border-t border-line pt-5">
-    <a href="/admin/kurikulum" class="btn btn-secondary">Batal</a>
-    <button type="submit" class="btn btn-primary">Simpan</button>
+</div>
+  <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
+    <a href="/admin/kurikulum" data-slide-close class="btn btn-secondary">Batal</a>
+    <%- include('../_ui/button', { label: 'Simpan', type: 'submit', buttonIcon: 'check' }) %>
   </div>
 </form>

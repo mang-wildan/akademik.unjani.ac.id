@@ -1,34 +1,10 @@
 /*
- * UI behaviour for the new layouts. Loaded before the Alpine CSP build, which
+ * UI behaviour for public and legacy admin layouts. Loaded after shared.js
+ * and before the Alpine CSP build, which
  * cannot evaluate inline JavaScript: every component is registered here and
  * templates only reference its properties and methods by name.
  */
 document.addEventListener('alpine:init', () => {
-  // Disclosure: mobile menu, admin sidebar, dropdowns, "⋯" menus.
-  window.Alpine.data('disclosure', () => ({
-    open: false,
-    toggle() {
-      this.open = !this.open;
-      // Off-canvas panels (admin sidebar) mark their first control x-ref="focusOnOpen".
-      if (this.open && this.$refs.focusOnOpen) this.$nextTick(() => this.$refs.focusOnOpen.focus());
-    },
-    close() {
-      this.open = false;
-    },
-    closeAndFocus() {
-      if (!this.open) return;
-      this.open = false;
-      if (this.$refs.trigger) this.$refs.trigger.focus();
-    },
-    // Escape for a menu nested inside another disclosure: only swallow the key
-    // when this menu is open, so a closed menu lets it reach the outer panel.
-    escapeIfOpen(event) {
-      if (!this.open) return;
-      event.stopPropagation();
-      this.closeAndFocus();
-    },
-  }));
-
   // Tabs with arrow-key navigation (WAI-ARIA tabs pattern).
   // Slideshow Unit Kerja (Beranda). Gulir & geser = CSS scroll-snap; di sini hanya tombol dan autoplay.
   // Autoplay ±5 dtk: berhenti saat kursor/fokus di dalam, saat tab tersembunyi, dan mati bila prefers-reduced-motion.
@@ -107,78 +83,6 @@ document.addEventListener('alpine:init', () => {
       event.preventDefault();
       this.active = (this.active + step + tabs.length) % tabs.length;
       tabs[this.active].focus();
-    },
-  }));
-
-  // Minimal rich-text editor: contenteditable + toolbar, no dependency.
-  // Server-side sanitizeHtml() is the real guard (NFR-S-06); this is only
-  // for the admin's writing experience.
-  window.Alpine.data('richtext', () => ({
-    // Alpine's CSP build blocks property assignment (e.g. `.innerHTML = …`)
-    // from template expressions like x-init; doing it here, inside a real
-    // method, is unrestricted and runs once when the component mounts.
-    init() {
-      this.$refs.editor.innerHTML = this.$refs.hidden.value;
-    },
-    exec(event) {
-      const btn = event.currentTarget;
-      document.execCommand(btn.dataset.cmd, false, btn.dataset.value || null);
-      this.sync();
-      this.$refs.editor.focus();
-    },
-    // Link UI: the inline URL field steals focus, so remember the selection when it opens.
-    linkOpen: false,
-    linkError: '',
-    saved: null,
-    openLink() {
-      const sel = window.getSelection();
-      this.saved = sel.rangeCount && this.$refs.editor.contains(sel.anchorNode) ? sel.getRangeAt(0).cloneRange() : null;
-      this.linkOpen = true;
-      this.linkError = '';
-      this.$nextTick(() => this.$refs.linkUrl.focus());
-    },
-    closeLink() {
-      this.linkOpen = false;
-      this.linkError = '';
-      this.$refs.linkUrl.value = '';
-      this.$refs.editor.focus();
-    },
-    applyLink() {
-      const url = this.$refs.linkUrl.value.trim();
-      if (!/^(https?:\/\/|mailto:|\/(?!\/))/i.test(url)) {
-        this.linkError = 'Tulis alamat lengkap, diawali https://, mailto: atau /.';
-        return;
-      }
-      this.$refs.editor.focus();
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      if (this.saved) sel.addRange(this.saved);
-      if (sel.isCollapsed) {
-        const a = document.createElement('a');
-        a.href = url;
-        a.textContent = url;
-        document.execCommand('insertHTML', false, a.outerHTML);
-      } else {
-        document.execCommand('createLink', false, url);
-      }
-      this.sync();
-      this.closeLink();
-    },
-    sync() {
-      this.$refs.hidden.value = this.$refs.editor.innerHTML;
-    },
-  }));
-
-  // Flash message that disappears on its own.
-  window.Alpine.data('toast', () => ({
-    visible: true,
-    init() {
-      setTimeout(() => {
-        this.visible = false;
-      }, 6000);
-    },
-    dismiss() {
-      this.visible = false;
     },
   }));
 

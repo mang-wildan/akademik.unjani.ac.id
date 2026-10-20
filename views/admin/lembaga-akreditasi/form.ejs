@@ -1,13 +1,14 @@
-<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? `Ubah ${singularLabel}` : `Tambah ${singularLabel}`, breadcrumb: [{ label: locals.listLabel || 'Daftar', href: `/admin/${basePath}` }, { label: mode === 'edit' ? `Ubah ${singularLabel}` : `Tambah ${singularLabel}` }] }) %>
-
-<form method="POST" action="/admin/<%= basePath %><%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid max-w-xl gap-5">
-  <%- include('../../components/form-field', { name: 'nama', label: 'Nama', required: true, value: values.nama, error: errors.nama }) %>
-  <%- include('../../components/form-field', { name: 'singkatan', label: 'Singkatan', required: true, value: values.singkatan, error: errors.singkatan }) %>
+<% const heading=mode==='edit'?'Ubah Lembaga':'Tambah Lembaga'; %>
+<% if(!locals.partial){ %><%- include('../_ui/page-header',{heading}) %><% } %>
+<form method="POST" action="/admin/<%= basePath %><%= mode === 'edit' ? `/${item._id}` : '' %>" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-5 rounded-card border border-line bg-surface p-4">
+  <%- include('../_ui/error-summary',{errors}) %>
+  <%- include('../_ui/field', { name: 'nama', label: 'Nama', required: true, value: values.nama, error: errors.nama }) %>
+  <%- include('../_ui/field', { name: 'singkatan', label: 'Singkatan', required: true, value: values.singkatan, error: errors.singkatan }) %>
   <% if (hasUrutan) { %>
-    <%- include('../../components/form-field', { name: 'urutan', label: 'Urutan Tampil', type: 'number', value: values.urutan, error: errors.urutan, min: 0, max: 999 }) %>
+    <%- include('../_ui/field', { name: 'urutan', label: 'Urutan Tampil', type: 'number', value: values.urutan, error: errors.urutan, min: 0, max: 999 }) %>
   <% } %>
-  <div class="flex justify-end gap-2 border-t border-line pt-5">
-    <a href="/admin/<%= basePath %>" class="btn btn-secondary">Batal</a>
+  <div class="form-actions">
+    <a href="/admin/<%= basePath %>" data-slide-close class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan</button>
   </div>
 </form>

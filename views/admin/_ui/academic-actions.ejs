@@ -1,0 +1,9 @@
+<a href="/admin/<%= basePath %>/<%= item._id %>/edit" class="btn btn-ghost max-md:hidden"<% if (slideOver) { %> data-slide-over<% } %>>Ubah</a>
+<details class="relative" x-data="disclosure" x-on:keydown.escape.stop="close">
+  <summary class="btn btn-icon" aria-label="Aksi untuk <%= item.title || item.name || item.judul || item.nama || item.tahunAjaran || 'data' %>"><%- icon('more_horiz', 'size-5') %></summary>
+  <div class="absolute right-0 z-20 flex flex-col whitespace-normal min-w-48 rounded-card border border-line bg-surface p-2 shadow-overlay">
+    <a href="/admin/<%= basePath %>/<%= item._id %>/edit" class="btn btn-ghost w-full"<% if (slideOver) { %> data-slide-over<% } %>>Ubah</a>
+    <% if (basePath === 'academic-documents') { %><form method="POST" action="/admin/academic-documents/<%= item._id %>/pin"><button type="submit" class="btn btn-ghost w-full"><%= item.pinned ? 'Lepas sematan' : 'Sematkan' %></button></form><% } %>
+    <%- include('confirm-dialog', { dialogId: `hapus-${item._id}`, dialogTitle: 'Hapus data?', dialogText: 'Data dan berkasnya akan dihapus permanen.', action: `/admin/${basePath}/${item._id}/delete`, confirmLabel: 'Hapus' }) %>
+  </div>
+</details>

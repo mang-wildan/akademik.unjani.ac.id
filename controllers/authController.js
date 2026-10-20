@@ -203,7 +203,7 @@ exports.logout = (req, res) => {
 const PROFILE_TITLES = { index: 'Profil Saya', edit: 'Ubah Profil', password: 'Ubah Password' };
 
 const renderProfilePage = (res, view, locals = {}, statusCode = 200) =>
-  res.status(statusCode).renderPage(`admin/profile/${view}`, { title: PROFILE_TITLES[view], errors: {}, ...locals }, 'layouts/admin');
+  res.status(statusCode).renderPage(`admin/profile/${view}`, { title: PROFILE_TITLES[view], errors: {}, ...locals }, 'layouts/admin-v2');
 
 // Also used by routes/authRoutes.js when the photo upload itself fails.
 // values: what was submitted (defaults to the saved name/email); photoDropped:
@@ -239,7 +239,7 @@ exports.updateProfile = async (req, res) => {
   }
   if (Object.keys(errors).length) {
     discardUpload(req);
-    return renderEditProfile(req, res, { values, errors, photoDropped: Boolean(req.file) }, 400);
+    return renderEditProfile(req, res, { values, errors, photoDropped: Boolean(req.file) }, 422);
   }
 
   const currentUser = await User.findById(req.user._id);
@@ -260,7 +260,7 @@ exports.updateProfile = async (req, res) => {
     if (target) Object.assign(target, { name: currentUser.name, email: currentUser.email, profilePhoto: currentUser.profilePhoto });
   }
 
-  return res.redirect('/profile?success=Profil berhasil diperbarui');
+  return res.redirect(303, '/profile?success=Profil berhasil diperbarui');
 };
 
 exports.getChangePassword = (req, res) => renderProfilePage(res, 'password');
@@ -271,7 +271,7 @@ exports.updatePassword = async (req, res) => {
   const body = req.body || {};
   const input = Object.fromEntries(['currentPassword', 'newPassword', 'confirmPassword'].map(k => [k, String(body[k] || '')]));
   const result = validate(schemas.passwordChange, input);
-  if (!result.ok) return renderProfilePage(res, 'password', { errors: result.errors }, 400);
+  if (!result.ok) return renderProfilePage(res, 'password', { errors: result.errors }, 422);
 
   const currentUser = await User.findById(req.user._id);
   if (!currentUser) {
@@ -280,11 +280,11 @@ exports.updatePassword = async (req, res) => {
   }
 
   if (!(await currentUser.comparePassword(result.data.currentPassword))) {
-    return renderProfilePage(res, 'password', { errors: { currentPassword: 'Password saat ini tidak sesuai.' } }, 400);
+    return renderProfilePage(res, 'password', { errors: { currentPassword: 'Password saat ini tidak sesuai.' } }, 422);
   }
 
   currentUser.password = result.data.newPassword;
   await currentUser.save();
 
-  return res.redirect('/profile?success=Password berhasil diperbarui');
+  return res.redirect(303, '/profile?success=Password berhasil diperbarui');
 };

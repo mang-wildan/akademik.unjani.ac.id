@@ -1,0 +1,75 @@
+<%#
+  Tabel data admin (DESIGN §7.5, SPEC FR-ADM-22..25, 30). Di bawah 768px tampil sebagai kartu.
+  Params:
+    caption (wajib, untuk pembaca layar), items, state (dari parseListQuery),
+    columns = [{ key, label, sortable?, firstDir='asc', primary?, cell?: item => HTML, mobile='meta' (meta|hidden) }]
+      - kolom primary (default kolom pertama) mengisi sisa lebar dan menjadi judul kartu di HP
+      - cell() mengembalikan HTML mentah: escape teks sendiri (mis. include('badge', ...)); tanpa cell, item[key] di-escape
+    rowHref?: item => URL form ubah (judul jadi tautan; di HP seluruh kartu bisa diketuk)
+    slideOver?: true bila form dibuka di panel samping (_ui/slide-over) alih-alih pindah halaman
+    actions?: item => HTML kolom aksi (HTML mentah; beri max-md:hidden pada aksi yang tidak perlu di HP)
+    itemLabel?: item => teks untuk label kotak centang (default nilai kolom primary)
+    selectable=true, bulkForm='bulk-form' (id form bulk; kotak centang terikat lewat atribut form=), id='tabel-data'
+%>
+<%
+  const columns = locals.columns;
+  const primary = columns.find(col => col.primary) || columns[0];
+  const selectable = locals.selectable !== false;
+  const bulkForm = locals.bulkForm || 'bulk-form';
+  const state = locals.state || {};
+  const labelOf = locals.itemLabel || (item => String(item[primary.key] ?? ''));
+  const cellClass = col => (col === primary ? 'dt-primary' : col.mobile === 'hidden' ? 'dt-hidden' : 'dt-meta');
+%>
+<div id="<%= locals.id || 'tabel-data' %>" x-data="dataTable" x-bind:data-selecting="selecting" x-on:bulk-clear.window="bulkClear" x-on:bulk-select-all.window="bulkSelectAll">
+  <% if (selectable) { %>
+    <div x-cloak class="flex items-center justify-end border-b border-line px-3 py-1.5 md:hidden">
+      <button type="button" x-ref="selectToggle" x-on:click="toggleSelecting" x-bind:aria-pressed="selecting" x-text="selectToggleLabel" class="btn btn-ghost">Pilih</button>
+    </div>
+  <% } %>
+  <table class="data-table">
+    <caption class="sr-only"><%= locals.caption %></caption>
+    <thead>
+      <tr>
+        <% if (selectable) { %>
+          <th scope="col" class="dt-check">
+            <input type="checkbox" x-ref="all" x-on:change="toggleAll" x-cloak aria-label="Pilih semua di halaman ini" class="dt-box">
+          </th>
+        <% } %>
+        <% columns.forEach(col => {
+             const active = col.sortable && state.sort === col.key;
+             const nextDir = active ? (state.dir === 'asc' ? 'desc' : 'asc') : (col.firstDir || 'asc'); %>
+          <th scope="col" class="<%= cellClass(col) %>"<% if (active) { %> aria-sort="<%= state.dir === 'asc' ? 'ascending' : 'descending' %>"<% } %>>
+            <% if (col.sortable) { %>
+              <a href="<%= listHref(state, { sort: col.key, dir: nextDir }) %>" class="dt-sort">
+                <%= col.label %><%- icon(active ? (state.dir === 'asc' ? 'arrow_upward' : 'arrow_downward') : 'unfold_more', 'size-4') %>
+              </a>
+            <% } else { %><%= col.label %><% } %>
+          </th>
+        <% }) %>
+        <% if (locals.actions) { %><th scope="col" class="dt-actions"><span class="sr-only">Aksi</span></th><% } %>
+      </tr>
+    </thead>
+    <tbody x-on:click="rowClick">
+      <% locals.items.forEach(item => { %>
+        <tr>
+          <% if (selectable) { %>
+            <td class="dt-check">
+              <label class="dt-box-hit"><input type="checkbox" name="ids[]" value="<%= String(item._id) %>" form="<%= bulkForm %>" data-row-check aria-label="Pilih <%= labelOf(item) %>" class="dt-box"></label>
+            </td>
+          <% } %>
+          <% columns.forEach(col => { %>
+            <td class="<%= cellClass(col) %>">
+              <% const content = col.cell ? col.cell(item) : null; %>
+              <% if (col === primary) { %>
+                <% if (locals.rowHref) { %><a href="<%= locals.rowHref(item) %>" class="dt-link" title="<%= labelOf(item) %>"<% if (locals.slideOver) { %> data-slide-over<% } %>><% } else { %><span class="dt-text" title="<%= labelOf(item) %>"><% } %>
+                <% if (col.cell) { %><%- content %><% } else { %><%= item[col.key] ?? '' %><% } %>
+                <% if (locals.rowHref) { %></a><% } else { %></span><% } %>
+              <% } else if (col.cell) { %><%- content %><% } else { %><%= item[col.key] ?? '' %><% } %>
+            </td>
+          <% }) %>
+          <% if (locals.actions) { %><td class="dt-actions"><%- locals.actions(item) %></td><% } %>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

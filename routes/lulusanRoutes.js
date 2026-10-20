@@ -28,6 +28,8 @@ const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', lulusanController.bulk);
+
 router.get('/', lulusanController.list);
 router.get('/template.csv', lulusanController.downloadTemplate);
 router.get('/new', lulusanController.showCreate);

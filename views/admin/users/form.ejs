@@ -1,28 +1,25 @@
-<%- include('../../components/page-header', { admin: true, heading: mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun', breadcrumb: [{ label: 'Akun Admin', href: '/admin/users' }, { label: mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun' }] }) %>
-
-<% if (errors._form) { %>
-  <div class="mb-6"><%- include('../../components/alert', { alertTone: 'danger', alertTitle: 'Tidak bisa disimpan', alertText: errors._form }) %></div>
-<% } %>
-
-<form method="POST" action="/admin/users<%= mode === 'edit' ? `/${item._id}` : '' %>" class="card card-body grid max-w-xl gap-5">
-  <%- include('../../components/form-field', { name: 'name', label: 'Nama', required: true, value: values.name, error: errors.name }) %>
-  <%- include('../../components/form-field', { name: 'email', label: 'Email', type: 'email', required: true, value: values.email, error: errors.email }) %>
-  <%- include('../../components/form-field', {
-    name: 'role', label: 'Peran', type: 'select', required: true, value: values.role, error: errors.role,
+<% const heading = mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun'; %>
+<% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
+<form method="POST" action="/admin/users<%= mode === 'edit' ? `/${item._id}` : '' %>" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-5 rounded-card border border-line bg-surface p-4">
+  <%- include('../_ui/error-summary', { errors }) %>
+  <%- include('../_ui/field', { name: 'name', label: 'Nama', required: true, value: values.name, error: errors.name }) %>
+  <%- include('../_ui/field', { name: 'email', label: 'Email', type: 'email', required: true, value: values.email, error: errors.email }) %>
+  <%- include('../_ui/field', {
+    name: 'role', label: 'Peran', type: 'select', required: true, value: values.role === 'admin' ? 'superadmin' : values.role, error: errors.role,
     options: [{ value: 'superadmin', label: 'Super Admin' }, { value: 'editor', label: 'Editor' }],
     help: locals.isSelf ? 'Mengubah peran diri sendiri bisa dibatasi jika Anda Super Admin aktif terakhir.' : '',
   }) %>
   <% if (mode === 'create') { %>
-    <%- include('../../components/form-field', { name: 'password', label: 'Password', type: 'password', required: true, error: errors.password, help: 'Minimal 8 karakter.', autocomplete: 'new-password' }) %>
+    <%- include('../_ui/field', { name: 'password', label: 'Password', type: 'password', required: true, error: errors.password, help: 'Minimal 8 karakter.', autocomplete: 'new-password' }) %>
   <% } else { %>
     <div class="flex min-h-11 items-center gap-2">
-      <input type="checkbox" id="f-isActive" name="isActive" value="on" <%= values.isActive === undefined || values.isActive ? 'checked' : '' %> class="size-6 shrink-0 rounded border-control text-primary focus:ring-primary">
+      <input type="checkbox" id="f-isActive" name="isActive" value="on" <%= values.isActive === true || values.isActive === 'on' ? 'checked' : '' %> class="size-6 shrink-0 rounded border-control text-primary focus:ring-primary">
       <label for="f-isActive" class="text-sm font-medium">Aktif <span class="text-muted">(nonaktifkan untuk mencegah akun ini masuk)</span></label>
     </div>
     <p class="field-help -mt-3">Untuk mengubah password, gunakan "Reset Password" dari daftar akun.</p>
   <% } %>
-  <div class="flex justify-end gap-2 border-t border-line pt-5">
-    <a href="/admin/users" class="btn btn-secondary">Batal</a>
+  <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
+    <a href="/admin/users" data-slide-close class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan</button>
   </div>
 </form>

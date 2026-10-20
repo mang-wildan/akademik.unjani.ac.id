@@ -4,8 +4,8 @@ const Lulusan = require('../models/Lulusan');
 const ProgramStudi = require('../models/ProgramStudi');
 const Faculty = require('../models/Faculty');
 const { validate, schemas } = require('../validators');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 const { parseLulusanCsv } = require('../utils/lulusanImport');
-const { escapeRegex } = require('../utils/regex');
 
 const refData = async () => {
   const [prodiList, fakultasList] = await Promise.all([
@@ -15,51 +15,30 @@ const refData = async () => {
   return { prodiList, fakultasList };
 };
 
-exports.list = async (req, res) => {
-  const tahun = parseInt(req.query.tahun, 10) || null;
-  const q = String(req.query.q || '').trim();
-  const filter = tahun ? { tahun } : {};
-  if (q) {
-    const rx = new RegExp(escapeRegex(q), 'i');
-    const [prodi, fakultas] = await Promise.all([
-      ProgramStudi.find({ $or: [{ nama: rx }, { singkatan: rx }] }, '_id').lean(),
-      Faculty.find({ $or: [{ nama: rx }, { singkatan: rx }] }, '_id').lean(),
-    ]);
-    filter.$or = [{ programStudi: { $in: prodi.map(p => p._id) } }, { fakultas: { $in: fakultas.map(f => f._id) } }];
-  }
-  const limit = 20;
-  const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
-  const [tahunList, total] = await Promise.all([Lulusan.distinct('tahun'), Lulusan.countDocuments(filter)]);
-  const totalPages = Math.max(Math.ceil(total / limit), 1);
-  const currentPage = Math.min(page, totalPages);
-  const items = await Lulusan.find(filter)
-    .populate('programStudi', 'nama singkatan')
-    .populate('fakultas', 'nama singkatan')
-    .sort({ tahun: -1, periode: 1, createdAt: -1 })
-    .skip((currentPage - 1) * limit)
-    .limit(limit)
-    .lean();
-  const from = total === 0 ? 0 : (currentPage - 1) * limit + 1;
-  const to = Math.min(currentPage * limit, total);
-  res.renderPage('admin/lulusan/list', {
-    title: 'Data Lulusan', items, importErrors: null, importSummary: null,
-    tahunList: tahunList.filter(Boolean).sort((a, b) => b - a),
-    filters: { tahun: tahun ? String(tahun) : '', q },
-    pagination: { page: currentPage, totalPages, total, from, to },
-  }, 'layouts/admin');
+const resolveFilters = async (filter,state) => {
+  if(!state.q) return;
+  const rx=filter.$or[0].periode;
+  const [prodi,fakultas] = await Promise.all([
+    ProgramStudi.find({$or:[{nama:rx},{singkatan:rx}]}).lean(),
+    Faculty.find({$or:[{nama:rx},{singkatan:rx}]}).lean(),
+  ]);
+  filter.$or.push({programStudi:{$in:prodi.map(p=>p._id)}},{fakultas:{$in:fakultas.map(f=>f._id)}});
 };
+const admin = require('../utils/academicAdmin')({ Model: Lulusan, basePath: 'lulusan', title: 'Data Lulusan', query: async()=>({sortable:['tahun','periode','jumlah'],defaultSort:{tahun:-1,periode:1,createdAt:-1},searchFields:['periode'],filters:{tahun:await Lulusan.distinct('tahun'),programStudi:(await ProgramStudi.find().lean()).map(p=>String(p._id))}}), populate:['programStudi','fakultas'],refs:async()=>({...await refData(),tahunList:(await Lulusan.distinct('tahun')).filter(Boolean).sort((a,b)=>b-a)}),resolve:resolveFilters });
+exports.list = admin.list;
+exports.bulk = admin.bulk;
 
 exports.showCreate = async (req, res) => {
-  res.renderPage('admin/lulusan/form', { title: 'Tambah Data Lulusan', mode: 'create', values: { tahun: new Date().getFullYear() }, errors: {}, ...(await refData()) }, 'layouts/admin');
+  res.renderPage('admin/lulusan/form', { title: 'Tambah Data Lulusan', mode: 'create', values: { tahun: new Date().getFullYear() }, errors: {}, ...(await refData()) }, ADMIN_LAYOUT);
 };
 
 exports.create = async (req, res) => {
   const { data, errors, ok } = validate(schemas.lulusan, req.body);
   if (!ok) {
-    return res.renderPage('admin/lulusan/form', { title: 'Tambah Data Lulusan', mode: 'create', values: req.body, errors, ...(await refData()) }, 'layouts/admin');
+    return res.status(422).renderPage('admin/lulusan/form', { title: 'Tambah Data Lulusan', mode: 'create', values: req.body, errors, ...(await refData()) }, ADMIN_LAYOUT);
   }
   await Lulusan.create({ ...data, createdBy: req.user._id, updatedBy: req.user._id });
-  res.redirect(`/admin/lulusan?success=${encodeURIComponent('Data lulusan berhasil ditambahkan.')}`);
+  admin.success(req, res, 'Data lulusan berhasil ditambahkan.');
 };
 
 const findOrThrow = async id => {
@@ -75,24 +54,21 @@ const findOrThrow = async id => {
 
 exports.showEdit = async (req, res) => {
   const item = await findOrThrow(req.params.id);
-  res.renderPage('admin/lulusan/form', { title: 'Ubah Data Lulusan', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, ...(await refData()) }, 'layouts/admin');
+  res.renderPage('admin/lulusan/form', { title: 'Ubah Data Lulusan', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, ...(await refData()) }, ADMIN_LAYOUT);
 };
 
 exports.update = async (req, res) => {
   const item = await findOrThrow(req.params.id);
   const { data, errors, ok } = validate(schemas.lulusan, req.body);
   if (!ok) {
-    return res.renderPage('admin/lulusan/form', { title: 'Ubah Data Lulusan', mode: 'edit', item: item.toObject(), values: req.body, errors, ...(await refData()) }, 'layouts/admin');
+    return res.status(422).renderPage('admin/lulusan/form', { title: 'Ubah Data Lulusan', mode: 'edit', item: item.toObject(), values: req.body, errors, ...(await refData()) }, ADMIN_LAYOUT);
   }
   Object.assign(item, data, { updatedBy: req.user._id });
   await item.save();
-  res.redirect(`/admin/lulusan?success=${encodeURIComponent('Data lulusan berhasil diperbarui.')}`);
+  admin.success(req, res, 'Data lulusan berhasil diperbarui.');
 };
 
-exports.destroy = async (req, res) => {
-  await Lulusan.findByIdAndDelete(req.params.id);
-  res.redirect(`/admin/lulusan?success=${encodeURIComponent('Data lulusan berhasil dihapus.')}`);
-};
+exports.destroy = admin.destroy;
 
 exports.downloadTemplate = (_req, res) => {
   res.set('Content-Type', 'text/csv; charset=utf-8');
@@ -105,9 +81,7 @@ exports.downloadTemplate = (_req, res) => {
 // persis baris mana yang perlu diperbaiki (lih. docs/POLA-ADMIN.md).
 exports.importCsv = async (req, res) => {
   const file = req.files?.csv?.[0];
-  const currentItems = async () => Lulusan.find().populate('programStudi', 'nama singkatan').populate('fakultas', 'nama singkatan').sort({ tahun: -1, periode: 1, createdAt: -1 }).lean();
-  const renderWithError = async importErrors =>
-    res.renderPage('admin/lulusan/list', { title: 'Data Lulusan', items: await currentItems(), importErrors, importSummary: null }, 'layouts/admin');
+  const renderWithError = async importErrors => { res.status(422); return admin.list(req,res,{importErrors}); };
 
   if (!file) return renderWithError(['File CSV wajib diisi.']);
   const text = await fs.readFile(file.path, 'utf8');
@@ -138,5 +112,5 @@ exports.importCsv = async (req, res) => {
   if (errors.length) return renderWithError(errors);
 
   await Lulusan.insertMany(toInsert);
-  res.redirect(`/admin/lulusan?success=${encodeURIComponent(`${toInsert.length} data lulusan berhasil diimpor.`)}`);
+  admin.success(req, res, `${toInsert.length} data lulusan berhasil diimpor.`);
 };

@@ -1,0 +1,13 @@
+<div x-data="moduleSearch" x-on:keydown.window="shortcut" x-on:click.outside="close" x-on:focusout="focusout" x-on:keydown.escape.prevent.stop="close" x-bind:data-open="open" x-cloak class="group lg:relative">
+  <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="pencarian-modul" aria-label="Cari modul" class="btn btn-icon btn-ghost lg:hidden"><%- icon('search', 'size-5') %></button>
+  <div id="pencarian-modul" role="search" aria-label="Pencarian modul" class="absolute inset-x-4 top-full z-40 mt-2 hidden rounded-card border border-line-strong bg-surface p-3 shadow-overlay group-data-open:block lg:static lg:mt-0 lg:block lg:w-60 lg:border-0 lg:p-0 lg:shadow-none">
+    <label for="cari-modul" class="sr-only">Cari modul (pintasan /)</label>
+    <input id="cari-modul" x-ref="input" type="search" placeholder="Cari modul… (/)" autocomplete="off" aria-controls="hasil-pencarian-modul" x-on:focus="search" x-on:input="search" x-on:keydown.enter.prevent="go" class="field-control">
+    <nav id="hasil-pencarian-modul" x-show="open" aria-label="Hasil pencarian modul" class="mt-2 max-h-[60dvh] overflow-y-auto rounded-card bg-surface lg:absolute lg:right-0 lg:top-full lg:w-80 lg:border lg:border-line-strong lg:p-2 lg:shadow-overlay">
+      <% groups.forEach(group => { group.items.forEach(item => { %>
+        <a href="<%= item.href %>" data-module-option data-label="<%= item.label %>" class="flex min-h-11 items-center gap-2 rounded-control px-3 text-sm text-ink no-underline hover:bg-sunken lg:min-h-8"><%- icon(item.icon, 'size-4') %><span><%= item.label %><span class="ml-2 text-xs text-muted"><%= group.group %></span></span></a>
+      <% }); }); %>
+      <p x-show="noResults" role="status" class="p-3 text-sm text-muted">Tidak ada modul yang cocok.</p>
+    </nav>
+  </div>
+</div>

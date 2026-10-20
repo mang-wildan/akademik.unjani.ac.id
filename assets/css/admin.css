@@ -1,0 +1,318 @@
+/*
+ * Design system panel admin — sumber Tailwind CSS v4 (docs/DESIGN.md).
+ * Terpisah dari situs publik (assets/css/app.css); dimuat hanya oleh layouts/admin-v2.
+ *   npm run build:css:admin   → public/css/admin.css (di-commit)
+ *
+ * Tema: <html data-theme="light|dark|system"> dirender server dari cookie admin_theme.
+ * Mode gelap hanya menimpa variabel token (blok `@variant dark` di bawah), jadi
+ * template tidak butuh kelas dark:. Kontras semua pasangan token diuji oleh
+ * test/adminTokens.test.js — jalankan `npm test` setiap kali mengubah warna.
+ */
+@import "tailwindcss" source(none);
+@source "../../views/admin";
+@source "../../views/layouts/admin-v2.ejs";
+@source "../../public/js/admin.js";
+@source "../../utils/navigation.js";
+@source "../../views/dev/admin-v2.ejs";
+@source "../../views/dev/admin-v2-form.ejs";
+
+/* Sidebar diciutkan (<html data-sidebar="collapsed">); pakai bersama lg:, mis. lg:collapsed:w-16. */
+@custom-variant collapsed (&:where([data-sidebar="collapsed"] *));
+
+/* Gelap bila dipilih eksplisit, atau bila "ikuti sistem" dan OS sedang gelap. */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
+      @slot;
+    }
+  }
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2") format("woff2");
+}
+
+/* `static`: semua variabel selalu dikeluarkan, karena blok gelap dan admin.js
+   merujuknya lewat var() meski belum ada utilitas yang memakainya. */
+@theme static {
+  /* Hanya warna ini yang ada: tidak ada palet Tailwind liar di template. */
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Netral (terang). Nilai gelap di blok @variant dark. */
+  --color-canvas: #fafafa;
+  --color-surface: #ffffff;
+  --color-sunken: #f4f4f5;
+  --color-line: #e4e4e7;
+  --color-line-strong: #d4d4d8;
+  --color-control: #71717a;        /* batas input & checkbox, ≥3:1 */
+  --color-ink: #18181b;
+  --color-muted: #52525b;
+  --color-placeholder: #71717a;
+
+  /* Aksen hijau UNJANI + status */
+  --color-primary: #15803d;
+  --color-primary-hover: #166534;
+  --color-on-primary: #ffffff;
+  --color-primary-soft: #f0fdf4;
+  --color-success: #166534;
+  --color-success-soft: #dcfce7;
+  --color-warning: #92400e;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #991b1b;
+  --color-danger-soft: #fee2e2;
+  --color-danger-solid: #b91c1c;   /* tombol hapus, teks putih */
+  --color-info: #1e3a8a;
+  --color-info-soft: #eff6ff;
+
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Skala teks admin (desktop). HP menaikkan sm/base di bawah. */
+  --text-*: initial;
+  --text-xs: 0.75rem;              /* 12/16 */
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem;            /* 13/20 */
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;           /* 14/20 */
+  --text-base--line-height: 1.25rem;
+  --text-md: 1rem;                 /* 16/24 */
+  --text-md--line-height: 1.5rem;
+  --text-lg: 1.25rem;              /* 20/28 */
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.5rem;               /* 24/32 */
+  --text-xl--line-height: 2rem;
+
+  --radius-*: initial;
+  --radius-control: 0.375rem;      /* 6px: tombol, input, badge */
+  --radius-card: 0.5rem;           /* 8px: kartu, panel, dialog */
+
+  /* Bayangan hanya untuk lapisan melayang; kartu memakai garis. */
+  --shadow-*: initial;
+  --shadow-overlay: 0 8px 24px -4px rgb(24 24 27 / 0.12), 0 2px 6px -2px rgb(24 24 27 / 0.08);
+
+  --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --default-transition-duration: 120ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+
+  --container-form: 55rem;         /* 880px: form halaman penuh */
+}
+
+:root {
+  color-scheme: light;
+  --duration-fast: 120ms;          /* hover, menu */
+  --duration-panel: 200ms;         /* slide-over, laci, dialog */
+
+  @variant dark {
+    color-scheme: dark;
+
+    --color-canvas: #09090b;
+    --color-surface: #18181b;
+    --color-sunken: #27272a;
+    --color-line: #27272a;
+    --color-line-strong: #3f3f46;
+    --color-control: #71717a;
+    --color-ink: #fafafa;
+    --color-muted: #a1a1aa;
+    --color-placeholder: #8b8b94;
+
+    --color-primary: #4ade80;
+    --color-primary-hover: #86efac;
+    --color-on-primary: #052e16;
+    --color-primary-soft: rgb(74 222 128 / 0.12);
+    --color-success: #4ade80;
+    --color-success-soft: rgb(74 222 128 / 0.12);
+    --color-warning: #fbbf24;
+    --color-warning-soft: rgb(251 191 36 / 0.12);
+    --color-danger: #f87171;
+    --color-danger-soft: rgb(248 113 113 / 0.12);
+    --color-danger-solid: #dc2626;
+    --color-info: #93c5fd;
+    --color-info-soft: rgb(147 197 253 / 0.12);
+
+    --shadow-overlay: 0 8px 24px -4px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  }
+
+  /* HP: teks sedikit lebih besar agar nyaman dibaca (DESIGN §3). */
+  @media (width < 48rem) {
+    --text-sm: 0.9375rem;          /* 15/22 */
+    --text-sm--line-height: 1.375rem;
+    --text-base: 0.9375rem;
+    --text-base--line-height: 1.375rem;
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-size: 100%;
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  ::placeholder {
+    color: var(--color-placeholder);
+    opacity: 1;
+  }
+
+  [x-cloak] {
+    display: none !important;
+  }
+
+  /* Without JS each delete confirmation stays inside its own table row. */
+  [x-data="confirmDialog"] dialog[open]:not(:modal) {
+    position: static;
+    width: auto;
+    margin: 0;
+  }
+
+  /* iOS memperbesar halaman bila field < 16px. */
+  @media (width < 48rem) {
+    input,
+    select,
+    textarea {
+      font-size: max(1rem, 1em);
+    }
+  }
+
+  /* Gerak dikurangi: hanya perubahan opacity yang tetap beranimasi. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      transition-property: opacity !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control px-3 text-sm font-medium no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-8 lg:min-w-8;
+  }
+  .btn-primary { @apply bg-primary text-on-primary hover:bg-primary-hover; }
+  .btn-secondary { @apply border border-line-strong bg-surface text-ink hover:bg-sunken; }
+  .btn-ghost, .btn-icon { @apply text-ink hover:bg-sunken; }
+  .btn-danger { @apply bg-danger-solid text-white hover:opacity-90; }
+  .btn-icon { @apply size-11 p-0 lg:size-8; }
+  .field-control {
+    @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3 py-2 text-sm text-ink disabled:bg-sunken disabled:text-muted max-md:text-[1rem] lg:min-h-8 lg:py-1;
+  }
+  .field-control.border-danger { @apply border-danger; }
+  .spinner {
+    @apply size-4 animate-spin rounded-full border-2 border-current border-r-transparent;
+  }
+
+  /* Tabel data (views/admin/_ui/data-table.ejs, DESIGN §7.5). Pembungkus kartu
+     memakai overflow-clip, bukan overflow-hidden, agar header tetap sticky. */
+  .data-table { @apply w-full border-collapse text-left text-sm; }
+  .data-table th {
+    @apply sticky top-14 z-10 h-10 bg-sunken px-3 text-xs font-medium whitespace-nowrap text-muted lg:top-12;
+  }
+  .data-table td { @apply h-10 px-3 whitespace-nowrap; }
+  .data-table tbody tr { @apply border-t border-line hover:bg-sunken has-checked:bg-primary-soft; }
+  .data-table .dt-primary { @apply w-full max-w-0; }
+  .data-table .dt-link,
+  .data-table .dt-text { @apply block truncate font-medium text-ink no-underline; }
+  .data-table .dt-link { @apply hover:text-primary hover:underline; }
+  .data-table .dt-check { @apply w-10 pr-0; }
+  .data-table .dt-actions { @apply text-right; }
+  .data-table .dt-sort { @apply -mx-1 inline-flex items-center gap-1 rounded-control px-1 text-muted no-underline hover:text-ink; }
+  .dt-box-hit { @apply inline-flex size-6 cursor-pointer items-center justify-center; }
+  .dt-box { @apply size-4 cursor-pointer accent-primary; }
+
+  /* HP: setiap baris menjadi kartu — judul, lalu sel meta sebaris dipisah titik. */
+  @media (width < 48rem) {
+    .data-table thead { @apply sr-only; }
+    /* display:table akan melebar mengikuti judul terpanjang (nowrap) dan terpotong kartu. */
+    .data-table,
+    .data-table tbody,
+    .data-table td { @apply block; }
+    .data-table tbody tr { @apply relative flex flex-wrap items-center gap-x-2 gap-y-1 py-3 pr-14 pl-3; }
+    .data-table td { @apply h-auto p-0 whitespace-normal; }
+    .data-table .dt-primary { @apply w-full max-w-none basis-full; }
+    .data-table .dt-link::after { @apply absolute inset-0 content-['']; }
+    .data-table .dt-meta { @apply text-xs text-muted; }
+    .data-table .dt-meta + .dt-meta::before { @apply mr-2 content-['·']; }
+    .data-table .dt-hidden,
+    .data-table .dt-check { @apply hidden; }
+    .data-table .dt-actions { @apply absolute top-1 right-1 z-10; }
+    /* Mode pilih: kotak centang tampil di kiri; ketukan kartu tidak lagi membuka form. */
+    [data-selecting] .data-table tbody tr { @apply pl-12; }
+    [data-selecting] .data-table .dt-check { @apply absolute top-1 left-0.5 z-10 block; }
+    [data-selecting] .data-table .dt-link::after { @apply hidden; }
+    .dt-box-hit { @apply size-11; }
+    .dt-box { @apply size-5; }
+  }
+}
+
+/* Di luar layer agar status bulk mengalahkan utilitas flex pada filter. */
+@media (width >= 64rem) {
+  [data-bulk-active] [data-filter-bar] { display: none; }
+}
+@media (width < 64rem) {
+  /* Ruang gulir agar akhir daftar tetap bisa dijangkau di atas bilah bulk HP. */
+  main:has([data-bulk-active]) { padding-bottom: calc(18rem + env(safe-area-inset-bottom)); }
+}
+
+@layer components {
+  /* Panel samping (views/admin/_ui/slide-over.ejs, DESIGN §7.7): dialog modal menempel di kanan,
+     layar penuh di HP. Masuk 200ms dari kanan; prefers-reduced-motion mematikannya (base). */
+  .slide-over {
+    @apply m-0 ml-auto h-dvh max-h-none w-full max-w-none border-l border-line-strong bg-surface p-0 text-ink shadow-overlay backdrop:bg-canvas/60 md:w-[560px];
+    transition: translate var(--duration-panel) var(--ease-enter);
+  }
+  @starting-style {
+    .slide-over[open] { translate: 100% 0; }
+  }
+
+  /* Bilah aksi form yang menempel di bawah (halaman penuh dan panel, DESIGN §7.8). */
+  .form-actions {
+    @apply sticky bottom-0 z-10 mt-auto flex flex-wrap items-center justify-end gap-2 border-t border-line bg-surface px-4 py-3;
+  }
+  /* Di panel, form setinggi panel agar bilah aksi selalu di dasar meski form pendek. */
+  .slide-over [x-ref="body"] > form { @apply flex min-h-full flex-col; }
+}

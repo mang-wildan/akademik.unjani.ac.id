@@ -1,7 +1,5 @@
-// Content Security Policy for pages built on the new layouts (NFR-S-05).
-// No inline scripts or styles: Alpine runs from its CSP build and components
-// live in /js/app.js. Old template pages still rely on inline code and CDNs,
-// so this is applied per route, not globally, until they are rebuilt.
+// Strict policy for admin/account pages and the development catalog (NFR-S-05).
+// Alpine uses its CSP build with external scripts; public pages keep their policy.
 const helmet = require('helmet');
 
 module.exports = helmet.contentSecurityPolicy({

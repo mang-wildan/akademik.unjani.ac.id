@@ -10,9 +10,11 @@ const path = require('path');
 const SiteSetting = require('../models/SiteSetting');
 const { validate, schemas } = require('../validators');
 const siteSettingCache = require('../utils/siteSettingCache');
+const { removeUploadFiles } = require('../utils/upload');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
+const discardUploads = req => removeUploadFiles('settings', Object.values(req.files || {}).flat().map(file => toPublicUrl(file.path)));
 
 const getSingleton = async () => {
   let doc = await SiteSetting.findOne();
@@ -26,7 +28,7 @@ exports.editForm = async (req, res) => {
   res.renderPage(
     'admin/settings/edit',
     { title: 'Pengaturan Situs', item: setting.toObject(), values: setting.toObject(), errors: {}, quickLinkErrors: {}, quickLinkValues: {}, lastUpdatedAt: setting.updatedAt },
-    'layouts/admin'
+    'layouts/admin-v2'
   );
 };
 
@@ -34,10 +36,11 @@ exports.update = async (req, res) => {
   const setting = await getSingleton();
   const { data, errors, ok } = validate(schemas.siteSetting, req.body);
   if (!ok) {
-    return res.renderPage(
+    await discardUploads(req);
+    return res.status(422).renderPage(
       'admin/settings/edit',
       { title: 'Pengaturan Situs', item: setting.toObject(), values: req.body, errors, quickLinkErrors: {}, quickLinkValues: {}, lastUpdatedAt: setting.updatedAt },
-      'layouts/admin'
+      'layouts/admin-v2'
     );
   }
   const favicon = req.files?.favicon?.[0];
@@ -48,26 +51,27 @@ exports.update = async (req, res) => {
     setting.strukturOrganisasiUpdatedAt = new Date();
   }
   Object.assign(setting, data, { updatedBy: req.user._id });
-  await setting.save();
+  try { await setting.save(); }
+  catch (err) { await discardUploads(req); throw err; }
   siteSettingCache.invalidate(setting.toObject());
-  res.redirect(`/admin/settings?success=${encodeURIComponent('Pengaturan situs berhasil disimpan.')}`);
+  res.redirect(303, `/admin/settings?success=${encodeURIComponent('Pengaturan situs berhasil disimpan.')}`);
 };
 
 exports.addQuickLink = async (req, res) => {
   const setting = await getSingleton();
   const { data, errors, ok } = validate(schemas.quickLink, req.body);
   if (!ok) {
-    return res.renderPage(
+    return res.status(422).renderPage(
       'admin/settings/edit',
       { title: 'Pengaturan Situs', item: setting.toObject(), values: setting.toObject(), errors: {}, quickLinkErrors: errors, quickLinkValues: req.body, lastUpdatedAt: setting.updatedAt },
-      'layouts/admin'
+      'layouts/admin-v2'
     );
   }
   setting.quickLinks.push(data);
   setting.updatedBy = req.user._id;
   await setting.save();
   siteSettingCache.invalidate(setting.toObject());
-  res.redirect(`/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil ditambahkan.')}`);
+  res.redirect(303, `/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil ditambahkan.')}`);
 };
 
 exports.deleteQuickLink = async (req, res) => {
@@ -76,5 +80,5 @@ exports.deleteQuickLink = async (req, res) => {
   setting.updatedBy = req.user._id;
   await setting.save();
   siteSettingCache.invalidate(setting.toObject());
-  res.redirect(`/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil dihapus.')}`);
+  res.redirect(303, `/admin/settings?success=${encodeURIComponent('Tautan cepat berhasil dihapus.')}`);
 };

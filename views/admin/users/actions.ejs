@@ -1,0 +1,11 @@
+<a href="/admin/users/<%= item._id %>/edit" data-slide-over class="btn btn-ghost max-md:hidden">Ubah</a>
+<details class="relative" x-data="disclosure" x-on:keydown.escape.stop="close">
+  <summary class="btn btn-icon" aria-label="Aksi untuk <%= item.name || item.email %>"><%- icon('more_horiz', 'size-5') %></summary>
+  <div class="absolute right-0 z-20 flex flex-col whitespace-normal min-w-48 rounded-card border border-line bg-surface p-2 shadow-overlay">
+    <a href="/admin/users/<%= item._id %>/edit" data-slide-over class="btn btn-ghost w-full">Ubah</a>
+    <a href="/admin/users/<%= item._id %>/reset-password" class="btn btn-ghost w-full">Reset Password</a>
+    <% if (String(item._id) !== currentUserId) { %>
+      <%- include('../_ui/confirm-dialog', { dialogId: `hapus-${item._id}`, dialogTitle: `Hapus akun ${item.email}?`, dialogText: 'Akun ini akan dihapus permanen.', action: `/admin/users/${item._id}/delete`, confirmLabel: 'Hapus' }) %>
+    <% } %>
+  </div>
+</details>

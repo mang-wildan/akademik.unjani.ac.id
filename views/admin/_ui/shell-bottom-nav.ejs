@@ -1,0 +1,28 @@
+<%#
+  Navigasi bawah di HP (<1024px, SPEC FR-ADM-03). "Menu" membuka laci berisi semua modul.
+  include('../admin/_ui/shell-bottom-nav', { currentPath })
+%>
+<%
+  const quick = [
+    { label: 'Dasbor', href: '/admin/dashboard', icon: 'dashboard' },
+    { label: 'Pengumuman', href: '/admin/pengumuman', icon: 'campaign' },
+    { label: 'Berita', href: '/admin/news', icon: 'newspaper' },
+  ];
+  const itemClass = 'flex h-full flex-col items-center justify-center gap-0.5 text-xs font-medium no-underline';
+%>
+<nav aria-label="Navigasi cepat" class="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden">
+  <ul class="grid h-16 grid-cols-4">
+    <% quick.forEach(item => { const active = isActive(item.href, currentPath); %>
+      <li>
+        <a href="<%= item.href %>"<%- active ? ' aria-current="page"' : '' %> class="<%= itemClass %> <%= active ? 'text-primary' : 'text-muted' %>">
+          <%- icon(item.icon, 'size-6') %><%= item.label %>
+        </a>
+      </li>
+    <% }) %>
+    <li>
+      <button type="button" x-on:click="openDrawer" aria-haspopup="dialog" class="<%= itemClass %> w-full text-muted">
+        <%- icon('menu', 'size-6') %>Menu
+      </button>
+    </li>
+  </ul>
+</nav>

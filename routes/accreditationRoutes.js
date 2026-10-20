@@ -26,6 +26,8 @@ const uploadSertifikat = upload.fields([{ name: 'sertifikat', maxCount: 1 }]);
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', accreditationController.bulk);
+
 router.get('/', accreditationController.list);
 router.get('/new', accreditationController.showCreate);
 router.post('/', uploadSertifikat, checkUploads, accreditationController.create);

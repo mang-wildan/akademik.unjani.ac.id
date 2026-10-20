@@ -1,21 +1,16 @@
 <%# Ubah profil sendiri (/profile/edit). Tanpa JavaScript; foto diunggah lewat multipart biasa. %>
 <%
   const fotoSaatIni = profile.profilePhoto || '';
-  const adaGalat = Object.keys(errors).length > 0;
 %>
-<div class="max-w-xl">
-  <%- include('../../components/page-header', { admin: true, eyebrow: 'Akun', heading: 'Ubah Profil', lead: 'Nama dan email ini dipakai untuk masuk dan tampil di panel admin.', breadcrumb: [{ label: 'Profil Saya', href: '/profile' }, { label: 'Ubah Profil' }] }) %>
+<div class="max-w-form">
+  <%- include('../_ui/page-header', { admin: true, eyebrow: 'Akun', heading: 'Ubah Profil', lead: 'Nama dan email ini dipakai untuk masuk dan tampil di panel admin.', breadcrumb: [{ label: 'Profil Saya', href: '/profile' }, { label: 'Ubah Profil' }] }) %>
 
-  <% if (adaGalat) { %>
-    <div class="mb-6"><%- include('../../components/alert', {
-      alertTone: 'danger', alertTitle: 'Profil belum disimpan',
-      alertText: errors._form || (locals.photoDropped ? 'Periksa kolom yang ditandai di bawah. Foto yang tadi dipilih belum diunggah; pilih ulang bila perlu.' : 'Periksa kolom yang ditandai di bawah.'),
-    }) %></div>
-  <% } %>
+  <p class="mb-4 text-sm text-muted">Nama dan email ini dipakai untuk masuk dan tampil di panel admin.</p>
 
-  <form method="POST" action="/profile/edit" enctype="multipart/form-data" class="card card-body grid gap-5">
-    <%- include('../../components/form-field', { name: 'name', label: 'Nama', required: true, value: values.name, error: errors.name, autocomplete: 'name' }) %>
-    <%- include('../../components/form-field', { name: 'email', label: 'Email', type: 'email', required: true, value: values.email, error: errors.email, autocomplete: 'email' }) %>
+  <form method="POST" action="/profile/edit" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="grid gap-5 rounded-card border border-line bg-surface p-4">
+    <%- include('../_ui/error-summary', { errors }) %>
+    <%- include('../_ui/field', { name: 'name', label: 'Nama', required: true, value: values.name, error: errors.name, autocomplete: 'name' }) %>
+    <%- include('../_ui/field', { name: 'email', label: 'Email', type: 'email', required: true, value: values.email, error: errors.email, autocomplete: 'email' }) %>
 
     <fieldset class="grid gap-4 border-t border-line pt-5">
       <legend class="sr-only">Foto profil</legend>
@@ -25,7 +20,7 @@
           <p class="min-w-0 text-sm text-muted">Foto profil saat ini. Unggah foto baru untuk menggantinya.</p>
         </div>
       <% } %>
-      <%- include('../../components/file-upload', {
+      <%- include('../_ui/upload-field', {
         name: 'profilePhoto', label: fotoSaatIni ? 'Ganti foto profil' : 'Foto profil',
         accept: 'image/jpeg,image/png,image/webp',
         limitText: fotoSaatIni ? 'JPG/PNG/WEBP, maks. 2 MB. Biarkan kosong jika tidak diganti' : 'JPG/PNG/WEBP, maks. 2 MB. Opsional',
@@ -39,7 +34,7 @@
       <% } %>
     </fieldset>
 
-    <div class="flex justify-end gap-2 border-t border-line pt-5">
+    <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]">
       <a href="/profile" class="btn btn-secondary">Batal</a>
       <button type="submit" class="btn btn-primary">Simpan</button>
     </div>

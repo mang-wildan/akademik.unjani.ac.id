@@ -269,6 +269,25 @@ const passwordChange = z
 const RULES = new Map([[accreditation, accreditationRules], [kegiatan, kegiatanRules]]);
 
 // { ok: true, data } or { ok: false, errors: { field: 'pesan' } } — first message per field.
+// ---------------------------------------------------------------- aksi massal
+// Dibuat per modul (utils/bulk.js) karena daftar aksinya berbeda-beda.
+// `ids[]` dari form selalu array; satu nilai tanpa [] juga diterima.
+const bulkSchema = (actionKeys, limit) => {
+  const invalidId = 'Data yang dipilih tidak valid.';
+  return z
+    .object({
+      action: z.enum(actionKeys, { error: 'Aksi tidak dikenal.' }),
+      scope: z.enum(['selected', 'filter'], { error: 'Aksi tidak dikenal.' }).default('selected'),
+      ids: z.preprocess(
+        v => (v === undefined ? [] : Array.isArray(v) ? v : [v]),
+        z.array(z.string({ error: invalidId }).regex(/^[a-f\d]{24}$/i, invalidId)).max(limit, `Maksimal ${limit} data per aksi.`)
+      ),
+    })
+    .superRefine((data, ctx) => {
+      if (data.scope === 'selected' && !data.ids.length) ctx.addIssue({ code: 'custom', path: ['ids'], message: 'Pilih minimal satu data.' });
+    });
+};
+
 const validate = (schema, input = {}) => {
   const result = schema.safeParse(input);
   const errors = {};
@@ -285,5 +304,6 @@ const validate = (schema, input = {}) => {
 
 module.exports = {
   validate,
+  bulkSchema,
   schemas: { accreditation, calendar, kegiatan, lampiran, content, academicDocument, rplDocument, kurikulum, book, graduationBook, lulusan, staff, unit, academicProfile, faculty, lembagaAkreditasi, programStudi, kategori, siteSetting, quickLink, userCreate, userUpdate, profileUpdate, resetPasswordByAdmin, passwordChange },
 };

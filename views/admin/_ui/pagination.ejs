@@ -1,0 +1,37 @@
+<%#
+  Ringkasan rentang + navigasi halaman (DESIGN §7.5). Tautan mempertahankan filter dan urutan.
+  Params: page, totalPages, total, pageSize, noun (mis. 'pengumuman'), state (dari parseListQuery).
+%>
+<%
+  const state = locals.state || {};
+  const from = total ? (page - 1) * pageSize + 1 : 0;
+  const to = Math.min(page * pageSize, total);
+  const linkClass = 'inline-flex size-11 items-center justify-center rounded-control text-sm no-underline lg:size-8';
+%>
+<div class="flex items-center justify-between gap-3 border-t border-line px-3 py-2">
+  <p class="text-sm text-muted tabular-nums"><%= total ? `${from}–${to} dari ${total} ${noun}` : `0 ${noun}` %></p>
+  <% if (totalPages > 1) { %>
+    <nav aria-label="Halaman" class="flex items-center gap-1">
+      <% if (page > 1) { %>
+        <a href="<%= listHref(state, { page: page - 1 }) %>" rel="prev" aria-label="Halaman sebelumnya" class="<%= linkClass %> text-ink hover:bg-sunken"><%- icon('chevron_left', 'size-5') %></a>
+      <% } else { %>
+        <span class="<%= linkClass %> text-muted opacity-50" aria-hidden="true"><%- icon('chevron_left', 'size-5') %></span>
+      <% } %>
+      <span class="px-2 text-sm text-muted tabular-nums md:hidden">Hal <%= page %>/<%= totalPages %></span>
+      <% pageItems(page, totalPages).forEach(n => { %>
+        <% if (n === '…') { %>
+          <span class="<%= linkClass %> text-muted max-md:hidden" aria-hidden="true">…</span>
+        <% } else if (n === page) { %>
+          <span aria-current="page" class="<%= linkClass %> bg-primary-soft font-medium text-primary tabular-nums max-md:hidden"><%= n %></span>
+        <% } else { %>
+          <a href="<%= listHref(state, { page: n }) %>" aria-label="Halaman <%= n %>" class="<%= linkClass %> text-ink tabular-nums hover:bg-sunken max-md:hidden"><%= n %></a>
+        <% } %>
+      <% }) %>
+      <% if (page < totalPages) { %>
+        <a href="<%= listHref(state, { page: page + 1 }) %>" rel="next" aria-label="Halaman berikutnya" class="<%= linkClass %> text-ink hover:bg-sunken"><%- icon('chevron_right', 'size-5') %></a>
+      <% } else { %>
+        <span class="<%= linkClass %> text-muted opacity-50" aria-hidden="true"><%- icon('chevron_right', 'size-5') %></span>
+      <% } %>
+    </nav>
+  <% } %>
+</div>

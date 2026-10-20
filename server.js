@@ -55,13 +55,16 @@ const { assetUrl } = require('./utils/assetVersion');
 const { accreditationStatus } = require('./utils/accreditation');
 const { calendarEventStatus } = require('./utils/calendar');
 const renderPage = require('./middleware/renderPage');
+const { listHref, pageItems } = require('./utils/listQuery');
+const adminPrefs = require('./middleware/adminPrefs');
+const strictCsp = require('./middleware/strictCsp');
 const verifyOrigin = require('./middleware/verifyOrigin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Helpers available in every view (new layouts & components).
-Object.assign(app.locals, { icon, ...format, ...navigation, phoneLink, videoEmbedUrl, TINGKAT, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus, assetUrl });
+Object.assign(app.locals, { icon, ...format, ...navigation, phoneLink, videoEmbedUrl, TINGKAT, isStaff: roles.isStaff, isSuperadmin: roles.isSuperadmin, roleLabel: roles.roleLabel, accreditationStatus, calendarEventStatus, assetUrl, listHref, pageItems });
 // Widget Asisten Akademik hanya tampil bila kunci Gemini diisi (tanpa kunci = fitur mati).
 app.locals.chatEnabled = Boolean(process.env.GEMINI_API_KEY);
 
@@ -112,6 +115,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(['/admin', '/profile'], adminPrefs);
+// Cover redirects, denied requests and error responses as well as rendered pages.
+app.use(['/admin', '/dashboard', '/profile'], strictCsp);
 // Long + immutable: uploads keep a unique timestamped filename per file
 // (utils/upload.js), and app.css/app.js are only ever linked through
 // assetUrl() with a content-hash query string -- both are safe to cache

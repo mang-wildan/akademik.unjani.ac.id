@@ -1,0 +1,9 @@
+<div class="flex items-center justify-end gap-1">
+  <span class="max-md:hidden"><%- include('button', { label: 'Ubah', variant: 'ghost', href: `/admin/books/${item._id}/edit`, title: `Ubah ${item.title}`, slideOver: true }) %></span>
+  <details class="relative text-left">
+    <summary class="btn btn-icon btn-ghost list-none" aria-label="Aksi untuk <%= item.title %>"><%- icon('more_horiz', 'size-5') %></summary>
+    <div class="absolute right-0 z-20 flex flex-col whitespace-normal w-60 rounded-card border border-line-strong bg-surface p-2 shadow-overlay">
+      <%- include('confirm-dialog', { dialogId: `hapus-${item._id}`, dialogTitle: 'Hapus buku?', dialogText: `“${item.title}” beserta PDF dan sampulnya akan dihapus permanen.`, action: `/admin/books/${item._id}/delete` }) %>
+    </div>
+  </details>
+</div>

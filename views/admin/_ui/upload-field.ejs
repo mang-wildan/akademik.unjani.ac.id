@@ -1,0 +1,2 @@
+<%- include('field', { ...locals, type: 'file', help: `${locals.limitText || 'PDF, maks. 10 MB.'} Pilih ulang setelah gagal validasi.` }) %>
+<% if (locals.current && locals.current.href) { %><a href="<%= locals.current.href %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center text-sm text-primary underline"><%= locals.current.label || 'File saat ini' %> (tab baru)</a><% } %>

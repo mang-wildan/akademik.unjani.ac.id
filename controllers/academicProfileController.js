@@ -4,6 +4,7 @@
 // butir) supaya tidak perlu form dinamis tambah/hapus baris.
 const AcademicProfile = require('../models/AcademicProfile');
 const { validate, schemas } = require('../validators');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 
 const DEFAULT_CONTENT = {
   judulHalaman: 'Profil Bidang Akademik',
@@ -41,7 +42,7 @@ exports.editForm = async (req, res) => {
   res.renderPage(
     'admin/profil-akademik/edit',
     { title: 'Profil Bidang Akademik', values: { ...obj, misi: obj.misi.join('\n'), tugas: obj.tugas.join('\n'), fungsi: obj.fungsi.join('\n') }, errors: {}, lastUpdatedAt: profile.updatedAt },
-    'layouts/admin'
+    ADMIN_LAYOUT
   );
 };
 
@@ -49,9 +50,10 @@ exports.update = async (req, res) => {
   const profile = await getSingleton(req.user);
   const { data, errors, ok } = validate(schemas.academicProfile, req.body);
   if (!ok) {
-    return res.renderPage('admin/profil-akademik/edit', { title: 'Profil Bidang Akademik', values: req.body, errors, lastUpdatedAt: profile.updatedAt }, 'layouts/admin');
+    return res.status(422).renderPage('admin/profil-akademik/edit', { title: 'Profil Bidang Akademik', values: req.body, errors, lastUpdatedAt: profile.updatedAt }, ADMIN_LAYOUT);
   }
   Object.assign(profile, data, { updatedBy: req.user._id });
   await profile.save();
-  res.redirect(`/admin/profil-akademik?success=${encodeURIComponent('Profil berhasil diperbarui.')}`);
+  if (req.query.partial === '1') return res.json({ ok: true, message: 'Profil berhasil diperbarui.' });
+  res.redirect(303, `/admin/profil-akademik?success=${encodeURIComponent('Profil berhasil diperbarui.')}`);
 };

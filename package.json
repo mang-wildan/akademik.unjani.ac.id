@@ -9,8 +9,9 @@
     "test": "node --test",
     "build:assets": "node scripts/build-assets.js",
     "build:css": "tailwindcss -i assets/css/app.css -o public/css/app.css --minify",
+    "build:css:admin": "tailwindcss -i assets/css/admin.css -o public/css/admin.css --minify",
     "build:manifest": "node scripts/build-manifest.js",
-    "build": "npm run build:assets && npm run build:css && npm run build:manifest",
+    "build": "npm run build:assets && npm run build:css && npm run build:css:admin && npm run build:manifest",
     "dev:css": "tailwindcss -i assets/css/app.css -o public/css/app.css --watch",
     "migrate": "node scripts/migrate"
   },

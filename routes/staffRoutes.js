@@ -30,11 +30,14 @@ const fileFilter = (_req, file, cb) => {
 
 const upload = multer({ storage, fileFilter, limits: IMAGE_LIMITS });
 
-router.get('/', requireAuth, requireAdmin, staffController.list);
-router.get('/new', requireAuth, requireAdmin, staffController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.single('foto'), checkUploads, staffController.create);
-router.get('/:id/edit', requireAuth, requireAdmin, staffController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.single('foto'), checkUploads, staffController.update);
-router.post('/:id/delete', requireAuth, requireAdmin, staffController.destroy);
+router.use(requireAuth,requireAdmin);
+router.post('/bulk',staffController.bulk);
+
+router.get('/', staffController.list);
+router.get('/new', staffController.showCreate);
+router.post('/', upload.single('foto'), checkUploads, staffController.create);
+router.get('/:id/edit', staffController.showEdit);
+router.post('/:id', upload.single('foto'), checkUploads, staffController.update);
+router.post('/:id/delete', staffController.destroy);
 
 module.exports = router;

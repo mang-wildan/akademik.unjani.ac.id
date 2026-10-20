@@ -34,6 +34,8 @@ const uploadCsv = multer({ storage, fileFilter: csvFilter, limits: DOCUMENT_LIMI
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', academicCalendarController.bulk);
+
 router.get('/', academicCalendarController.list);
 router.get('/template.csv', academicCalendarController.downloadTemplate);
 router.get('/new', academicCalendarController.showCreate);

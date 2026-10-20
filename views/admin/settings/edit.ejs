@@ -1,45 +1,48 @@
 <%# Pengaturan Situs -- dokumen singleton, satu halaman lihat+ubah. FR-M-12. %>
-<%- include('../../components/page-header', { admin: true, heading: 'Pengaturan Situs', lead: `Terakhir diperbarui ${formatTanggal(lastUpdatedAt, { long: true })}.`, breadcrumb: [{ label: 'Pengaturan Situs' }] }) %>
+<%- include('../_ui/page-header', { admin: true, heading: 'Pengaturan Situs', lead: `Terakhir diperbarui ${formatTanggal(lastUpdatedAt, { long: true })}.`, breadcrumb: [{ label: 'Pengaturan Situs' }] }) %>
+<p class="mb-4 text-sm text-muted">Terakhir diperbarui <%= formatTanggal(lastUpdatedAt, { long: true }) %>.</p>
 
-<form method="POST" action="/admin/settings" enctype="multipart/form-data" class="card card-body mb-6 grid gap-5">
+<form method="POST" action="/admin/settings" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="mb-6 grid max-w-form gap-5 rounded-card border border-line bg-surface p-4">
+  <%- include('../_ui/error-summary', { errors }) %>
   <h2 class="font-semibold">Kontak &amp; Footer</h2>
   <div class="grid gap-5 md:grid-cols-2">
-    <%- include('../../components/form-field', { name: 'kontakEmail', label: 'Email Kontak', type: 'email', value: values.kontakEmail, error: errors.kontakEmail, help: 'Opsional.' }) %>
-    <%- include('../../components/form-field', { name: 'kontakTelepon', label: 'Telepon Kontak', value: values.kontakTelepon, error: errors.kontakTelepon, help: 'Opsional.' }) %>
-    <%- include('../../components/form-field', { name: 'alamat', label: 'Alamat', value: values.alamat, error: errors.alamat, help: 'Opsional.' }) %>
-    <%- include('../../components/form-field', { name: 'jamLayanan', label: 'Jam Layanan', value: values.jamLayanan, error: errors.jamLayanan, placeholder: 'Senin-Jumat, 08.00-15.30 WIB' }) %>
+    <%- include('../_ui/field', { name: 'kontakEmail', label: 'Email Kontak', type: 'email', value: values.kontakEmail, error: errors.kontakEmail, help: 'Opsional.' }) %>
+    <%- include('../_ui/field', { name: 'kontakTelepon', label: 'Telepon Kontak', value: values.kontakTelepon, error: errors.kontakTelepon, help: 'Opsional.' }) %>
+    <%- include('../_ui/field', { name: 'alamat', label: 'Alamat', value: values.alamat, error: errors.alamat, help: 'Opsional.' }) %>
+    <%- include('../_ui/field', { name: 'jamLayanan', label: 'Jam Layanan', value: values.jamLayanan, error: errors.jamLayanan, placeholder: 'Senin-Jumat, 08.00-15.30 WIB' }) %>
   </div>
-  <%- include('../../components/form-field', { name: 'landingFooterDescription', label: 'Deskripsi Footer', type: 'textarea', value: values.landingFooterDescription, error: errors.landingFooterDescription, help: 'Opsional, maks. 300 karakter.' }) %>
-  <%- include('../../components/form-field', { name: 'landingVideoUrl', label: 'URL Video Profil (Beranda)', type: 'url', value: values.landingVideoUrl, error: errors.landingVideoUrl, help: 'Opsional. Tempel tautan YouTube biasa (watch, youtu.be, atau shorts); otomatis dijadikan tautan sematan. Kosongkan untuk sembunyikan bagian video.' }) %>
+  <%- include('../_ui/field', { name: 'landingFooterDescription', label: 'Deskripsi Footer', type: 'textarea', value: values.landingFooterDescription, error: errors.landingFooterDescription, help: 'Opsional, maks. 300 karakter.' }) %>
+  <%- include('../_ui/field', { name: 'landingVideoUrl', label: 'URL Video Profil (Beranda)', type: 'url', value: values.landingVideoUrl, error: errors.landingVideoUrl, help: 'Opsional. Tempel tautan YouTube biasa (watch, youtu.be, atau shorts); otomatis dijadikan tautan sematan. Kosongkan untuk sembunyikan bagian video.' }) %>
 
   <h2 class="pt-2 font-semibold">Media Sosial</h2>
   <div class="grid gap-5 md:grid-cols-2">
-    <%- include('../../components/form-field', { name: 'socialFacebook', label: 'Facebook', type: 'url', value: values.socialFacebook, error: errors.socialFacebook }) %>
-    <%- include('../../components/form-field', { name: 'socialInstagram', label: 'Instagram', type: 'url', value: values.socialInstagram, error: errors.socialInstagram }) %>
-    <%- include('../../components/form-field', { name: 'socialYoutube', label: 'YouTube', type: 'url', value: values.socialYoutube, error: errors.socialYoutube }) %>
-    <%- include('../../components/form-field', { name: 'socialTiktok', label: 'TikTok', type: 'url', value: values.socialTiktok, error: errors.socialTiktok }) %>
-    <%- include('../../components/form-field', { name: 'socialTwitter', label: 'Twitter/X', type: 'url', value: values.socialTwitter, error: errors.socialTwitter }) %>
-    <%- include('../../components/form-field', { name: 'socialLinkedin', label: 'LinkedIn', type: 'url', value: values.socialLinkedin, error: errors.socialLinkedin }) %>
+    <%- include('../_ui/field', { name: 'socialFacebook', label: 'Facebook', type: 'url', value: values.socialFacebook, error: errors.socialFacebook }) %>
+    <%- include('../_ui/field', { name: 'socialInstagram', label: 'Instagram', type: 'url', value: values.socialInstagram, error: errors.socialInstagram }) %>
+    <%- include('../_ui/field', { name: 'socialYoutube', label: 'YouTube', type: 'url', value: values.socialYoutube, error: errors.socialYoutube }) %>
+    <%- include('../_ui/field', { name: 'socialTiktok', label: 'TikTok', type: 'url', value: values.socialTiktok, error: errors.socialTiktok }) %>
+    <%- include('../_ui/field', { name: 'socialTwitter', label: 'Twitter/X', type: 'url', value: values.socialTwitter, error: errors.socialTwitter }) %>
+    <%- include('../_ui/field', { name: 'socialLinkedin', label: 'LinkedIn', type: 'url', value: values.socialLinkedin, error: errors.socialLinkedin }) %>
   </div>
 
   <h2 class="pt-2 font-semibold">Gambar</h2>
   <div class="grid gap-5 md:grid-cols-2">
-    <%- include('../../components/file-upload', {
+    <%- include('../_ui/upload-field', {
       name: 'favicon', label: 'Favicon', accept: 'image/png,image/jpeg,image/webp', error: errors.favicon,
       limitText: 'JPG/PNG/WEBP, maks. 5 MB.', current: item.favicon ? { label: 'Favicon saat ini', href: item.favicon } : null,
     }) %>
-    <%- include('../../components/file-upload', {
+    <%- include('../_ui/upload-field', {
       name: 'strukturOrganisasiImage', label: 'Gambar Struktur Organisasi', accept: 'image/png,image/jpeg,image/webp', error: errors.strukturOrganisasiImage,
       limitText: 'JPG/PNG/WEBP, maks. 5 MB.', current: item.strukturOrganisasiImage ? { label: 'Gambar saat ini', href: item.strukturOrganisasiImage } : null,
     }) %>
   </div>
 
-  <div class="flex justify-end border-t border-line pt-5">
+  <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]">
+    <a href="/admin/dashboard" class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
   </div>
 </form>
 
-<div class="card card-body space-y-4">
+<div class="max-w-form space-y-4 rounded-card border border-line bg-surface p-4">
   <h2 class="font-semibold">Tautan Cepat (Footer)</h2>
   <% if (item.quickLinks && item.quickLinks.length) { %>
     <ul class="space-y-2">
@@ -49,8 +52,7 @@
             <p class="truncate font-medium"><%= l.label %></p>
             <p class="truncate text-xs text-muted"><%= l.url %> <% if (l.target === '_blank') { %>· tab baru<% } %></p>
           </div>
-          <button type="button" class="btn-icon shrink-0 text-danger hover:bg-danger-soft" data-dialog-open="hapus-tautan-<%= l._id %>" aria-label="Hapus tautan <%= l.label %>"><%- icon('delete', 'size-5') %></button>
-          <%- include('../../components/confirm-dialog', {
+          <%- include('../_ui/confirm-dialog', {
             dialogId: `hapus-tautan-${l._id}`, dialogTitle: 'Hapus tautan cepat?',
             dialogText: `"${l.label}" akan dihapus dari footer situs.`,
             action: `/admin/settings/quick-links/${l._id}/delete`, confirmLabel: 'Hapus',
@@ -62,12 +64,13 @@
     <p class="text-sm text-muted">Belum ada tautan cepat. Footer memakai tautan bawaan (Portal UNJANI).</p>
   <% } %>
 
-  <details class="rounded-control border border-line">
+  <details class="rounded-control border border-line"<% if (Object.keys(quickLinkErrors).length) { %> open<% } %>>
     <summary class="min-h-11 cursor-pointer select-none px-4 py-2.5 text-sm font-semibold">+ Tambah tautan cepat</summary>
-    <form method="POST" action="/admin/settings/quick-links" class="grid gap-4 border-t border-line p-4 sm:grid-cols-3">
-      <%- include('../../components/form-field', { name: 'label', label: 'Label', required: true, value: quickLinkValues.label, error: quickLinkErrors.label }) %>
-      <%- include('../../components/form-field', { name: 'url', label: 'URL', type: 'url', required: true, value: quickLinkValues.url, error: quickLinkErrors.url }) %>
-      <%- include('../../components/form-field', {
+    <form method="POST" action="/admin/settings/quick-links" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="grid gap-4 border-t border-line p-4 sm:grid-cols-3">
+      <div class="sm:col-span-3"><%- include('../_ui/error-summary', { errors: quickLinkErrors }) %></div>
+      <%- include('../_ui/field', { name: 'label', label: 'Label', required: true, value: quickLinkValues.label, error: quickLinkErrors.label }) %>
+      <%- include('../_ui/field', { name: 'url', label: 'URL', type: 'url', required: true, value: quickLinkValues.url, error: quickLinkErrors.url }) %>
+      <%- include('../_ui/field', {
         name: 'target', label: 'Buka di', type: 'select', required: true, value: quickLinkValues.target || '_self', error: quickLinkErrors.target,
         options: [{ value: '_self', label: 'Tab yang sama' }, { value: '_blank', label: 'Tab baru' }],
       }) %>

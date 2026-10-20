@@ -6,7 +6,9 @@ const fs = require('fs/promises');
 const path = require('path');
 const Kurikulum = require('../models/Kurikulum');
 const ProgramStudi = require('../models/ProgramStudi');
+const { removeUploadFiles } = require('../utils/upload');
 const { validate, schemas } = require('../validators');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
@@ -19,13 +21,12 @@ const prodiList = async () => {
   return list.map(p => ({ ...p, labelFakultas: p.fakultas ? `${p.nama} (${p.fakultas.nama})` : p.nama }));
 };
 
-exports.list = async (req, res) => {
-  const items = await Kurikulum.find().populate({ path: 'prodi', select: 'nama fakultas', populate: { path: 'fakultas', select: 'nama' } }).sort({ tahun: -1, createdAt: -1 }).lean();
-  res.renderPage('admin/kurikulum/list', { title: 'Kurikulum', items }, 'layouts/admin');
-};
+const admin = require('../utils/academicAdmin')({ Model: Kurikulum, basePath: 'kurikulum', title: 'Kurikulum', query: async()=>({sortable:['tahun','updatedAt'],defaultSort:{tahun:-1,createdAt:-1},searchFields:['tahun'],filters:{prodi:(await ProgramStudi.find().lean()).map(p=>String(p._id))}}), populate:[{path:'prodi',populate:{path:'fakultas'}}],refs:async()=>({prodiList:await prodiList()}),files:i=>[i.file,i.cover] });
+exports.list = admin.list;
+exports.bulk = admin.bulk;
 
 exports.showCreate = async (req, res) => {
-  res.renderPage('admin/kurikulum/form', { title: 'Tambah Kurikulum', mode: 'create', values: {}, errors: {}, prodiList: await prodiList() }, 'layouts/admin');
+  res.renderPage('admin/kurikulum/form', { title: 'Tambah Kurikulum', mode: 'create', values: {}, errors: {}, prodiList: await prodiList() }, ADMIN_LAYOUT);
 };
 
 exports.create = async (req, res) => {
@@ -35,19 +36,19 @@ exports.create = async (req, res) => {
   if (!file) fieldErrors.file = 'File PDF wajib diisi.';
   if (!ok || fieldErrors.file) {
     await removeUploaded(req);
-    return res.renderPage('admin/kurikulum/form', { title: 'Tambah Kurikulum', mode: 'create', values: req.body, errors: fieldErrors, prodiList: await prodiList() }, 'layouts/admin');
+    return res.status(422).renderPage('admin/kurikulum/form', { title: 'Tambah Kurikulum', mode: 'create', values: req.body, errors: fieldErrors, prodiList: await prodiList() }, ADMIN_LAYOUT);
   }
   const existing = await Kurikulum.findOne({ prodi: data.prodi, tahun: data.tahun });
   if (existing) {
     await removeUploaded(req);
-    return res.renderPage(
+    return res.status(422).renderPage(
       'admin/kurikulum/form',
       { title: 'Tambah Kurikulum', mode: 'create', values: req.body, errors: { tahun: `Kurikulum tahun ${data.tahun} untuk program studi ini sudah ada.` }, prodiList: await prodiList() },
-      'layouts/admin'
+      ADMIN_LAYOUT
     );
   }
-  await Kurikulum.create({ ...data, file: toPublicUrl(file.path), fileSize: file.size, createdBy: req.user._id, updatedBy: req.user._id });
-  res.redirect(`/admin/kurikulum?success=${encodeURIComponent('Kurikulum berhasil ditambahkan.')}`);
+  try { await Kurikulum.create({ ...data, file: toPublicUrl(file.path), fileSize: file.size, createdBy: req.user._id, updatedBy: req.user._id }); } catch (err) { await removeUploaded(req); throw err; }
+  admin.success(req, res, 'Kurikulum berhasil ditambahkan.');
 };
 
 const findOrThrow = async id => {
@@ -62,37 +63,36 @@ const findOrThrow = async id => {
 };
 
 exports.showEdit = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
-  res.renderPage('admin/kurikulum/form', { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, prodiList: await prodiList() }, 'layouts/admin');
+  const item = await findOrThrow(req.params.id).catch(async err => { await removeUploaded(req); throw err; });
+  res.renderPage('admin/kurikulum/form', { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, prodiList: await prodiList() }, ADMIN_LAYOUT);
 };
 
 exports.update = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
+  const item = await findOrThrow(req.params.id).catch(async err => { await removeUploaded(req); throw err; });
   const { data, errors, ok } = validate(schemas.kurikulum, req.body);
   if (!ok) {
     await removeUploaded(req);
-    return res.renderPage('admin/kurikulum/form', { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: req.body, errors, prodiList: await prodiList() }, 'layouts/admin');
+    return res.status(422).renderPage('admin/kurikulum/form', { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: req.body, errors, prodiList: await prodiList() }, ADMIN_LAYOUT);
   }
   const dup = await Kurikulum.findOne({ prodi: data.prodi, tahun: data.tahun, _id: { $ne: item._id } });
   if (dup) {
     await removeUploaded(req);
-    return res.renderPage(
+    return res.status(422).renderPage(
       'admin/kurikulum/form',
       { title: 'Ubah Kurikulum', mode: 'edit', item: item.toObject(), values: req.body, errors: { tahun: `Kurikulum tahun ${data.tahun} untuk program studi ini sudah ada.` }, prodiList: await prodiList() },
-      'layouts/admin'
+      ADMIN_LAYOUT
     );
   }
+  const previousFiles = [item.file];
   const file = req.files?.file?.[0];
   if (file) {
     item.file = toPublicUrl(file.path);
     item.fileSize = file.size;
   }
   Object.assign(item, data, { updatedBy: req.user._id });
-  await item.save();
-  res.redirect(`/admin/kurikulum?success=${encodeURIComponent('Kurikulum berhasil diperbarui.')}`);
+  try { await item.save(); } catch (err) { await removeUploaded(req); throw err; }
+  await removeUploadFiles('kurikulum', previousFiles.filter(url => url && ![item.file].includes(url)));
+  admin.success(req, res, 'Kurikulum berhasil diperbarui.');
 };
 
-exports.destroy = async (req, res) => {
-  await Kurikulum.findByIdAndDelete(req.params.id);
-  res.redirect(`/admin/kurikulum?success=${encodeURIComponent('Kurikulum berhasil dihapus.')}`);
-};
+exports.destroy = admin.destroy;

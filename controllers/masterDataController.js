@@ -6,31 +6,30 @@
 const { validate, schemas } = require('../validators');
 
 module.exports = ({ Model, schema, basePath, listLabel, singularLabel, hasUrutan = false }) => {
-  const list = async (req, res) => {
-    const items = await Model.find().sort(hasUrutan ? { urutan: 1 } : { nama: 1 }).lean();
-    res.renderPage(`admin/${basePath}/list`, { title: listLabel, items, basePath, listLabel, singularLabel, hasUrutan }, 'layouts/admin');
-  };
+  const layout = 'layouts/admin-v2';
+  const admin = require('../utils/academicAdmin')({Model,basePath,title:listLabel,query:{sortable:hasUrutan ? ['nama','singkatan','urutan'] : ['nama','singkatan'],defaultSort:hasUrutan ? {urutan:1} : {nama:1},searchFields:['nama','singkatan']}});
+  const success = admin.success;
 
   const showCreate = (req, res) => {
-    res.renderPage(`admin/${basePath}/form`, { title: `Tambah ${singularLabel}`, mode: 'create', values: {}, errors: {}, basePath, singularLabel, hasUrutan }, 'layouts/admin');
+    res.renderPage(`admin/${basePath}/form`, { title: `Tambah ${singularLabel}`, mode: 'create', values: {}, errors: {}, basePath, singularLabel, hasUrutan }, layout);
   };
 
   const create = async (req, res) => {
     const { data, errors, ok } = validate(schemas[schema], req.body);
     if (!ok) {
-      return res.renderPage(`admin/${basePath}/form`, { title: `Tambah ${singularLabel}`, mode: 'create', values: req.body, errors, basePath, singularLabel, hasUrutan }, 'layouts/admin');
+      return res.status(422).renderPage(`admin/${basePath}/form`, { title: `Tambah ${singularLabel}`, mode: 'create', values: req.body, errors, basePath, singularLabel, hasUrutan }, layout);
     }
     try {
       await Model.create({ ...data, createdBy: req.user._id, updatedBy: req.user._id });
     } catch (e) {
       if (e.code !== 11000) throw e;
-      return res.renderPage(
+      return res.status(422).renderPage(
         `admin/${basePath}/form`,
         { title: `Tambah ${singularLabel}`, mode: 'create', values: req.body, errors: { singkatan: 'Singkatan ini sudah dipakai.' }, basePath, singularLabel, hasUrutan },
-        'layouts/admin'
+        layout
       );
     }
-    res.redirect(`/admin/${basePath}?success=${encodeURIComponent(`${singularLabel} berhasil ditambahkan.`)}`);
+    success(req,res,`${singularLabel} berhasil ditambahkan.`);
   };
 
   const findOrThrow = async id => {
@@ -46,33 +45,28 @@ module.exports = ({ Model, schema, basePath, listLabel, singularLabel, hasUrutan
 
   const showEdit = async (req, res) => {
     const item = await findOrThrow(req.params.id);
-    res.renderPage(`admin/${basePath}/form`, { title: `Ubah ${singularLabel}`, mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, basePath, singularLabel, hasUrutan }, 'layouts/admin');
+    res.renderPage(`admin/${basePath}/form`, { title: `Ubah ${singularLabel}`, mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {}, basePath, singularLabel, hasUrutan }, layout);
   };
 
   const update = async (req, res) => {
     const item = await findOrThrow(req.params.id);
     const { data, errors, ok } = validate(schemas[schema], req.body);
     if (!ok) {
-      return res.renderPage(`admin/${basePath}/form`, { title: `Ubah ${singularLabel}`, mode: 'edit', item: item.toObject(), values: req.body, errors, basePath, singularLabel, hasUrutan }, 'layouts/admin');
+      return res.status(422).renderPage(`admin/${basePath}/form`, { title: `Ubah ${singularLabel}`, mode: 'edit', item: item.toObject(), values: req.body, errors, basePath, singularLabel, hasUrutan }, layout);
     }
     Object.assign(item, data, { updatedBy: req.user._id });
     try {
       await item.save();
     } catch (e) {
       if (e.code !== 11000) throw e;
-      return res.renderPage(
+      return res.status(422).renderPage(
         `admin/${basePath}/form`,
         { title: `Ubah ${singularLabel}`, mode: 'edit', item: item.toObject(), values: req.body, errors: { singkatan: 'Singkatan ini sudah dipakai.' }, basePath, singularLabel, hasUrutan },
-        'layouts/admin'
+        layout
       );
     }
-    res.redirect(`/admin/${basePath}?success=${encodeURIComponent(`${singularLabel} berhasil diperbarui.`)}`);
+    success(req,res,`${singularLabel} berhasil diperbarui.`);
   };
 
-  const destroy = async (req, res) => {
-    await Model.findByIdAndDelete(req.params.id);
-    res.redirect(`/admin/${basePath}?success=${encodeURIComponent(`${singularLabel} berhasil dihapus.`)}`);
-  };
-
-  return { list, showCreate, create, showEdit, update, destroy };
+  return { list: admin.list, showCreate, create, showEdit, update, destroy: admin.destroy, bulk: admin.bulk };
 };

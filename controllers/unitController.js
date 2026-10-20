@@ -1,24 +1,27 @@
 // Admin CRUD untuk Unit (FR-M-10), ditampilkan di Profil, Struktur Organisasi, dan slideshow Beranda (F8).
 // Gambar dikecilkan ke WebP 900 px (kartu slideshow tidak butuh lebih).
-const fs = require('fs/promises');
 const path = require('path');
 const Unit = require('../models/Unit');
 const { validate, schemas } = require('../validators');
+const { removeUploadFiles } = require('../utils/upload');
+const ADMIN_LAYOUT = 'layouts/admin-v2';
 const { processImage } = require('../utils/image');
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 const toPublicUrl = absPath => `/${path.relative(PUBLIC_DIR, absPath).replace(/\\/g, '/')}`;
 const removeUploaded = async req => {
-  if (req.file) await fs.unlink(req.file.path).catch(() => {});
+  if (!req.file) return;
+  const converted = path.join(path.dirname(req.file.path), path.parse(req.file.path).name+'.webp');
+  await removeUploadFiles('unit',[toPublicUrl(req.file.path),toPublicUrl(converted)]);
 };
 
-exports.list = async (req, res) => {
-  const items = await Unit.find().sort({ createdAt: -1 }).lean();
-  res.renderPage('admin/unit/list', { title: 'Unit', items }, 'layouts/admin');
-};
+const LIST_QUERY = {sortable:['nama','updatedAt'],defaultSort:{createdAt:-1},searchFields:['nama','deskripsi']};
+const admin = require('../utils/academicAdmin')({Model:Unit,basePath:'unit',title:'Unit',query:LIST_QUERY,files:item=>[item.img]});
+exports.list = admin.list;
+exports.bulk = admin.bulk;
 
 exports.showCreate = (req, res) => {
-  res.renderPage('admin/unit/form', { title: 'Tambah Unit', mode: 'create', values: {}, errors: {} }, 'layouts/admin');
+  res.renderPage('admin/unit/form', { title: 'Tambah Unit', mode: 'create', values: {}, errors: {} }, ADMIN_LAYOUT);
 };
 
 exports.create = async (req, res) => {
@@ -27,10 +30,11 @@ exports.create = async (req, res) => {
   if (!req.file) fieldErrors.img = 'Gambar wajib diisi.';
   if (!ok || fieldErrors.img) {
     await removeUploaded(req);
-    return res.renderPage('admin/unit/form', { title: 'Tambah Unit', mode: 'create', values: req.body, errors: fieldErrors }, 'layouts/admin');
+    return res.status(422).renderPage('admin/unit/form', { title: 'Tambah Unit', mode: 'create', values: req.body, errors: fieldErrors }, ADMIN_LAYOUT);
   }
-  await Unit.create({ ...data, img: toPublicUrl((await processImage(req.file.path, { maxWidth: 900 })).file), createdBy: req.user._id, updatedBy: req.user._id });
-  res.redirect(`/admin/unit?success=${encodeURIComponent('Unit berhasil ditambahkan.')}`);
+  try { await Unit.create({ ...data, img: toPublicUrl((await processImage(req.file.path, { maxWidth: 900 })).file), createdBy: req.user._id, updatedBy: req.user._id }); }
+  catch (err) { await removeUploaded(req); throw err; }
+  admin.success(req,res,'Unit berhasil ditambahkan.');
 };
 
 const findOrThrow = async id => {
@@ -46,23 +50,24 @@ const findOrThrow = async id => {
 
 exports.showEdit = async (req, res) => {
   const item = await findOrThrow(req.params.id);
-  res.renderPage('admin/unit/form', { title: 'Ubah Unit', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {} }, 'layouts/admin');
+  res.renderPage('admin/unit/form', { title: 'Ubah Unit', mode: 'edit', item: item.toObject(), values: item.toObject(), errors: {} }, ADMIN_LAYOUT);
 };
 
 exports.update = async (req, res) => {
-  const item = await findOrThrow(req.params.id);
+  const item = await findOrThrow(req.params.id).catch(async err=>{await removeUploaded(req);throw err;});
   const { data, errors, ok } = validate(schemas.unit, req.body);
   if (!ok) {
     await removeUploaded(req);
-    return res.renderPage('admin/unit/form', { title: 'Ubah Unit', mode: 'edit', item: item.toObject(), values: req.body, errors }, 'layouts/admin');
+    return res.status(422).renderPage('admin/unit/form', { title: 'Ubah Unit', mode: 'edit', item: item.toObject(), values: req.body, errors }, ADMIN_LAYOUT);
   }
-  if (req.file) item.img = toPublicUrl((await processImage(req.file.path, { maxWidth: 900 })).file);
-  Object.assign(item, data, { updatedBy: req.user._id });
-  await item.save();
-  res.redirect(`/admin/unit?success=${encodeURIComponent('Unit berhasil diperbarui.')}`);
+  const previous = item.img;
+  try {
+    if (req.file) item.img = toPublicUrl((await processImage(req.file.path, { maxWidth: 900 })).file);
+    Object.assign(item, data, { updatedBy: req.user._id });
+    await item.save();
+  } catch (err) { await removeUploaded(req); throw err; }
+  if (req.file) await removeUploadFiles('unit',[previous]);
+  admin.success(req,res,'Unit berhasil diperbarui.');
 };
 
-exports.destroy = async (req, res) => {
-  await Unit.findByIdAndDelete(req.params.id);
-  res.redirect(`/admin/unit?success=${encodeURIComponent('Unit berhasil dihapus.')}`);
-};
+exports.destroy = admin.destroy;

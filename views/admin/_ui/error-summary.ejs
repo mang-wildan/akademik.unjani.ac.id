@@ -1,0 +1,10 @@
+<%# Params: errors={field:message}, fieldIds?={field:id} (default f-field). Diletakkan di dalam form; menerima fokus saat dimuat. %>
+<% const entries = Object.entries(locals.errors || {}).filter(([, message]) => message); %>
+<% if (entries.length) { %>
+<div role="alert" tabindex="-1" x-data="errorSummary" class="rounded-card border border-danger bg-danger-soft p-4 text-danger">
+  <h2 class="text-md font-semibold">Periksa kembali isian berikut</h2>
+  <ul class="mt-2 list-disc pl-5 text-sm">
+    <% entries.forEach(([name, message]) => { %><li><a class="inline-flex min-h-11 items-center underline lg:min-h-6" href="#<%= (locals.fieldIds || {})[name] || `f-${name}` %>"><%= message %></a></li><% }) %>
+  </ul>
+</div>
+<% } %>

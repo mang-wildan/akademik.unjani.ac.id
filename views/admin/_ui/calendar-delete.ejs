@@ -1,0 +1,3 @@
+<details class="relative"><summary class="btn btn-ghost text-danger">Hapus</summary>
+<%- include('confirm-dialog',{dialogId:`hapus-${kind}-${entry._id}`,dialogTitle:'Hapus data?',dialogText:'Data ini akan dihapus permanen.',action:`/admin/academic-calendars/${item._id}/${kind}/${entry._id}/delete`,confirmLabel:'Hapus'}) %>
+</details>

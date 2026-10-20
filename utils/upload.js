@@ -1,5 +1,18 @@
 const fs = require('fs');
 const multer = require('multer');
+const path = require('path');
+
+// Both single and bulk deletion stay inside the owning module's upload folder.
+exports.removeUploadFiles = async (basePath, urls) => {
+  const publicDir = path.join(__dirname, '..', 'public');
+  const root = path.join(publicDir, 'uploads', basePath);
+  const files = [...new Set(urls.filter(Boolean).flatMap(url => /\.webp$/i.test(url) ? [url, url.replace(/\.webp$/i, '-thumb.webp')] : [url]))].map(url => {
+    const file = path.resolve(publicDir, `.${url}`);
+    if (!file.startsWith(`${root}${path.sep}`)) throw new Error('Lokasi lampiran tidak valid.');
+    return file;
+  });
+  for (const file of files) await fs.promises.unlink(file).catch(err => { if (err.code !== 'ENOENT') throw err; });
+};
 
 const MB = 1024 * 1024;
 const IMAGE_MAX_BYTES = 5 * MB;

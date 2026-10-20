@@ -21,20 +21,23 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (_req, file, cb) => {
-  const allowed = ['image/jpeg', 'image/png', 'image/jpg'];
+  const allowed = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
   if (!allowed.includes(file.mimetype)) {
-    return cb(fileError('Gambar harus berupa JPG/PNG.'));
+    return cb(fileError('Gambar harus berupa JPG/PNG/WEBP.'));
   }
   cb(null, true);
 };
 
 const upload = multer({ storage, fileFilter, limits: IMAGE_LIMITS });
 
-router.get('/', requireAuth, requireAdmin, unitController.list);
-router.get('/new', requireAuth, requireAdmin, unitController.showCreate);
-router.post('/', requireAuth, requireAdmin, upload.single('img'), checkUploads, unitController.create);
-router.get('/:id/edit', requireAuth, requireAdmin, unitController.showEdit);
-router.post('/:id', requireAuth, requireAdmin, upload.single('img'), checkUploads, unitController.update);
-router.post('/:id/delete', requireAuth, requireAdmin, unitController.destroy);
+router.use(requireAuth,requireAdmin);
+router.post('/bulk',unitController.bulk);
+
+router.get('/', unitController.list);
+router.get('/new', unitController.showCreate);
+router.post('/', upload.single('img'), checkUploads, unitController.create);
+router.get('/:id/edit', unitController.showEdit);
+router.post('/:id', upload.single('img'), checkUploads, unitController.update);
+router.post('/:id/delete', unitController.destroy);
 
 module.exports = router;

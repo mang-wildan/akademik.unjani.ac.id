@@ -30,6 +30,7 @@ router.use(requireAuth, requireAdmin);
 router.get('/', newsController.list);
 router.get('/new', newsController.newForm);
 router.post('/', uploadFields, checkUploads, newsController.create);
+router.post('/bulk', newsController.bulk);
 router.get('/:id/edit', newsController.editForm);
 router.get('/:id/preview', newsController.preview);
 router.post('/:id', uploadFields, checkUploads, newsController.update);

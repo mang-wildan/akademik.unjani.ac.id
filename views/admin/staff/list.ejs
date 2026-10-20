@@ -1,37 +1,6 @@
-<%# Daftar Pimpinan & Staf — FR-M-09. NIP ditampilkan di sini (internal), tidak pernah di publik (K-05). %>
-<%- include('../../components/page-header', { admin: true, heading: 'Pimpinan & Staf', lead: 'Kelola struktur kepemimpinan dan staf yang tampil di situs publik.', breadcrumb: [{ label: 'Pimpinan & Staf' }], actions: [{ label: 'Tambah Staf', href: '/admin/staff/new', icon: 'add' }] }) %>
-
-<div class="card">
-  <% if (!items.length) { %>
-    <div class="p-6">
-      <%- include('../../components/empty-state', { emptyIcon: 'groups', emptyTitle: 'Belum ada data staf', emptyAction: { label: 'Tambah Staf', href: '/admin/staff/new' } }) %>
-    </div>
-  <% } else { %>
-  <table class="data-table data-table--stack">
-    <caption class="sr-only">Daftar pimpinan dan staf</caption>
-    <thead><tr><th scope="col">Foto</th><th scope="col">Nama</th><th scope="col">Jabatan</th><th scope="col">Tingkat</th><th scope="col">Urutan</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
-    <tbody>
-      <% items.forEach(item => { %>
-        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
-          <td data-label="Foto"><img src="<%= item.foto %>" alt="" class="size-12 shrink-0 rounded-full border border-line object-cover"></td>
-          <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.gelar ? `${item.gelar} ` : '' %><%= item.nama %></span></td>
-          <td data-label="Jabatan"><%= item.jabatan %></td>
-          <td data-label="Tingkat"><span class="badge badge-neutral"><%= (TINGKAT.find(t => t.value === item.tingkat) || TINGKAT[TINGKAT.length - 1]).label %></span></td>
-          <td data-label="Urutan"><%= item.nomorUrut %></td>
-          <td data-label="Aksi">
-            <div class="flex items-center gap-1 md:justify-end">
-              <a href="/admin/staff/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah <%= item.nama %>"><%- icon('edit') %>Ubah</a>
-              <button type="button" class="btn-icon text-danger hover:bg-danger-soft" data-dialog-open="hapus-<%= item._id %>" aria-label="Hapus <%= item.nama %>"><%- icon('delete') %></button>
-            </div>
-            <%- include('../../components/confirm-dialog', {
-              dialogId: `hapus-${item._id}`, dialogTitle: `Hapus ${item.nama}?`,
-              dialogText: 'Data staf ini akan dihapus permanen dan tidak bisa dikembalikan.',
-              action: `/admin/staff/${item._id}/delete`, confirmLabel: 'Hapus',
-            }) %>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } %>
-</div>
+<%- include('../_ui/academic-list',{basePath:'staff',slideOver:true,columns:[
+  {key:'nama',label:'Nama',sortable:true},
+  {key:'jabatan',label:'Jabatan',sortable:true},
+  {key:'tingkat',label:'Tingkat',cell:item=>include('../_ui/text',{text:(TINGKAT.find(t=>t.value===item.tingkat)||TINGKAT[TINGKAT.length-1]).label})},
+  {key:'nomorUrut',label:'Urutan',sortable:true},
+],listFilters:[{name:'tingkat',label:'Tingkat',options:TINGKAT}]}) %>

@@ -1,53 +1,13 @@
-<%# Program Studi + impor CSV — FR-M-11. %>
-<%- include('../../components/page-header', { admin: true, heading: 'Program Studi', lead: 'Master data program studi per fakultas.', breadcrumb: [{ label: 'Program Studi' }], actions: [{ label: 'Tambah Program Studi', href: '/admin/program-studi/new', icon: 'add' }] }) %>
-
-<div class="card card-body mb-6 space-y-4">
-  <h2 class="font-semibold">Impor dari CSV</h2>
-  <% if (importErrors) { %>
-    <div class="rounded-control border border-danger-solid bg-danger-soft p-3 text-sm text-danger">
-      <p class="font-semibold">Impor gagal, tidak ada yang disimpan:</p>
-      <ul class="mt-1 list-disc space-y-0.5 pl-5">
-        <% importErrors.forEach(e => { %><li><%= e %></li><% }) %>
-      </ul>
-    </div>
-  <% } %>
-  <form method="POST" action="/admin/program-studi/import" enctype="multipart/form-data" class="flex flex-col gap-3 sm:flex-row sm:items-end">
-    <div class="flex-1">
-      <%- include('../../components/file-upload', { name: 'csv', label: 'File CSV', accept: '.csv,text/csv', required: true, limitText: 'Kolom: nama, singkatan, fakultas.' }) %>
-    </div>
-    <button type="submit" class="btn btn-secondary">Impor</button>
+<%- include('../_ui/academic-list',{basePath:'program-studi',slideOver:true,columns:[
+  {key:'nama',label:'Nama',sortable:true},
+  {key:'singkatan',label:'Singkatan',sortable:true},
+  {key:'fakultas',label:'Fakultas',cell:item=>include('../_ui/text',{text:item.fakultas?.nama})},
+],listFilters:[{name:'fakultas',label:'Fakultas',options:facultyList.map(f=>({value:String(f._id),label:f.nama}))}]}) %>
+<details class="mt-6 rounded-card border border-line bg-surface" <%= locals.importErrors?'open':'' %>>
+  <summary class="min-h-11 cursor-pointer p-4 font-semibold">Impor Program Studi dari CSV</summary>
+  <form method="POST" action="/admin/program-studi/import<%= listHref(state,{page:state.page}) %>" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
+    <%- include('../_ui/error-summary',{errors:locals.importErrors?{csv:importErrors.join(' ')}:{}}) %>
+    <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',accept:'.csv,text/csv',required:true,limitText:'Kolom: nama, singkatan, fakultas. Gunakan nama atau singkatan fakultas.'}) %>
+    <%- include('../_ui/button',{label:'Impor',type:'submit'}) %>
   </form>
-</div>
-
-<div class="card">
-  <% if (!items.length) { %>
-    <div class="p-6">
-      <%- include('../../components/empty-state', { emptyIcon: 'school', emptyTitle: 'Belum ada program studi', emptyAction: { label: 'Tambah Program Studi', href: '/admin/program-studi/new' } }) %>
-    </div>
-  <% } else { %>
-  <table class="data-table data-table--stack">
-    <caption class="sr-only">Daftar program studi</caption>
-    <thead><tr><th scope="col">Nama</th><th scope="col">Singkatan</th><th scope="col">Fakultas</th><th scope="col"><span class="sr-only">Aksi</span></th></tr></thead>
-    <tbody>
-      <% items.forEach(item => { %>
-        <tr data-updated="<%= item.updatedAt ? new Date(item.updatedAt).toISOString() : '' %>">
-          <td data-label="Nama"><span class="line-clamp-1 font-medium"><%= item.nama %></span></td>
-          <td data-label="Singkatan"><%= item.singkatan %></td>
-          <td data-label="Fakultas"><%= item.fakultas ? item.fakultas.nama : '—' %></td>
-          <td data-label="Aksi">
-            <div class="flex items-center gap-1 md:justify-end">
-              <a href="/admin/program-studi/<%= item._id %>/edit" class="btn btn-secondary px-3" aria-label="Ubah <%= item.nama %>"><%- icon('edit') %>Ubah</a>
-              <button type="button" class="btn-icon text-danger hover:bg-danger-soft" data-dialog-open="hapus-<%= item._id %>" aria-label="Hapus <%= item.nama %>"><%- icon('delete') %></button>
-            </div>
-            <%- include('../../components/confirm-dialog', {
-              dialogId: `hapus-${item._id}`, dialogTitle: `Hapus ${item.nama}?`,
-              dialogText: 'Data ini akan dihapus permanen dan tidak bisa dikembalikan.',
-              action: `/admin/program-studi/${item._id}/delete`, confirmLabel: 'Hapus',
-            }) %>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } %>
-</div>
+</details>

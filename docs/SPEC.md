@@ -88,7 +88,8 @@ menerbitkan pengumuman. Keduanya harus nyaman.
 | Sistem | Pengaturan Situs | `/admin/settings` | superadmin | halaman penuh |
 | (menu akun) | Profil saya | `/profile` | semua | halaman penuh |
 
-Jenis form untuk Buku, Buku Wisuda, dan RPL dikonfirmasi saat migrasi. Kalau
+Buku dikonfirmasi tetap slide-over: judul, tahun, PDF, dan sampul. Jenis form
+untuk Buku Wisuda dan RPL dikonfirmasi saat migrasi. Kalau
 formnya ternyata panjang (banyak upload atau field bertingkat), pindahkan ke
 halaman penuh dan catat di tabel ini.
 

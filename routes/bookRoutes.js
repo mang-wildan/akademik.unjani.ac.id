@@ -30,6 +30,7 @@ router.use(requireAuth, requireAdmin);
 router.get('/', bookController.list);
 router.get('/new', bookController.showCreate);
 router.post('/', uploadFields, checkUploads, bookController.create);
+router.post('/bulk', bookController.bulk);
 router.get('/:id/edit', bookController.showEdit);
 router.post('/:id', uploadFields, checkUploads, bookController.update);
 router.post('/:id/delete', bookController.destroy);

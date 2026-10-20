@@ -26,6 +26,8 @@ const uploadFile = upload.fields([{ name: 'file', maxCount: 1 }]);
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', academicDocumentController.bulk);
+
 router.get('/', academicDocumentController.list);
 router.get('/new', academicDocumentController.showCreate);
 router.post('/', uploadFile, checkUploads, academicDocumentController.create);

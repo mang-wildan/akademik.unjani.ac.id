@@ -19,6 +19,9 @@ const ICONS = [
   'verified', 'visibility', 'visibility_off', 'warning', 'workspace_premium',
   // F9: editor teks + unggah
   'format_bold', 'format_italic', 'format_list_bulleted', 'format_list_numbered', 'format_paragraph', 'link', 'link_off', 'title', 'cloud_upload',
+  // Admin v2 (docs/DESIGN.md §5)
+  'dark_mode', 'light_mode', 'contrast', 'left_panel_close', 'left_panel_open', 'check_box', 'check_box_outline_blank',
+  'indeterminate_check_box', 'arrow_upward', 'arrow_downward', 'unfold_more', 'more_horiz', 'toggle_on', 'toggle_off',
 ];
 // Brand logos (simple-icons, CC0), stored as `brand-<name>`. LinkedIn is not in
 // simple-icons (removed at LinkedIn's request), so views fall back to 'public'.

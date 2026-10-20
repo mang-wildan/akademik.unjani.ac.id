@@ -26,6 +26,8 @@ const uploadFile = upload.fields([{ name: 'file', maxCount: 1 }]);
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', kurikulumController.bulk);
+
 router.get('/', kurikulumController.list);
 router.get('/new', kurikulumController.showCreate);
 router.post('/', uploadFile, checkUploads, kurikulumController.create);

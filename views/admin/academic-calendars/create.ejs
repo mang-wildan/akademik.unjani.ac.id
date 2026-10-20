@@ -1,23 +1,18 @@
-<%# Kalender akademik — tahap 1: buat tahun ajaran. Kegiatan & lampiran dikelola di halaman ubah setelah tersimpan. %>
-<%- include('../../components/page-header', { admin: true, heading: 'Tambah Tahun Ajaran', breadcrumb: [{ label: 'Kalender Akademik', href: '/admin/academic-calendars' }, { label: 'Tambah Tahun Ajaran' }] }) %>
-
-<% if (errors._form) { %>
-  <div class="mb-6"><%- include('../../components/alert', { alertTone: 'danger', alertTitle: 'Gagal menyimpan', alertText: errors._form }) %></div>
-<% } %>
-
-<form method="POST" action="/admin/academic-calendars" enctype="multipart/form-data" class="card card-body grid max-w-xl gap-5">
-  <%- include('../../components/form-field', {
+<%- include('../_ui/page-header',{heading:'Tambah Kalender Akademik'}) %>
+<%- include('../_ui/error-summary',{errors}) %>
+<form method="POST" action="/admin/academic-calendars" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-5 rounded-card border border-line bg-surface p-4">
+  <%- include('../_ui/field', {
     name: 'tahunAjaran', label: 'Tahun Ajaran', required: true, value: values.tahunAjaran, error: errors.tahunAjaran,
     placeholder: '2026/2027', help: 'Ditulis seperti 2026/2027.',
   }) %>
-  <%- include('../../components/form-field', {
+  <%- include('../_ui/field', {
     name: 'nomorSK', label: 'Nomor SK Rektor', value: values.nomorSK, error: errors.nomorSK, placeholder: 'Opsional',
   }) %>
-  <%- include('../../components/file-upload', {
+  <%- include('../_ui/upload-field', {
     name: 'file', label: 'File SK Rektor (PDF)', accept: 'application/pdf', required: true,
     limitText: 'PDF, maks. 10 MB.', error: errors.file,
   }) %>
-  <div class="flex justify-end gap-2 border-t border-line pt-5">
+  <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]">
     <a href="/admin/academic-calendars" class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan &amp; Lanjutkan</button>
   </div>

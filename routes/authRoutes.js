@@ -49,7 +49,7 @@ const profilePhotoUpload = (req, res, next) => {
       email: String(body.email !== undefined ? body.email : req.user.email || ''),
       removeProfilePhoto: String(body.removeProfilePhoto || '') === '1',
     };
-    return authController.renderEditProfile(req, res, { values, errors: { profilePhoto: uploadErrorText(err) } }, 400);
+    return authController.renderEditProfile(req, res, { values, errors: { profilePhoto: uploadErrorText(err) } }, 422);
   };
   upload.single('profilePhoto')(req, res, err => {
     if (err) return showError(err);

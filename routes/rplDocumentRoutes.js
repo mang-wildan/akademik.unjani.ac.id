@@ -26,6 +26,8 @@ const uploadFile = upload.fields([{ name: 'file', maxCount: 1 }]);
 
 router.use(requireAuth, requireAdmin);
 
+router.post('/bulk', rplDocumentController.bulk);
+
 router.get('/', rplDocumentController.list);
 router.get('/new', rplDocumentController.showCreate);
 router.post('/', uploadFile, checkUploads, rplDocumentController.create);

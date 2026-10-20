@@ -1,0 +1,5 @@
+<%# Params: text (wajib), tone=neutral (success|warning|danger|info), badgeIcon?. %>
+<%
+  const tones = { neutral: 'bg-sunken text-muted', success: 'bg-success-soft text-success', warning: 'bg-warning-soft text-warning', danger: 'bg-danger-soft text-danger', info: 'bg-info-soft text-info' };
+%>
+<span class="inline-flex h-5 items-center gap-1 rounded-control px-1.5 text-xs font-medium <%= tones[locals.tone] || tones.neutral %>"><% if (locals.badgeIcon) { %><%- icon(locals.badgeIcon, 'size-4') %><% } %><%= locals.text %></span>

@@ -1,0 +1,12 @@
+<div data-list-region>
+  <%- include('page-header', { heading: title, count: pagination.total, actions: [{ label: `Tambah ${title}`, href: `/admin/${basePath}/new`, buttonIcon: 'add', slideOver, shortcut: 'new' }] }) %>
+  <div data-bulk-list x-data="bulkBar" x-on:table-selection="selection" x-bind:data-bulk-active="active" class="rounded-card border border-line bg-surface">
+    <%- include('bulk-bar', { id: `bulk-${basePath}`, action: `/admin/${basePath}/bulk`, noun: title.toLowerCase(), total: pagination.total, state, actions: [...(locals.bulkActions || []), { value: 'delete', label: 'Hapus' }] }) %>
+    <%- include('filter-bar', { state, searchLabel: `Cari ${title.toLowerCase()}`, filters: locals.listFilters || [] }) %>
+    <% if (items.length) { %>
+      <%- include('data-table', { caption: title, items, state, bulkForm: `bulk-${basePath}`, columns, itemLabel: item => { const value=item[columns[0].key]; return String(value?.nama || value || item._id); }, rowHref: item => `/admin/${basePath}/${item._id}/edit`, slideOver, actions: item => include('academic-actions', { item, basePath, slideOver }) }) %>
+    <% } else { %><%- include('empty-state', { text: 'Belum ada data yang cocok.', emptyIcon: 'info', action: { label: 'Hapus filter', href: `/admin/${basePath}` } }) %><% } %>
+    <%- include('pagination', { ...pagination, state, noun: title.toLowerCase() }) %>
+  </div>
+</div>
+<% if (slideOver) { %><%- include('slide-over', { editUrl: `/admin/${basePath}/:id/edit`, newUrl: `/admin/${basePath}/new` }) %><% } %>
