@@ -7,7 +7,7 @@
 
 <div class="container-content pb-16">
   <% if (siteSetting && siteSetting.strukturOrganisasiImage) { %>
-    <div class="card card-body mb-8">
+    <div class="mb-8 rounded-card border border-line bg-surface p-4 sm:p-8">
       <img src="<%= siteSetting.strukturOrganisasiImage %>" alt="Bagan struktur organisasi Bidang Akademik Universitas Jenderal Achmad Yani" class="mx-auto max-w-full">
     </div>
   <% } else { %>
@@ -15,16 +15,18 @@
   <% } %>
 
   <% if (units.length) { %>
-  <h2 class="mb-4 text-xl font-semibold">Unit di Bidang Akademik</h2>
+  <div class="max-w-3xl">
+  <h2 class="mb-2 text-2xl">Unit di Bidang Akademik</h2>
   <p class="mb-4 text-sm text-muted">Versi teks dari bagan di atas, untuk pembaca layar dan pencarian.</p>
-  <ul class="card divide-y divide-line">
+  <ul class="divide-y divide-line border-y border-line">
     <% units.forEach(u => { %>
-      <li class="p-4">
+      <li class="py-4">
         <p class="font-semibold text-ink"><%= u.nama %></p>
         <% if (u.deskripsi) { %><p class="mt-1 text-sm text-muted"><%= u.deskripsi %></p><% } %>
         <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="mt-1 inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('open_in_new', 'size-4') %><%= u.link %></a><% } %>
       </li>
     <% }) %>
   </ul>
+  </div>
   <% } %>
 </div>

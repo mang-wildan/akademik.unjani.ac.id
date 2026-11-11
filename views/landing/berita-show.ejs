@@ -5,10 +5,10 @@
 }) %>
 
 <div class="container-content pb-16">
-  <div class="grid gap-10 lg:grid-cols-[1fr_20rem]">
-    <article>
-      <div class="mb-6 flex flex-wrap items-center gap-2 text-sm text-muted">
-        <% if (item.kategori) { %><%- include('../components/badge', { text: item.kategori.nama, tone: 'info' }) %><% } %>
+  <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <article class="max-w-3xl">
+      <div class="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line pb-5 text-sm text-muted">
+        <% if (item.kategori) { %><span class="font-semibold text-primary uppercase"><%= item.kategori.nama %></span><% } %>
         <time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt, { long: true }) %></time>
         <% if (item.createdBy) { %><span>· <%= item.createdBy.name %></span><% } %>
       </div>
@@ -19,10 +19,10 @@
 
       <% if (item.attachments && item.attachments.length) { %>
       <div class="mt-8">
-        <h2 class="mb-3 text-lg font-semibold">Lampiran</h2>
-        <ul class="card divide-y divide-line">
+        <h2 class="mb-3 text-2xl">Lampiran</h2>
+        <ul class="divide-y divide-line border-y border-line">
           <% item.attachments.forEach(a => { %>
-            <li class="flex items-center gap-3 p-3">
+            <li class="flex items-center gap-3 py-3">
               <%- icon('picture_as_pdf', 'size-6 shrink-0 text-primary') %>
               <span class="min-w-0 flex-1 truncate text-sm font-medium"><%= a.judul %></span>
               <a href="<%= a.file %>" target="_blank" rel="noopener" class="btn btn-secondary shrink-0 px-3 py-1.5 text-sm"><%- icon('download', 'size-4') %>Unduh</a>

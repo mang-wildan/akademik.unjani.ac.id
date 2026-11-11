@@ -2,6 +2,7 @@
 <%- include('../components/page-header', { heading: 'Cari', compact: true, breadcrumb: [{ label: 'Cari' }] }) %>
 
 <div class="container-content pb-16">
+  <div class="max-w-3xl">
   <form method="get" role="search" class="mb-8 flex gap-2">
     <label for="q" class="sr-only">Kata kunci</label>
     <input id="q" name="q" type="search" class="field-control" placeholder="Cari pengumuman, berita, dokumen, atau kurikulum…" value="<%= q %>">
@@ -24,10 +25,10 @@
       <p class="mb-6 text-sm text-muted"><%= formatAngka(total) %> hasil untuk "<%= q %>"</p>
       <% groups.filter(g => g.items.length).forEach(g => { %>
         <section class="mb-8">
-          <h2 class="mb-3 text-lg font-semibold"><%= g.label %></h2>
-          <ul class="card divide-y divide-line">
+          <h2 class="mb-3 text-2xl"><%= g.label %></h2>
+          <ul class="divide-y divide-line border-y border-line">
             <% g.items.forEach(item => { %>
-              <li class="flex items-center justify-between gap-3 p-4">
+              <li class="flex items-center justify-between gap-3 py-4">
                 <a href="<%= item.href %>"<%= g.blank ? ' target="_blank" rel="noopener"' : '' %> class="font-medium text-ink hover:text-primary"><%= item.judul %></a>
                 <span class="shrink-0 text-sm text-muted"><%= formatTanggal(item.tanggal) %></span>
               </li>
@@ -37,4 +38,5 @@
       <% }) %>
     <% } %>
   <% } %>
+  </div>
 </div>

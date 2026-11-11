@@ -6,6 +6,7 @@
 }) %>
 
 <div class="container-content pb-16">
+  <div class="max-w-3xl">
   <%# Teks penjelasan statis untuk F3; dipindah ke kolom yang bisa diedit admin di F4. %>
   <div class="prose-content mb-10">
     <h2>Apa itu RPL?</h2>
@@ -16,26 +17,22 @@
     <p>Pengajuan RPL dilakukan melalui Bidang Akademik dengan melengkapi dokumen portofolio, mengikuti asesmen, dan menunggu penetapan hasil oleh tim asesor. Unduh buku saku dan formulir di bawah untuk panduan lengkap.</p>
   </div>
 
-  <h2 class="mb-4 text-xl font-semibold">Dokumen &amp; Panduan RPL</h2>
+  <h2 class="mb-4 text-3xl">Dokumen &amp; Panduan RPL</h2>
   <% if (!rplDocs.length) { %>
     <%- include('../components/empty-state', { emptyIcon: 'verified', emptyTitle: 'Belum ada dokumen RPL' }) %>
   <% } else { %>
-  <ul class="card divide-y divide-line">
+  <ul class="divide-y divide-line border-y border-line">
     <% rplDocs.forEach(d => { %>
-      <li class="flex items-start gap-4 p-4">
-        <%- icon('picture_as_pdf', 'size-8 shrink-0 text-primary') %>
+      <li class="flex items-start gap-4 py-4">
         <div class="min-w-0 flex-1">
-          <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-block py-1.5 font-semibold text-ink hover:text-primary"><%= d.judul %><span class="sr-only"> (PDF, tab baru)</span></a>
+          <p class="text-xs font-semibold text-primary uppercase">PDF · <%= d.status ? 'Aktif' : 'Arsip' %> · Tahun <%= d.tahun %><% if (d.fileSize) { %> · <%= formatUkuranFile(d.fileSize) %><% } %></p>
+          <a href="<%= d.file %>" target="_blank" rel="noopener" class="mt-1 inline-block py-1.5 font-semibold text-ink no-underline hover:text-primary"><%= d.judul %><span class="sr-only"> (PDF, tab baru)</span></a>
           <% if (d.deskripsi) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.deskripsi %></p><% } %>
-          <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-            <%- include('../components/badge', { text: d.status ? 'Aktif' : 'Arsip', tone: d.status ? 'success' : 'neutral' }) %>
-            <span>Tahun <%= d.tahun %></span>
-            <% if (d.fileSize) { %><span>· <%= formatUkuranFile(d.fileSize) %></span><% } %>
-          </p>
         </div>
         <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download aria-label="Unduh <%= d.judul %>"><%- icon('download') %><span class="hidden sm:inline" aria-hidden="true">Unduh</span></a>
       </li>
     <% }) %>
   </ul>
   <% } %>
+  </div>
 </div>

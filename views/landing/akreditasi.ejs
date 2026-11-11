@@ -6,36 +6,48 @@
 }) %>
 
 <div class="container-content pb-16">
-
   <% if (institusi.length) { %>
-  <div class="mb-6 grid gap-4 <%= institusi.length > 1 ? 'md:grid-cols-2' : '' %>">
+  <div class="mb-14 space-y-10">
     <% institusi.forEach(a => { %>
-      <div class="card card-body">
-        <p class="text-sm font-medium text-muted">Akreditasi Institusi</p>
-        <div class="mt-1 flex flex-wrap items-center gap-3">
-          <span class="font-serif text-3xl font-bold text-primary"><%= a.peringkat %></span>
-          <%- include('../components/badge', { text: a.status.label, tone: a.status.tone }) %>
+      <section class="section-dark grid gap-8 rounded-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <h2 class="eyebrow">Akreditasi Institusi</h2>
+          <p class="mt-3 font-serif text-6xl font-bold tracking-tight text-on-dark-accent sm:text-7xl"><%= a.peringkat %></p>
         </div>
-        <p class="mt-2 text-sm text-muted">
-          <%= a.lembaga ? a.lembaga.singkatan : 'Lembaga belum diisi' %> · Berlaku s.d. <%= formatTanggal(a.berlakuSampai) %>
-          <% if (a.nomorSK) { %> · No. SK <%= a.nomorSK %><% } %>
-        </p>
-        <% if (a.catatanPerpanjangan) { %><p class="mt-1 text-sm font-medium text-warning"><%= a.catatanPerpanjangan %></p><% } %>
-        <a href="<%= a.sertifikat %>" target="_blank" rel="noopener" class="mt-3 inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('picture_as_pdf', 'size-4') %>Lihat Sertifikat</a>
-      </div>
+        <div>
+          <dl class="divide-y divide-white/25 border-y border-white/25 text-sm">
+            <div class="flex items-center justify-between py-3"><dt class="text-xs text-on-dark-muted uppercase">Lembaga</dt><dd class="font-semibold"><%= a.lembaga ? a.lembaga.singkatan : 'Belum diisi' %></dd></div>
+            <% if (a.nomorSK) { %><div class="flex items-center justify-between py-3"><dt class="text-xs text-on-dark-muted uppercase">Nomor SK</dt><dd class="font-semibold"><%= a.nomorSK %></dd></div><% } %>
+            <div class="flex items-center justify-between py-3"><dt class="text-xs text-on-dark-muted uppercase">Berlaku Sampai</dt><dd class="font-semibold"><%= formatTanggal(a.berlakuSampai) %></dd></div>
+            <div class="flex items-center justify-between gap-4 py-3"><dt class="text-xs text-on-dark-muted uppercase">Status</dt><dd class="font-semibold"><%= a.status.label %></dd></div>
+          </dl>
+          <% if (a.catatanPerpanjangan) { %><p class="mt-3 text-sm text-on-dark-accent"><%= a.catatanPerpanjangan %></p><% } %>
+          <% if (a.sertifikat) { %>
+          <div class="mt-4">
+            <a href="<%= a.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white">Lihat sertifikat (PDF)<%- icon('arrow_forward', 'size-4') %><span class="sr-only"> (tab baru)</span></a>
+          </div>
+          <% } %>
+        </div>
+      </section>
     <% }) %>
   </div>
   <% } %>
 
   <% if (peringkatStats.length) { %>
-  <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-    <% peringkatStats.forEach(p => { %>
-      <%- include('../components/stat-tile', { statLabel: 'Peringkat ' + p.peringkat, statValue: p.total, statIcon: 'workspace_premium' }) %>
-    <% }) %>
-  </div>
+  <section class="mb-12 border-t border-line-strong pt-8">
+    <p class="eyebrow">Sebaran Peringkat Akreditasi</p>
+    <div class="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
+      <% peringkatStats.forEach(p => { %>
+        <div>
+          <p class="font-serif text-4xl font-bold tracking-tight text-ink"><%= p.total %></p>
+          <p class="mt-1 text-sm text-muted"><%= p.peringkat %></p>
+        </div>
+      <% }) %>
+    </div>
+  </section>
   <% } %>
 
-  <form method="get" class="card card-body mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+  <form method="get" class="mb-8 grid gap-4 border-t border-line-strong pt-8 sm:grid-cols-2 lg:grid-cols-4">
     <div class="lg:col-span-2">
       <label for="q" class="field-label">Cari</label>
       <input id="q" name="q" type="search" class="field-control" placeholder="Nama program studi atau unit…" value="<%= filters.q %>">
@@ -68,7 +80,7 @@
       emptyText: 'Coba ubah kata kunci atau filter.', emptyAction: { label: 'Hapus filter', href: '/akreditasi' },
     }) %>
   <% } else { %>
-  <div class="card overflow-hidden">
+  <div class="overflow-hidden border-t border-line-strong">
     <table class="data-table data-table--stack">
       <caption class="sr-only">Daftar akreditasi program studi dan unit</caption>
       <thead>
@@ -87,25 +99,24 @@
           <tr>
             <td data-label="Unit / Program Studi" class="font-medium"><%= r.label %></td>
             <td data-label="Fakultas" class="text-muted"><%= r.programStudi?.fakultas?.nama || '—' %></td>
-            <td data-label="Peringkat"><span class="badge badge-neutral"><%= r.peringkat %></span></td>
+            <td data-label="Peringkat"><span class="font-semibold text-ink"><%= r.peringkat %></span></td>
             <td data-label="Lembaga" class="text-muted"><%= r.lembaga?.singkatan || '—' %></td>
             <td data-label="Berlaku s.d."><%= formatTanggal(r.berlakuSampai) %></td>
             <td data-label="Status"><%- include('../components/badge', { text: r.status.label, tone: r.status.tone }) %></td>
-            <td data-label="Sertifikat"><a href="<%= r.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('picture_as_pdf', 'size-4') %>Lihat</a></td>
+            <td data-label="Sertifikat"><a href="<%= r.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %><span class="max-md:inline md:sr-only">Unduh sertifikat <%= r.label %></span></a></td>
           </tr>
           <% if (r.history.length) { %>
           <tr>
             <td colspan="7" class="!py-0 max-md:!block">
               <details class="py-2">
                 <summary class="cursor-pointer py-2 text-sm font-semibold text-primary">Riwayat (<%= r.history.length %>)</summary>
-                <%# HP: daftar sederhana (tabel bersarang menjadi kartu di dalam kartu). Desktop: tabel. %>
                 <ul class="mb-2 divide-y divide-line md:hidden">
                   <% r.history.forEach(h => { %>
                     <li class="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 text-sm">
-                      <span class="badge badge-neutral"><%= h.peringkat %></span>
+                      <span class="font-semibold text-ink"><%= h.peringkat %></span>
                       <%- include('../components/badge', { text: accreditationStatus(h.berlakuSampai).label, tone: accreditationStatus(h.berlakuSampai).tone }) %>
                       <span class="w-full text-muted"><%= formatRentangTanggal(h.tanggalBerlaku, h.berlakuSampai) %></span>
-                      <a href="<%= h.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 font-semibold"><%- icon('picture_as_pdf', 'size-4') %>Lihat sertifikat<span class="sr-only"> <%= h.peringkat %> (tab baru)</span></a>
+                      <a href="<%= h.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 font-semibold"><%- icon('download', 'size-4') %>Lihat sertifikat<span class="sr-only"> <%= h.peringkat %> (tab baru)</span></a>
                     </li>
                   <% }) %>
                 </ul>
@@ -115,7 +126,7 @@
                   <tbody>
                     <% r.history.forEach(h => { %>
                       <tr>
-                        <td data-label="Peringkat"><span class="badge badge-neutral"><%= h.peringkat %></span></td>
+                        <td data-label="Peringkat"><span class="font-semibold text-ink"><%= h.peringkat %></span></td>
                         <td data-label="Berlaku"><%= formatRentangTanggal(h.tanggalBerlaku, h.berlakuSampai) %></td>
                         <td data-label="Status"><%- include('../components/badge', { text: accreditationStatus(h.berlakuSampai).label, tone: accreditationStatus(h.berlakuSampai).tone }) %></td>
                         <td data-label="Sertifikat"><a href="<%= h.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center text-sm font-semibold">Lihat</a></td>

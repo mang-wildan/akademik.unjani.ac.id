@@ -7,10 +7,10 @@
 
 <div class="container-content pb-16">
   <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-    <article class="card min-w-0 p-5 sm:p-8">
+    <article class="min-w-0 max-w-3xl">
       <div class="mb-6 flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-line pb-5 text-sm text-muted">
         <% if (item.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
-        <% if (item.kategori) { %><%- include('../components/badge', { text: item.kategori.nama, tone: 'neutral' }) %><% } %>
+        <% if (item.kategori) { %><span class="font-semibold text-primary uppercase"><%= item.kategori.nama %></span><% } %>
         <span class="inline-flex items-center gap-2"><%- icon('event', 'size-4') %><time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt, { long: true }) %></time></span>
         <% if (item.createdBy) { %><span class="break-words">Diterbitkan oleh <%= item.createdBy.name %></span><% } %>
       </div>

@@ -1,39 +1,65 @@
-<%# Pimpinan & Staf (FR-L-03): satu blok per tingkat dari atas ke bawah (utils/staffTingkat.js), kartu makin kecil ke bawah. NIP tidak pernah dikirim ke view ini (K-05). %>
+<%# Pimpinan & Staf (FR-L-03): satu pita per tingkat (utils/staffTingkat.js) — label kiri, orang kanan.
+    Makin bawah makin ringkas: foto besar → grid foto → baris berfoto kecil → baris teks. NIP tidak pernah dikirim ke view ini (K-05). %>
 <%- include('../components/page-header', {
   heading: 'Pimpinan & Staf',
   lead: 'Struktur kepemimpinan dan staf yang mendukung layanan akademik.',
   breadcrumb: [{ label: 'Profil' }, { label: 'Pimpinan & Staf' }],
 }) %>
-<%
-  // Per tingkat: lebar kartu, ukuran foto, ukuran nama. Kunci = nilai tingkat. Baris flex terpusat: sisa kartu di baris terakhir tetap di tengah.
-  const dua = 'w-[calc(50%-0.625rem)]'; // dua kartu per baris di HP
-  const gaya = {
-    'wakil-rektor': { kartu: 'w-full max-w-md', foto: 'size-32', nama: 'text-xl' },
-    'kepala-biro': { kartu: 'w-full sm:w-80', foto: 'size-24', nama: 'text-lg' },
-    'kepala-bagian': { kartu: `${dua} sm:w-56`, foto: 'size-20', nama: 'text-base' },
-    'kepala-urusan': { kartu: `${dua} sm:w-52`, foto: 'size-16', nama: 'text-base' },
-    'anggota': { kartu: `${dua} sm:w-44`, foto: 'size-14', nama: 'text-sm' },
-  };
-%>
 
 <div class="container-content pb-16">
   <% if (!grup.length) { %>
     <%- include('../components/empty-state', { emptyIcon: 'groups', emptyTitle: 'Belum ada data pimpinan dan staf' }) %>
   <% } else { %>
-    <% grup.forEach((g, i) => { const s = gaya[g.value]; %>
-    <section aria-labelledby="tingkat-<%= g.value %>" class="relative <%= i ? 'pt-12' : '' %>">
-      <%# Garis penghubung antartingkat: hanya hiasan. %>
-      <% if (i) { %><span class="absolute top-0 left-1/2 h-8 w-px bg-accent" aria-hidden="true"></span><% } %>
-      <h2 id="tingkat-<%= g.value %>" class="mb-6 text-center text-xl font-semibold"><span class="eyebrow"><%= g.label %></span></h2>
-      <ul class="flex flex-wrap justify-center gap-5">
+    <% grup.forEach(g => { const tokoh = ['wakil-rektor', 'kepala-biro'].includes(g.value); %>
+    <section aria-labelledby="tingkat-<%= g.value %>" class="grid gap-6 border-t border-line-strong py-10 lg:grid-cols-[14rem_1fr] lg:gap-10">
+      <div>
+        <h2 id="tingkat-<%= g.value %>" class="eyebrow"><%= g.label %></h2>
+        <p class="mt-1 text-xs text-muted uppercase"><%= g.items.length %> orang</p>
+      </div>
+
+      <% if (tokoh) { %>
+      <ul class="space-y-10">
         <% g.items.forEach(p => { %>
-          <li class="card card-body flex flex-col items-center text-center <%= s.kartu %>">
-            <img src="<%= p.foto %>" alt="" class="<%= s.foto %> rounded-full object-cover" loading="lazy">
-            <p class="mt-3 font-semibold text-ink <%= s.nama %>"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
-            <p class="text-sm text-muted"><%= p.jabatan %></p>
+          <li class="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10">
+            <img src="<%= p.foto %>" alt="" class="aspect-[3/4] w-40 rounded-card object-cover <%= g.value === 'wakil-rektor' ? 'sm:w-48' : '' %>" loading="lazy">
+            <div class="min-w-0">
+              <p class="font-serif text-2xl font-bold tracking-tight <%= g.value === 'wakil-rektor' ? 'sm:text-3xl' : '' %>"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
+              <p class="mt-2 text-muted"><%= p.jabatan %></p>
+            </div>
           </li>
         <% }) %>
       </ul>
+      <% } else if (g.value === 'kepala-bagian') { %>
+      <ul class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
+        <% g.items.forEach(p => { %>
+          <li class="min-w-0">
+            <img src="<%= p.foto %>" alt="" class="aspect-square w-full rounded-card object-cover" loading="lazy">
+            <p class="mt-3 font-semibold"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
+            <p class="mt-1 text-sm text-muted"><%= p.jabatan %></p>
+          </li>
+        <% }) %>
+      </ul>
+      <% } else if (g.value === 'kepala-urusan') { %>
+      <ul class="divide-y divide-line">
+        <% g.items.forEach(p => { %>
+          <li class="flex items-center gap-4 py-3">
+            <img src="<%= p.foto %>" alt="" class="size-12 shrink-0 rounded-card object-cover" loading="lazy">
+            <p class="min-w-0 flex-1 font-semibold"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
+            <p class="min-w-0 flex-1 text-sm break-words text-muted sm:text-right"><%= p.jabatan %></p>
+          </li>
+        <% }) %>
+      </ul>
+      <% } else { %>
+      <ul class="grid gap-x-10 sm:grid-cols-2">
+        <% g.items.forEach(p => { %>
+          <li class="flex flex-wrap items-center gap-4 border-b border-line py-3">
+            <img src="<%= p.foto %>" alt="" class="size-12 shrink-0 rounded-card object-cover" loading="lazy">
+            <p class="min-w-0 flex-1 font-semibold"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
+            <p class="min-w-0 flex-1 text-sm break-words text-muted sm:text-right"><%= p.jabatan %></p>
+          </li>
+        <% }) %>
+      </ul>
+      <% } %>
     </section>
     <% }) %>
   <% } %>

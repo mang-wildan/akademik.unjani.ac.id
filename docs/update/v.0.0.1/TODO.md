@@ -48,13 +48,18 @@
 
 ## Tahap 4 — Halaman daftar & baca
 
-- [ ] `berita.ejs` + `berita-show.ejs` (unggulan besar + baris bergaris).
-- [ ] `pengumuman.ejs` + `pengumuman-show.ejs`.
-- [ ] `profil.ejs`, `rpl.ejs`, `kurikulum.ejs` (pola halaman baca).
-- [ ] `pimpinan-staff.ejs` (grid foto), `struktur-organisasi.ejs`, `kalender-akademik.ejs` (panel gambar).
-- [ ] `akreditasi.ejs` (pita institusi + baris prodi).
-- [ ] `dokumen-akademik.ejs`, `buku.ejs`, `buku-wisuda.ejs` (grid cover).
-- [ ] `cari.ejs`, `error.ejs` (pola baca).
+- [x] `berita.ejs` + `berita-show.ejs` (unggulan besar + baris bergaris).
+- [x] `pengumuman.ejs` + `pengumuman-show.ejs`.
+- [x] `profil.ejs`, `rpl.ejs`, `kurikulum.ejs` (pola halaman baca).
+- [x] `pimpinan-staff.ejs` (grid foto), `struktur-organisasi.ejs`, `kalender-akademik.ejs` (panel gambar).
+  - Catatan model `AcademicCalendar` tidak menyimpan gambar bagan, sehingga kalender mempertahankan blok agenda berlangsung/berikutnya dan tabel tab per semester dengan permukaan baru.
+  - Review menemukan foto staf anggota hilang dan overflow horizontal `dokumen-akademik` pada 320px; keduanya diperbaiki dan dikunci dengan tes regresi.
+- [x] `akreditasi.ejs` (pita institusi + baris prodi).
+- [x] `dokumen-akademik.ejs`, `buku.ejs`, `buku-wisuda.ejs` (grid cover).
+- [x] `cari.ejs`, `error.ejs` (pola baca).
+  - 13 route daftar/baca publik dan halaman 404 dicek di Chrome headless pada 320px, 768px, 1024px, dan 1440px: tanpa overflow horizontal dan satu `h1` per halaman. Skenario navigasi 320px tidak menangkap page error; dua URL foto staf lama di data dev mengembalikan 404. Audit fungsi detail/unduhan dan aksesibilitas menyeluruh tetap pada Tahap 5.
+  - Ruling: Error tetap mandiri dengan CSS inline yang sudah diizinkan middleware agar bertahan saat aset/database gagal; warna, radius, dan pola bacanya diselaraskan. Dokumen akademik tetap daftar PDF karena tidak memiliki field cover; grid cover dipakai pada Buku/Buku Wisuda.
+  - `npm run build:css` minified + `npm test`: 252 lulus, 0 gagal.
 
 ## Tahap 5 — Penutup
 

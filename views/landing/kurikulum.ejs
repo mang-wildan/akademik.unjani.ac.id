@@ -6,7 +6,7 @@
 }) %>
 
 <div class="container-content pb-16">
-  <form method="get" class="card card-body mb-6 flex flex-wrap items-end gap-3">
+  <form method="get" class="mb-10 flex flex-wrap items-end gap-3 border-b border-line pb-6">
     <div>
       <label for="fakultas" class="field-label">Fakultas</label>
       <select id="fakultas" name="fakultas" class="field-control">
@@ -31,27 +31,28 @@
       emptyAction: (filters.fakultas || filters.jenjang) ? { label: 'Hapus filter', href: '/kurikulum' } : null,
     }) %>
   <% } else { %>
-  <div class="space-y-8">
+  <div class="space-y-12">
     <% groups.forEach(g => { %>
-      <div>
-        <h2 class="mb-3 text-lg font-semibold"><%= g.fakultas %> <span class="font-normal text-muted">— <%= g.items.length %> program studi</span></h2>
-        <div class="card overflow-hidden">
-          <table class="data-table data-table--stack">
-            <caption class="sr-only">Kurikulum <%= g.fakultas %></caption>
-            <thead><tr><th scope="col">Program Studi</th><th scope="col">Jenjang</th><th scope="col">Tahun Kurikulum</th><th scope="col"><span class="sr-only">Unduh</span></th></tr></thead>
-            <tbody>
-              <% g.items.forEach(k => { %>
-                <tr>
-                  <td data-label="Program Studi" class="font-medium"><%= k.namaProdi %></td>
-                  <td data-label="Jenjang"><span class="badge badge-neutral"><%= k.jenjang %></span></td>
-                  <td data-label="Tahun Kurikulum"><%= k.tahun %></td>
-                  <td data-label="Unduh"><a href="<%= k.file %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %>Unduh</a></td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+      <section class="grid gap-6 lg:grid-cols-[16rem_1fr] lg:gap-10">
+        <div>
+          <h2 class="text-2xl"><%= g.fakultas %></h2>
+          <p class="mt-1 text-sm text-muted"><%= g.items.length %> program studi</p>
         </div>
-      </div>
+        <table class="data-table data-table--stack border-t border-line-strong">
+          <caption class="sr-only">Kurikulum <%= g.fakultas %></caption>
+          <thead><tr><th scope="col">Program Studi</th><th scope="col">Jenjang</th><th scope="col">Tahun Kurikulum</th><th scope="col"><span class="sr-only">Unduh</span></th></tr></thead>
+          <tbody>
+            <% g.items.forEach(k => { %>
+              <tr>
+                <td data-label="Program Studi" class="font-medium"><%= k.namaProdi %></td>
+                <td data-label="Jenjang"><%= k.jenjang %></td>
+                <td data-label="Tahun Kurikulum"><%= k.tahun %></td>
+                <td data-label="Unduh"><a href="<%= k.file %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %>Unduh<span class="sr-only"> kurikulum <%= k.namaProdi %> (PDF, tab baru)</span></a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </section>
     <% }) %>
   </div>
   <% } %>

@@ -6,7 +6,7 @@
 }) %>
 
 <div class="container-content pb-16">
-  <form method="get" class="card card-body mb-6 flex flex-wrap items-end gap-3">
+  <form method="get" class="mb-8 flex flex-wrap items-end gap-3 border-b border-line pb-6">
     <div>
       <label for="tahun" class="field-label">Tahun</label>
       <select id="tahun" name="tahun" class="field-control">
@@ -30,12 +30,12 @@
   <% } else { %>
   <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
     <% gradBooks.forEach(b => { %>
-      <article>
-        <%# Dekoratif: judul di bawah membawa tautan yang sama dan bisa diakses. %>
-        <a href="<%= b.src %>" target="_blank" rel="noopener" class="block overflow-hidden rounded-card border border-line bg-sunken shadow-card" aria-hidden="true" tabindex="-1">
-          <img src="<%= b.cover %>" alt="" class="aspect-[3/4] w-full object-cover">
+      <article class="min-w-0">
+        <a href="<%= b.src %>" target="_blank" rel="noopener" class="block no-underline">
+          <img src="<%= b.cover %>" alt="" class="aspect-[3/4] w-full rounded-card border border-line object-cover" loading="lazy">
+          <h2 class="mt-4 min-h-11 font-sans text-base font-semibold leading-snug text-ink"><%= b.title %></h2>
+          <span class="mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Baca PDF<%- icon('arrow_forward', 'size-4') %><span class="sr-only"> (tab baru)</span></span>
         </a>
-        <a href="<%= b.src %>" target="_blank" rel="noopener" class="mt-2 inline-block line-clamp-2 py-1 text-sm font-semibold text-ink hover:text-primary"><%= b.title %><span class="sr-only"> (PDF, tab baru)</span></a>
         <p class="text-xs text-muted">Periode <%= b.periode %> · Tahun <%= b.year %></p>
       </article>
     <% }) %>

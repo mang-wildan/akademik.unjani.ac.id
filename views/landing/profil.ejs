@@ -1,4 +1,3 @@
-<%# Profil Bidang Akademik (FR-L-02). %>
 <%- include('../components/page-header', {
   heading: profileContent.judulHalaman,
   lead: 'Visi, misi, tugas, dan layanan Bidang Akademik Universitas Jenderal Achmad Yani.',
@@ -6,58 +5,45 @@
 }) %>
 
 <div class="container-content pb-16">
-  <%# Ringkasan 300–1200 karakter: terlalu panjang untuk lead di banner (F7 R3), jadi paragraf pembuka di sini. %>
-  <p class="mb-8 max-w-3xl text-lg leading-relaxed text-ink"><%= profileContent.ringkasan %></p>
-  <div class="grid gap-6 md:grid-cols-2">
-    <div class="card card-body">
-      <h2 class="mb-2 text-lg font-semibold">Visi</h2>
-      <p class="text-muted"><%= profileContent.visi %></p>
-    </div>
-    <div class="card card-body">
-      <h2 class="mb-2 text-lg font-semibold">Misi</h2>
-      <ul class="list-disc space-y-1 pl-5 text-muted">
-        <% profileContent.misi.forEach(m => { %><li><%= m %></li><% }) %>
-      </ul>
-    </div>
-    <div class="card card-body">
-      <h2 class="mb-2 text-lg font-semibold">Tugas</h2>
-      <ul class="list-disc space-y-1 pl-5 text-muted">
-        <% profileContent.tugas.forEach(t => { %><li><%= t %></li><% }) %>
-      </ul>
-    </div>
-    <div class="card card-body">
-      <h2 class="mb-2 text-lg font-semibold">Fungsi</h2>
-      <ul class="list-disc space-y-1 pl-5 text-muted">
-        <% profileContent.fungsi.forEach(f => { %><li><%= f %></li><% }) %>
-      </ul>
-    </div>
+  <div class="max-w-3xl">
+    <p class="mb-10 text-lg leading-relaxed"><%= profileContent.ringkasan %></p>
+    <section class="border-t border-line py-8">
+      <h2 class="mb-4 text-3xl">Visi</h2>
+      <p class="leading-relaxed text-muted"><%= profileContent.visi %></p>
+    </section>
+    <% ['misi', 'tugas', 'fungsi'].forEach(key => { if (!profileContent[key].length) return; %>
+    <section class="border-t border-line py-8">
+      <h2 class="mb-4 text-3xl capitalize"><%= key %></h2>
+      <ol class="list-decimal space-y-4 pl-5 leading-relaxed text-muted">
+        <% profileContent[key].forEach(teks => { %><li class="pl-2"><%= teks %></li><% }) %>
+      </ol>
+    </section>
+    <% }) %>
   </div>
 
   <% if (units.length) { %>
-  <div class="mt-10">
-    <h2 class="mb-4 text-xl font-semibold">Unit Pendukung Akademik</h2>
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+  <section class="mt-10 border-t border-line pt-8">
+    <h2 class="mb-6 text-3xl">Unit Pendukung Akademik</h2>
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
       <% units.forEach(u => { %>
-        <div class="card overflow-hidden">
-          <% if (u.img) { %><img src="<%= u.img %>" alt="" class="aspect-video w-full object-cover"><% } %>
-          <div class="card-body">
-            <p class="font-semibold text-ink"><%= u.nama %></p>
-            <% if (u.deskripsi) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= u.deskripsi %></p><% } %>
-            <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="mt-2 inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('open_in_new', 'size-4') %>Kunjungi</a><% } %>
-          </div>
-        </div>
+      <article class="min-w-0">
+        <% if (u.img) { %><img src="<%= u.img %>" alt="" class="mb-4 aspect-video w-full rounded-card object-cover" loading="lazy"><% } %>
+        <h3 class="font-sans text-lg font-semibold"><%= u.nama %></h3>
+        <% if (u.deskripsi) { %><p class="mt-2 text-sm leading-relaxed text-muted"><%= u.deskripsi %></p><% } %>
+        <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-semibold">Kunjungi<%- icon('open_in_new', 'size-4') %><span class="sr-only"> <%= u.nama %> (tab baru)</span></a><% } %>
+      </article>
       <% }) %>
     </div>
-  </div>
+  </section>
   <% } %>
 
-  <div class="card card-body mt-10">
-    <h2 class="mb-3 text-lg font-semibold">Informasi Kontak</h2>
-    <dl class="grid gap-4 sm:grid-cols-3">
-      <% if (profileContent.kontakEmail) { %><div><dt class="text-xs font-semibold tracking-wide text-muted uppercase">Email</dt><dd class="mt-1"><a href="mailto:<%= profileContent.kontakEmail %>" class="font-medium"><%= profileContent.kontakEmail %></a></dd></div><% } %>
-      <% if (profileContent.kontakTelepon) { %><div><dt class="text-xs font-semibold tracking-wide text-muted uppercase">Telepon</dt><dd class="mt-1 font-medium"><%= profileContent.kontakTelepon %></dd></div><% } %>
-      <% if (profileContent.jamLayanan) { %><div><dt class="text-xs font-semibold tracking-wide text-muted uppercase">Jam Layanan</dt><dd class="mt-1 font-medium"><%= profileContent.jamLayanan %></dd></div><% } %>
+  <section class="mt-10 border-t border-line pt-8">
+    <h2 class="mb-6 text-3xl">Informasi Kontak</h2>
+    <dl class="grid gap-6 sm:grid-cols-3">
+      <% if (profileContent.kontakEmail) { %><div class="min-w-0"><dt class="text-sm text-muted">Email</dt><dd class="mt-1 break-words"><a href="mailto:<%= profileContent.kontakEmail %>" class="inline-flex min-h-11 items-center font-medium"><%= profileContent.kontakEmail %></a></dd></div><% } %>
+      <% if (profileContent.kontakTelepon) { %><div><dt class="text-sm text-muted">Telepon</dt><dd class="mt-1 font-medium"><%= profileContent.kontakTelepon %></dd></div><% } %>
+      <% if (profileContent.jamLayanan) { %><div><dt class="text-sm text-muted">Jam Layanan</dt><dd class="mt-1 font-medium"><%= profileContent.jamLayanan %></dd></div><% } %>
     </dl>
-    <% if (profileContent.alamatLayanan) { %><p class="mt-4 text-sm text-muted"><%- icon('location_on', 'size-4 inline -mt-0.5') %> <%= profileContent.alamatLayanan %></p><% } %>
-  </div>
+    <% if (profileContent.alamatLayanan) { %><p class="mt-4 text-sm text-muted"><%= profileContent.alamatLayanan %></p><% } %>
+  </section>
 </div>
