@@ -1,6 +1,6 @@
 /*
  * Design system Bidang Akademik UNJANI — sumber Tailwind CSS v4.
- * Token mengikuti docs/Design/sistem_informasi_akademik_unjani/DESIGN.md (SRS §7),
+ * Fondasi publik mengikuti docs/update/v.0.0.1/design.md; admin memakai admin.css.
  * dengan koreksi kontras: placeholder dan border kolom isian digelapkan agar
  * lolos WCAG 1.4.3 / 1.4.11.
  *   npm run build:css   → public/css/app.css (di-commit)
@@ -74,19 +74,20 @@
   --color-brand: #14532d;          /* header bar, footer */
   --color-accent: #ca8a04;         /* gold: rules & icons only, never small text on light */
 
-  --color-canvas: #f8faf9;
+  --color-canvas: #faf8f3;
   --color-surface: #ffffff;
-  --color-sunken: #f1f5f9;
-  --color-line: #e2e8f0;           /* decorative borders (cards, table rows) */
-  --color-line-strong: #cbd5e1;
-  --color-control: #64748b;        /* form control borders: 4.8:1 */
+  --color-sunken: #f6f3ec;
+  --color-line: #e5e0d5;           /* decorative borders (cards, table rows) */
+  --color-line-strong: #cfc8b8;
+  --color-control: #6e776f;        /* form control borders: ≥4.3:1 */
 
-  --color-ink: #0f172a;
-  --color-muted: #475569;          /* 7.6:1 */
-  --color-placeholder: #64748b;    /* 4.8:1 */
-  --color-on-dark-muted: #cbd5e1;  /* 6.1:1 on brand */
+  --color-ink: #1a2e22;
+  --color-muted: #4b5b50;          /* ≥6.9:1 on canvas */
+  --color-placeholder: #5f6d63;    /* ≥5.3:1 on surface */
+  --color-on-dark-muted: #d6dfd8;  /* ≥6.7:1 on brand */
   --color-on-dark-accent: #facc15; /* 5.9:1 on brand — gold text on dark; accent is only 3.1:1 there */
-  --color-brand-tint: #ecf6ef;     /* tinted section band; primary text stays 4.5:1 on it */
+  /* shortcut: compatibility tokens kept until Tahap 2-4 remove view callers */
+  --color-brand-tint: #eff5f0;
 
   --color-success: #166534;
   --color-success-soft: #dcfce7;
@@ -103,12 +104,12 @@
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: "Source Serif 4", ui-serif, Georgia, "Times New Roman", serif;
 
-  --radius-control: 0.5rem;
-  --radius-card: 0.75rem;
+  --radius-control: 0.375rem;
+  --radius-card: 0.5rem;
 
-  --shadow-card: 0 1px 3px 0 rgb(15 23 42 / 0.04), 0 1px 2px -1px rgb(15 23 42 / 0.04);
-  --shadow-raised: 0 4px 6px -1px rgb(15 23 42 / 0.07), 0 2px 4px -2px rgb(15 23 42 / 0.05);
-  --shadow-modal: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.05);
+  --shadow-card: none;
+  --shadow-raised: 0 4px 12px 0 rgb(26 46 34 / 0.08);
+  --shadow-modal: 0 12px 24px -4px rgb(26 46 34 / 0.14);
 
   --container-content: 80rem;      /* 1280px */
   --container-reading: 45rem;      /* 720px */
@@ -189,7 +190,7 @@
     @apply bg-primary text-white hover:bg-primary-hover active:bg-primary-active;
   }
   .btn-documents {
-    @apply gap-2.5 whitespace-nowrap border border-primary-hover bg-brand py-1.5 pl-2 pr-4 text-white shadow-card transition-[color,background-color,border-color,transform] duration-150 hover:bg-primary-hover active:bg-primary-active motion-safe:active:translate-y-px;
+    @apply gap-2.5 whitespace-nowrap border border-black bg-black py-1.5 pl-2.5 pr-4 text-white transition-[background-color,border-color,transform] duration-150 hover:bg-ink active:bg-brand motion-safe:active:translate-y-px;
   }
   .btn-secondary {
     @apply border border-line-strong bg-surface text-ink hover:bg-sunken;
@@ -276,38 +277,32 @@
 
   /* Section heading — markup lives in components/section-heading.ejs */
   .eyebrow {
-    @apply inline-flex items-center gap-3 text-sm font-semibold tracking-[0.14em] text-primary uppercase;
-  }
-  .eyebrow::before {
-    content: "";
-    @apply h-0.5 w-8 shrink-0 rounded-full bg-accent;
+    @apply inline-flex items-center text-xs font-semibold tracking-[0.16em] text-muted uppercase;
   }
   .section-title {
-    @apply text-3xl font-bold md:text-4xl;
+    @apply font-serif text-3xl font-bold tracking-tight md:text-4xl;
   }
   .section-lead {
-    @apply mt-3 max-w-2xl text-lg text-muted;
+    @apply mt-3 max-w-2xl text-base text-muted;
   }
   .section-link {
     @apply inline-flex min-h-11 shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline;
   }
-  .section-dark .eyebrow,
+  .section-dark .eyebrow {
+    @apply text-on-dark-muted;
+  }
   .section-dark .section-link {
     @apply text-on-dark-accent;
-  }
-  .section-dark .eyebrow::before {
-    @apply bg-on-dark-accent;
   }
   .section-dark .section-lead {
     @apply text-on-dark-muted;
   }
   /* A white .card inside the band is light again */
-  .section-dark .card .eyebrow,
+  .section-dark .card .eyebrow {
+    @apply text-muted;
+  }
   .section-dark .card .section-link {
     @apply text-primary;
-  }
-  .section-dark .card .eyebrow::before {
-    @apply bg-accent;
   }
   .section-dark .card .section-lead {
     @apply text-muted;
@@ -326,7 +321,7 @@
 
   /* Surfaces */
   .card {
-    @apply rounded-card border border-line bg-surface shadow-card;
+    @apply rounded-card border border-line bg-surface;
   }
   .card-body {
     @apply p-5;

@@ -15,12 +15,15 @@
 
 ## Tahap 1 — Fondasi token (`assets/css/app.css`)
 
-- [ ] Ganti nilai token: `canvas` ivory, `ink`/`muted` hangat, `line` hangat; `brand`/`primary`/`accent` tetap.
-- [ ] Uji kontras pasangan baru (teks ≥4.5:1, UI ≥3:1) — catat hasilnya.
-- [ ] Satukan radius: panel `0.5rem`, kontrol `0.375rem`; hapus shadow kartu.
-- [ ] Restyle kelas komponen CSS: `btn-*`, `card` (→ panel bergaris), `eyebrow`, `section-*`, fokus di atas blok hijau.
-- [ ] Hapus token/kelas yang tidak dipakai lagi (`info`, `gold-soft`, `brand-tint`, kelas glass) — grep dulu pemakaiannya di views.
-- [ ] `npm run build:css` + `npm test`.
+- [x] Ganti nilai token: `canvas` ivory, `ink`/`muted` hangat, `line` hangat; `brand`/`primary`/`accent` tetap.
+- [x] Uji kontras pasangan baru (teks ≥4.5:1, UI ≥3:1) — catat hasilnya.
+- [x] Satukan radius: panel `0.5rem`, kontrol `0.375rem`; hapus shadow kartu.
+- [x] Restyle kelas komponen CSS: `btn-*`, `card` (→ panel bergaris), `eyebrow`, `section-*`, fokus di atas blok hijau.
+- [x] Hapus token/kelas yang tidak dipakai lagi (`info`, `gold-soft`, `brand-tint`, kelas glass) — grep dulu pemakaiannya di views.
+  - Catatan: token `info`, `gold-soft`, dan `brand-tint` sengaja dipertahankan sebagai alias kompatibilitas selama Tahap 2–4 agar views publik yang belum direfaktor tidak rusak saat build; penghapusan total dieksekusi di Tahap 5 setelah seluruh views selesai.
+- [x] `npm run build:css` + `npm test` (238 lulus, 0 gagal).
+  - Kontras diuji otomatis di `test/publicTokens.test.js` untuk teks, status, kontrol, dan fokus. `sunken` dikalibrasi ke `#f6f3ec` agar tautan primary tetap ≥4.5:1.
+  - Review menemukan benturan warna judul di blok hijau; diperbaiki dan dikunci dengan tes regresi. Screenshot Beranda 1440 × 1000 diperiksa setelah build.
 
 ## Tahap 2 — Shell bersama
 
