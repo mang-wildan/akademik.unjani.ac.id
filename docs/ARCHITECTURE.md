@@ -79,7 +79,7 @@ docs/                  SPEC, DESIGN, ARCHITECTURE, TODO, catatan verifikasi per 
   helper `assetUrl()` saat server mulai; restart server setelah build).
 - Hasil build di-commit, jadi server produksi tidak butuh devDependencies.
 - Deploy ke server dev-akademik dengan atomic swap + pm2. Rilis aktif di dev
-  per 20 Oktober 2026 adalah F5 (`f5-20261020-01`); verifikasi serta rollback:
+  per 20 Oktober 2026 adalah F5 (`f5-20261020-02`); verifikasi serta rollback:
   [F5-DEPLOY.md](F5-DEPLOY.md).
 - Sebelum deploy produksi: `node scripts/audit/upload-paths.js "$PWD"` dengan
   `.env` produksi (lihat §2.7).

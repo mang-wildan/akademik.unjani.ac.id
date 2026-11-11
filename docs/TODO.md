@@ -128,7 +128,7 @@ Seluruh F4 kini terdeploy dan terverifikasi di dev-akademik; lihat
 | [x] | F5-03 | Audit akhir: kriteria selesai SPEC §8 (a11y dua tema, ukuran `admin.css` ≤60 KB, `app.css` tidak bertambah, `npm test`), review kode seluruh perubahan | — | F5-02 | Opus 5.5 / OpenAI berat | high |
 | [x] | F5-04 | Perbarui ARCHITECTURE §1 agar menggambarkan kondisi baru; hapus catatan "selama migrasi" | `docs/ARCHITECTURE.md` | F5-03 | Haiku 5.5 / OpenAI ringan | low |
 
-F5 selesai dan terdeploy di dev-akademik (`f5-20261020-01`); lihat
+F5 selesai dan terdeploy di dev-akademik (`f5-20261020-02`, termasuk perbaikan login); lihat
 [F5-DEPLOY.md](F5-DEPLOY.md) dan
 [F5-01-02-VERIFICATION.md](F5-01-02-VERIFICATION.md).
 

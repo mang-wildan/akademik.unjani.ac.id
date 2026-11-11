@@ -44,3 +44,17 @@ test('blocked login shows the reason and a reload link instead of accepting subm
   assert.match(html, /href="\/login"[^>]*>Periksa kembali/);
   assert.doesNotMatch(html, /google\.com\/recaptcha\/api\.js/);
 });
+
+// Parser Alpine CSP tidak mengevaluasi negasi (x-show="!open"), sehingga ikon mata dan
+// mata-dicoret tampil bersamaan. Ikon kini mengikuti aria-pressed tombol lewat CSS.
+test('password toggle shows exactly one icon, driven by aria-pressed instead of x-show negation', async () => {
+  const html = await render();
+  const button = html.match(/<button[^>]*aria-controls="f-password"[^>]*>([\s\S]*?)<\/button>/);
+  assert.ok(button, 'tombol tampilkan password tidak ditemukan');
+  assert.match(button[0], /class="[^"]*\bgroup\b/);
+  assert.doesNotMatch(button[1], /x-show/);
+  const spans = [...button[1].matchAll(/<span class="([^"]*)"/g)].map(m => m[1].split(' '));
+  assert.equal(spans.length, 2);
+  assert.ok(spans[0].includes('group-aria-pressed:hidden'), 'ikon mata disembunyikan saat password tampil');
+  assert.ok(spans[1].includes('hidden') && spans[1].includes('group-aria-pressed:inline'), 'ikon mata-dicoret hanya saat password tampil');
+});

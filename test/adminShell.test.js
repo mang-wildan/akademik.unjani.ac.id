@@ -121,12 +121,13 @@ test('shared components register once with either app or admin and preserve beha
   }
 });
 
-test('existing layouts load versioned shared components before app and Alpine', () => {
-  for (const [layout, bundle] of [['public', 'app'], ['admin-v2', 'admin']]) {
-    const source = fs.readFileSync(require.resolve(`../views/layouts/${layout}.ejs`), 'utf8');
+test('every page that boots Alpine loads versioned shared components before its bundle and Alpine', () => {
+  // auth/login adalah halaman mandiri (tanpa layout) yang memakai disclosure dari shared.js.
+  for (const [view, bundle] of [['layouts/public', 'app'], ['layouts/admin-v2', 'admin'], ['auth/login', 'app']]) {
+    const source = fs.readFileSync(require.resolve(`../views/${view}.ejs`), 'utf8');
     const shared = source.indexOf("assetUrl('/js/shared.js')");
     const app = source.indexOf(`assetUrl('/js/${bundle}.js')`);
-    assert.ok(shared >= 0 && shared < app && app < source.indexOf('/js/vendor/alpine-csp.min.js'));
+    assert.ok(shared >= 0 && shared < app && app < source.indexOf('/js/vendor/alpine-csp.min.js'), view);
   }
 });
 

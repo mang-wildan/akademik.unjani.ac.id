@@ -1,7 +1,29 @@
 # Deploy F5 — 20 Oktober 2026
 
 Status: **aktif** di https://dev-akademik.unjani.ac.id.
-Rilis: `f5-20261020-01 working-tree HEAD 3caf4ea`.
+Rilis: `f5-20261020-02 working-tree HEAD df56777`.
+
+## Rilis terbaru: f5-20261020-02
+
+- Memuat commit `df56777` serta perbaikan login yang masih di working tree:
+  pemuatan `shared.js` dan ikon tombol tampil/sembunyikan password.
+- Build serta **236 tes** lulus secara lokal dan di staging server.
+- Chrome 375/1440 px: tombol password diuji lewat keyboard; jenis input,
+  `aria-pressed`, dan satu ikon yang terlihat sesuai keadaan. Tidak ada
+  overflow atau error console. Tidak ada kredensial nyata yang dikirim.
+- Smoke staging, HTTP lokal aktif dan HTTPS publik lulus, termasuk urutan
+  script login, penanda ikon, seluruh modul admin, CSP, dan hash aset.
+  Jumlah record tidak berubah; tambahan log error **0 byte**.
+- SHA-256 arsip:
+  `4c74ab4010f5dd9adb958eeee72e6fb84d693905a62c6e2610550903d43914b1`.
+- PM2 `dev-akademik` tetap id 7; PID setelah restart `3919664`.
+- Rollback ke rilis `f5-20261020-01`: tukar
+  `/www/wwwroot/.dev-akademik-f5-20261020-02` dengan direktori live memakai
+  `/root/deployments/dev-akademik/f5-20261020-02/atomic-swap.py`, lalu
+  `pm2 restart dev-akademik`. Upload bersama dan `.env` privat dipertahankan.
+- Perbaikan login serta catatan deploy terbaru belum di-commit/push.
+
+## Riwayat: f5-20261020-01
 
 - Rilis mencakup workspace F5 terkini, termasuk hasil audit F5-03 dan
   pembaruan arsitektur F5-04 yang sudah tercatat di TODO.

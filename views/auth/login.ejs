@@ -10,6 +10,7 @@
   <meta name="description" content="Masuk ke panel admin Bidang Akademik UNJANI">
   <link rel="icon" href="/assets/landing-page/images/favicon.ico">
   <link rel="stylesheet" href="<%= assetUrl('/css/app.css') %>">
+  <script src="<%= assetUrl('/js/shared.js') %>" defer></script>
   <script src="<%= assetUrl('/js/app.js') %>" defer></script>
   <script src="/js/vendor/alpine-csp.min.js" defer></script>
 </head>
@@ -69,9 +70,10 @@
               <input type="password" :type="open ? 'text' : 'password'" id="f-password" name="password" required autocomplete="current-password"
                      placeholder="Masukkan password Anda" aria-describedby="f-password-help" class="field-control pr-12">
               <button type="button" x-on:click="toggle" x-bind:aria-pressed="open" aria-pressed="false" aria-label="Tampilkan password" x-bind:aria-label="open ? 'Sembunyikan password' : 'Tampilkan password'" aria-controls="f-password" x-cloak
-                      class="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-control text-muted hover:bg-primary-soft hover:text-primary">
-                <span x-show="!open"><%- icon('visibility', 'size-5') %></span>
-                <span x-show="open" x-cloak><%- icon('visibility_off', 'size-5') %></span>
+                      class="group absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-control text-muted hover:bg-primary-soft hover:text-primary">
+                <%# Ikon mengikuti aria-pressed lewat CSS: parser Alpine CSP tidak mengevaluasi x-show="!open". %>
+                <span class="group-aria-pressed:hidden"><%- icon('visibility', 'size-5') %></span>
+                <span class="hidden group-aria-pressed:inline"><%- icon('visibility_off', 'size-5') %></span>
               </button>
             </div>
             <p id="f-password-help" class="field-help text-sm">Password membedakan huruf besar dan kecil.</p>
