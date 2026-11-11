@@ -82,5 +82,9 @@
 
 ## Tahap 6 — Update ARCHITECTURE.md
 
-- [ ] Perbarui `ARCHITECTURE.md` sesuai hasil implementasi: fondasi token publik, layout, komponen bersama, dan alur build aset yang berubah.
-- [ ] Cocokkan dokumentasi dengan kode final; pertahankan penjelasan arsitektur admin yang tidak berubah.
+- [x] Perbarui `ARCHITECTURE.md` sesuai hasil implementasi: fondasi token publik, layout, komponen bersama, dan alur build aset yang berubah.
+  - Lokasi dokumen kanonis adalah `docs/ARCHITECTURE.md`, bukan file baru di root. Ditambahkan §1.6 untuk fondasi editorial, shell/halaman/komponen publik, login/error mandiri, batas penerapan CSP, dan batas bukti verifikasi; §1.4 menjelaskan build minified vs watch serta penyegaran manifest sebelum deploy.
+- [x] Cocokkan dokumentasi dengan kode final; pertahankan penjelasan arsitektur admin yang tidak berubah.
+  - Pemeriksaan terhadap CSS, EJS, middleware, `server.js`, dan skrip `package.json`; bagian 2 (admin-v2) serta bagian 3 (keputusan arsitektur) dipertahankan. Tidak ada perubahan view/CSS.
+  - Review menemukan hash CSS publik pada manifest belum mengikuti build Tahap 5. Dijalankan `npm run build:manifest` untuk menyegarkan hash `app.css` saja; dokumentasi menegaskan penyegaran manifest dan restart server sebelum deploy. Ini mencegah browser memakai CSS lama dari cache immutable.
+  - `npm test`: 252 lulus, 0 gagal.

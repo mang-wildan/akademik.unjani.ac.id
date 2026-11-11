@@ -1,8 +1,12 @@
 # ARCHITECTURE — Aplikasi Bidang Akademik UNJANI
 
-Bagian 1 menjelaskan sistem yang berjalan sekarang (setelah rombak admin F1–F5).
+Bagian 1 menjelaskan implementasi saat ini, termasuk redesain publik/login v0.0.1.
 Bagian 2 merinci arsitektur panel admin (`admin-v2`) sesuai [SPEC.md](SPEC.md) dan
 [DESIGN.md](DESIGN.md). Bagian 3 mencatat keputusan arsitektur.
+Pedoman publik terpisah di [update/v.0.0.1/design.md](update/v.0.0.1/design.md);
+ruang lingkup dan bukti verifikasinya di [SPEC](update/v.0.0.1/SPEC.md) dan
+[TODO](update/v.0.0.1/TODO.md). Redesain ini tidak mengubah route, model, database,
+atau implementasi admin.
 
 ## 1. Sistem saat ini
 
@@ -38,7 +42,10 @@ request
 ```
 
 - Halaman admin dirender dengan `res.renderPage(view, locals, 'layouts/admin-v2')`;
-  halaman publik memakai `layouts/public` (default).
+  halaman publik memakai `layouts/public` (default). Pengecualian: login
+  (`auth/login.ejs`) dan halaman error (`landing/error.ejs`) adalah dokumen HTML
+  mandiri melalui `res.render`, bukan isi layout. Error tetap dapat tampil saat
+  aset atau database gagal.
 - Pesan sukses/error dibawa lewat redirect `?success=` / `?error=` dan
   ditampilkan oleh toast di layout. Permintaan panel (`?partial=1`) dijawab
   JSON `{ ok, message }` saat sukses dan 422 + HTML form saat validasi gagal.
@@ -78,6 +85,14 @@ docs/                  SPEC, DESIGN, ARCHITECTURE, TODO, catatan verifikasi per 
   untuk `app.css`, `app.js`, `admin.css`, `admin.js`, `shared.js`, dibaca
   helper `assetUrl()` saat server mulai; restart server setelah build).
 - Hasil build di-commit, jadi server produksi tidak butuh devDependencies.
+  Selama pengembangan, perubahan template atau CSS publik cukup menjalankan
+  `npm run build:css` (minified ke `public/css/app.css`). Namun sebelum deploy,
+  jalankan juga `npm run build:manifest` (atau `npm run build` penuh): aset statis
+  di-serve dengan cache `immutable` 1 tahun (`server.js:125`), dan `assetUrl()`
+  membaca hash dari `public/asset-manifest.json` saat server mulai untuk cache-busting
+  (`?v=<hash>`). Tanpa pembaruan manifest, browser yang pernah membuka situs akan
+  mempertahankan CSS lama di cache mereka. Mode watch `npm run dev:css` tidak
+  di-commit karena tidak minified.
 - Deploy ke server dev-akademik dengan atomic swap + pm2. Rilis aktif di dev
   per 20 Oktober 2026 adalah F5 (`f5-20261020-02`); verifikasi serta rollback:
   [F5-DEPLOY.md](F5-DEPLOY.md).
@@ -91,6 +106,75 @@ docs/                  SPEC, DESIGN, ARCHITECTURE, TODO, catatan verifikasi per 
 (`utils/navigation.js` → `adminNav`) menyaring item dengan `canSee(item, user)`
 berdasarkan properti `roles`; tes memastikan `roles` setiap item sama dengan
 guard router-nya.
+
+### 1.6 Fondasi dan antarmuka publik (v0.0.1)
+
+- **Entri CSS & isolasi sumber.** `assets/css/app.css` memakai `@source` pada
+  `views/`, `public/js/app.js`, dan `utils/navigation.js`, sambil mengecualikan
+  `views/admin/`, `views/layouts/admin-v2.ejs`, dan `views/dev/admin-v2*.ejs`
+  agar utilitas admin tidak membengkakkan bundle publik.
+- **Token tema terang tunggal.** Publik hanya memiliki satu tema terang di
+  `@theme`: kanvas ivory (`--color-canvas: #faf8f3`), permukaan putih (`#ffffff`),
+  sunken (`#f6f3ec`), teks hangat (`--color-ink: #1a2e22`, `--color-muted: #4b5b50`),
+  hijau institusi (`--color-primary: #15803d`, `--color-brand: #14532d`), aksen emas
+  (`--color-accent: #ca8a04`, `--color-on-dark-accent: #facc15`), serta garis
+  (`--color-line`, `--color-line-strong`, `--color-control`). Permukaan kartu
+  datar (`--shadow-card: none`) dengan radius kompak (`0.375rem` kontrol,
+  `0.5rem` kartu); bayangan hanya untuk elemen melayang (`--shadow-raised`,
+  `--shadow-modal`). Token kompatibilitas lama (`brand-tint`, `gold-soft`,
+  `info*`) serta efek angkat kartu (`.lift`) telah dihapus; tes kontras dan
+  token dikunci di `test/publicTokens.test.js`.
+- **Tipografi & utilitas layout.** Judul `h1`–`h3` memakai serif
+  (`Source Serif 4`), teks isi dan tabel memakai sans (`Plus Jakarta Sans`),
+  dengan lebar konten `80rem` (`--container-content`) dan lebar baca `45rem`
+  (`--container-reading`, atau `max-w-3xl` pada halaman baca). Seksi gelap
+  (`.section-dark`) membalik warna teks, judul, dan tautan menjadi putih;
+  `.section-dark` serta `.on-dark` memakai indikator `:focus-visible` putih.
+  `.card` di dalam `.section-dark` kembali ke teks dan fokus gelap.
+- **Shell publik (`views/layouts/public.ejs`).** Memuat preload font utama dan,
+  khusus Beranda (`/`), preload gambar hero responsif yang cocok dengan
+  `srcset`/`sizes` elemen `<img>`. Terdiri dari pita kontak/sosial di atas
+  (`bg-brand`, hanya desktop), header lengket `bg-canvas` tanpa efek blur/kaca,
+  menu utama dari `publicNav` dengan komponen Alpine `disclosure`, tombol hitam
+  `.btn-documents` untuk Dokumen & Formulir, `<main id="konten">`, footer gelap
+  datar (`bg-black`) berisi pita ajakan layanan + 4 kolom, serta `chat-widget`
+  opsional bila `GEMINI_API_KEY` terpasang (`app.locals.chatEnabled`).
+- **Komponen bersama (`views/components/`).** Meliputi `page-header` (breadcrumb
+  + judul serif di kanvas; varian `admin` untuk pemanggil lama),
+  `section-heading` (eyebrow opsional dan jarang, judul serif, tautan "lihat semua"),
+  `date-block` (tanggal tipografis, bukan kotak solid), `badge` (dipersempit untuk
+  status yang bermakna, tanpa `.badge-info`), `content-sidebar` (daftar terkait &
+  kategori bergaris tanpa kartu bertumpuk), `pagination`, `empty-state`, `alert`,
+  `toast`, `form-field`, `file-upload`, `stat-tile`, `confirm-dialog`, dan
+  `chat-widget`. Cakupan shell dan halaman diuji di `test/publicShell.test.js`,
+  `test/publicHome.test.js`, dan `test/publicPages.test.js`.
+- **Pola halaman (`views/landing/` & `views/auth/login.ejs`).** Beranda memakai
+  hero dua kolom dengan blok agenda menjorok, akses cepat bernomor `01`–`04`,
+  item pertama Berita yang diunggulkan, pita hijau akreditasi institusi, dan
+  seksi yang otomatis hilang bila datanya kosong. Halaman daftar mempromosikan
+  Berita/Pengumuman pertama (`data-featured`) dan memisahkan item berikutnya dengan garis;
+  halaman baca dan cari membatasi lebar kolom baca; Pimpinan & Staf menampilkan
+  foto per tingkat jabatan; Kalender Akademik dan Dokumen Akademik mempertahankan
+  tabel semester serta daftar PDF sesuai skema model yang tersedia; Buku dan
+  Buku Wisuda memakai grid sampul `3:4`. Halaman login berdiri sendiri dengan
+  panel identitas hijau solid di kiri dan kolom formulir di permukaan putih di
+  kanan (tanpa kartu bersarang), mempertahankan validasi bawaan, toggle sandi,
+  reCAPTCHA kondisional, dan status blokir (`test/loginView.test.js`,
+  `test/loginPolicy.test.js`).
+- **Keamanan & aksesibilitas.** Perilaku klien tetap memakai skrip eksternal
+  `shared.js` → `app.js` → Alpine CSP (`defer`), tanpa menambah skrip/gaya
+  inline pada shell publik dan login. Ini tidak berarti header CSP ketat
+  diterapkan ke semua route publik: `strictCsp` di `server.js` tetap hanya
+  untuk `/admin`, `/dashboard`, `/profile`; CSP global Helmet dinonaktifkan.
+  Error mandiri mempertahankan CSS inline agar tidak bergantung pada bundle.
+  Skip link, `aria-current`, fokus terang/gelap, target kontrol 44px, serta
+  `prefers-reduced-motion` dipertahankan. Tautan inline dalam paragraf tetap
+  mengikuti baris teks, bukan tombol tersendiri.
+- **Batas bukti verifikasi.** Tahap 5 mencatat 252 tes lulus serta pemeriksaan
+  Chrome pada 320/768/1024/1440px. Ini bukan bukti deploy produksi. Sebagian
+  upload lama pada data lokal masih 404; chat lokal tidak aktif dan login
+  berhasil/CAPTCHA eksternal belum diuji end-to-end dengan akun nyata.
+  Rincian dan kebutuhan uji ulang sebelum rilis ada di TODO v0.0.1 Tahap 5.
 
 ## 2. Arsitektur admin-v2
 
