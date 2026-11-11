@@ -8,6 +8,13 @@ const render = overrides => ejs.renderFile(path.join(__dirname, '../views/auth/l
   requireCaptcha: false, recaptchaSiteKey: 'preview-site-key', ...overrides,
 });
 
+test('login uses solid identity and a surface form without a nested decorative card', async () => {
+  const html = await render();
+  assert.match(html, /<main class="[^"]*bg-surface/);
+  assert.doesNotMatch(html, /hero-kampus|bg-linear|border-r-4|card border-t-4/);
+  assert.match(html, /Akses Pengelola/);
+});
+
 test('login uses native validation and retains password manager support', async () => {
   const html = await render();
   assert.match(html, /action="\/login" method="POST"/);

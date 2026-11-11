@@ -15,12 +15,8 @@
   <script src="/js/vendor/alpine-csp.min.js" defer></script>
 </head>
 <body class="min-h-dvh bg-canvas lg:grid lg:grid-cols-2">
-  <%# Panel identitas (hanya ≥1024 px). display:none di layar kecil + loading="lazy" → foto tidak diunduh di ponsel.
-      Judulnya <p>, bukan h1/h2: satu-satunya h1 adalah judul kartu, dan h2 yang mendahului h1 merusak urutan heading.
-      Overlay tak pernah di bawah 90 % hijau: teks redup/emas tetap ≥4,5:1 sekalipun piksel foto putih. %>
-  <header class="section-dark relative isolate hidden min-h-dvh flex-col overflow-hidden border-r-4 border-accent p-12 lg:flex xl:p-16">
-    <img src="/img/hero-kampus.webp" alt="" width="1600" height="903" loading="lazy" decoding="async" class="absolute inset-0 -z-20 size-full object-cover">
-    <div class="absolute inset-0 -z-10 bg-linear-to-b from-brand/90 via-brand/90 to-brand" aria-hidden="true"></div>
+  <%# Panel identitas solid mengikuti design.md; satu-satunya h1 adalah judul formulir. %>
+  <header class="section-dark hidden min-h-dvh flex-col p-12 lg:flex xl:p-16">
 
     <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-16 object-contain">
 
@@ -33,19 +29,20 @@
     <p class="text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
   </header>
 
-  <main class="flex min-h-dvh items-center justify-center px-4 py-8 sm:py-12 lg:px-12">
+  <main class="flex min-h-dvh items-center justify-center bg-surface px-4 py-8 sm:py-12 lg:px-12">
     <div class="w-full max-w-md">
       <a href="/" class="mb-6 flex flex-col items-center gap-2 no-underline lg:hidden">
         <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-14 object-contain">
         <span class="text-center font-bold text-brand">Bidang Akademik<br><span class="text-sm font-medium text-muted">Universitas Jenderal Achmad Yani</span></span>
       </a>
 
-      <div class="card border-t-4 border-t-primary p-4 sm:p-8">
-        <h1 id="login-heading" class="text-2xl font-bold sm:text-3xl">Masuk ke akun Anda</h1>
+      <div>
+        <p class="eyebrow">Akses Pengelola</p>
+        <h1 id="login-heading" class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Masuk ke akun Anda</h1>
         <p class="mt-2 text-sm leading-relaxed text-muted">Gunakan akun pengelola untuk mengakses panel admin Bidang Akademik.</p>
 
         <% if (typeof error !== 'undefined' && error) { %>
-          <div id="login-error" class="mt-6 flex gap-3 rounded-control border-l-4 border-danger-solid bg-danger-soft p-4 text-sm text-danger" role="alert">
+          <div id="login-error" class="mt-6 flex gap-3 border-l-2 border-danger-solid bg-danger-soft p-4 text-sm text-danger" role="alert">
             <%- icon('error', 'size-5') %>
             <div class="min-w-0 break-words">
               <p class="font-semibold">Masuk belum berhasil</p>

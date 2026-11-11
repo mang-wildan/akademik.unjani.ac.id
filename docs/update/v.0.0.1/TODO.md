@@ -37,9 +37,14 @@
 
 ## Tahap 3 — Beranda & Login
 
-- [ ] `views/landing/index.ejs`: hero blok hijau + serif, agenda menjorok, akses cepat bergaris, seksi selang-seling; semua seksi tetap hilang rapi saat data kosong.
-- [ ] Cek LCP: preload hero di layout masih cocok dengan markup baru.
-- [ ] `views/auth/login.ejs`: split hijau/surface; state gagal (alert inline) dan alur CAPTCHA diverifikasi manual.
+- [x] `views/landing/index.ejs`: hero blok hijau + serif, agenda menjorok, akses cepat bergaris, seksi selang-seling; semua seksi tetap hilang rapi saat data kosong.
+- [x] Cek LCP: preload hero di layout masih cocok dengan markup baru.
+  - `srcset` dan `sizes` hero/preload disamakan dan dikunci tes; bukan pengukuran skor LCP.
+- [x] `views/auth/login.ejs`: split hijau/surface; state gagal (alert inline) dan alur CAPTCHA diverifikasi di browser.
+  - Screenshot Beranda/Login 768px dan 1440px diperiksa. Skenario login gagal, toggle password, dan kemunculan CAPTCHA setelah percobaan ulang diuji pada 320px/1440px. Respons HTTP 400 saat login gagal memang diharapkan; tidak ada page error yang tertangkap.
+  - Penyelesaian tantangan CAPTCHA pihak ketiga dan login berhasil belum diuji; tetap bagian uji fungsi Tahap 5.
+  - Tes render mencakup data kosong/terisi, escaping judul, status agenda, tautan, dan separator pengumuman disematkan. Review menemukan separator non-UTF-8; diperbaiki dengan tes regresi.
+  - `npm run build:css` minified + `npm test`: 246 lulus, 0 gagal.
 
 ## Tahap 4 — Halaman daftar & baca
 

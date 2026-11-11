@@ -1,7 +1,5 @@
-<%# Beranda (FR-B-01..08). Setiap bagian hilang dengan rapi bila datanya kosong — tidak ada konten isian.
-    Urutan latar (F7 R2): hero + akses cepat (hijau tua) → info + agenda (canvas) → berita/kegiatan (hijau muda)
-    → mutu & lulusan (hijau tua) → pengumuman (putih) → unit kerja (hijau muda, atau putih bila tepat setelah berita)
-    → video (hijau muda, atau putih bila tepat setelah berita atau unit kerja berlatar hijau muda). %>
+<%# Beranda editorial v0.0.1: hero solid + foto, agenda menjorok, akses bergaris.
+    Setiap seksi data hilang bila kosong; latar unit/video mengikuti seksi sebelumnya. %>
 <%
   const aksesCepat = [
     { label: 'Kalender Akademik', desc: 'Jadwal kegiatan & masa perkuliahan', href: '/kalender-akademik', icon: 'event' },
@@ -18,15 +16,9 @@
   const videoBand = units.length ? (unitBand === 'section-soft' ? 'section-surface' : 'section-soft') : sesudahBerita ? 'section-surface' : 'section-soft';
 %>
 
-<section class="section-dark relative isolate overflow-hidden">
-  <%# srcset: HP memakai versi 800 px (61 KB, bukan 210 KB) — foto di sana tertutup overlay 90%, dan ini elemen LCP. Samakan dengan preload di layouts/public.ejs. %>
-  <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="100vw" alt="" class="absolute inset-0 -z-20 size-full object-cover" width="1600" height="903" fetchpriority="high">
-  <%# Overlay: hijau (hampir) pekat di bawah kolom teks di semua lebar ≥1024 px agar kontras teks tidak bergantung pada foto. %>
-  <div class="absolute inset-0 -z-10 bg-brand/90 lg:bg-transparent lg:bg-linear-to-r lg:from-brand lg:from-45% lg:via-brand/90 lg:via-65% lg:to-brand/30" aria-hidden="true"></div>
-  <%# ≥1024 px: bawah hero dipekatkan lagi karena ubin akses cepat membentang sampai sisi kanan yang overlay-nya hanya 30 %. %>
-  <div class="absolute inset-x-0 bottom-0 -z-10 hidden h-1/2 bg-linear-to-t from-brand from-60% to-transparent lg:block" aria-hidden="true"></div>
-  <div class="container-content pt-16 pb-10 lg:pt-24 lg:pb-14">
-    <div class="fade-in-up max-w-2xl">
+<section class="section-dark">
+  <div class="container-content grid items-center gap-10 pt-12 pb-24 lg:grid-cols-2 lg:gap-12 lg:pt-16">
+    <div class="max-w-2xl">
       <p class="eyebrow">Portal resmi layanan akademik</p>
       <h1 class="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">Layanan Akademik Universitas Jenderal Achmad Yani</h1>
       <p class="mt-5 max-w-xl text-lg text-on-dark-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
@@ -36,129 +28,98 @@
       </div>
     </div>
 
-    <%# Akses cepat: ubin kaca di dalam hero (bukan kartu putih yang menumpuk setengah di tepi hero).
-        Latar putih 10 % di atas hijau ≥90 %: teks putih ≥7:1, deskripsi on-dark-muted ≥5:1. 2 kolom di HP (deskripsi disembunyikan), 4 di ≥1024 px. %>
-    <h2 class="sr-only">Akses cepat</h2>
-    <ul class="mt-12 grid grid-cols-2 gap-3 border-t border-white/15 pt-8 sm:gap-4 lg:mt-16 lg:grid-cols-4">
-      <% aksesCepat.forEach(a => { %>
-        <li>
-          <a href="<%= a.href %>" class="group flex h-full flex-col gap-3 rounded-card border border-white/15 bg-white/10 p-4 text-white no-underline backdrop-blur-sm transition-[background-color,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-on-dark-accent/60 hover:bg-white/15 sm:p-5 lg:flex-row lg:items-start lg:gap-4">
-            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-on-dark-accent text-brand"><%- icon(a.icon, 'size-6') %></span>
-            <span class="min-w-0">
-              <span class="flex items-center gap-1 font-semibold text-white"><%= a.label %><%- icon('arrow_forward', 'size-4 shrink-0 opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 max-lg:hidden') %></span>
-              <span class="mt-1 hidden text-sm text-on-dark-muted sm:block"><%= a.desc %></span>
-            </span>
-          </a>
-        </li>
-      <% }) %>
-    </ul>
+    <%# Sumber dan sizes disamakan dengan preload layout; teks berada di blok solid, bukan overlay foto. %>
+    <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="(min-width: 1024px) 50vw, 100vw" alt="Kampus Universitas Jenderal Achmad Yani" class="aspect-[4/3] w-full rounded-card object-cover" width="1600" height="903" fetchpriority="high">
   </div>
 </section>
 
-<% if (informasiPenting.length || agendaItems.length) { %>
-<div class="container-content space-y-14 pt-14 pb-14 lg:pb-20">
-  <% if (informasiPenting.length) { %>
-  <%
-    // Ikon + warna per jenis agar jenis terbaca sekilas (tidak hanya lewat warna: label jenis tetap tertulis).
-    const gayaJenis = {
-      Pengumuman: { icon: 'campaign', tile: 'bg-gold-soft text-gold', badge: 'gold' },
-      Dokumen: { icon: 'description', tile: 'bg-info-soft text-info', badge: 'info' },
-      Berita: { icon: 'newspaper', tile: 'bg-primary-soft text-primary', badge: 'success' },
-    };
-  %>
-  <section class="card overflow-hidden lg:grid lg:grid-cols-[17rem_1fr]" aria-labelledby="info-penting">
-    <%# Kolom judul: pita emas lembut, ikon perhatian. Di HP menjadi kepala kartu. %>
-    <div class="flex items-center gap-4 border-b border-line bg-gold-soft p-5 lg:flex-col lg:items-start lg:justify-center lg:border-r lg:border-b-0 lg:p-8">
-      <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent text-white shadow-card"><%- icon('info', 'size-6') %></span>
-      <div>
-        <p class="text-xs font-semibold tracking-[0.14em] text-gold uppercase">Perhatian</p>
-        <h2 id="info-penting" class="mt-1 text-xl lg:text-2xl">Informasi Penting</h2>
-        <p class="mt-1 hidden text-sm text-muted lg:block">Pengumuman, dokumen, dan berita yang disematkan Bidang Akademik.</p>
-      </div>
-    </div>
-
-    <ul class="divide-y divide-line">
-      <% informasiPenting.forEach(i => { const g = gayaJenis[i.jenis] || gayaJenis.Pengumuman; const pdf = i.jenis === 'Dokumen'; %>
-        <li class="group relative flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sunken lg:px-6">
-          <span class="flex size-11 shrink-0 items-center justify-center rounded-control <%= g.tile %>"><%- icon(g.icon, 'size-6') %></span>
-          <div class="min-w-0 flex-1">
-            <a href="<%= i.href %>" class="line-clamp-2 font-semibold text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"<%- pdf ? ' target="_blank" rel="noopener"' : '' %>><%= i.judul %><% if (pdf) { %><span class="sr-only"> (PDF, tab baru)</span><% } %></a>
-            <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
-              <%- include('../components/badge', { text: i.jenis, tone: g.badge }) %>
-              <time datetime="<%= new Date(i.tanggal).toISOString() %>"><%= formatTanggal(i.tanggal) %></time>
-            </p>
+<div class="container-content relative pb-14 lg:pb-20">
+  <% if (agendaItems.length) { %>
+  <section class="-mt-12 mb-12 rounded-card border border-line bg-surface p-5 sm:p-8" aria-labelledby="agenda-judul">
+    <%- include('../components/section-heading', { sectionHeading: 'Agenda Akademik Terdekat', sectionLink: { label: 'Lihat kalender lengkap', href: '/kalender-akademik' }, sectionId: 'agenda-judul' }) %>
+    <ul class="grid gap-6 divide-y divide-line sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4">
+      <% agendaItems.forEach(e => { %>
+        <li class="flex gap-4 pt-4 sm:pt-0">
+          <%- include('../components/date-block', { date: e.mulai }) %>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-primary"><%= e.status.label %></p>
+            <h3 class="mt-2 font-sans text-sm font-semibold"><%= e.nama %></h3>
+            <p class="mt-1 text-xs text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
           </div>
-          <%- icon(pdf ? 'open_in_new' : 'chevron_right', 'size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary') %>
         </li>
       <% }) %>
     </ul>
   </section>
   <% } %>
 
-  <% if (agendaItems.length) { %>
-  <section aria-labelledby="agenda-judul">
-    <%- include('../components/section-heading', { sectionEyebrow: 'Kalender akademik', sectionHeading: 'Agenda Akademik Terdekat', sectionLink: { label: 'Lihat kalender lengkap', href: '/kalender-akademik' }, sectionId: 'agenda-judul' }) %>
-    <ul data-reveal-group class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <% agendaItems.forEach(e => { %>
-        <li class="card card-body flex gap-4">
-          <%- include('../components/date-block', { date: e.mulai, dateTone: 'solid' }) %>
-          <div class="min-w-0">
-            <%- include('../components/badge', { text: e.status.label, tone: e.status.tone }) %>
-            <p class="mt-2 font-semibold text-ink"><%= e.nama %></p>
-            <p class="mt-1 text-sm text-muted"><%= formatRentangTanggal(e.mulai, e.selesai) %></p>
+  <section class="py-10" aria-labelledby="akses-judul">
+    <h2 id="akses-judul" class="sr-only">Akses cepat</h2>
+    <ul class="grid border-t border-line-strong sm:grid-cols-2 lg:grid-cols-4">
+      <% aksesCepat.forEach((a, i) => { %>
+        <li class="border-b border-line sm:border-r">
+          <a href="<%= a.href %>" class="block h-full p-5 text-ink no-underline hover:bg-sunken">
+            <span class="flex items-center justify-between text-xs text-muted"><span>0<%= i + 1 %></span><%- icon('arrow_forward', 'size-4') %></span>
+            <span class="mt-5 block font-semibold"><%= a.label %></span>
+            <span class="mt-2 block text-sm text-muted"><%= a.desc %></span>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+  <% if (informasiPenting.length) { %>
+  <section class="grid gap-6 border-t border-line pt-10 lg:grid-cols-[16rem_1fr]" aria-labelledby="info-penting">
+    <div>
+      <p class="eyebrow">Disematkan</p>
+      <h2 id="info-penting" class="mt-2 text-2xl font-bold">Informasi Penting</h2>
+      <p class="mt-2 text-sm text-muted">Pengumuman, dokumen, dan berita yang disematkan Bidang Akademik.</p>
+    </div>
+
+    <ul class="divide-y divide-line border-y border-line">
+      <% informasiPenting.forEach(i => { const pdf = i.jenis === 'Dokumen'; %>
+        <li class="group relative flex flex-wrap items-center justify-between gap-4 py-4">
+          <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-5 gap-y-1">
+            <time datetime="<%= new Date(i.tanggal).toISOString() %>" class="text-xs font-semibold text-muted uppercase"><%= formatTanggal(i.tanggal) %></time>
+            <span class="text-xs font-semibold text-primary uppercase"><%= pdf ? 'Dokumen · PDF' : i.jenis %></span>
+            <a href="<%= i.href %>" class="min-w-0 flex-1 font-semibold text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"<%- pdf ? ' target="_blank" rel="noopener"' : '' %>><%= i.judul %><% if (pdf) { %><span class="sr-only"> (PDF, tab baru)</span><% } %></a>
           </div>
+          <%- icon(pdf ? 'open_in_new' : 'arrow_forward', 'size-4 shrink-0 text-muted group-hover:text-primary') %>
         </li>
       <% }) %>
     </ul>
   </section>
   <% } %>
 </div>
-<% } else if (!kegiatanTerbaru.length && adaPita) { %>
-<%# Dua pita hijau tua (hero lalu mutu) tidak boleh menempel: sisakan jeda canvas. %>
-<div class="pb-14" aria-hidden="true"></div>
-<% } %>
 
 <% if (kegiatanTerbaru.length) { %>
 <section class="section section-soft" aria-labelledby="kegiatan-judul">
   <div class="container-content">
-    <%- include('../components/section-heading', { sectionEyebrow: 'Berita', sectionHeading: 'Kegiatan Akademik', sectionLead: 'Dokumentasi kegiatan dan kabar akademik terbaru.', sectionLink: { label: 'Lihat semua berita', href: '/berita' }, sectionId: 'kegiatan-judul' }) %>
-    <%
-      // Tata letak majalah: satu berita utama besar + sisanya sebagai kartu mendatar di kolom kanan (≥1024 px),
-      // bertumpuk di HP. Seluruh kartu bisa diklik lewat tautan judul yang direntangkan (satu tab stop per berita).
-      // Berita tanpa gambar memakai bidang hijau muda berikon, bukan kotak abu kosong.
-      const [beritaUtama, ...beritaLain] = kegiatanTerbaru;
-    %>
-    <div data-reveal-group class="grid gap-6 <%= beritaLain.length ? 'lg:grid-cols-[1.6fr_1fr]' : '' %>">
-      <article class="card lift group relative flex flex-col overflow-hidden">
-        <div class="aspect-video overflow-hidden bg-sunken"><% if (beritaUtama.featuredImage) { %><img src="<%= beritaUtama.featuredImage %>" alt="" class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" loading="lazy"><% } else { %><span class="flex size-full items-center justify-center bg-linear-to-br from-brand-tint to-primary-soft text-primary/40"><%- icon('newspaper', 'size-12') %></span><% } %></div>
-        <div class="flex flex-1 flex-col p-6">
-          <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
-            <% if (beritaUtama.kategori) { %><%- include('../components/badge', { text: beritaUtama.kategori.nama, tone: 'success' }) %><% } %>
-            <time datetime="<%= new Date(beritaUtama.createdAt).toISOString() %>" class="inline-flex items-center gap-1"><%- icon('schedule', 'size-4') %><%= formatTanggal(beritaUtama.createdAt, { long: true }) %></time>
-          </div>
-          <h3 class="mt-3 text-xl leading-snug lg:text-2xl">
-            <a href="/berita/<%= beritaUtama.slug %>" class="line-clamp-3 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= beritaUtama.title %></a>
-          </h3>
-          <% if (beritaUtama.excerpt) { %><p class="mt-3 line-clamp-3 text-muted"><%= beritaUtama.excerpt %></p><% } %>
-          <p class="mt-auto flex items-center gap-1 pt-5 text-sm font-semibold text-primary" aria-hidden="true">Baca berita<%- icon('arrow_forward', 'size-4 transition-transform group-hover:translate-x-1') %></p>
-        </div>
+    <%- include('../components/section-heading', { sectionHeading: 'Kegiatan Akademik', sectionLink: { label: 'Lihat semua berita', href: '/berita' }, sectionId: 'kegiatan-judul' }) %>
+    <% const [beritaUtama, ...beritaLain] = kegiatanTerbaru; %>
+    <div data-reveal-group class="grid gap-8 <%= beritaLain.length ? 'lg:grid-cols-[1.5fr_1fr]' : '' %>">
+      <article class="group relative flex flex-col">
+        <div class="aspect-video overflow-hidden rounded-card border border-line bg-sunken"><% if (beritaUtama.featuredImage) { %><img src="<%= beritaUtama.featuredImage %>" alt="" class="size-full object-cover" loading="lazy"><% } else { %><span class="flex size-full items-center justify-center text-muted"><%- icon('newspaper', 'size-10') %></span><% } %></div>
+        <p class="mt-4 text-xs font-semibold text-muted uppercase">
+          <% if (beritaUtama.kategori) { %><span class="text-primary"><%= beritaUtama.kategori.nama %></span> · <% } %><time datetime="<%= new Date(beritaUtama.createdAt).toISOString() %>"><%= formatTanggal(beritaUtama.createdAt, { long: true }) %></time>
+        </p>
+        <h3 class="mt-2 text-2xl leading-snug">
+          <a href="/berita/<%= beritaUtama.slug %>" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= beritaUtama.title %></a>
+        </h3>
+        <% if (beritaUtama.excerpt) { %><p class="mt-3 line-clamp-3 text-muted"><%= beritaUtama.excerpt %></p><% } %>
       </article>
 
       <% if (beritaLain.length) { %>
-      <div class="grid content-start gap-6">
+      <div class="divide-y divide-line border-t border-line">
         <% beritaLain.forEach(n => { %>
-          <article class="card lift group relative flex overflow-hidden">
-            <div class="w-32 shrink-0 overflow-hidden bg-sunken sm:w-44"><% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" loading="lazy"><% } else { %><span class="flex size-full items-center justify-center bg-linear-to-br from-brand-tint to-primary-soft text-primary/40"><%- icon('newspaper', 'size-12') %></span><% } %></div>
-            <div class="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-              <div class="flex flex-wrap items-center gap-2 text-xs text-muted">
-                <% if (n.kategori) { %><%- include('../components/badge', { text: n.kategori.nama, tone: 'success' }) %><% } %>
-                <time datetime="<%= new Date(n.createdAt).toISOString() %>"><%= formatTanggal(n.createdAt) %></time>
-              </div>
+          <article class="group relative flex items-start justify-between gap-4 py-5">
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-semibold text-muted uppercase">
+                <% if (n.kategori) { %><span class="text-primary"><%= n.kategori.nama %></span> · <% } %><time datetime="<%= new Date(n.createdAt).toISOString() %>"><%= formatTanggal(n.createdAt) %></time>
+              </p>
               <h3 class="mt-2 font-sans text-base leading-snug font-semibold">
                 <a href="/berita/<%= n.slug %>" class="line-clamp-3 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= n.title %></a>
               </h3>
-              <% if (n.excerpt) { %><p class="mt-1 line-clamp-2 text-sm text-muted max-sm:hidden"><%= n.excerpt %></p><% } %>
             </div>
+            <% if (n.featuredImage) { %><img src="<%= n.featuredImage %>" alt="" class="size-24 shrink-0 rounded-card object-cover" loading="lazy"><% } %>
           </article>
         <% }) %>
       </div>
@@ -178,13 +139,13 @@
       <% if (institusiAcc.length) { %>
       <ul class="grid gap-4 sm:grid-cols-2">
         <% institusiAcc.forEach(a => { %>
-          <li class="card card-body">
-            <p class="text-sm font-medium text-muted">Akreditasi institusi</p>
+          <li class="border-t border-white/25 py-5">
+            <p class="text-sm font-medium text-on-dark-muted">Akreditasi institusi</p>
             <div class="mt-1 flex flex-wrap items-center gap-2">
-              <span class="font-serif text-3xl font-bold text-primary"><%= a.peringkat %></span>
-              <%- include('../components/badge', { text: a.status.label, tone: a.status.tone }) %>
+              <span class="font-serif text-5xl font-bold tracking-tight text-white sm:text-6xl"><%= a.peringkat %></span>
+              <span class="text-sm text-on-dark-muted"><%= a.status.label %></span>
             </div>
-            <p class="mt-2 text-sm text-muted"><%= a.lembaga ? a.lembaga.singkatan : '—' %> · berlaku s.d. <%= formatTanggal(a.berlakuSampai) %></p>
+            <p class="mt-2 text-sm text-on-dark-muted"><%= a.lembaga ? a.lembaga.singkatan : '—' %> · berlaku s.d. <%= formatTanggal(a.berlakuSampai) %></p>
           </li>
         <% }) %>
       </ul>
@@ -194,7 +155,7 @@
         <p class="text-sm font-semibold text-white">Akreditasi program studi yang berlaku</p>
         <ul class="mt-3 flex flex-wrap gap-2">
           <% peringkatStats.forEach(p => { %>
-            <li class="rounded-control border border-white/25 px-3 py-2 text-sm text-on-dark-muted"><span class="font-serif text-lg font-bold text-white"><%= p.total %></span> prodi <%= p.peringkat %></li>
+            <li class="border-t border-white/25 px-3 py-2 text-sm text-on-dark-muted"><span class="font-serif text-lg font-bold text-white"><%= p.total %></span> prodi <%= p.peringkat %></li>
           <% }) %>
         </ul>
       </div>
@@ -214,7 +175,7 @@
       const nilai = 'font-serif text-3xl font-bold tabular-nums xl:text-4xl';
     %>
     <section aria-labelledby="lulusan-judul">
-      <%- include('../components/section-heading', { sectionEyebrow: 'Lulusan', sectionHeading: 'Statistik Lulusan', sectionId: 'lulusan-judul' }) %>
+      <%- include('../components/section-heading', { sectionHeading: 'Statistik Lulusan', sectionId: 'lulusan-judul' }) %>
       <dl class="grid gap-px overflow-hidden rounded-card bg-white/15 <%= persen !== null ? 'sm:grid-cols-3' : 'sm:grid-cols-2' %> <%= duaKolom ? 'lg:grid-cols-1' : '' %>">
         <div class="<%= sel %>">
           <dt class="text-sm text-on-dark-muted">Lulusan tahun <%= lulusan.tahun %></dt>
@@ -242,51 +203,28 @@
 <% if (pengumumanTerbaru.length) { %>
 <section class="section section-surface" aria-labelledby="pengumuman-judul">
   <div class="container-content">
-    <%- include('../components/section-heading', { sectionEyebrow: 'Pengumuman', sectionHeading: 'Pengumuman Terbaru', sectionLead: 'Informasi resmi seputar administrasi dan layanan akademik.', sectionLink: { label: 'Lihat semua pengumuman', href: '/pengumuman' }, sectionId: 'pengumuman-judul' }) %>
-    <%
-      // Satu pengumuman utama (disematkan/terbaru) + daftar ringkas sisanya. Seluruh kartu/baris bisa diklik
-      // lewat tautan judul yang direntangkan (after:inset-0), jadi tetap satu tab stop per pengumuman.
-      const [utama, ...lain] = pengumumanTerbaru;
-      const tujuhHari = Date.now() - 7 * 24 * 60 * 60 * 1000;
-      const baru = p => new Date(p.createdAt).getTime() >= tujuhHari;
-    %>
-    <div data-reveal-group class="grid gap-6 <%= lain.length ? 'lg:grid-cols-[1.1fr_1fr]' : '' %>">
-      <article class="card lift group relative flex flex-col overflow-hidden border-t-4 border-t-accent">
-        <div class="flex flex-1 flex-col p-6 lg:p-8">
-          <div class="flex flex-wrap items-center gap-2">
-            <% if (utama.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
-            <% if (utama.kategori) { %><%- include('../components/badge', { text: utama.kategori.nama, tone: 'info' }) %><% } %>
-            <% if (baru(utama)) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
-          </div>
-          <div class="mt-5 flex items-start gap-4">
-            <%- include('../components/date-block', { date: utama.createdAt, dateTone: 'solid' }) %>
-            <h3 class="min-w-0 text-xl leading-snug lg:text-2xl">
-              <a href="/pengumuman/<%= utama.slug %>" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= utama.title %></a>
-            </h3>
-          </div>
-          <% if (utama.excerpt) { %><p class="mt-4 line-clamp-4 text-muted"><%= utama.excerpt %></p><% } %>
-          <p class="mt-auto flex items-center gap-1 pt-6 text-sm font-semibold text-primary" aria-hidden="true">Baca selengkapnya<%- icon('arrow_forward', 'size-4 transition-transform group-hover:translate-x-1') %></p>
+    <%- include('../components/section-heading', { sectionHeading: 'Pengumuman Terbaru', sectionLead: 'Informasi resmi seputar administrasi dan layanan akademik.', sectionLink: { label: 'Lihat semua pengumuman', href: '/pengumuman' }, sectionId: 'pengumuman-judul' }) %>
+    <% const [utama, ...lain] = pengumumanTerbaru; %>
+    <div data-reveal-group class="grid gap-10 <%= lain.length ? 'lg:grid-cols-2' : '' %>">
+      <article class="group relative border-t border-line-strong pt-5">
+        <p class="text-xs font-semibold text-primary uppercase"><% if (utama.pinned) { %>Disematkan<% } %><% if (utama.pinned && utama.kategori) { %> · <% } %><% if (utama.kategori) { %><%= utama.kategori.nama %><% } %></p>
+        <div class="mt-4 flex items-start gap-5">
+          <%- include('../components/date-block', { date: utama.createdAt }) %>
+          <h3 class="min-w-0 text-2xl leading-snug"><a href="/pengumuman/<%= utama.slug %>" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= utama.title %></a></h3>
         </div>
+        <% if (utama.excerpt) { %><p class="mt-4 text-muted"><%= utama.excerpt %></p><% } %>
+        <p class="mt-5 flex items-center gap-2 text-sm font-semibold text-primary" aria-hidden="true">Baca selengkapnya<%- icon('arrow_forward', 'size-4') %></p>
       </article>
-
       <% if (lain.length) { %>
-      <ul class="card divide-y divide-line self-start">
+      <ul class="divide-y divide-line border-t border-line-strong">
         <% lain.forEach(p => { %>
-          <li class="group relative flex items-center gap-4 p-4 transition-colors hover:bg-sunken sm:p-5">
+          <li class="group relative flex items-start gap-5 py-5">
             <%- include('../components/date-block', { date: p.createdAt }) %>
             <div class="min-w-0 flex-1">
-              <% if (p.pinned || p.kategori || baru(p)) { %>
-              <div class="mb-1 flex flex-wrap items-center gap-1.5">
-                <% if (p.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
-                <% if (p.kategori) { %><%- include('../components/badge', { text: p.kategori.nama, tone: 'info' }) %><% } %>
-                <% if (baru(p)) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
-              </div>
-              <% } %>
-              <h3 class="font-sans text-base leading-snug font-semibold">
-                <a href="/pengumuman/<%= p.slug %>" class="line-clamp-2 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= p.title %></a>
-              </h3>
+              <h3 class="font-sans text-base leading-snug font-semibold"><a href="/pengumuman/<%= p.slug %>" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary"><%= p.title %></a></h3>
+              <% if (p.kategori) { %><p class="mt-1 text-xs text-muted"><%= p.kategori.nama %></p><% } %>
             </div>
-            <%- icon('chevron_right', 'size-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary') %>
+            <%- icon('arrow_forward', 'size-4 shrink-0 text-muted') %>
           </li>
         <% }) %>
       </ul>
@@ -299,7 +237,7 @@
 <% if (units.length) { %>
 <section class="section <%= unitBand %>" aria-labelledby="unit-judul" aria-roledescription="carousel" x-data="carousel">
   <div class="container-content">
-    <%- include('../components/section-heading', { sectionEyebrow: 'Unit kerja', sectionHeading: 'Unit Kerja Bidang Akademik', sectionLead: 'Unit yang melayani kebutuhan akademik sivitas akademika.', sectionId: 'unit-judul' }) %>
+    <%- include('../components/section-heading', { sectionHeading: 'Unit Kerja Bidang Akademik', sectionLead: 'Unit yang melayani kebutuhan akademik sivitas akademika.', sectionId: 'unit-judul' }) %>
     <div class="-mt-4 mb-4 flex justify-end gap-2" x-show="canScroll" x-cloak>
       <button type="button" class="btn-icon border border-line bg-surface" @click="prev" aria-label="Unit sebelumnya"><%- icon('chevron_left') %></button>
       <button type="button" class="btn-icon border border-line bg-surface" @click="toggle" :aria-label="toggleLabel">
@@ -311,11 +249,11 @@
     <ul x-ref="track" :class="centerClass" class="-mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-4 [scrollbar-width:none] motion-safe:scroll-smooth [&::-webkit-scrollbar]:hidden"
         @mouseenter="hold" @mouseleave="release" @focusin="hold" @focusout="release">
       <% units.forEach(u => { %>
-        <li class="group relative aspect-[4/3] shrink-0 basis-[85%] snap-start overflow-hidden rounded-card bg-brand shadow-raised sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
-          <img src="<%= u.img %>" alt="" class="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none" loading="lazy" width="900" height="675">
-          <div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-brand from-30% via-brand/80 to-transparent p-5 pt-16">
-            <h3 class="text-lg leading-snug font-semibold text-white"><%= u.nama %></h3>
-            <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="btn btn-accent mt-3 min-h-11 px-4">Kunjungi unit<span class="sr-only"> <%= u.nama %> (tab baru)</span><%- icon('open_in_new', 'size-4') %></a><% } %>
+        <li class="group relative shrink-0 basis-[85%] snap-start overflow-hidden sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
+          <img src="<%= u.img %>" alt="" class="aspect-[4/3] w-full rounded-card object-cover" loading="lazy" width="900" height="675">
+          <div class="pt-4">
+            <h3 class="font-sans text-base leading-snug font-semibold text-ink"><%= u.nama %></h3>
+            <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Kunjungi unit<span class="sr-only"> <%= u.nama %> (tab baru)</span><%- icon('open_in_new', 'size-4') %></a><% } %>
           </div>
         </li>
       <% }) %>
@@ -327,8 +265,8 @@
 <% if (videoUrl) { %>
 <section class="section <%= videoBand %>" aria-labelledby="video-judul">
   <div class="container-content max-w-5xl">
-    <%- include('../components/section-heading', { sectionEyebrow: 'Profil', sectionHeading: 'Video Profil', sectionAlign: 'center', sectionId: 'video-judul' }) %>
-    <div class="aspect-video overflow-hidden rounded-card border border-line shadow-raised">
+    <%- include('../components/section-heading', { sectionHeading: 'Video Profil', sectionAlign: 'center', sectionId: 'video-judul' }) %>
+    <div class="aspect-video overflow-hidden rounded-card border border-line">
       <iframe src="<%= videoUrl %>" title="Video Profil Bidang Akademik" class="size-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
   </div>
