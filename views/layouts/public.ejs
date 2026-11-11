@@ -67,13 +67,13 @@
     </div>
   </aside>
 
-  <header class="sticky top-0 z-40 border-b border-line bg-surface shadow-card" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
     <div class="container-content flex h-18 items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-3 no-underline">
+      <a href="/" class="flex min-w-0 items-center gap-2 no-underline sm:gap-3">
         <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-11 object-contain">
         <span class="leading-tight">
           <span class="block font-serif text-lg font-bold text-brand">Bidang Akademik</span>
-          <span class="block text-xs font-medium tracking-wide text-muted uppercase">Universitas Jenderal Achmad Yani</span>
+          <span class="hidden text-xs font-medium tracking-wide text-muted uppercase sm:block">Universitas Jenderal Achmad Yani</span>
         </span>
       </a>
 
@@ -164,20 +164,16 @@
   %>
   <%# Footer (F7 R4). Band CTA berada di dalam <footer> agar tetap di landmark contentinfo. Tanpa margin atas:
       setiap halaman sudah diakhiri padding/seksinya sendiri, sehingga tidak ada celah canvas di bawah pita berwarna. %>
-  <footer class="on-dark bg-brand text-white">
-    <section class="bg-primary" aria-labelledby="cta-layanan">
+  <footer class="on-dark bg-black text-white">
+    <section class="border-b border-white/20" aria-labelledby="cta-layanan">
       <div class="container-content flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
-        <div class="flex items-start gap-4">
-          <span class="flex size-14 shrink-0 items-center justify-center rounded-full bg-white/10 text-on-dark-accent"><%- icon('support_agent', 'size-7') %></span>
-          <div>
-            <h2 id="cta-layanan" class="text-2xl font-bold text-white md:text-3xl">Butuh layanan akademik?</h2>
-            <p class="mt-1 text-white">Hubungi Bidang Akademik pada jam layanan: <%= hours.replace(/[.\s]+$/, '') %>.</p>
-          </div>
+        <div>
+          <h2 id="cta-layanan" class="text-3xl font-bold tracking-tight text-white md:text-4xl">Ada pertanyaan akademik?</h2>
+          <p class="mt-3 max-w-xl text-on-dark-muted">Hubungi Bidang Akademik pada jam layanan: <%= hours.replace(/[.\s]+$/, '') %>.</p>
         </div>
         <div class="flex shrink-0 flex-wrap gap-3">
-          <a href="<%= phoneTo.href %>" class="btn btn-accent"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer"<% } %>><%- icon(phoneIcon) %><%= phoneTo.whatsapp ? 'Chat WhatsApp' : 'Telepon' %><% if (phoneTo.whatsapp) { %><span class="sr-only"> (membuka tab baru)</span><% } %></a>
-          <%# Hover digelapkan: hover bawaan (putih 10%) di atas hijau primary turun ke 4,2:1. %>
-          <a href="mailto:<%= email %>" class="btn btn-outline-light hover:bg-primary-hover"><%- icon('mail') %>Kirim Email</a>
+          <a href="mailto:<%= email %>" class="btn btn-light"><%- icon('mail') %>Kirim Email</a>
+          <a href="<%= phoneTo.href %>" class="btn btn-outline-light"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer"<% } %>><%- icon(phoneIcon) %><%= phoneTo.whatsapp ? 'Chat WhatsApp' : 'Telepon' %><% if (phoneTo.whatsapp) { %><span class="sr-only"> (membuka tab baru)</span><% } %></a>
         </div>
       </div>
     </section>

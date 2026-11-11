@@ -27,9 +27,13 @@
 
 ## Tahap 2 — Shell bersama
 
-- [ ] `views/layouts/public.ejs`: top bar, header/nav (1 baris, tinggi ≤72px), footer gelap + band CTA sesuai arah mockup.
-- [ ] Komponen publik: `section-heading`, `badge` (dipersempit), `page-header`, `date-block`, `pagination`, `empty-state`, `alert`, `toast`, `form-field`.
-- [ ] Cek menu HP, dropdown, fokus keyboard, skip link.
+- [x] `views/layouts/public.ejs`: top bar, header/nav (1 baris, tinggi ≤72px), footer gelap + band CTA sesuai arah mockup.
+- [x] Komponen publik: `section-heading`, `badge` (dipersempit), `page-header`, `date-block`, `pagination`, `empty-state`, `alert`, `toast`, `form-field`.
+  - `section-heading` mengikuti fondasi Tahap 1; `form-field` dipertahankan karena label, bantuan, dan error sudah sesuai serta diuji regresi.
+- [x] Cek menu HP, dropdown, fokus keyboard, skip link.
+  - Skenario browser viewport 320px: skip link dan menu HP buka/tutup via Escape; desktop 1440px: dropdown buka/tutup via Escape. Tidak ada console/page error yang tertangkap.
+  - Footer memakai `black` sesuai mockup; panduan desain disinkronkan. Screenshot shell diperiksa; audit responsif seluruh halaman tetap di Tahap 5.
+  - `npm run build:css` minified dan `npm test`: 242 lulus, 0 gagal, termasuk batas ukuran CSS publik.
 
 ## Tahap 3 — Beranda & Login
 

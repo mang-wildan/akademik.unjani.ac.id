@@ -1,13 +1,12 @@
 <%#
-  Blok tanggal untuk daftar pengumuman & agenda.
+  Tanggal tipografis untuk daftar pengumuman & agenda (v0.0.1).
   include('../components/date-block', { date: item.createdAt })
-  include('../components/date-block', { date: e.mulai, dateTone: 'solid' })   // hijau penuh, untuk agenda (F7)
 %>
-<% const block = tanggalBlok(locals.date); const solid = locals.dateTone === 'solid'; %>
+<% const block = tanggalBlok(locals.date); %>
 <% if (block) { %>
-  <time datetime="<%= block.iso %>" class="flex w-16 shrink-0 flex-col items-center rounded-control py-2 leading-none <%= solid ? 'bg-primary text-white' : 'border border-line bg-surface' %>">
-    <span class="text-xs font-semibold tracking-wide <%= solid ? '' : 'text-primary' %>"><%= block.month %></span>
-    <span class="mt-1 font-serif text-2xl font-bold <%= solid ? '' : 'text-ink' %>"><%= block.day %></span>
-    <span class="mt-1 text-xs <%= solid ? '' : 'text-muted' %>"><%= block.year %></span>
+  <time datetime="<%= block.iso %>" class="flex shrink-0 flex-col items-start leading-none">
+    <span class="text-xs font-semibold tracking-wider text-muted uppercase"><%= block.month %></span>
+    <span class="mt-1 font-serif text-2xl font-bold tracking-tight text-ink"><%= block.day %></span>
+    <span class="mt-1 text-xs text-muted"><%= block.year %></span>
   </time>
 <% } %>

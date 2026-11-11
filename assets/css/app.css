@@ -266,13 +266,9 @@
     @apply absolute -bottom-px left-0 h-0.5 w-12 bg-accent;
   }
 
-  /* Footer column heading (layouts/public.ejs): white serif + short gold bar */
+  /* Footer column heading: quiet label, no decorative gold bar. */
   .footer-title {
-    @apply relative mb-4 pb-3 text-lg text-white;
-  }
-  .footer-title::after {
-    content: "";
-    @apply absolute bottom-0 left-0 h-0.5 w-10 bg-on-dark-accent;
+    @apply mb-4 font-sans text-xs font-semibold tracking-wider text-white uppercase;
   }
 
   /* Section heading — markup lives in components/section-heading.ejs */
@@ -310,14 +306,14 @@
 
   /* Badges */
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs leading-4 font-semibold whitespace-nowrap;
+    @apply inline-flex items-center gap-1 rounded-control px-2 py-1 text-xs leading-4 font-semibold whitespace-nowrap;
   }
   .badge-neutral { @apply bg-sunken text-muted; }
   .badge-success { @apply bg-success-soft text-success; }
   .badge-warning { @apply bg-warning-soft text-warning; }
   .badge-danger  { @apply bg-danger-soft text-danger; }
   .badge-gold    { @apply border border-accent bg-gold-soft text-gold; }
-  .badge-info    { @apply bg-info-soft text-info; }
+  .badge-info    { @apply bg-sunken text-muted; }
 
   /* Surfaces */
   .card {

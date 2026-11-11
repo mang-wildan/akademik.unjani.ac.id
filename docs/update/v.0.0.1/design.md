@@ -33,7 +33,7 @@ Semua di `@theme` `app.css`; view hanya memakai nama token. Nilai final dikalibr
 | `ink` | hijau-hitam gelap (≈ `#1a2e22`) | Teks utama — near-black hangat, bukan slate |
 | `muted` | abu kehijauan | Teks sekunder; tetap ≥4.5:1 di canvas |
 | `line` | abu hangat tipis | Garis pemisah |
-| `brand` | hijau tua UNJANI `#14532d` (tetap) | Blok seksi gelap, footer, panel login |
+| `brand` | hijau tua UNJANI `#14532d` (tetap) | Blok seksi gelap, panel login; footer memakai token `black` sesuai mockup |
 | `primary` | hijau `#15803d` (tetap) | Tautan, tombol utama, fokus |
 | `accent` / gold | emas (tetap, dipersempit) | Hanya aksen kecil di atas blok hijau (garis, label "Unggul") |
 
