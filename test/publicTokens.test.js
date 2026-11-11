@@ -22,17 +22,39 @@ test('public foundation uses ivory, warm ink and flat compact surfaces', () => {
   assert.doesNotMatch(css, /\.eyebrow::before/);
   // Heading color must inherit the existing dark-band / light-card rules.
   assert.doesNotMatch(css.match(/\.section-title\s*\{([^}]+)\}/)[1], /text-ink/);
+  assert.doesNotMatch(css, /--color-(?:info(?:-soft)?|gold-soft|brand-tint)|\.badge-info\b|\.lift\b/);
+  for (const dir of ['views/landing', 'views/auth', 'views/components', 'views/layouts']) {
+    for (const file of fs.readdirSync(dir).filter(f => f.endsWith('.ejs') && f !== 'admin-v2.ejs')) {
+      const source = fs.readFileSync(`${dir}/${file}`, 'utf8').replace(/<%#[\s\S]*?%>/g, '');
+      assert.doesNotMatch(source, /dateTone|badge-info|(?:border|bg|text)-info\b|gold-soft|brand-tint|[—–]/, `${dir}/${file}`);
+    }
+  }
+  assert.ok((fs.readFileSync('views/landing/index.ejs', 'utf8').match(/eyebrow|sectionEyebrow/g) || []).length <= 2);
+  for (const file of ['cari', 'dokumen-akademik', 'rpl', 'akreditasi']) {
+    const source = fs.readFileSync(`views/landing/${file}.ejs`, 'utf8');
+    for (const link of source.matchAll(/<a\b[\s\S]*?class="([^"]+)"/g)) {
+      assert.match(link[1], /min-h-11|\bbtn\b/, `${file}: standalone link height`);
+
+    }
+  }
+  const accreditation = fs.readFileSync('views/landing/akreditasi.ejs', 'utf8');
+  assert.match(accreditation, /min-h-11 min-w-11[^\"]*\"><%- icon\('download'/);
+  assert.match(accreditation, /min-h-11 min-w-11[^\"]*\">Lihat<\/a>/);
+  for (const file of ['layouts/public', 'components/page-header', 'landing/akreditasi', 'landing/struktur-organisasi', 'landing/kurikulum']) {
+    assert.doesNotMatch(fs.readFileSync(`views/${file}.ejs`, 'utf8'), /min-h-6/, file + ': standalone links need 44px targets');
+  }
 });
 
 test('public text, status and focus token pairs meet WCAG AA', () => {
   const pairs = [];
-  for (const background of ['canvas', 'surface', 'sunken', 'primary-soft', 'brand-tint']) {
+  for (const background of ['canvas', 'surface', 'sunken', 'primary-soft']) {
     for (const foreground of ['ink', 'muted', 'primary']) pairs.push([foreground, background, 4.5]);
   }
   pairs.push(['placeholder', 'surface', 4.5], ['control', 'surface', 3], ['control', 'canvas', 3]);
   for (const background of ['primary', 'primary-hover', 'primary-active', 'brand', 'danger-solid']) pairs.push(['white', background, 4.5]);
   for (const foreground of ['on-dark-muted', 'on-dark-accent']) pairs.push([foreground, 'brand', 4.5]);
-  for (const tone of ['success', 'warning', 'danger', 'info', 'gold']) pairs.push([tone, `${tone}-soft`, 4.5]);
+  for (const tone of ['success', 'warning', 'danger']) pairs.push([tone, `${tone}-soft`, 4.5]);
+  pairs.push(['gold', 'warning-soft', 4.5]);
   for (const [fg, bg, minimum] of pairs) {
     const values = [fg, bg].map(name => {
       assert.match(tokens[`color-${name}`], /^#[0-9a-f]{6}$/i);

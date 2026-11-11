@@ -29,7 +29,7 @@
           <ul class="divide-y divide-line border-y border-line">
             <% g.items.forEach(item => { %>
               <li class="flex items-center justify-between gap-3 py-4">
-                <a href="<%= item.href %>"<%= g.blank ? ' target="_blank" rel="noopener"' : '' %> class="font-medium text-ink hover:text-primary"><%= item.judul %></a>
+                <a href="<%= item.href %>"<%= g.blank ? ' target="_blank" rel="noopener"' : '' %> class="inline-flex min-h-11 items-center font-medium text-ink hover:text-primary"><%= item.judul %></a>
                 <span class="shrink-0 text-sm text-muted"><%= formatTanggal(item.tanggal) %></span>
               </li>
             <% }) %>

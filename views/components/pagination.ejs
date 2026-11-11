@@ -17,7 +17,7 @@
   const linkClass = 'inline-flex min-h-11 min-w-11 items-center justify-center rounded-control px-3 text-sm font-semibold no-underline';
 %>
 <div class="mt-6 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 sm:flex-row">
-  <p class="text-sm text-muted">Menampilkan <%= formatAngka(locals.from) %>–<%= formatAngka(locals.to) %> dari <%= formatAngka(locals.total) %> <%= locals.noun || 'data' %></p>
+  <p class="text-sm text-muted">Menampilkan <%= formatAngka(locals.from) %>-<%= formatAngka(locals.to) %> dari <%= formatAngka(locals.total) %> <%= locals.noun || 'data' %></p>
   <% if (last > 1) { %>
     <nav aria-label="Halaman">
       <ul class="flex items-center gap-1">

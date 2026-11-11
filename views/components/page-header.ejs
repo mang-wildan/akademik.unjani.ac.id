@@ -22,7 +22,7 @@
           <li class="flex items-center gap-1">
             <% if (i > 0) { %><%- icon('chevron_right', 'size-4') %><% } %>
             <% if (crumb.href && !last) { %>
-              <a href="<%= crumb.href %>" class="inline-flex min-h-6 items-center"><%= crumb.label %></a>
+              <a href="<%= crumb.href %>" class="inline-flex min-h-11 items-center"><%= crumb.label %></a>
             <% } else { %>
               <span<%- last ? ' aria-current="page"' : '' %>><%= crumb.label %></span>
             <% } %>
@@ -54,7 +54,7 @@
             <li class="flex min-w-0 items-center gap-1">
               <% if (i > 0) { %><%- icon('chevron_right', 'size-4 text-muted') %><% } %>
               <% if (crumb.href && !last) { %>
-                <a href="<%= crumb.href %>" class="inline-flex min-h-6 items-center text-muted hover:text-ink hover:underline"><%= crumb.label %></a>
+                <a href="<%= crumb.href %>" class="inline-flex min-h-11 items-center text-muted hover:text-ink hover:underline"><%= crumb.label %></a>
               <% } else { %>
                 <span class="<%= last ? 'line-clamp-1 font-medium text-ink' : '' %>"<%- last ? ' aria-current="page"' : '' %>><%= crumb.label %></span>
               <% } %>

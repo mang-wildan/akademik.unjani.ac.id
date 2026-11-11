@@ -86,8 +86,6 @@
   --color-placeholder: #5f6d63;    /* ≥5.3:1 on surface */
   --color-on-dark-muted: #d6dfd8;  /* ≥6.7:1 on brand */
   --color-on-dark-accent: #facc15; /* 5.9:1 on brand — gold text on dark; accent is only 3.1:1 there */
-  /* shortcut: compatibility tokens kept until Tahap 2-4 remove view callers */
-  --color-brand-tint: #eff5f0;
 
   --color-success: #166534;
   --color-success-soft: #dcfce7;
@@ -97,9 +95,6 @@
   --color-danger-solid: #b91c1c;
   --color-danger-soft: #fee2e2;
   --color-gold: #854d0e;
-  --color-gold-soft: #fef9c3;
-  --color-info: #1e3a8a;
-  --color-info-soft: #eff6ff;
 
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: "Source Serif 4", ui-serif, Georgia, "Times New Roman", serif;
@@ -206,7 +201,7 @@
   }
   /* For dark bands and photo overlays (.section-dark, hero) */
   .btn-accent {
-    @apply bg-on-dark-accent text-brand hover:bg-gold-soft;
+    @apply bg-on-dark-accent text-brand hover:bg-warning-soft;
   }
   .btn-light {
     @apply bg-white text-brand hover:bg-primary-soft;
@@ -229,7 +224,7 @@
     @apply bg-surface;
   }
   .section-soft {
-    @apply bg-brand-tint;
+    @apply bg-sunken;
   }
   /* Rules below are zero-specificity defaults; a color utility on an element
      still wins (utilities layer), so never put text-muted / text-primary on
@@ -312,8 +307,7 @@
   .badge-success { @apply bg-success-soft text-success; }
   .badge-warning { @apply bg-warning-soft text-warning; }
   .badge-danger  { @apply bg-danger-soft text-danger; }
-  .badge-gold    { @apply border border-accent bg-gold-soft text-gold; }
-  .badge-info    { @apply bg-sunken text-muted; }
+  .badge-gold    { @apply border border-accent bg-warning-soft text-gold; }
 
   /* Surfaces */
   .card {
@@ -400,7 +394,7 @@
   .prose-content :where(a) { @apply underline underline-offset-2; }
   /* Pasted/uploaded content (utils/html.js allows img, table, blockquote, hr) */
   .prose-content :where(img) { @apply my-4 h-auto max-w-full rounded-card; }
-  .prose-content :where(blockquote) { @apply my-4 border-l-4 border-accent bg-brand-tint py-2 pl-4 text-muted; }
+  .prose-content :where(blockquote) { @apply my-4 border-l-4 border-accent bg-sunken py-2 pl-4 text-muted; }
   .prose-content :where(hr) { @apply my-8 border-line; }
   /* Tables scroll on their own instead of widening the page */
   .prose-content :where(table) { @apply my-4 block max-w-full overflow-x-auto text-sm; }
@@ -423,16 +417,6 @@
   }
   .fade-in-up {
     animation: fade-in-up var(--dur-slow) var(--ease-enter) both;
-  }
-  /* Linked cards: hover/focus lift. Opt in with .lift; hover-capable devices only. */
-  .lift {
-    transition: transform var(--dur-base) var(--ease-enter), box-shadow var(--dur-base) var(--ease-enter);
-  }
-  @media (hover: hover) {
-    .lift:hover,
-    .lift:focus-within {
-      transform: translateY(-2px);
-    }
   }
   /* Pressed state for buttons */
   .btn:active:not(:disabled),

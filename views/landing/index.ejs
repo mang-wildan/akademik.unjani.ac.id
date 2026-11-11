@@ -135,7 +135,7 @@
   <div class="container-content grid gap-12 <%= adaMutu && lulusan ? 'lg:grid-cols-2 lg:items-start' : '' %>">
     <% if (adaMutu) { %>
     <section aria-labelledby="mutu-judul">
-      <%- include('../components/section-heading', { sectionEyebrow: 'Penjaminan mutu', sectionHeading: 'Status Mutu Institusi', sectionLead: 'Peringkat dan masa berlaku diambil langsung dari sertifikat akreditasi.', sectionLink: { label: 'Lihat semua akreditasi', href: '/akreditasi' }, sectionId: 'mutu-judul' }) %>
+      <%- include('../components/section-heading', { sectionHeading: 'Status Mutu Institusi', sectionLead: 'Peringkat dan masa berlaku diambil langsung dari sertifikat akreditasi.', sectionLink: { label: 'Lihat semua akreditasi', href: '/akreditasi' }, sectionId: 'mutu-judul' }) %>
       <% if (institusiAcc.length) { %>
       <ul class="grid gap-4 sm:grid-cols-2">
         <% institusiAcc.forEach(a => { %>
@@ -145,7 +145,7 @@
               <span class="font-serif text-5xl font-bold tracking-tight text-white sm:text-6xl"><%= a.peringkat %></span>
               <span class="text-sm text-on-dark-muted"><%= a.status.label %></span>
             </div>
-            <p class="mt-2 text-sm text-on-dark-muted"><%= a.lembaga ? a.lembaga.singkatan : '—' %> · berlaku s.d. <%= formatTanggal(a.berlakuSampai) %></p>
+            <p class="mt-2 text-sm text-on-dark-muted"><%= a.lembaga ? a.lembaga.singkatan : 'Belum diisi' %> · berlaku s.d. <%= formatTanggal(a.berlakuSampai) %></p>
           </li>
         <% }) %>
       </ul>

@@ -63,11 +63,22 @@
 
 ## Tahap 5 — Penutup
 
-- [ ] Sapu bersih: grep sisa kelas/token lama di `views/landing`, `views/auth`, `views/components`.
-- [ ] Audit anti-slop (SPEC §4): hitung eyebrow (≤1 per 3 seksi), tanpa em dash, tanpa badge per kategori, variasi layout antar halaman.
-- [ ] Audit aksesibilitas: kontras, fokus, target 44px, `aria-current`.
-- [ ] Uji fungsi: navigasi, cari, login gagal/berhasil, unduh PDF, pagination, chat widget.
-- [ ] `npm run build:css` final + `npm test` + commit.
+- [x] Sapu bersih: grep sisa kelas/token lama di `views/landing`, `views/auth`, `views/components`.
+  - Hapus token `info*`, `brand-tint`, `gold-soft`, `.badge-info`, `.lift`, serta argumen `dateTone` yang tidak lagi digunakan. Permukaan lembut memakai `sunken`/`warning-soft` yang sudah ada.
+- [x] Audit anti-slop (SPEC §4): hitung eyebrow (≤1 per 3 seksi), tanpa em dash, tanpa badge per kategori, variasi layout antar halaman.
+  - Beranda dibatasi dua eyebrow; kategori berupa teks/filter bergaris, bukan badge dekoratif. Salinan statis publik tanpa em/en dash; konten dari database tidak dimodifikasi.
+- [x] Audit aksesibilitas: kontras, fokus, target 44px, `aria-current`.
+  - Tes pasangan token WCAG AA lulus. Tautan kontak, breadcrumb, struktur, dan riwayat sertifikat dinaikkan ke 44px; tautan inline dalam paragraf tetap mengikuti baris teks.
+  - Review akhir menemukan lebar target ikon sertifikat <44px dan tautan hasil cari/judul dokumen terlalu pendek; diperbaiki dengan minimum ukuran dan dikunci tes RED→GREEN. Alert informasi bersama dipindahkan ke token netral agar tidak merujuk token yang dihapus.
+  - Chrome: Tab menampilkan fokus skip link, menu mobile/desktop membuka dan menutup via Escape, tab semester berpindah via ArrowRight, serta `aria-current` Profil benar.
+- [x] Uji fungsi: navigasi, cari, login gagal/berhasil, unduh PDF, pagination, chat widget.
+  - Chrome: Beranda/login dan 14 route daftar/404 pada 320/768/1024/1440px tanpa overflow; detail Berita/Pengumuman, pencarian, serta validasi native login diperiksa. Tidak menangkap exception runtime.
+  - POST login salah mengembalikan 400 dengan alert inline dan email dipertahankan. Login berhasil, gagal, CAPTCHA, dan blokir diverifikasi melalui `test/loginPolicy.test.js` dengan mock; akun nyata/CAPTCHA eksternal tidak diuji.
+  - Pagination dua halaman dikunci tes render dengan filter tetap terbawa; data berita lokal tidak cukup untuk menguji perpindahan halaman nyata.
+  - PDF Kurikulum, Buku, Buku Wisuda, dan satu Dokumen Akademik mengembalikan 200. Sertifikat akreditasi dan satu Dokumen Akademik lama mengembalikan 404, selain dua foto staf lama yang telah dicatat pada Tahap 4: masalah berkas/data lokal, tidak dibuatkan pengganti atau dihapus.
+  - Batas verifikasi: widget chat tidak dirender pada konfigurasi lokal (`chatEnabled` false); logika chat tetap diuji unit, tetapi buka/kirim chat serta jawaban layanan eksternal belum diuji end-to-end. Uji ulang dengan konfigurasi layanan dan akun uji sebelum rilis.
+- [x] `npm run build:css` final + `npm test` + commit.
+  - Build minified berhasil; 252 tes lulus, 0 gagal. `ARCHITECTURE.md` tetap khusus Tahap 6.
 
 ## Tahap 6 — Update ARCHITECTURE.md
 

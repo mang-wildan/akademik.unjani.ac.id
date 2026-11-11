@@ -45,7 +45,7 @@
     <% items.forEach((item, index) => { %>
       <li <%- index === 0 ? 'data-featured' : '' %> class="py-6 <%= index === 0 ? 'py-8' : '' %>">
       <a href="<%= basePath %>/<%= item.slug %>" aria-labelledby="pengumuman-judul-<%= index %> pengumuman-baca-<%= index %>" class="group grid grid-cols-[auto_minmax(0,1fr)] items-start gap-4 no-underline hover:text-primary sm:gap-6">
-        <%- include('../components/date-block', { date: item.createdAt, dateTone: item.pinned ? 'solid' : undefined }) %>
+        <%- include('../components/date-block', { date: item.createdAt }) %>
         <div class="min-w-0 flex-1">
           <% if (item.pinned || item.kategori || item.isBaru) { %>
           <div class="flex flex-wrap items-center gap-2">

@@ -4,7 +4,7 @@
   alertTone: info | warning | danger | success
 %>
 <% const tone = locals.alertTone || 'info'; const icons = { info: 'info', warning: 'warning', danger: 'error', success: 'check_circle' }; %>
-<div class="flex gap-3 border-l-2 px-4 py-3 <%= { info: 'border-info bg-info-soft text-info', warning: 'border-warning bg-warning-soft text-warning', danger: 'border-danger-solid bg-danger-soft text-danger', success: 'border-primary bg-success-soft text-success' }[tone] %>"
+<div class="flex gap-3 border-l-2 px-4 py-3 <%= { info: 'border-control bg-sunken text-ink', warning: 'border-warning bg-warning-soft text-warning', danger: 'border-danger-solid bg-danger-soft text-danger', success: 'border-primary bg-success-soft text-success' }[tone] %>"
      role="<%= tone === 'danger' ? 'alert' : 'note' %>">
   <%- icon(icons[tone], 'size-6') %>
   <div>

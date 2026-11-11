@@ -98,12 +98,12 @@
         <% rows.forEach(r => { %>
           <tr>
             <td data-label="Unit / Program Studi" class="font-medium"><%= r.label %></td>
-            <td data-label="Fakultas" class="text-muted"><%= r.programStudi?.fakultas?.nama || '—' %></td>
+            <td data-label="Fakultas" class="text-muted"><%= r.programStudi?.fakultas?.nama || 'Belum diisi' %></td>
             <td data-label="Peringkat"><span class="font-semibold text-ink"><%= r.peringkat %></span></td>
-            <td data-label="Lembaga" class="text-muted"><%= r.lembaga?.singkatan || '—' %></td>
+            <td data-label="Lembaga" class="text-muted"><%= r.lembaga?.singkatan || 'Belum diisi' %></td>
             <td data-label="Berlaku s.d."><%= formatTanggal(r.berlakuSampai) %></td>
             <td data-label="Status"><%- include('../components/badge', { text: r.status.label, tone: r.status.tone }) %></td>
-            <td data-label="Sertifikat"><a href="<%= r.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %><span class="max-md:inline md:sr-only">Unduh sertifikat <%= r.label %></span></a></td>
+            <td data-label="Sertifikat"><a href="<%= r.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 min-w-11 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %><span class="max-md:inline md:sr-only">Unduh sertifikat <%= r.label %></span></a></td>
           </tr>
           <% if (r.history.length) { %>
           <tr>
@@ -129,7 +129,7 @@
                         <td data-label="Peringkat"><span class="font-semibold text-ink"><%= h.peringkat %></span></td>
                         <td data-label="Berlaku"><%= formatRentangTanggal(h.tanggalBerlaku, h.berlakuSampai) %></td>
                         <td data-label="Status"><%- include('../components/badge', { text: accreditationStatus(h.berlakuSampai).label, tone: accreditationStatus(h.berlakuSampai).tone }) %></td>
-                        <td data-label="Sertifikat"><a href="<%= h.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-6 items-center text-sm font-semibold">Lihat</a></td>
+                        <td data-label="Sertifikat"><a href="<%= h.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 min-w-11 items-center text-sm font-semibold">Lihat</a></td>
                       </tr>
                     <% }) %>
                   </tbody>

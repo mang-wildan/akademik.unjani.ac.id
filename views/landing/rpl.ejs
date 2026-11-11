@@ -26,7 +26,7 @@
       <li class="flex items-start gap-4 py-4">
         <div class="min-w-0 flex-1">
           <p class="text-xs font-semibold text-primary uppercase">PDF · <%= d.status ? 'Aktif' : 'Arsip' %> · Tahun <%= d.tahun %><% if (d.fileSize) { %> · <%= formatUkuranFile(d.fileSize) %><% } %></p>
-          <a href="<%= d.file %>" target="_blank" rel="noopener" class="mt-1 inline-block py-1.5 font-semibold text-ink no-underline hover:text-primary"><%= d.judul %><span class="sr-only"> (PDF, tab baru)</span></a>
+          <a href="<%= d.file %>" target="_blank" rel="noopener" class="mt-1 inline-flex min-h-11 items-center py-1.5 font-semibold text-ink no-underline hover:text-primary"><%= d.judul %><span class="sr-only"> (PDF, tab baru)</span></a>
           <% if (d.deskripsi) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.deskripsi %></p><% } %>
         </div>
         <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download aria-label="Unduh <%= d.judul %>"><%- icon('download') %><span class="hidden sm:inline" aria-hidden="true">Unduh</span></a>

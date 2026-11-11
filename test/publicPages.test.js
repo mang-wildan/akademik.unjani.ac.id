@@ -15,9 +15,11 @@ test('secondary pages use editorial surfaces instead of elevated cards and categ
 
 for (const page of ['berita', 'pengumuman']) {
   test(page + ' promotes the first item, keeps filters, escaped content and pagination', async () => {
-    const locals = { basePath: '/' + page, noun: page, filters: { q: '<kata>', kategori: 'cat' }, kategoriList: [{ _id: 'cat', nama: '<Kategori>' }], pagination: { page: 1, pages: 2, total: 3, limit: 2 }, items: [0, 1].map(i => ({ slug: 'item-' + i, title: '<Judul ' + i + '>', createdAt: new Date('2026-11-11'), kategori: { nama: '<Kategori>' }, pinned: true, isBaru: true, excerpt: 'Ringkasan', featuredImage: '/img/hero-kampus.webp' })) };
+    const locals = { basePath: '/' + page, noun: page, filters: { q: '<kata>', kategori: 'cat' }, kategoriList: [{ _id: 'cat', nama: '<Kategori>' }], pagination: { page: 1, totalPages: 2, total: 3, from: 1, to: 2 }, items: [0, 1].map(i => ({ slug: 'item-' + i, title: '<Judul ' + i + '>', createdAt: new Date('2026-11-11'), kategori: { nama: '<Kategori>' }, pinned: true, isBaru: true, excerpt: 'Ringkasan', featuredImage: '/img/hero-kampus.webp' })) };
     const html = await render(page, locals);
     assert.match(html, /data-featured/);
+    assert.match(html, /aria-label="Halaman berikutnya"/);
+    assert.match(html, /kategori=cat&amp;page=2/);
     assert.match(html, /&lt;Judul 0&gt;/);
     assert.match(html, /aria-current="true"/);
     assert.match(html, /name="kategori" value="cat"/);

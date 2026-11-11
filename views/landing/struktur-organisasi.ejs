@@ -23,7 +23,7 @@
       <li class="py-4">
         <p class="font-semibold text-ink"><%= u.nama %></p>
         <% if (u.deskripsi) { %><p class="mt-1 text-sm text-muted"><%= u.deskripsi %></p><% } %>
-        <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="mt-1 inline-flex min-h-6 items-center gap-1 text-sm font-semibold"><%- icon('open_in_new', 'size-4') %><%= u.link %></a><% } %>
+        <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold"><%- icon('open_in_new', 'size-4') %><%= u.link %></a><% } %>
       </li>
     <% }) %>
   </ul>
