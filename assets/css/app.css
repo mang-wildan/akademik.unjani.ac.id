@@ -103,6 +103,13 @@
   --container-reading: 45rem;      /* 720px */
 }
 
+/* Di atas 1440 konten ikut melebar (margin tetap ±120) hingga 1520px agar baris teks tidak terlalu panjang. */
+@media (width > 90rem) {
+  :root {
+    --container-content: min(95rem, calc(100vw - 15rem));
+  }
+}
+
 @layer base {
   /* Motion tokens (SRS NFR-U-01). Exit is shorter than enter; only opacity/transform are animated. */
   :root {
