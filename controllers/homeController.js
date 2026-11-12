@@ -54,7 +54,7 @@ exports.getLanding = async (req, res) => {
     AcademicDocument.find({ pinned: true }, 'name file createdAt').sort({ createdAt: -1 }).limit(3).lean(),
     News.find({ status: 'published', pinned: true }, 'title slug createdAt').sort({ createdAt: -1 }).limit(3).lean(),
     Pengumuman.find({ status: 'published' }, 'title slug createdAt excerpt pinned kategori').populate('kategori', 'nama').sort({ pinned: -1, createdAt: -1 }).limit(5).lean(),
-    Accreditation.find({ jenis: JENIS.INSTITUSI }, 'peringkat berlakuSampai lembaga').populate('lembaga', 'singkatan').sort({ berlakuSampai: -1 }).lean(),
+    Accreditation.find({ jenis: JENIS.INSTITUSI }, 'peringkat berlakuSampai lembaga').populate('lembaga', 'singkatan').sort({ berlakuSampai: -1, tanggalBerlaku: -1, _id: -1 }).limit(1).lean(),
     // Newest first, with deterministic tie-breaks. Existing prodi ids come from a parallel
     // query (not .populate, which would add a sequential round-trip) to skip links to deleted prodi.
     Accreditation.find({ jenis: JENIS.PRODI }, 'peringkat programStudi berlakuSampai')
@@ -76,8 +76,8 @@ exports.getLanding = async (req, res) => {
   const agenda = latestCalendar ? currentAndNext(latestCalendar.events, now, 4) : { berlangsung: [], berikutnya: [] };
   const agendaItems = [...agenda.berlangsung, ...agenda.berikutnya].slice(0, 4);
 
-  // "Status Mutu Institusi" (FR-B-05): every institutional record shown as-is
-  // (see getAkreditasiLanding for why none is picked as "the" status).
+  // Beranda hanya menampilkan sertifikat institusi terbaru berdasarkan akhir masa berlaku.
+  // Riwayat lengkap tetap tersedia di halaman akreditasi.
   institusiAcc.forEach(a => { a.status = accreditationStatus(a.berlakuSampai); });
   // Prodi distribution: only each existing program's newest certificate, and
   // only while it is valid — older, expired or undated ones would claim a grade
