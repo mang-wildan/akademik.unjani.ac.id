@@ -172,40 +172,68 @@
     @apply sr-only rounded-control bg-ink px-4 py-3 font-bold text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50;
   }
 
-  /* Hero beranda: satu komposisi editorial, bukan banner hijau terpisah dari agenda. */
+  /* Hero beranda (Varian F): panorama foto latar dengan panel krem berbingkai hijau. */
   .home-hero-grid {
     position: relative;
-    display: grid;
-    gap: 2rem;
-    padding-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 2rem;
     padding-bottom: 3rem;
   }
-  .home-hero-photo { aspect-ratio: 1.28; }
+  .home-hero-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .home-hero-photo {
+    order: 2;
+    aspect-ratio: 1.28;
+    width: 100%;
+  }
+  .home-hero-photo img {
+    object-position: 70% center;
+  }
   .home-agenda { border-radius: var(--radius-card); }
-  .home-hero-copy { position: relative; z-index: 1; }
+  .home-hero-copy {
+    position: relative;
+    z-index: 1;
+    order: 1;
+    background: var(--color-canvas);
+    padding: 2rem 1.5rem;
+    border-top: 4px solid var(--color-primary);
+  }
   .home-hero-copy .display { text-wrap: initial; }
   [data-enter] .home-hero-copy { animation: fade-in-up var(--dur-slow) var(--ease-enter) both; }
   @media (width >= 64rem) {
     .home-hero-grid {
-      min-height: 42.5rem;
-      grid-template-columns: 1.15fr 1fr;
-      align-items: start;
-      padding-top: 4rem;
-      padding-bottom: 5rem;
+      padding-top: 2.5rem;
+      padding-bottom: 4rem;
     }
-    .home-hero-copy { padding-top: 1rem; }
-    .home-hero-photo { height: 31.25rem; aspect-ratio: auto; }
-    .home-agenda {
+    .home-hero-frame {
+      min-height: 40rem;
+      flex-direction: row;
+      align-items: center;
+      padding: 2.75rem;
+    }
+    .home-hero-photo {
       position: absolute;
-      right: 4rem;
-      bottom: 2.5rem;
-      z-index: 2;
-      width: 27rem;
+      inset: 0;
+      height: 100%;
+      aspect-ratio: auto;
+    }
+    .home-hero-copy {
+      width: 53%;
+      padding: 2.75rem;
+      border-top: 0;
+      border-left: 5px solid var(--color-primary);
+    }
+    .home-agenda {
+      width: 100%;
     }
   }
   @media (width >= 80rem) {
-    .home-hero-grid { grid-template-columns: 1.05fr 1fr; }
-    .home-hero-copy .display { font-size: 4.5rem; }
+    .home-hero-copy .display { font-size: 3.75rem; }
   }
   .photo img {
     transition: transform var(--dur-slow) var(--ease-enter);

@@ -9,12 +9,14 @@ const render = (overrides = {}) => ejs.renderFile(path.join(__dirname, '../views
   lulusan: null, pengumumanTerbaru: [], units: [], setting: {}, ...overrides,
 });
 
-test('home uses a split solid hero and ruled quick links without decorative glass or gradients', async () => {
+test('home uses a solid hero and ruled quick links without decorative glass or gradients', async () => {
   const html = await render();
   assert.match(html, /class="container-content home-hero-grid"/);
+  assert.match(html, /class="home-hero-frame"/);
   const css = fs.readFileSync('assets/css/app.css', 'utf8');
-  assert.match(css, /\.home-hero-grid\s*\{[^}]*position: relative;[^}]*display: grid;/);
-  assert.match(css, /@media \(width >= 64rem\)\s*\{\s*\.home-hero-grid\s*\{[^}]*grid-template-columns: 1\.15fr 1fr;/);
+  assert.match(css, /\.home-hero-grid\s*\{[^}]*position: relative;/);
+  assert.match(css, /@media \(width >= 64rem\)\s*\{\s*\.home-hero-grid\s*\{/);
+  assert.match(css, /\.home-hero-frame\s*\{[^}]*position: relative;/);
   assert.match(html, /home-shortcuts grid border-t border-ink/);
   assert.match(html, /aria-labelledby="akses-judul"/);
   assert.doesNotMatch(html, /backdrop-blur|bg-linear|shadow-card/);
@@ -22,7 +24,7 @@ test('home uses a split solid hero and ruled quick links without decorative glas
   assert.doesNotMatch(html, /id="agenda-judul"|id="info-penting"|id="kegiatan-judul"|id="mutu-judul"|id="lulusan-judul"|id="pengumuman-judul"|id="unit-judul"|<iframe/);
 });
 
-test('home agenda overlaps hero and data sections retain escaped titles, links and status', async () => {
+test('home agenda follows panorama and data sections retain escaped titles, links and status', async () => {
   const date = new Date('2026-11-11');
   const html = await render({
     agendaItems: [{ mulai: date, selesai: date, nama: '<Agenda>', status: { label: 'Berlangsung', tone: 'success' } }],
@@ -32,7 +34,9 @@ test('home agenda overlaps hero and data sections retain escaped titles, links a
   });
   assert.match(html, /<section class="home-agenda [^"]*bg-surface[^"]*shadow-raised[^>]*aria-labelledby="agenda-judul"/);
   const css = fs.readFileSync('assets/css/app.css', 'utf8');
-  assert.match(css, /@media \(width >= 64rem\)[\s\S]*?\.home-agenda\s*\{\s*position: absolute;\s*right: 4rem;\s*bottom: 2\.5rem;\s*z-index: 2;\s*width: 27rem;/);
+  assert.match(css, /\.home-hero-copy\s*\{[^}]*background: var\(--color-canvas\);/);
+  assert.match(css, /\.home-hero-copy\s*\{[^}]*width: 53%;[^}]*border-left: 5px solid var\(--color-primary\);/);
+  assert.doesNotMatch(css, /\.home-agenda\s*\{[^}]*position: absolute/);
   assert.match(html, /&lt;Agenda&gt;/);
   assert.match(html, /Berlangsung/);
   assert.match(html, /href="\/berita\/kabar"/);

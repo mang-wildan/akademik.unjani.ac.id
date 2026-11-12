@@ -18,18 +18,20 @@
 
 <section class="home-hero" data-enter aria-labelledby="hero-judul">
   <div class="container-content home-hero-grid">
-    <div class="home-hero-copy">
-      <p class="kicker">Portal resmi layanan akademik</p>
-      <h1 id="hero-judul" class="display mt-4">Layanan akademik<br class="hidden xl:block"> Universitas Jenderal<br class="hidden xl:block"> Achmad Yani.</h1>
-      <p class="mt-8 max-w-md text-base text-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
-      <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-        <a href="/pengumuman" class="btn btn-primary btn-lg">Pengumuman terbaru<%- icon('arrow_right_alt') %></a>
-        <a href="/profil" class="link inline-flex min-h-11 items-center text-sm">Profil Bidang Akademik</a>
+    <div class="home-hero-frame">
+      <%# Foto asli kampus; ukuran sumber disamakan dengan preload layout. %>
+      <div class="home-hero-photo photo">
+        <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="100vw" alt="Kampus Universitas Jenderal Achmad Yani" class="size-full object-cover" width="1600" height="903" fetchpriority="high">
       </div>
-    </div>
-    <%# Foto asli kampus; ukuran sumber disamakan dengan preload layout. %>
-    <div class="home-hero-photo photo">
-      <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="(min-width: 1024px) 50vw, 100vw" alt="Kampus Universitas Jenderal Achmad Yani" class="size-full object-cover" width="1600" height="903" fetchpriority="high">
+      <div class="home-hero-copy">
+        <p class="kicker">Portal resmi layanan akademik</p>
+        <h1 id="hero-judul" class="display mt-4">Layanan akademik Universitas Jenderal Achmad Yani.</h1>
+        <p class="mt-6 max-w-md text-base text-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
+        <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <a href="/pengumuman" class="btn btn-primary btn-lg">Pengumuman terbaru<%- icon('arrow_right_alt') %></a>
+          <a href="/profil" class="link inline-flex min-h-11 items-center text-sm">Profil Bidang Akademik</a>
+        </div>
+      </div>
     </div>
     <% if (agendaItems.length) { %>
     <section class="home-agenda border border-line bg-surface p-5 shadow-raised sm:p-6" aria-labelledby="agenda-judul">
