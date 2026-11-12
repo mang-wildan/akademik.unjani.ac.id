@@ -1,14 +1,11 @@
 <%#
-  Kotak catatan dengan garis kiri (DESIGN.md "Notice Banners").
+  Kotak catatan dengan aksen kiri 3px (mockup v0.0.1, "Alert gagal masuk").
   include('../components/alert', { alertTone: 'warning', alertTitle: 'Perpanjangan sedang diproses', alertText: '...' })
   alertTone: info | warning | danger | success
 %>
-<% const tone = locals.alertTone || 'info'; const icons = { info: 'info', warning: 'warning', danger: 'error', success: 'check_circle' }; %>
-<div class="flex gap-3 border-l-2 px-4 py-3 <%= { info: 'border-control bg-sunken text-ink', warning: 'border-warning bg-warning-soft text-warning', danger: 'border-danger-solid bg-danger-soft text-danger', success: 'border-primary bg-success-soft text-success' }[tone] %>"
+<% const tone = locals.alertTone || 'info'; %>
+<div class="rounded-r-control border-l-[3px] px-4 py-3.5 <%= { info: 'border-ink bg-sunken text-ink', warning: 'border-warning bg-warning-soft text-warning', danger: 'border-danger bg-danger-soft text-danger', success: 'border-success bg-success-soft text-success' }[tone] %>"
      role="<%= tone === 'danger' ? 'alert' : 'note' %>">
-  <%- icon(icons[tone], 'size-6') %>
-  <div>
-    <% if (locals.alertTitle) { %><p class="font-semibold"><%= locals.alertTitle %></p><% } %>
-    <% if (locals.alertText) { %><p class="text-sm"><%= locals.alertText %></p><% } %>
-  </div>
+  <% if (locals.alertTitle) { %><p class="text-sm leading-5 font-bold"><%= locals.alertTitle %></p><% } %>
+  <% if (locals.alertText) { %><p class="text-[0.8125rem] leading-[1.125rem] <%= locals.alertTitle ? 'mt-1' : '' %>"><%= locals.alertText %></p><% } %>
 </div>

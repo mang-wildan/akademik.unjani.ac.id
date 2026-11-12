@@ -1,0 +1,6 @@
+<%#
+  Status sebagai titik + teks (mockup v0.0.1), bukan lencana berwarna.
+  include('../components/status', { text: 'Berlaku', tone: 'success' })
+  tone: success (titik hijau) | warning (titik berongga, teks tebal) | danger (merah) | neutral (teks saja)
+%>
+<span class="status status-<%= locals.tone || 'neutral' %>"><%= locals.text %></span>

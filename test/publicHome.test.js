@@ -11,7 +11,11 @@ const render = (overrides = {}) => ejs.renderFile(path.join(__dirname, '../views
 
 test('home uses a split solid hero and ruled quick links without decorative glass or gradients', async () => {
   const html = await render();
-  assert.match(html, /lg:grid-cols-2/);
+  assert.match(html, /class="container-content home-hero-grid"/);
+  const css = fs.readFileSync('assets/css/app.css', 'utf8');
+  assert.match(css, /\.home-hero-grid\s*\{[^}]*position: relative;[^}]*display: grid;/);
+  assert.match(css, /@media \(width >= 64rem\)\s*\{\s*\.home-hero-grid\s*\{[^}]*grid-template-columns: 1\.15fr 1fr;/);
+  assert.match(html, /home-shortcuts grid border-t border-ink/);
   assert.match(html, /aria-labelledby="akses-judul"/);
   assert.doesNotMatch(html, /backdrop-blur|bg-linear|shadow-card/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
@@ -26,7 +30,9 @@ test('home agenda overlaps hero and data sections retain escaped titles, links a
     kegiatanTerbaru: [{ title: '<Berita>', slug: 'kabar', createdAt: date, kategori: { nama: 'Kegiatan' } }],
     pengumumanTerbaru: [{ title: '<Pengumuman>', slug: 'resmi', pinned: true, createdAt: date, kategori: { nama: 'Akademik' } }],
   });
-  assert.match(html, /-mt-12/);
+  assert.match(html, /<section class="home-agenda [^"]*bg-surface[^"]*shadow-raised[^>]*aria-labelledby="agenda-judul"/);
+  const css = fs.readFileSync('assets/css/app.css', 'utf8');
+  assert.match(css, /@media \(width >= 64rem\)[\s\S]*?\.home-agenda\s*\{\s*position: absolute;\s*right: 4rem;\s*bottom: 2\.5rem;\s*z-index: 2;\s*width: 27rem;/);
   assert.match(html, /&lt;Agenda&gt;/);
   assert.match(html, /Berlangsung/);
   assert.match(html, /href="\/berita\/kabar"/);

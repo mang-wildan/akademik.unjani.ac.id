@@ -2,28 +2,29 @@
     Makin bawah makin ringkas: foto besar → grid foto → baris berfoto kecil → baris teks. NIP tidak pernah dikirim ke view ini (K-05). %>
 <%- include('../components/page-header', {
   heading: 'Pimpinan & Staf',
+  headingLines: ['Pimpinan', '& staf'],
   lead: 'Struktur kepemimpinan dan staf yang mendukung layanan akademik.',
   breadcrumb: [{ label: 'Profil' }, { label: 'Pimpinan & Staf' }],
 }) %>
 
-<div class="container-content pb-16">
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
   <% if (!grup.length) { %>
     <%- include('../components/empty-state', { emptyIcon: 'groups', emptyTitle: 'Belum ada data pimpinan dan staf' }) %>
   <% } else { %>
     <% grup.forEach(g => { const tokoh = ['wakil-rektor', 'kepala-biro'].includes(g.value); %>
-    <section aria-labelledby="tingkat-<%= g.value %>" class="grid gap-6 border-t border-line-strong py-10 lg:grid-cols-[14rem_1fr] lg:gap-10">
+    <section aria-labelledby="tingkat-<%= g.value %>" class="grid gap-6 border-t border-ink py-10 lg:grid-cols-[20rem_1fr] lg:gap-10">
       <div>
         <h2 id="tingkat-<%= g.value %>" class="eyebrow"><%= g.label %></h2>
-        <p class="mt-1 text-xs text-muted uppercase"><%= g.items.length %> orang</p>
+        <p class="meta-sm mt-2"><%= g.items.length %> orang</p>
       </div>
 
       <% if (tokoh) { %>
       <ul class="space-y-10">
         <% g.items.forEach(p => { %>
           <li class="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10">
-            <img src="<%= p.foto %>" alt="" class="aspect-[3/4] w-40 rounded-card object-cover <%= g.value === 'wakil-rektor' ? 'sm:w-48' : '' %>" loading="lazy">
+            <img src="<%= p.foto %>" alt="" class="photo aspect-[3/4] w-48 object-cover sm:w-60" loading="lazy">
             <div class="min-w-0">
-              <p class="font-serif text-2xl font-bold tracking-tight <%= g.value === 'wakil-rektor' ? 'sm:text-3xl' : '' %>"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
+              <p class="font-serif text-[2.125rem] font-bold leading-tight tracking-tight sm:text-[2.5rem]"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
               <p class="mt-2 text-muted"><%= p.jabatan %></p>
             </div>
           </li>
@@ -33,7 +34,7 @@
       <ul class="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4">
         <% g.items.forEach(p => { %>
           <li class="min-w-0">
-            <img src="<%= p.foto %>" alt="" class="aspect-square w-full rounded-card object-cover" loading="lazy">
+            <img src="<%= p.foto %>" alt="" class="aspect-square w-full photo object-cover" loading="lazy">
             <p class="mt-3 font-semibold"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
             <p class="mt-1 text-sm text-muted"><%= p.jabatan %></p>
           </li>
@@ -43,7 +44,7 @@
       <ul class="divide-y divide-line">
         <% g.items.forEach(p => { %>
           <li class="flex items-center gap-4 py-3">
-            <img src="<%= p.foto %>" alt="" class="size-12 shrink-0 rounded-card object-cover" loading="lazy">
+            <img src="<%= p.foto %>" alt="" class="size-12 shrink-0 photo object-cover" loading="lazy">
             <p class="min-w-0 flex-1 font-semibold"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
             <p class="min-w-0 flex-1 text-sm break-words text-muted sm:text-right"><%= p.jabatan %></p>
           </li>
@@ -53,7 +54,7 @@
       <ul class="grid gap-x-10 sm:grid-cols-2">
         <% g.items.forEach(p => { %>
           <li class="flex flex-wrap items-center gap-4 border-b border-line py-3">
-            <img src="<%= p.foto %>" alt="" class="size-12 shrink-0 rounded-card object-cover" loading="lazy">
+            <img src="<%= p.foto %>" alt="" class="size-12 shrink-0 photo object-cover" loading="lazy">
             <p class="min-w-0 flex-1 font-semibold"><%= p.gelar ? `${p.gelar} ` : '' %><%= p.nama %></p>
             <p class="min-w-0 flex-1 text-sm break-words text-muted sm:text-right"><%= p.jabatan %></p>
           </li>

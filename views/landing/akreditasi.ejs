@@ -5,26 +5,26 @@
   breadcrumb: [{ label: 'Akreditasi' }],
 }) %>
 
-<div class="container-content pb-16">
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
   <% if (institusi.length) { %>
   <div class="mb-14 space-y-10">
     <% institusi.forEach(a => { %>
-      <section class="section-dark grid gap-8 rounded-card p-6 sm:p-8 lg:grid-cols-2 lg:gap-16">
+      <section class="grid gap-8 lg:grid-cols-2 lg:gap-16">
         <div>
           <h2 class="eyebrow">Akreditasi Institusi</h2>
-          <p class="mt-3 font-serif text-6xl font-bold tracking-tight text-on-dark-accent sm:text-7xl"><%= a.peringkat %></p>
+          <p class="mt-3 font-serif text-7xl font-bold leading-none tracking-tight text-primary sm:text-[7.5rem]"><%= a.peringkat %></p>
         </div>
         <div>
-          <dl class="divide-y divide-white/25 border-y border-white/25 text-sm">
-            <div class="flex items-center justify-between py-3"><dt class="text-xs text-on-dark-muted uppercase">Lembaga</dt><dd class="font-semibold"><%= a.lembaga ? a.lembaga.singkatan : 'Belum diisi' %></dd></div>
-            <% if (a.nomorSK) { %><div class="flex items-center justify-between py-3"><dt class="text-xs text-on-dark-muted uppercase">Nomor SK</dt><dd class="font-semibold"><%= a.nomorSK %></dd></div><% } %>
-            <div class="flex items-center justify-between py-3"><dt class="text-xs text-on-dark-muted uppercase">Berlaku Sampai</dt><dd class="font-semibold"><%= formatTanggal(a.berlakuSampai) %></dd></div>
-            <div class="flex items-center justify-between gap-4 py-3"><dt class="text-xs text-on-dark-muted uppercase">Status</dt><dd class="font-semibold"><%= a.status.label %></dd></div>
+          <dl class="divide-y divide-line border-t border-ink text-sm">
+            <div class="flex items-center justify-between py-3"><dt class="text-xs text-muted uppercase">Lembaga</dt><dd class="font-semibold"><%= a.lembaga ? a.lembaga.singkatan : 'Belum diisi' %></dd></div>
+            <% if (a.nomorSK) { %><div class="flex items-center justify-between py-3"><dt class="text-xs text-muted uppercase">Nomor SK</dt><dd class="font-semibold"><%= a.nomorSK %></dd></div><% } %>
+            <div class="flex items-center justify-between py-3"><dt class="text-xs text-muted uppercase">Berlaku Sampai</dt><dd class="font-semibold"><%= formatTanggal(a.berlakuSampai) %></dd></div>
+            <div class="flex items-center justify-between gap-4 py-3"><dt class="text-xs text-muted uppercase">Status</dt><dd class="font-semibold"><%= a.status.label %></dd></div>
           </dl>
-          <% if (a.catatanPerpanjangan) { %><p class="mt-3 text-sm text-on-dark-accent"><%= a.catatanPerpanjangan %></p><% } %>
+          <% if (a.catatanPerpanjangan) { %><p class="mt-3 text-sm text-muted"><%= a.catatanPerpanjangan %></p><% } %>
           <% if (a.sertifikat) { %>
           <div class="mt-4">
-            <a href="<%= a.sertifikat %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-white">Lihat sertifikat (PDF)<%- icon('arrow_forward', 'size-4') %><span class="sr-only"> (tab baru)</span></a>
+            <a href="<%= a.sertifikat %>" target="_blank" rel="noopener" class="link-arrow">Lihat sertifikat (PDF)<%- icon('arrow_forward', 'size-4') %><span class="sr-only"> (tab baru)</span></a>
           </div>
           <% } %>
         </div>
@@ -34,7 +34,7 @@
   <% } %>
 
   <% if (peringkatStats.length) { %>
-  <section class="mb-12 border-t border-line-strong pt-8">
+  <section class="mb-12 border-t border-ink pt-8">
     <p class="eyebrow">Sebaran Peringkat Akreditasi</p>
     <div class="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
       <% peringkatStats.forEach(p => { %>
@@ -47,7 +47,7 @@
   </section>
   <% } %>
 
-  <form method="get" class="mb-8 grid gap-4 border-t border-line-strong pt-8 sm:grid-cols-2 lg:grid-cols-4">
+  <form method="get" class="mb-8 grid gap-4 border-t border-ink pt-8 sm:grid-cols-2 lg:grid-cols-4">
     <div class="lg:col-span-2">
       <label for="q" class="field-label">Cari</label>
       <input id="q" name="q" type="search" class="field-control" placeholder="Nama program studi atau unit…" value="<%= filters.q %>">
@@ -80,7 +80,7 @@
       emptyText: 'Coba ubah kata kunci atau filter.', emptyAction: { label: 'Hapus filter', href: '/akreditasi' },
     }) %>
   <% } else { %>
-  <div class="overflow-hidden border-t border-line-strong">
+  <div class="overflow-hidden border-t border-ink">
     <table class="data-table data-table--stack">
       <caption class="sr-only">Daftar akreditasi program studi dan unit</caption>
       <thead>

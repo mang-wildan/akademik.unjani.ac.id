@@ -45,6 +45,28 @@ exports.tanggalBlok = value => {
   return { day: p.day, month: p.month.toUpperCase(), year: p.year, iso: date.toISOString() };
 };
 
+// Situs publik (mockup v0.0.1): tanggal mono ringkas dan rentang bertanda hubung, tanpa en dash.
+// "06 NOV 2026", atau "06 NOV" dengan { tahun: false }.
+exports.tanggalRingkas = (value, { tahun = true } = {}) => {
+  const block = exports.tanggalBlok(value);
+  if (!block) return '-';
+  return `${String(block.day).padStart(2, '0')} ${block.month}${tahun ? ` ${block.year}` : ''}`;
+};
+
+// "2 - 18 Nov 2026": formatRentangTanggal dengan tanda hubung berspasi.
+exports.rentangTanggal = (start, end) => exports.formatRentangTanggal(start, end).replace(/\s*–\s*/g, ' - ');
+
+// "18 - 29 AGU", "14 SEP - 2 OKT", "01 SEP": rentang tanpa tahun untuk tabel kalender.
+exports.rentangRingkas = (start, end) => {
+  const a = exports.tanggalBlok(start);
+  if (!a) return '-';
+  const b = exports.tanggalBlok(end);
+  const pad = day => String(day).padStart(2, '0');
+  if (!b || (a.day === b.day && a.month === b.month && a.year === b.year)) return `${pad(a.day)} ${a.month}`;
+  if (a.month === b.month && a.year === b.year) return `${pad(a.day)} - ${pad(b.day)} ${a.month}`;
+  return `${pad(a.day)} ${a.month} - ${pad(b.day)} ${b.month}`;
+};
+
 // "11.769"
 exports.formatAngka = value => {
   const number = Number(value);

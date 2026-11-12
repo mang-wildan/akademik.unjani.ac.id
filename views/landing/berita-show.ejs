@@ -1,36 +1,40 @@
 <%# Detail berita (FR-P-03/04): kolom baca ~720px, berita lainnya sebagai kartu bergambar. %>
 <%- include('../components/page-header', {
   heading: item.title,
+  article: true,
   breadcrumb: [{ label: 'Berita', href: '/berita' }, { label: item.title }],
 }) %>
 
-<div class="container-content pb-16">
-  <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
-    <article class="max-w-3xl">
-      <div class="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line pb-5 text-sm text-muted">
-        <% if (item.kategori) { %><span class="font-semibold text-primary uppercase"><%= item.kategori.nama %></span><% } %>
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
+  <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,45rem)_minmax(0,22.5rem)] lg:justify-between">
+    <article class="min-w-0">
+      <p class="meta mb-6 flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-line pb-5">
+        <% if (item.kategori) { %><span class="text-primary"><%= item.kategori.nama %></span><span>·</span><% } %>
         <time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt, { long: true }) %></time>
         <% if (item.createdBy) { %><span>· <%= item.createdBy.name %></span><% } %>
-      </div>
+      </p>
       <% if (item.featuredImage) { %>
-        <img src="<%= item.featuredImage %>" alt="" class="mb-6 aspect-video w-full rounded-card object-cover">
+        <div class="photo mb-8 aspect-[12/7] w-full"><img src="<%= item.featuredImage %>" alt="" class="size-full object-cover"></div>
       <% } %>
-      <div class="prose-content"><%- item.body %></div>
+      <div class="prose-content break-words"><%- item.body %></div>
 
       <% if (item.attachments && item.attachments.length) { %>
-      <div class="mt-8">
-        <h2 class="mb-3 text-2xl">Lampiran</h2>
+      <section class="mt-10 border-t border-ink pt-6" aria-labelledby="lampiran-judul">
+        <h2 id="lampiran-judul" class="kicker mb-4">Lampiran (<%= item.attachments.length %>)</h2>
         <ul class="divide-y divide-line border-y border-line">
           <% item.attachments.forEach(a => { %>
-            <li class="flex items-center gap-3 py-3">
-              <%- icon('picture_as_pdf', 'size-6 shrink-0 text-primary') %>
-              <span class="min-w-0 flex-1 truncate text-sm font-medium"><%= a.judul %></span>
-              <a href="<%= a.file %>" target="_blank" rel="noopener" class="btn btn-secondary shrink-0 px-3 py-1.5 text-sm"><%- icon('download', 'size-4') %>Unduh</a>
+            <li class="flex items-center gap-4 py-4">
+              <%- icon('description', 'size-6 shrink-0 text-primary') %>
+              <span class="min-w-0 flex-1 truncate text-base font-bold"><%= a.judul %></span>
+              <a href="<%= a.file %>" target="_blank" rel="noopener" class="link-arrow shrink-0">Unduh<%- icon('arrow_right_alt', 'size-5') %><span class="sr-only"> <%= a.judul %> (tab baru)</span></a>
             </li>
           <% }) %>
         </ul>
-      </div>
+      </section>
       <% } %>
+      <div class="mt-10 border-t border-line pt-6">
+        <a href="<%= basePath %>" class="link-arrow"><%- icon('arrow_left_alt', 'size-5') %>Kembali ke berita</a>
+      </div>
     </article>
 
     <%- include('../components/content-sidebar', { sideBase: '/berita', sideNoun: 'Berita', sideItems: lainnya, sideKategori: kategoriList, sideImages: true }) %>

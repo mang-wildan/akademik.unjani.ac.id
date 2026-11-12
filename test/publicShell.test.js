@@ -8,7 +8,7 @@ const render = (file, data = {}) => ejs.renderFile(path.join(__dirname, '../view
 
 test('public shell preserves navigation and uses a flat dark footer', async () => {
   const html = await render('layouts/public', { body: '<h1>Test</h1>', path: '/profil', chatEnabled: false });
-  assert.match(html, /<footer class="on-dark bg-black/);
+  assert.match(html, /<footer class="on-dark bg-ink text-on-ink">/);
   assert.match(html, /Ada pertanyaan akademik\?/);
   assert.match(html, /class="skip-link" href="#konten"/);
   assert.match(html, /aria-controls="menu-hp"/);
@@ -23,7 +23,7 @@ test('public page header is ivory and escapes titles while retaining breadcrumbs
   assert.match(html, /bg-canvas/);
   assert.match(html, /&lt;Test&gt;/);
   assert.match(html, /aria-current="page"/);
-  assert.match(html, /btn-primary/);
+  assert.match(html, /btn-dark/);
   assert.doesNotMatch(html, /section-dark|lambang-unjani/);
 });
 

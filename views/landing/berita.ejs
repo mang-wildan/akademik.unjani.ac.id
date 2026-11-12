@@ -1,25 +1,22 @@
-<%# Berita (FR-P-04): kartu dengan gambar di atas, teks di bawah. Tanpa sidebar (FR-P-06). %>
 <%- include('../components/page-header', {
   heading: 'Berita',
   lead: 'Berita dan kegiatan akademik Universitas Jenderal Achmad Yani.',
   breadcrumb: [{ label: 'Publikasi' }, { label: 'Berita' }],
 }) %>
 
-<div class="container-content pb-16">
-  <div class="mb-5 flex flex-col gap-4 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
-    <% if (kategoriList.length) { %>
-    <div class="flex flex-wrap gap-2">
-      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="inline-flex min-h-11 items-center px-3 text-sm font-semibold no-underline <%= !filters.kategori ? 'border-b-2 border-primary text-primary' : 'text-muted hover:text-ink' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>>Semua</a>
+<div class="container-content pt-6 pb-20 lg:pb-28">
+  <div class="flex flex-col gap-4 border-b border-line pb-2 lg:flex-row lg:items-center lg:justify-between">
+    <nav aria-label="Filter kategori berita" class="flex flex-wrap gap-x-8 gap-y-2">
+      <a href="<%= basePath %><%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="tab"<%- !filters.kategori ? ' aria-current="true"' : '' %>>Semua</a>
       <% kategoriList.forEach(k => { %>
-        <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="inline-flex min-h-11 items-center px-3 text-sm font-semibold no-underline <%= filters.kategori === String(k._id) ? 'border-b-2 border-primary text-primary' : 'text-muted hover:text-ink' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><%= k.nama %></a>
+      <a href="<%= basePath %>?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="tab"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><%= k.nama %></a>
       <% }) %>
-    </div>
-    <% } %>
-    <form method="get" role="search" class="flex gap-2">
+    </nav>
+    <form method="get" role="search" aria-label="Cari berita" class="flex gap-2">
       <% if (filters.kategori) { %><input type="hidden" name="kategori" value="<%= filters.kategori %>"><% } %>
       <label for="q" class="sr-only">Cari berita</label>
-      <input id="q" name="q" type="search" class="field-control sm:w-64" placeholder="Cari berita…" value="<%= filters.q %>">
-      <button type="submit" class="btn btn-secondary" aria-label="Cari"><%- icon('search') %></button>
+      <input id="q" name="q" type="search" class="field-control sm:w-80" placeholder="Cari berita…" value="<%= filters.q %>">
+      <button type="submit" class="btn btn-dark px-3" aria-label="Cari"><%- icon('arrow_right_alt', 'size-5') %></button>
     </form>
   </div>
 
@@ -30,30 +27,40 @@
       emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus pencarian', href: basePath } : null,
     }) %>
   <% } else { %>
-  <div data-reveal-group class="grid gap-x-10 sm:grid-cols-2">
-    <% items.forEach((item, index) => { %>
-      <article <%- index === 0 ? 'data-featured' : '' %> class="grid min-w-0 gap-5 border-t border-line py-6 <%= index === 0 ? 'sm:col-span-2 lg:grid-cols-[1.5fr_1fr] lg:gap-12 lg:py-10' : 'sm:grid-cols-[8rem_minmax(0,1fr)]' %>">
-        <%# Dekoratif: judul di bawah membawa tautan yang sama dan bisa diakses, menghindari tab stop ganda ke tujuan yang sama. %>
-        <a href="<%= basePath %>/<%= item.slug %>" class="block aspect-video overflow-hidden rounded-card bg-sunken" aria-hidden="true" tabindex="-1">
-          <% if (item.featuredImage) { %>
-            <img src="<%= item.featuredImage %>" alt="" class="size-full object-cover" loading="lazy">
-          <% } else { %>
-            <span class="flex size-full items-center justify-center text-muted"><%- icon('newspaper', 'size-10') %></span>
-          <% } %>
-        </a>
-        <div class="min-w-0">
-          <div class="flex flex-wrap items-center gap-2 text-xs">
-            <% if (item.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
-            <% if (item.kategori) { %><span class="font-semibold text-primary uppercase"><%= item.kategori.nama %></span><% } %>
-            <% if (item.isBaru) { %><%- include('../components/badge', { text: 'Baru', tone: 'success' }) %><% } %>
-            <span class="text-muted"><%= formatTanggal(item.createdAt) %></span>
-          </div>
-          <h2 class="mt-3 <%= index === 0 ? 'text-2xl sm:text-3xl lg:text-4xl' : 'font-sans text-lg' %>"><a href="<%= basePath %>/<%= item.slug %>" class="block min-h-11 font-semibold text-ink no-underline hover:text-primary"><%= item.title %></a></h2>
-          <% if (item.excerpt) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= item.excerpt %></p><% } %>
-        </div>
-      </article>
+  <% const featured = items[0]; const rest = items.slice(1); %>
+  <article data-featured class="grid items-start gap-8 py-9 lg:grid-cols-[minmax(0,45rem)_minmax(0,1fr)] lg:gap-12 lg:pt-12 lg:pb-16">
+    <a href="<%= basePath %>/<%= featured.slug %>" class="photo block aspect-[12/7]" aria-hidden="true" tabindex="-1">
+      <% if (featured.featuredImage) { %><img src="<%= featured.featuredImage %>" alt="" class="size-full object-cover"><% } %>
+    </a>
+    <div class="min-w-0 lg:pt-2">
+      <p class="meta flex flex-wrap gap-x-2">
+        <% if (featured.kategori) { %><span class="text-primary"><%= featured.kategori.nama %></span><span>·</span><% } %>
+        <time datetime="<%= new Date(featured.createdAt).toISOString() %>"><%= formatTanggal(featured.createdAt, { long: true }) %></time>
+      </p>
+      <h2 class="subsection-title mt-3"><a href="<%= basePath %>/<%= featured.slug %>" class="text-ink no-underline hover:text-primary"><%= featured.title %></a></h2>
+      <% if (featured.excerpt) { %><p class="mt-5 line-clamp-3 text-[1.0625rem] leading-[1.6875rem] text-muted"><%= featured.excerpt %></p><% } %>
+      <p class="mt-6"><a href="<%= basePath %>/<%= featured.slug %>" class="link-arrow">Baca berita<%- icon('arrow_right_alt', 'size-5') %></a></p>
+    </div>
+  </article>
+
+  <% if (rest.length) { %>
+  <div data-reveal-group class="grid border-t border-ink border-b border-b-line lg:grid-cols-2">
+    <% rest.forEach((item, index) => { %>
+    <article class="grid min-w-0 grid-cols-[6.5rem_minmax(0,1fr)] items-start gap-5 border-line py-7 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 <%= index >= 1 ? 'border-t' : '' %> <%= index === 1 ? 'lg:border-t-0' : '' %> <%= index % 2 === 0 ? 'lg:border-r lg:pr-8' : 'lg:pl-8' %>">
+      <a href="<%= basePath %>/<%= item.slug %>" class="photo block aspect-[11/7]" aria-hidden="true" tabindex="-1">
+        <% if (item.featuredImage) { %><img src="<%= item.featuredImage %>" alt="" class="size-full object-cover" loading="lazy"><% } %>
+      </a>
+      <div class="min-w-0">
+        <p class="meta-sm">
+          <% if (item.kategori) { %><%= item.kategori.nama %> · <% } %><time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt) %></time>
+        </p>
+        <h3 class="mt-1.5 font-sans text-lg leading-6 font-bold"><a href="<%= basePath %>/<%= item.slug %>" class="text-ink no-underline hover:text-primary"><%= item.title %></a></h3>
+        <% if (item.excerpt) { %><p class="mt-2 line-clamp-2 text-sm leading-5 text-muted"><%= item.excerpt %></p><% } %>
+      </div>
+    </article>
     <% }) %>
   </div>
+  <% } %>
   <%- include('../components/pagination', { ...pagination, noun, path: basePath, query: filters }) %>
   <% } %>
 </div>

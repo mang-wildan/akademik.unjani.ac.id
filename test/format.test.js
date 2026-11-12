@@ -26,6 +26,12 @@ test('formatRentangTanggal: collapses shared month and year', () => {
   assert.equal(f.formatRentangTanggal('2026-08-28', '2026-08-28'), '28 Agu 2026');
 });
 
+test('rentangTanggal: normalizes dash spacing within and across months and years', () => {
+  assert.equal(f.rentangTanggal('2026-07-13', '2026-07-17'), '13 - 17 Jul 2026');
+  assert.equal(f.rentangTanggal('2026-06-29', '2026-07-10'), '29 Jun - 10 Jul 2026');
+  assert.equal(f.rentangTanggal('2025-09-22', '2026-01-15'), '22 Sep 2025 - 15 Jan 2026');
+});
+
 test('tanggalBlok: day / upper-case month / year', () => {
   assert.deepEqual(
     { ...f.tanggalBlok('2026-06-29T00:00:00Z'), iso: undefined },

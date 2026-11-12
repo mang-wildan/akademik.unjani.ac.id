@@ -1,15 +1,15 @@
 <%#
-  Keadaan kosong selalu menjelaskan dan memberi langkah berikutnya (v0.0.1).
+  Keadaan kosong: menjelaskan dan memberi langkah berikutnya, rata kiri di bawah garis tebal (mockup v0.0.1).
   include('../components/empty-state', {
-    emptyIcon: 'search', emptyTitle: 'Dokumen tidak ditemukan',
+    emptyTitle: 'Dokumen tidak ditemukan',
     emptyText: 'Coba kata kunci lain.', emptyAction: { label: 'Hapus pencarian', href: '/dokumen-akademik' },
   })
+  emptyIcon dari pemanggil lama diabaikan: ikon dekoratif tidak dipakai lagi.
 %>
-<div class="flex flex-col items-center rounded-card border border-line bg-surface px-6 py-12 text-center">
-  <span class="text-muted"><%- icon(locals.emptyIcon || 'info', 'size-8') %></span>
-  <h2 class="mt-3 font-serif text-xl font-bold text-ink"><%= locals.emptyTitle %></h2>
-  <% if (locals.emptyText) { %><p class="mt-1 max-w-md text-sm text-muted"><%= locals.emptyText %></p><% } %>
+<div class="border-t border-ink pt-8 pb-4">
+  <h2 class="font-serif text-[1.75rem] leading-8 font-bold tracking-[-0.01em] text-ink"><%= locals.emptyTitle %></h2>
+  <% if (locals.emptyText) { %><p class="mt-2 max-w-xl text-[0.9375rem] leading-6 text-muted"><%= locals.emptyText %></p><% } %>
   <% if (locals.emptyAction) { %>
-    <a href="<%= locals.emptyAction.href %>" class="btn btn-secondary mt-5"><%= locals.emptyAction.label %></a>
+    <a href="<%= locals.emptyAction.href %>" class="link-arrow mt-3"><%= locals.emptyAction.label %><%- icon('arrow_right_alt') %></a>
   <% } %>
 </div>

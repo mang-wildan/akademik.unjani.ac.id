@@ -2,42 +2,39 @@
 <%- include('../components/page-header', {
   heading: item.title,
   breadcrumb: [{ label: 'Pengumuman', href: '/pengumuman' }, { label: item.title }],
-  compact: true,
+  article: true,
 }) %>
 
-<div class="container-content pb-16">
-  <div class="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
-    <article class="min-w-0 max-w-3xl">
-      <div class="mb-6 flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-line pb-5 text-sm text-muted">
-        <% if (item.pinned) { %><%- include('../components/badge', { text: 'Disematkan', tone: 'gold', badgeIcon: 'keep' }) %><% } %>
-        <% if (item.kategori) { %><span class="font-semibold text-primary uppercase"><%= item.kategori.nama %></span><% } %>
-        <span class="inline-flex items-center gap-2"><%- icon('event', 'size-4') %><time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt, { long: true }) %></time></span>
-        <% if (item.createdBy) { %><span class="break-words">Diterbitkan oleh <%= item.createdBy.name %></span><% } %>
-      </div>
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
+  <div class="grid items-start gap-12 lg:grid-cols-[minmax(0,45rem)_minmax(0,22.5rem)] lg:justify-between">
+    <article class="min-w-0">
+      <p class="meta mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line pb-5">
+        <% if (item.pinned) { %><span class="text-primary">Disematkan</span><span>·</span><% } %>
+        <% if (item.kategori) { %><span class="text-primary"><%= item.kategori.nama %></span><span>·</span><% } %>
+        <time datetime="<%= new Date(item.createdAt).toISOString() %>"><%= formatTanggal(item.createdAt, { long: true }) %></time>
+        <% if (item.createdBy) { %><span>· <%= item.createdBy.name %></span><% } %>
+      </p>
       <div class="prose-content break-words"><%- item.body %></div>
 
       <% if (item.attachments && item.attachments.length) { %>
-      <section class="mt-8 border-t border-line pt-6" aria-labelledby="lampiran-judul">
-        <h2 id="lampiran-judul" class="text-xl font-semibold">Lampiran (<%= item.attachments.length %>)</h2>
-        <p class="mt-1 mb-4 text-sm text-muted">Buka berkas pendukung di tab baru untuk melihat atau mengunduhnya.</p>
-        <ul class="divide-y divide-line rounded-control border border-line">
+      <section class="mt-10 border-t border-ink pt-6" aria-labelledby="lampiran-judul">
+        <h2 id="lampiran-judul" class="kicker mb-4">Lampiran (<%= item.attachments.length %>)</h2>
+        <ul class="divide-y divide-line border-y border-line">
           <% item.attachments.forEach(a => { %>
-            <li class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
-              <div class="flex min-w-0 flex-1 items-start gap-3">
-                <%- icon('description', 'size-6 text-primary') %>
-                <div class="min-w-0">
-                  <p class="break-words text-sm font-semibold"><%= a.judul %></p>
-                  <% if (a.fileSize > 0) { %><p class="mt-1 text-xs text-muted"><%= formatUkuranFile(a.fileSize) %></p><% } %>
-                </div>
+            <li class="flex items-center gap-4 py-4">
+              <%- icon('description', 'size-6 shrink-0 text-primary') %>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-base font-bold"><%= a.judul %></p>
+                <% if (a.fileSize > 0) { %><p class="meta-sm mt-0.5"><%= formatUkuranFile(a.fileSize) %></p><% } %>
               </div>
-              <a href="<%= a.file %>" target="_blank" rel="noopener noreferrer" aria-label="Buka lampiran: <%= a.judul %> (membuka tab baru)" class="btn btn-secondary shrink-0 px-3 text-sm">Buka lampiran<%- icon('open_in_new', 'size-4') %></a>
+              <a href="<%= a.file %>" target="_blank" rel="noopener noreferrer" aria-label="Buka lampiran: <%= a.judul %> (membuka tab baru)" class="link-arrow shrink-0">Buka<%- icon('arrow_right_alt', 'size-5') %></a>
             </li>
           <% }) %>
         </ul>
       </section>
       <% } %>
-      <div class="mt-8 border-t border-line pt-6">
-        <a href="<%= basePath %>" class="btn btn-secondary"><%- icon('arrow_back') %>Kembali ke pengumuman</a>
+      <div class="mt-10 border-t border-line pt-6">
+        <a href="<%= basePath %>" class="link-arrow"><%- icon('arrow_left_alt', 'size-5') %>Kembali ke pengumuman</a>
       </div>
     </article>
 

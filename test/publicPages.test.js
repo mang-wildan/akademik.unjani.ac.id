@@ -33,7 +33,7 @@ for (const page of ['berita', 'pengumuman']) {
 
 test('reading and staff pages have bounded reading width and rectangular portraits', () => {
   for (const file of ['profil', 'rpl', 'berita-show', 'pengumuman-show', 'cari']) {
-    assert.match(fs.readFileSync('views/landing/' + file + '.ejs', 'utf8'), /max-w-(?:3xl|\[var\(--container-reading\)\])/);
+    assert.match(fs.readFileSync('views/landing/' + file + '.ejs', 'utf8'), /max-w-(?:3xl|\[45rem\]|\[var\(--container-reading\)\])|minmax\(0,\s*45rem\)/);
   }
   assert.match(fs.readFileSync('views/landing/pimpinan-staff.ejs', 'utf8'), /aspect-\[3\/4\]/);
 });

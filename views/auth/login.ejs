@@ -15,34 +15,31 @@
   <script src="/js/vendor/alpine-csp.min.js" defer></script>
 </head>
 <body class="min-h-dvh bg-canvas lg:grid lg:grid-cols-2">
-  <%# Panel identitas solid mengikuti design.md; satu-satunya h1 adalah judul formulir. %>
-  <header class="section-dark hidden min-h-dvh flex-col p-12 lg:flex xl:p-16">
-
-    <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-16 object-contain">
-
-    <div class="my-auto max-w-lg py-12">
-      <p class="eyebrow">Panel admin</p>
-      <p class="mt-4 font-serif text-4xl leading-tight font-bold text-balance text-white xl:text-5xl">Bidang Akademik Universitas Jenderal Achmad Yani</p>
-      <p class="mt-5 text-lg text-on-dark-muted">Kelola konten dan layanan informasi akademik resmi UNJANI.</p>
+  <aside class="relative order-2 m-6 ml-0 hidden overflow-hidden lg:block" aria-label="Kampus UNJANI">
+    <img src="/img/hero-kampus.webp" alt="Kampus Universitas Jenderal Achmad Yani" class="absolute inset-0 size-full object-cover">
+    <div class="absolute right-8 bottom-8 left-8 flex items-end justify-between gap-6">
+      <div class="max-w-sm bg-canvas p-5">
+        <p class="meta-sm text-primary">Akses terbatas</p>
+        <p class="mt-3 text-sm">Hanya untuk pengelola konten. Setiap aktivitas masuk dicatat di log audit.</p>
+      </div>
+      <p class="meta-sm shrink-0 text-white">© <%= new Date().getFullYear() %> UNJANI</p>
     </div>
+  </aside>
 
-    <p class="text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
-  </header>
-
-  <main class="flex min-h-dvh items-center justify-center bg-surface px-4 py-8 sm:py-12 lg:px-12">
-    <div class="w-full max-w-md">
-      <a href="/" class="mb-6 flex flex-col items-center gap-2 no-underline lg:hidden">
+  <main class="flex min-h-dvh flex-col bg-canvas px-5 py-8 sm:px-12 lg:px-[max(3rem,8.333vw)] lg:py-12">
+    <div class="mx-auto flex w-full max-w-[26.25rem] flex-1 flex-col">
+      <a href="/" class="mb-10 flex items-center gap-3 no-underline">
         <img src="/img/lambang-unjani.png" alt="" width="56" height="54" class="size-14 object-contain">
-        <span class="text-center font-bold text-brand">Bidang Akademik<br><span class="text-sm font-medium text-muted">Universitas Jenderal Achmad Yani</span></span>
+        <span class="font-serif text-xl font-bold text-ink">Bidang Akademik<span class="meta-sm mt-1 block">UNJANI</span></span>
       </a>
 
-      <div>
-        <p class="eyebrow">Akses Pengelola</p>
-        <h1 id="login-heading" class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Masuk ke akun Anda</h1>
+      <div class="my-auto py-5">
+        <p class="kicker">Akses Pengelola</p>
+        <h1 id="login-heading" class="mt-3 font-serif text-[2.5rem] leading-[1.06] font-bold tracking-tight lg:text-[3rem]">Masuk ke akun Anda</h1>
         <p class="mt-2 text-sm leading-relaxed text-muted">Gunakan akun pengelola untuk mengakses panel admin Bidang Akademik.</p>
 
         <% if (typeof error !== 'undefined' && error) { %>
-          <div id="login-error" class="mt-6 flex gap-3 border-l-2 border-danger-solid bg-danger-soft p-4 text-sm text-danger" role="alert">
+          <div id="login-error" class="mt-6 flex gap-3 border-l-2 border-danger bg-danger-soft p-4 text-sm text-danger" role="alert">
             <%- icon('error', 'size-5') %>
             <div class="min-w-0 break-words">
               <p class="font-semibold">Masuk belum berhasil</p>
@@ -98,7 +95,7 @@
           <p class="mt-1 text-sm leading-relaxed text-muted">Hubungi Super Admin Bidang Akademik untuk mengatur ulang password akun Anda.</p>
         </div>
       </div>
-      <a href="/" class="mt-4 flex min-h-11 items-center justify-center gap-2 rounded-control text-center text-sm font-medium text-muted no-underline hover:text-primary"><%- icon('arrow_back', 'size-4') %>Kembali ke beranda</a>
+      <a href="/" class="mt-8 flex min-h-11 items-center gap-2 text-sm font-bold text-ink no-underline hover:text-primary"><%- icon('arrow_back', 'size-4') %>Kembali ke beranda</a>
 
       <p class="mt-6 text-center text-xs text-muted lg:hidden">© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
     </div>

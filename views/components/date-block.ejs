@@ -1,12 +1,11 @@
 <%#
-  Tanggal tipografis untuk daftar pengumuman & agenda (v0.0.1).
-  include('../components/date-block', { date: item.createdAt })
+  Tanggal tipografis untuk daftar pengumuman (mockup v0.0.1): hari serif besar, bulan-tahun mono.
+  include('../components/date-block', { date: item.createdAt, accent: true })   // accent: hari berwarna hijau (butir disematkan)
 %>
 <% const block = tanggalBlok(locals.date); %>
 <% if (block) { %>
-  <time datetime="<%= block.iso %>" class="flex shrink-0 flex-col items-start leading-none">
-    <span class="text-xs font-semibold tracking-wider text-muted uppercase"><%= block.month %></span>
-    <span class="mt-1 font-serif text-2xl font-bold tracking-tight text-ink"><%= block.day %></span>
-    <span class="mt-1 text-xs text-muted"><%= block.year %></span>
+  <time datetime="<%= block.iso %>" class="flex shrink-0 flex-col items-start">
+    <span class="font-serif text-[2.75rem] leading-none font-bold tracking-[-0.027em] sm:text-[3.5rem] <%= locals.accent ? 'text-primary' : 'text-ink' %>"><%= String(block.day).padStart(2, '0') %></span>
+    <span class="mt-2.5 font-mono text-xs leading-4 tracking-[0.1em] text-ink uppercase"><%= block.month %> <%= block.year %></span>
   </time>
 <% } %>

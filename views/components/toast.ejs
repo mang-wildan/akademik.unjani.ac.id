@@ -5,10 +5,9 @@
 <% const isError = Boolean(locals.error); const message = locals.error || locals.success; %>
 <div x-data="toast" x-show="visible" class="fixed inset-x-4 bottom-4 z-50 sm:left-auto sm:w-96"
      role="<%= isError ? 'alert' : 'status' %>">
-  <div class="fade-in-up flex items-start gap-3 rounded-card border p-4 shadow-modal <%= isError ? 'border-danger-solid bg-surface text-danger' : 'border-primary bg-surface text-success' %>">
-    <%- icon(isError ? 'error' : 'check_circle', 'size-6 mt-0.5') %>
-    <p class="flex-1 text-sm font-medium"><%= message %></p>
-    <button type="button" class="-m-2 inline-flex size-11 items-center justify-center rounded-control hover:bg-white/60" x-on:click="dismiss" aria-label="Tutup pesan">
+  <div class="fade-in-up flex items-start gap-3 rounded-card border-l-[3px] bg-surface p-4 shadow-modal <%= isError ? 'border-danger text-danger' : 'border-success text-success' %>">
+    <p class="flex-1 pt-0.5 text-sm font-medium"><%= message %></p>
+    <button type="button" class="-m-2 inline-flex size-11 items-center justify-center rounded-control text-ink hover:bg-sunken" x-on:click="dismiss" aria-label="Tutup pesan">
       <%- icon('close', 'size-5') %>
     </button>
   </div>

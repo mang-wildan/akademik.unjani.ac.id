@@ -2,29 +2,31 @@
 <%- include('../components/page-header', {
   heading: 'Buku',
   lead: 'Koleksi buku panduan dan referensi.',
+  metaLine: `${pagination.total} JUDUL${tahunList.length ? ' · ' + tahunList[tahunList.length - 1] + ' sampai ' + tahunList[0] : ''}`,
   breadcrumb: [{ label: 'Publikasi' }, { label: 'Buku' }],
 }) %>
 
-<div class="container-content pb-16">
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
   <% if (tahunList.length > 1) { %>
-  <nav class="mb-8 flex flex-wrap gap-2 border-b border-line pb-4" aria-label="Filter tahun buku">
-    <a href="/buku" class="inline-flex min-h-11 items-center px-3 text-sm font-semibold no-underline <%= !filters.tahun ? 'border-b-2 border-primary text-primary' : 'text-muted' %>"<%- !filters.tahun ? ' aria-current="true"' : '' %>>Semua tahun</a>
-    <% tahunList.forEach(y => { %><a href="/buku?tahun=<%= y %>" class="inline-flex min-h-11 items-center px-3 text-sm font-semibold no-underline <%= filters.tahun === String(y) ? 'border-b-2 border-primary text-primary' : 'text-muted' %>"<%- filters.tahun === String(y) ? ' aria-current="true"' : '' %>><%= y %></a><% }) %>
+  <nav class="mb-12 flex flex-wrap gap-8 border-b border-line pb-4" aria-label="Filter tahun buku">
+    <a href="/buku" class="tab"<%- !filters.tahun ? ' aria-current="true"' : '' %>>Semua tahun</a>
+    <% tahunList.forEach(y => { %><a href="/buku?tahun=<%= y %>" class="tab"<%- filters.tahun === String(y) ? ' aria-current="true"' : '' %>><%= y %></a><% }) %>
   </nav>
   <% } %>
 
   <% if (!books.length) { %>
     <%- include('../components/empty-state', { emptyIcon: 'menu_book', emptyTitle: 'Belum ada buku', emptyAction: filters.tahun ? { label: 'Lihat semua tahun', href: '/buku' } : null }) %>
   <% } else { %>
-  <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+  <div class="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-5">
     <% books.forEach(b => { %>
       <article class="min-w-0">
-        <a href="<%= b.src %>" target="_blank" rel="noopener" class="block no-underline">
-          <img src="<%= b.cover %>" alt="" class="aspect-[3/4] w-full rounded-card border border-line object-cover" loading="lazy">
-          <h2 class="mt-4 min-h-11 font-sans text-base font-semibold leading-snug text-ink"><%= b.title %></h2>
-          <span class="mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Baca PDF<%- icon('arrow_forward', 'size-4') %><span class="sr-only"> (tab baru)</span></span>
+        <a href="<%= b.src %>" target="_blank" rel="noopener" class="group block no-underline">
+          <div class="book-cover">
+            <img src="<%= b.cover %>" alt="" class="size-full object-cover" loading="lazy">
+          </div>
+          <h2 class="mt-4 font-sans text-base font-bold leading-snug text-ink transition-colors group-hover:text-primary"><%= b.title %></h2>
         </a>
-        <% if (b.year) { %><p class="text-xs text-muted">Tahun <%= b.year %></p><% } %>
+        <p class="meta-sm mt-2 text-muted"><% if (b.year) { %>Tahun <%= b.year %> · <% } %>PDF</p>
       </article>
     <% }) %>
   </div>

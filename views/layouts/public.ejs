@@ -39,8 +39,9 @@
   <link rel="preload" href="/img/hero-kampus.webp" imagesrcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" imagesizes="(min-width: 1024px) 50vw, 100vw" as="image" fetchpriority="high">
   <% } %>
   <link rel="icon" href="<%= s.favicon || '/assets/landing-page/images/favicon.ico' %>">
-  <link rel="preload" href="/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/source-serif-4/source-serif-4-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/inter/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/crimson-text/crimson-text-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/ubuntu-mono/ubuntu-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="<%= assetUrl('/css/app.css') %>">
   <script src="<%= assetUrl('/js/shared.js') %>" defer></script>
   <script src="<%= assetUrl('/js/app.js') %>" defer></script>
@@ -49,90 +50,89 @@
 <body class="flex min-h-screen flex-col">
   <a class="skip-link" href="#konten">Langsung ke konten utama</a>
 
-  <%# Top bar (F7 R1): ikut tergulung, hanya navbar di bawahnya yang sticky. Desktop saja — di HP/tablet kontak ada di menu dan footer. %>
-  <aside class="on-dark hidden bg-brand text-sm text-on-dark-muted lg:block" aria-label="Kontak dan media sosial">
-    <div class="container-content flex h-11 items-center justify-between gap-6">
-      <ul class="flex min-w-0 items-center gap-x-6">
-        <li class="shrink-0"><a href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %> class="flex min-h-11 items-center gap-2 whitespace-nowrap text-white no-underline hover:underline"><%- icon(phoneIcon, 'size-4 text-on-dark-accent') %><%= phone %></a></li>
-        <li class="min-w-0"><a href="mailto:<%= email %>" class="flex min-h-11 min-w-0 items-center gap-2 text-white no-underline hover:underline"><%- icon('mail', 'size-4 text-on-dark-accent') %><span class="truncate" title="<%= email %>"><%= email %></span></a></li>
-        <li class="hidden min-w-0 items-center gap-2 xl:flex"><%- icon('schedule', 'size-4 text-on-dark-accent') %><span class="truncate" title="<%= hours %>"><%= hours %></span></li>
+  <%# Baris utilitas: ikut tergulung, hanya navbar di bawahnya yang sticky. Desktop saja; di HP kontak ada di menu dan footer.
+      Kanan menampilkan jam layanan (data Pengaturan Situs), bukan label semester: layout tidak memuat kalender akademik. %>
+  <aside class="hidden border-b border-line lg:block" aria-label="Kontak layanan">
+    <div class="container-content flex h-11 items-center justify-between gap-6 font-mono text-xs">
+      <ul class="flex min-w-0 items-center gap-x-3 tracking-[0.05em] text-muted">
+        <li class="min-w-0"><a href="mailto:<%= email %>" class="flex min-h-11 min-w-0 items-center text-muted no-underline hover:text-ink"><span class="truncate" title="<%= email %>"><%= email %></span></a></li>
+        <li aria-hidden="true">/</li>
+        <li class="shrink-0"><a href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %> class="flex min-h-11 items-center whitespace-nowrap text-muted no-underline hover:text-ink"><%= phoneTo.whatsapp ? 'WhatsApp layanan akademik' : phone %></a></li>
       </ul>
-      <% if (socials.length) { %>
-        <ul class="flex shrink-0 items-center" aria-label="Media sosial">
-          <% socials.forEach(item => { %>
-            <li><a href="<%= item.url %>" class="inline-flex size-11 items-center justify-center rounded-control text-white hover:bg-white/10" target="_blank" rel="noopener noreferrer" title="<%= item.label %>" aria-label="<%= item.label %> (membuka tab baru)"><%- icon(item.icon, 'size-4') %></a></li>
-          <% }) %>
-        </ul>
-      <% } %>
+      <p class="shrink-0 tracking-[0.08em] text-primary uppercase">Layanan <%= hours %></p>
     </div>
   </aside>
 
   <header class="sticky top-0 z-40 border-b border-line bg-canvas" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
-    <div class="container-content flex h-18 items-center justify-between gap-4">
-      <a href="/" class="flex min-w-0 items-center gap-2 no-underline sm:gap-3">
-        <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-11 object-contain">
-        <span class="leading-tight">
-          <span class="block font-serif text-lg font-bold text-brand">Bidang Akademik</span>
-          <span class="hidden text-xs font-medium tracking-wide text-muted uppercase sm:block">Universitas Jenderal Achmad Yani</span>
+    <div class="container-content flex h-20 items-center justify-between gap-2 lg:gap-6">
+      <a href="/" class="flex min-w-0 shrink-0 items-center gap-3 no-underline">
+        <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="h-[42px] w-11 object-contain">
+        <span>
+          <span class="block font-serif text-[1.4375rem] leading-[1.625rem] font-bold text-ink">Bidang Akademik</span>
+          <span class="mt-px hidden text-xs leading-4 tracking-[0.015em] text-muted sm:block">Universitas Jenderal Achmad Yani</span>
         </span>
       </a>
 
-      <nav class="hidden lg:block" aria-label="Menu utama">
-        <ul class="flex items-center gap-1">
-          <% publicNav.forEach(item => { %>
-            <% if (item.children) { const groupActive = item.children.some(c => isActive(c.href, currentPath)); %>
-              <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
-                <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true"
-                        class="btn btn-tertiary px-3 <%= groupActive ? 'nav-active' : 'text-ink' %>">
-                  <%= item.label %> <%- icon('keyboard_arrow_down', 'size-5') %>
-                </button>
-                <ul x-show="open" x-cloak class="menu-enter absolute left-0 mt-1 min-w-64 rounded-card border border-line bg-surface p-2 shadow-raised">
-                  <% item.children.forEach(child => { %>
-                    <li><a href="<%= child.href %>" class="flex min-h-11 items-center rounded-control px-3 text-sm font-medium no-underline hover:bg-sunken <%= isActive(child.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
-                  <% }) %>
-                </ul>
-              </li>
-            <% } else { %>
-              <li><a href="<%= item.href %>" class="btn btn-tertiary px-3 <%= isActive(item.href, currentPath) ? 'nav-active' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
-            <% } %>
-          <% }) %>
-        </ul>
-      </nav>
+      <div class="flex items-center gap-6 xl:gap-8">
+        <nav class="hidden lg:block" aria-label="Menu utama">
+          <ul class="flex items-center gap-6 xl:gap-7">
+            <% publicNav.forEach(item => { %>
+              <% if (item.children) { const groupActive = item.children.some(c => isActive(c.href, currentPath)); %>
+                <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
+                  <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true"
+                          class="nav-link cursor-pointer <%= groupActive ? 'nav-active' : '' %>">
+                    <%= item.label %><%- icon('keyboard_arrow_down', 'size-4 text-muted') %>
+                  </button>
+                  <ul x-show="open" x-cloak class="menu-enter absolute top-full -left-3 min-w-64 rounded-b-card border border-t-0 border-line bg-surface p-2 shadow-raised">
+                    <% item.children.forEach(child => { %>
+                      <li><a href="<%= child.href %>" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken <%= isActive(child.href, currentPath) ? 'bg-sunken font-bold text-ink' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
+                    <% }) %>
+                  </ul>
+                </li>
+              <% } else { %>
+                <li><a href="<%= item.href %>" class="nav-link <%= isActive(item.href, currentPath) ? 'nav-active' : '' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
+              <% } %>
+            <% }) %>
+          </ul>
+        </nav>
 
-      <div class="flex items-center gap-1">
-        <a href="/cari" class="btn-icon" aria-label="Cari"><%- icon('search', 'size-6') %></a>
-        <%# CTA hanya di ≥1280px: di 1024px logo + 5 menu + CTA tidak muat satu baris. %>
-        <a href="<%= publicCta.href %>" class="btn btn-documents ml-2 hidden xl:inline-flex"><span class="flex size-8 shrink-0 items-center justify-center rounded bg-white/10"><%- icon(publicCta.icon) %></span><%= publicCta.label %></a>
-        <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="menu-hp" aria-label="Buka menu">
-          <%- icon('menu', 'size-6') %>
-        </button>
+        <div class="flex items-center gap-2 lg:gap-5">
+          <%# Pintasan "/" ditangani di public/js/app.js; tanda tombolnya disembunyikan dari pembaca layar. %>
+          <a href="/cari" class="hidden min-h-11 items-center gap-2 text-[0.9375rem] text-muted no-underline hover:text-ink lg:inline-flex" aria-keyshortcuts="/">Cari<kbd class="flex size-[22px] items-center justify-center rounded-[3px] border border-control font-mono text-[0.8125rem] leading-none" aria-hidden="true">/</kbd></a>
+          <a href="/cari" class="btn-icon lg:hidden" aria-label="Cari"><%- icon('search', 'size-6') %></a>
+          <%# CTA hanya di ≥1280px: di 1024px logo + 5 menu + cari + CTA tidak muat satu baris. %>
+          <a href="<%= publicCta.href %>" class="btn btn-dark hidden xl:inline-flex"><%= publicCta.label %></a>
+          <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="menu-hp" aria-label="Buka menu">
+            <%- icon('menu', 'size-6') %>
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Menu HP: panel penuh di bawah header (FR-G-02) -->
-    <nav id="menu-hp" x-show="open" x-cloak class="menu-enter max-h-[calc(100dvh-4.5rem)] overflow-y-auto border-t border-line bg-surface lg:hidden" aria-label="Menu utama">
-      <ul class="container-content py-3">
+    <nav id="menu-hp" x-show="open" x-cloak class="menu-enter max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-line bg-canvas lg:hidden" aria-label="Menu utama">
+      <ul class="container-content pt-2 pb-4">
         <% publicNav.forEach(item => { %>
           <% if (item.children) { %>
-            <li class="pt-3">
-              <p class="px-3 pb-1 text-xs font-semibold tracking-wide text-muted uppercase"><%= item.label %></p>
+            <li class="border-b border-line py-3">
+              <p class="meta py-2"><%= item.label %></p>
               <ul>
                 <% item.children.forEach(child => { %>
-                  <li><a href="<%= child.href %>" class="flex min-h-11 items-center rounded-control px-3 font-medium no-underline <%= isActive(child.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
+                  <li><a href="<%= child.href %>" class="flex min-h-11 items-center text-base no-underline <%= isActive(child.href, currentPath) ? 'font-bold text-ink' : 'text-ink' %>"<%- isActive(child.href, currentPath) ? ' aria-current="page"' : '' %>><%= child.label %></a></li>
                 <% }) %>
               </ul>
             </li>
           <% } else { %>
-            <li><a href="<%= item.href %>" class="flex min-h-11 items-center rounded-control px-3 font-semibold no-underline <%= isActive(item.href, currentPath) ? 'bg-primary-soft text-primary' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
+            <li class="border-b border-line"><a href="<%= item.href %>" class="flex min-h-13 items-center text-base no-underline <%= isActive(item.href, currentPath) ? 'font-bold text-ink' : 'text-ink' %>"<%- isActive(item.href, currentPath) ? ' aria-current="page"' : '' %>><%= item.label %></a></li>
           <% } %>
         <% }) %>
       </ul>
-      <div class="container-content border-t border-line py-4">
-        <a href="<%= publicCta.href %>" class="btn btn-documents w-full"><span class="flex size-8 shrink-0 items-center justify-center rounded bg-white/10"><%- icon(publicCta.icon) %></span><%= publicCta.label %></a>
-        <ul class="mt-3 text-sm">
-          <li><a href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %> class="flex min-h-11 items-center gap-3 px-3 font-medium text-ink no-underline"><%- icon(phoneIcon, 'size-5 text-primary') %><%= phone %></a></li>
-          <li><a href="mailto:<%= email %>" class="flex min-h-11 items-center gap-3 px-3 font-medium text-ink no-underline"><%- icon('mail', 'size-5 text-primary') %><%= email %></a></li>
-          <li class="flex min-h-11 items-center gap-3 px-3 text-muted"><%- icon('schedule', 'size-5 text-primary') %><%= hours %></li>
+      <div class="container-content pb-6">
+        <a href="<%= publicCta.href %>" class="btn btn-dark btn-lg w-full"><%= publicCta.label %></a>
+        <ul class="mt-4 font-mono text-[0.8125rem] tracking-[0.03em] text-muted">
+          <li><a href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %> class="flex min-h-11 items-center text-muted no-underline"><%= phone %></a></li>
+          <li><a href="mailto:<%= email %>" class="flex min-h-11 items-center text-muted no-underline"><%= email %></a></li>
+          <li class="flex min-h-11 items-center text-primary uppercase">Layanan <%= hours %></li>
         </ul>
       </div>
     </nav>
@@ -150,85 +150,79 @@
     // Tautan cepat dari Pengaturan Situs: hanya http(s) atau path internal (validator kini memaksa http(s); ini menyaring nilai lama di DB).
     // Cadangan dipakai setelah penyaringan, agar kolomnya tidak kosong bila semua tautan lama di DB tidak valid.
     const quickLinksValid = (s.quickLinks || []).filter(link => link && link.label && /^(https?:\/\/|\/(?!\/))/i.test(link.url || ''));
-    const quickLinks = quickLinksValid.length ? quickLinksValid : [{ label: 'Portal UNJANI', url: 'https://unjani.ac.id', target: '_blank' }];
-    // Hanya 6 tujuan yang paling sering dicari; halaman lain tetap lewat menu header. 12 tautan membuat kolom ini
-    // jauh lebih panjang dari kolom lain (target sentuh 44 px per tautan).
+    const quickLinks = quickLinksValid.length ? quickLinksValid : [{ label: 'unjani.ac.id', url: 'https://unjani.ac.id', target: '_blank' }];
+    // Delapan tujuan dalam dua kolom, sesuai mockup; halaman lain tetap lewat menu header.
     const jelajahi = [
-      { label: 'Kalender Akademik', href: '/kalender-akademik' },
-      { label: 'Dokumen Akademik', href: '/dokumen-akademik' },
+      { label: 'Profil', href: '/profil' },
+      { label: 'Pimpinan & staf', href: '/pimpinan-dan-staff' },
+      { label: 'Struktur organisasi', href: '/struktur-organisasi' },
+      { label: 'Kalender akademik', href: '/kalender-akademik' },
       { label: 'Kurikulum', href: '/kurikulum' },
       { label: 'Akreditasi', href: '/akreditasi' },
-      { label: 'Pengumuman', href: '/pengumuman' },
-      { label: 'Berita', href: '/berita' },
+      { label: 'Dokumen akademik', href: '/dokumen-akademik' },
+      { label: 'Buku wisuda', href: '/buku-wisuda' },
     ];
+    // 44px di layar sentuh; di perangkat berpenunjuk halus baris dirapatkan mengikuti ritme mockup.
+    const footerLink = 'flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]';
   %>
-  <%# Footer (F7 R4). Band CTA berada di dalam <footer> agar tetap di landmark contentinfo. Tanpa margin atas:
-      setiap halaman sudah diakhiri padding/seksinya sendiri, sehingga tidak ada celah canvas di bawah pita berwarna. %>
-  <footer class="on-dark bg-black text-white">
-    <section class="border-b border-white/20" aria-labelledby="cta-layanan">
-      <div class="container-content flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
+  <%# Footer gelap. Band CTA berada di dalam <footer> agar tetap di landmark contentinfo. Tanpa margin atas:
+      setiap halaman sudah diakhiri padding/seksinya sendiri. %>
+  <footer class="on-dark bg-ink text-on-ink">
+    <div class="container-content">
+      <section class="flex flex-col gap-8 py-16 md:flex-row md:items-center md:justify-between" aria-labelledby="cta-layanan">
         <div>
-          <h2 id="cta-layanan" class="text-3xl font-bold tracking-tight text-white md:text-4xl">Ada pertanyaan akademik?</h2>
-          <p class="mt-3 max-w-xl text-on-dark-muted">Hubungi Bidang Akademik pada jam layanan: <%= hours.replace(/[.\s]+$/, '') %>.</p>
+          <h2 id="cta-layanan" class="section-title text-on-ink">Ada pertanyaan akademik?</h2>
+          <p class="mt-3 text-base text-on-ink-muted">Layanan loket <%= hours.replace(/[.\s]+$/, '') %>.</p>
         </div>
-        <div class="flex shrink-0 flex-wrap gap-3">
-          <a href="mailto:<%= email %>" class="btn btn-light"><%- icon('mail') %>Kirim Email</a>
-          <a href="<%= phoneTo.href %>" class="btn btn-outline-light"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer"<% } %>><%- icon(phoneIcon) %><%= phoneTo.whatsapp ? 'Chat WhatsApp' : 'Telepon' %><% if (phoneTo.whatsapp) { %><span class="sr-only"> (membuka tab baru)</span><% } %></a>
+        <div class="flex shrink-0 flex-wrap gap-4">
+          <a href="<%= phoneTo.href %>" class="btn btn-light btn-lg min-w-44"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer"<% } %>><%= phoneTo.whatsapp ? 'Chat WhatsApp' : 'Telepon' %><% if (phoneTo.whatsapp) { %><span class="sr-only"> (membuka tab baru)</span><% } %></a>
+          <a href="mailto:<%= email %>" class="btn btn-outline-light btn-lg min-w-44">Kirim email</a>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <div class="container-content grid gap-10 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.3fr_1fr]">
-      <div>
-        <a href="/" class="inline-flex items-center gap-3 text-white no-underline">
-          <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="size-12 object-contain">
-          <span class="leading-tight">
-            <span class="block font-serif text-lg font-bold">Bidang Akademik</span>
-            <span class="block text-xs font-medium tracking-wide text-on-dark-muted uppercase">Universitas Jenderal Achmad Yani</span>
-          </span>
-        </a>
-        <p class="mt-5 text-sm leading-relaxed text-on-dark-muted"><%= s.landingFooterDescription || 'Mengelola kurikulum, kalender akademik, dan layanan administrasi akademik agar proses belajar berjalan tertib dan bermutu.' %></p>
-        <% if (socials.length) { %>
-          <ul class="mt-5 flex flex-wrap gap-2" aria-label="Media sosial">
-            <% socials.forEach(item => { %>
-              <li><a href="<%= item.url %>" class="inline-flex size-11 items-center justify-center rounded-full border border-white/25 text-white hover:border-on-dark-accent hover:text-on-dark-accent" target="_blank" rel="noopener noreferrer" title="<%= item.label %>" aria-label="<%= item.label %> (membuka tab baru)"><%- icon(item.icon, 'size-5') %></a></li>
+      <div class="grid gap-10 border-t border-white/15 py-9 md:grid-cols-2 lg:grid-cols-[11fr_12fr_7fr] lg:gap-8">
+        <div>
+          <a href="/" class="inline-flex items-center gap-3 text-on-ink no-underline">
+            <img src="/img/lambang-unjani.png" alt="" width="40" height="39" class="h-[39px] w-10 object-contain">
+            <span>
+              <span class="block font-serif text-[1.3125rem] leading-6 font-bold">Bidang Akademik</span>
+              <span class="block text-xs leading-4 text-on-ink-muted">Universitas Jenderal Achmad Yani</span>
+            </span>
+          </a>
+          <p class="mt-6 max-w-xs text-sm leading-[1.375rem] text-on-ink-muted"><%= s.alamat || 'Jl. Terusan Jenderal Sudirman, Cimahi, Jawa Barat 40531' %></p>
+          <% if (socials.length) { %>
+            <ul class="mt-4 -ml-3 flex flex-wrap" aria-label="Media sosial">
+              <% socials.forEach(item => { %>
+                <li><a href="<%= item.url %>" class="inline-flex size-11 items-center justify-center rounded-control text-on-ink-muted hover:text-on-ink" target="_blank" rel="noopener noreferrer" title="<%= item.label %>" aria-label="<%= item.label %> (membuka tab baru)"><%- icon(item.icon, 'size-[18px]') %></a></li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </div>
+
+        <nav aria-labelledby="footer-jelajahi">
+          <h2 id="footer-jelajahi" class="footer-title">Jelajahi</h2>
+          <%# Mengisi kolom dulu: empat tautan per kolom. %>
+          <ul class="grid grid-flow-col grid-rows-4 gap-x-8">
+            <% jelajahi.forEach(link => { %>
+              <li><a href="<%= link.href %>" class="<%= footerLink %>"><%= link.label %></a></li>
             <% }) %>
           </ul>
-        <% } %>
+        </nav>
+
+        <nav aria-labelledby="footer-tautan">
+          <h2 id="footer-tautan" class="footer-title">Tautan</h2>
+          <ul>
+            <% quickLinks.forEach(link => { %>
+              <li><a href="<%= link.url %>" class="<%= footerLink %>"<%- link.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '' %>><%= link.label %><% if (link.target === '_blank') { %><span class="sr-only"> (membuka tab baru)</span><% } %></a></li>
+            <% }) %>
+          </ul>
+        </nav>
       </div>
 
-      <nav aria-labelledby="footer-jelajahi">
-        <h2 id="footer-jelajahi" class="footer-title">Jelajahi</h2>
-        <ul class="columns-2 gap-x-4 lg:columns-1">
-          <% jelajahi.forEach(link => { %>
-            <li class="break-inside-avoid"><a href="<%= link.href %>" class="flex min-h-11 items-center gap-2 text-sm text-white no-underline hover:text-on-dark-accent hover:underline"><%- icon('chevron_right', 'size-4 text-on-dark-accent') %><%= link.label %></a></li>
-          <% }) %>
-        </ul>
-      </nav>
-
-      <div>
-        <h2 class="footer-title">Kontak &amp; Jam Layanan</h2>
-        <ul class="space-y-3 text-sm text-on-dark-muted">
-          <li class="flex gap-3"><%- icon('location_on', 'size-5 shrink-0 text-on-dark-accent') %><span><%= s.alamat || 'Jl. Terusan Jend. Sudirman, Cibeber, Cimahi Selatan, Kota Cimahi, Jawa Barat' %></span></li>
-          <li class="flex items-center gap-3"><%- icon(phoneIcon, 'size-5 text-on-dark-accent') %><a class="-my-3 inline-flex min-h-11 items-center text-white" href="<%= phoneTo.href %>"<% if (phoneTo.whatsapp) { %> target="_blank" rel="noopener noreferrer" aria-label="<%= waLabel %>"<% } %>><%= phone %></a></li>
-          <li class="flex items-center gap-3"><%- icon('mail', 'size-5 text-on-dark-accent') %><a class="-my-3 inline-flex min-h-11 min-w-0 items-center break-all text-white" href="mailto:<%= email %>"><%= email %></a></li>
-          <li class="flex gap-3"><%- icon('schedule', 'size-5 shrink-0 text-on-dark-accent') %><span><%= hours %></span></li>
-        </ul>
+      <div class="flex flex-wrap items-center justify-between gap-x-6 border-t border-white/15 py-3 font-mono text-[0.6875rem] tracking-[0.11em] text-on-ink-muted uppercase">
+        <p>© <%= new Date().getFullYear() %> Universitas Jenderal Achmad Yani</p>
+        <a href="/login" class="inline-flex min-h-11 items-center text-on-ink-muted no-underline hover:text-on-ink">Masuk admin</a>
       </div>
-
-      <% if (quickLinks.length) { %>
-      <nav aria-labelledby="footer-tautan">
-        <h2 id="footer-tautan" class="footer-title">Tautan Cepat</h2>
-        <ul>
-          <% quickLinks.forEach(link => { %>
-            <li><a href="<%= link.url %>" class="flex min-h-11 items-center gap-2 text-sm text-white no-underline hover:text-on-dark-accent hover:underline"<%- link.target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '' %>><%- icon(link.target === '_blank' ? 'open_in_new' : 'chevron_right', 'size-4 text-on-dark-accent') %><%= link.label %><% if (link.target === '_blank') { %><span class="sr-only"> (membuka tab baru)</span><% } %></a></li>
-          <% }) %>
-        </ul>
-      </nav>
-      <% } %>
-    </div>
-    <div class="border-t border-white/15">
-      <p class="container-content py-5 text-sm text-on-dark-muted">© <%= new Date().getFullYear() %> Bidang Akademik Universitas Jenderal Achmad Yani</p>
     </div>
   </footer>
 

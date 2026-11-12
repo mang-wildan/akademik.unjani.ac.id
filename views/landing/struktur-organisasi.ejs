@@ -1,13 +1,22 @@
 <%# Struktur Organisasi (FR-L-04): gambar bagan + versi teks (daftar unit) untuk aksesibilitas. %>
 <%- include('../components/page-header', {
   heading: 'Struktur Organisasi',
-  lead: siteSetting && siteSetting.strukturOrganisasiUpdatedAt ? `Diperbarui ${formatTanggal(siteSetting.strukturOrganisasiUpdatedAt, { long: true })}.` : 'Struktur organisasi Bidang Akademik.',
+  headingLines: ['Struktur', 'organisasi'],
+  lead: 'Susunan unit dan garis koordinasi di Bidang Akademik.',
+  metaLine: siteSetting && siteSetting.strukturOrganisasiUpdatedAt ? `DIPERBARUI ${formatTanggal(siteSetting.strukturOrganisasiUpdatedAt).toUpperCase()}` : null,
   breadcrumb: [{ label: 'Profil' }, { label: 'Struktur Organisasi' }],
 }) %>
 
-<div class="container-content pb-16">
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
   <% if (siteSetting && siteSetting.strukturOrganisasiImage) { %>
-    <div class="mb-8 rounded-card border border-line bg-surface p-4 sm:p-8">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <h2 class="kicker">Bagan</h2>
+      <div class="flex gap-6">
+        <a href="<%= siteSetting.strukturOrganisasiImage %>" target="_blank" rel="noopener" class="link-arrow">Perbesar<span class="sr-only"> (tab baru)</span></a>
+        <a href="<%= siteSetting.strukturOrganisasiImage %>" download class="link-arrow">Unduh gambar<%- icon('download', 'size-5') %></a>
+      </div>
+    </div>
+    <div class="mb-16 rounded-card border border-line bg-surface p-4 sm:p-10">
       <img src="<%= siteSetting.strukturOrganisasiImage %>" alt="Bagan struktur organisasi Bidang Akademik Universitas Jenderal Achmad Yani" class="mx-auto max-w-full">
     </div>
   <% } else { %>
@@ -15,15 +24,20 @@
   <% } %>
 
   <% if (units.length) { %>
-  <div class="max-w-3xl">
-  <h2 class="mb-2 text-2xl">Unit di Bidang Akademik</h2>
-  <p class="mb-4 text-sm text-muted">Versi teks dari bagan di atas, untuk pembaca layar dan pencarian.</p>
-  <ul class="divide-y divide-line border-y border-line">
+  <div class="grid gap-10 lg:grid-cols-[20rem_1fr]">
+  <div>
+    <p class="kicker">Versi teks</p>
+    <h2 class="subsection-title mt-3">Unit di Bidang Akademik</h2>
+    <p class="mt-6 text-sm text-muted">Isi yang sama dengan bagan, untuk pembaca layar dan pencarian.</p>
+  </div>
+  <ul class="divide-y divide-line border-t border-ink">
     <% units.forEach(u => { %>
-      <li class="py-4">
-        <p class="font-semibold text-ink"><%= u.nama %></p>
-        <% if (u.deskripsi) { %><p class="mt-1 text-sm text-muted"><%= u.deskripsi %></p><% } %>
-        <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="mt-1 inline-flex min-h-11 items-center gap-1 text-sm font-semibold"><%- icon('open_in_new', 'size-4') %><%= u.link %></a><% } %>
+      <li class="flex flex-wrap items-center justify-between gap-4 py-5">
+        <div>
+          <p class="font-bold text-ink"><%= u.nama %></p>
+          <% if (u.deskripsi) { %><p class="mt-1 text-sm text-muted"><%= u.deskripsi %></p><% } %>
+        </div>
+        <% if (u.link) { %><a href="<%= u.link %>" target="_blank" rel="noopener" class="link-arrow"><%= u.link %><%- icon('arrow_forward', 'size-4') %><span class="sr-only"> (tab baru)</span></a><% } %>
       </li>
     <% }) %>
   </ul>

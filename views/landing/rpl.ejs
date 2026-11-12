@@ -1,31 +1,61 @@
 <%# RPL (FR-D-03): teks penjelasan + daftar dokumen format FR-D-01. %>
 <%- include('../components/page-header', {
   heading: 'Rekognisi Pembelajaran Lampau (RPL)',
+  headingLines: ['Rekognisi', 'Pembelajaran', 'Lampau'],
   lead: 'Pengakuan atas pembelajaran yang diperoleh dari pendidikan formal, nonformal, informal, dan/atau pengalaman kerja.',
   breadcrumb: [{ label: 'Akademik' }, { label: 'RPL' }],
 }) %>
 
-<div class="container-content pb-16">
-  <div class="max-w-3xl">
-  <%# Teks penjelasan statis untuk F3; dipindah ke kolom yang bisa diedit admin di F4. %>
-  <div class="prose-content mb-10">
-    <h2>Apa itu RPL?</h2>
-    <p>Rekognisi Pembelajaran Lampau (RPL) adalah pengakuan terhadap capaian pembelajaran seseorang yang diperoleh dari pendidikan formal, nonformal, informal, dan/atau pengalaman kerja, untuk memperoleh pengakuan angka kredit atau kualifikasi pada pendidikan formal.</p>
-    <h2>Siapa yang dapat mengajukan?</h2>
-    <p>RPL dapat diajukan oleh calon mahasiswa atau mahasiswa aktif yang memiliki pengalaman belajar atau bekerja relevan dengan program studi yang dituju, sesuai dengan pedoman yang berlaku di Universitas Jenderal Achmad Yani.</p>
-    <h2>Alur pengajuan</h2>
-    <p>Pengajuan RPL dilakukan melalui Bidang Akademik dengan melengkapi dokumen portofolio, mengikuti asesmen, dan menunggu penetapan hasil oleh tim asesor. Unduh buku saku dan formulir di bawah untuk panduan lengkap.</p>
-  </div>
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
+  <div class="grid gap-10 lg:grid-cols-[20rem_1fr]">
+    <nav aria-label="Di halaman ini">
+      <p class="sidebar-title">Di halaman ini</p>
+      <ul class="divide-y divide-line text-sm text-muted">
+        <li><a href="#tentang-rpl" class="flex min-h-11 items-center font-bold text-ink">Apa itu RPL?</a></li>
+        <li><a href="#pemohon-rpl" class="flex min-h-11 items-center">Siapa yang dapat mengajukan?</a></li>
+        <li><a href="#alur-rpl" class="flex min-h-11 items-center">Alur pengajuan</a></li>
+        <li><a href="#dokumen-rpl" class="flex min-h-11 items-center">Dokumen &amp; panduan</a></li>
+      </ul>
+    </nav>
+    <div>
+    <div class="max-w-[45rem] text-lg leading-relaxed text-ink">
+      <h2 id="tentang-rpl" class="subsection-title mb-6">Apa itu RPL?</h2>
+      <p>Rekognisi Pembelajaran Lampau (RPL) adalah pengakuan terhadap capaian pembelajaran seseorang yang diperoleh dari pendidikan formal, nonformal, informal, dan/atau pengalaman kerja, untuk memperoleh pengakuan angka kredit atau kualifikasi pada pendidikan formal.</p>
+      <h2 id="pemohon-rpl" class="subsection-title mt-10 mb-4">Siapa yang dapat mengajukan?</h2>
+      <p class="mt-2">RPL dapat diajukan oleh calon mahasiswa atau mahasiswa aktif yang memiliki pengalaman belajar atau bekerja relevan dengan program studi yang dituju, sesuai dengan pedoman yang berlaku di Universitas Jenderal Achmad Yani.</p>
+    </div>
 
-  <h2 class="mb-4 text-3xl">Dokumen &amp; Panduan RPL</h2>
+  <section id="alur-rpl" class="mt-12 border-t border-line pt-8">
+    <p class="kicker">Tahapan</p>
+    <h2 class="subsection-title mt-3">Alur pengajuan</h2>
+    <ol class="mt-8 divide-y divide-line border-y border-line">
+      <% [
+        ['Siapkan dokumen', 'Lengkapi dokumen portofolio dan formulir sesuai panduan di bawah.'],
+        ['Asesmen', 'Ikuti proses asesmen oleh tim asesor sesuai program studi yang dituju.'],
+        ['Penetapan hasil', 'Tunggu penetapan hasil rekognisi capaian pembelajaran oleh tim asesor.'],
+      ].forEach((step, i) => { %>
+        <li class="grid grid-cols-[4rem_1fr] gap-x-6 py-6">
+          <p class="row-span-2 font-serif text-[2.5rem] leading-none text-primary" aria-hidden="true">0<%= i + 1 %></p>
+          <h3 class="text-lg font-bold"><%= step[0] %></h3>
+          <p class="mt-1 text-sm leading-relaxed text-muted"><%= step[1] %></p>
+        </li>
+      <% }) %>
+    </ol>
+    <p class="mt-6 text-sm text-muted">Pengajuan RPL dilakukan melalui Bidang Akademik. Unduh buku saku dan formulir di bawah untuk panduan lengkap.</p>
+  </section>
+
+  <section id="dokumen-rpl" class="mt-12 border-t border-ink pt-8">
+  <p class="kicker">Unduhan</p>
+  <h2 class="subsection-title mt-3 mb-8">Dokumen &amp; panduan RPL</h2>
   <% if (!rplDocs.length) { %>
     <%- include('../components/empty-state', { emptyIcon: 'verified', emptyTitle: 'Belum ada dokumen RPL' }) %>
   <% } else { %>
   <ul class="divide-y divide-line border-y border-line">
     <% rplDocs.forEach(d => { %>
-      <li class="flex items-start gap-4 py-4">
+      <li class="flex items-start gap-5 py-6">
+        <span class="file-mark">PDF</span>
         <div class="min-w-0 flex-1">
-          <p class="text-xs font-semibold text-primary uppercase">PDF · <%= d.status ? 'Aktif' : 'Arsip' %> · Tahun <%= d.tahun %><% if (d.fileSize) { %> · <%= formatUkuranFile(d.fileSize) %><% } %></p>
+          <p class="meta-sm">PDF · <%= d.status ? 'Aktif' : 'Arsip' %> · Tahun <%= d.tahun %><% if (d.fileSize) { %> · <%= formatUkuranFile(d.fileSize) %><% } %></p>
           <a href="<%= d.file %>" target="_blank" rel="noopener" class="mt-1 inline-flex min-h-11 items-center py-1.5 font-semibold text-ink no-underline hover:text-primary"><%= d.judul %><span class="sr-only"> (PDF, tab baru)</span></a>
           <% if (d.deskripsi) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.deskripsi %></p><% } %>
         </div>
@@ -34,5 +64,7 @@
     <% }) %>
   </ul>
   <% } %>
+  </section>
+    </div>
   </div>
 </div>

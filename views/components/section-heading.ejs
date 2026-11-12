@@ -1,23 +1,21 @@
 <%#
-  Judul seksi: eyebrow + judul + pengantar + tautan "lihat semua" (F7). Selalu <h2>.
+  Judul seksi: judul serif + pengantar + tautan "lihat semua" (mockup v0.0.1). Selalu <h2>.
   include('../components/section-heading', {
-    sectionEyebrow: 'Agenda Akademik',
-    sectionHeading: 'Kegiatan Terdekat',
+    sectionEyebrow: 'Disematkan',   // opsional dan jarang: maksimal satu per tiga seksi
+    sectionHeading: 'Kegiatan akademik',
     sectionLead: 'Tonggak penting semester berjalan.',
-    sectionLink: { label: 'Lihat kalender lengkap', href: '/kalender-akademik' },
-    sectionAlign: 'center',     // default rata kiri; tautan pindah ke bawah judul
-    sectionId: 'agenda-judul',  // pasangkan dengan <section aria-labelledby="agenda-judul">
+    sectionLink: { label: 'Semua berita', href: '/berita' },
+    sectionId: 'kegiatan-judul',    // pasangkan dengan <section aria-labelledby="kegiatan-judul">
   })
   Warna menyesuaikan sendiri di dalam .section-dark.
 %>
-<% const center = locals.sectionAlign === 'center'; %>
-<div class="mb-8 flex flex-col gap-4 <%= center ? 'items-center text-center' : 'md:flex-row md:items-end md:justify-between' %>">
+<div class="mb-9 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
   <div class="min-w-0">
-    <% if (locals.sectionEyebrow) { %><p class="eyebrow"><%= locals.sectionEyebrow %></p><% } %>
-    <h2<% if (locals.sectionId) { %> id="<%= locals.sectionId %>"<% } %> class="section-title<%= locals.sectionEyebrow ? ' mt-2' : '' %>"><%= locals.sectionHeading %></h2>
-    <% if (locals.sectionLead) { %><p class="section-lead<%= center ? ' mx-auto' : '' %>"><%= locals.sectionLead %></p><% } %>
+    <% if (locals.sectionEyebrow) { %><p class="eyebrow mb-3"><%= locals.sectionEyebrow %></p><% } %>
+    <h2<% if (locals.sectionId) { %> id="<%= locals.sectionId %>"<% } %> class="section-title"><%= locals.sectionHeading %></h2>
+    <% if (locals.sectionLead) { %><p class="section-lead"><%= locals.sectionLead %></p><% } %>
   </div>
   <% if (locals.sectionLink) { %>
-    <a href="<%= locals.sectionLink.href %>" class="section-link"><%= locals.sectionLink.label %><%- icon('arrow_forward', 'size-4') %></a>
+    <a href="<%= locals.sectionLink.href %>" class="section-link"><%= locals.sectionLink.label %><%- icon('arrow_right_alt') %></a>
   <% } %>
 </div>

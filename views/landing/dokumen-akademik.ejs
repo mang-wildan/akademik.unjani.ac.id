@@ -1,27 +1,29 @@
 <%# Dokumen Akademik (FR-D-01..02): daftar, bukan kartu. %>
 <%- include('../components/page-header', {
   heading: 'Dokumen Akademik',
+  headingLines: ['Dokumen', 'akademik'],
+  metaLine: `${totalDocsAll} DOKUMEN · ${kategoriOptions.length} KATEGORI`,
   lead: 'Formulir, pedoman, dan peraturan akademik resmi.',
   breadcrumb: [{ label: 'Akademik' }, { label: 'Dokumen Akademik' }],
 }) %>
 
-<div class="container-content grid gap-6 pb-16 lg:grid-cols-[16rem_1fr]">
+<div class="container-content grid gap-10 pt-10 pb-20 lg:grid-cols-[16rem_1fr] lg:pt-12 lg:pb-28">
   <aside class="min-w-0">
-    <h2 class="mb-2 text-sm font-semibold tracking-wide text-muted uppercase">Kategori</h2>
-    <ul class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 md:-mx-6 md:px-6 lg:mx-0 lg:block lg:space-y-1 lg:overflow-visible lg:px-0 lg:pb-0">
-      <li class="shrink-0"><a href="/dokumen-akademik<%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between gap-2 rounded-control border px-3 text-sm font-medium whitespace-nowrap lg:border-transparent lg:whitespace-normal <%= !filters.kategori ? 'border-primary bg-primary-soft text-primary' : 'border-line text-ink hover:bg-sunken' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>>Semua <span><%= totalDocsAll %></span></a></li>
+    <h2 class="sidebar-title">Kategori</h2>
+    <ul class="divide-y divide-line">
+      <li><a href="/dokumen-akademik<%= filters.q ? '?q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between gap-2 px-3 text-[0.9375rem] no-underline <%= !filters.kategori ? 'border-l-[3px] border-ink font-bold text-ink' : 'text-muted hover:text-ink' %>"<%- !filters.kategori ? ' aria-current="true"' : '' %>>Semua dokumen <span class="meta-sm"><%= totalDocsAll %></span></a></li>
       <% kategoriOptions.forEach(k => { %>
-        <li class="shrink-0"><a href="/dokumen-akademik?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between gap-2 rounded-control border px-3 text-sm font-medium whitespace-nowrap lg:border-transparent lg:whitespace-normal <%= filters.kategori === String(k._id) ? 'border-primary bg-primary-soft text-primary' : 'border-line text-ink hover:bg-sunken' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><%= k.nama %> <span><%= k.total %></span></a></li>
+        <li><a href="/dokumen-akademik?kategori=<%= k._id %><%= filters.q ? '&q=' + encodeURIComponent(filters.q) : '' %>" class="flex min-h-11 items-center justify-between gap-2 px-3 text-[0.9375rem] no-underline <%= filters.kategori === String(k._id) ? 'border-l-[3px] border-ink font-bold text-ink' : 'text-muted hover:text-ink' %>"<%- filters.kategori === String(k._id) ? ' aria-current="true"' : '' %>><%= k.nama %> <span class="meta-sm"><%= k.total %></span></a></li>
       <% }) %>
     </ul>
   </aside>
 
   <div class="min-w-0">
-    <form method="get" role="search" class="mb-5 flex gap-2">
+    <form method="get" role="search" class="mb-8 flex gap-3">
       <% if (filters.kategori) { %><input type="hidden" name="kategori" value="<%= filters.kategori %>"><% } %>
       <label for="q" class="sr-only">Cari dokumen</label>
-      <input id="q" name="q" type="search" class="field-control" placeholder="Cari judul dokumen…" value="<%= filters.q %>">
-      <button type="submit" class="btn btn-secondary" aria-label="Cari"><%- icon('search') %><span class="hidden sm:inline" aria-hidden="true">Cari</span></button>
+      <input id="q" name="q" type="search" class="field-control flex-1" placeholder="Cari judul dokumen…" value="<%= filters.q %>">
+      <button type="submit" class="btn btn-dark shrink-0">Cari</button>
     </form>
 
     <% if (!documents.length) { %>
@@ -31,20 +33,20 @@
         emptyAction: (filters.q || filters.kategori) ? { label: 'Hapus pencarian', href: '/dokumen-akademik' } : null,
       }) %>
     <% } else { %>
-    <ul class="divide-y divide-line border-y border-line-strong">
+    <ul class="divide-y divide-line border-t border-line">
       <% documents.forEach(d => { %>
-        <li class="flex items-start gap-4 py-5">
-          <span class="flex h-14 w-10 shrink-0 items-center justify-center border border-line-strong text-xs text-muted max-sm:hidden">PDF</span>
+        <li class="flex items-start gap-5 py-6">
+          <span class="file-mark">PDF</span>
           <div class="min-w-0 flex-1">
-            <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center py-1.5 font-semibold text-ink hover:text-primary"><%= d.name %><span class="sr-only"> (PDF, tab baru)</span></a>
+            <a href="<%= d.file %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center text-base font-bold text-ink no-underline hover:text-primary"><%= d.name %><span class="sr-only"> (PDF, tab baru)</span></a>
             <% if (d.keterangan) { %><p class="mt-1 line-clamp-2 text-sm text-muted"><%= d.keterangan %></p><% } %>
-            <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-              <% if (d.kategori) { %><span class="font-semibold uppercase"><%= d.kategori.nama %></span><% } %>
+            <p class="meta-sm mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <% if (d.kategori) { %><span><%= d.kategori.nama %></span><span>·</span><% } %>
               <span>Diperbarui <%= formatTanggal(d.updatedAt || d.createdAt) %></span>
-              <% if (d.fileSize) { %><span>· <%= formatUkuranFile(d.fileSize) %></span><% } %>
+              <% if (d.fileSize) { %><span>·</span><span><%= formatUkuranFile(d.fileSize) %></span><% } %>
             </p>
           </div>
-          <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download aria-label="Unduh <%= d.name %>"><%- icon('download') %><span class="hidden sm:inline" aria-hidden="true">Unduh</span></a>
+          <a href="<%= d.file %>" class="btn btn-secondary shrink-0" target="_blank" rel="noopener" download aria-label="Unduh <%= d.name %>"><%- icon('download') %>Unduh</a>
         </li>
       <% }) %>
     </ul>

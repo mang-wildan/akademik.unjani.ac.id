@@ -17,6 +17,8 @@ const ICONS = [
   'logout', 'mail', 'menu', 'menu_book', 'more_vert', 'newspaper', 'notifications', 'open_in_new', 'pause', 'person', 'play_arrow',
   'picture_as_pdf', 'public', 'schedule', 'school', 'search', 'settings', 'support_agent', 'trending_down', 'trending_flat', 'trending_up', 'upload',
   'verified', 'visibility', 'visibility_off', 'warning', 'workspace_premium',
+  // Situs publik v0.0.1: panah tipis untuk tautan dan paginasi
+  'arrow_right_alt', 'arrow_left_alt',
   // F9: editor teks + unggah
   'format_bold', 'format_italic', 'format_list_bulleted', 'format_list_numbered', 'format_paragraph', 'link', 'link_off', 'title', 'cloud_upload',
   // Admin v2 (docs/DESIGN.md §5)
@@ -46,6 +48,17 @@ for (const weight of [600, 700]) {
   copy(path.join(serifDir, 'files', file), path.join(ROOT, 'public', 'fonts', 'source-serif-4', file));
 }
 copy(path.join(serifDir, 'LICENSE'), path.join(ROOT, 'public', 'fonts', 'source-serif-4', 'LICENSE'));
+// Situs publik v0.0.1 (docs/update/v.0.0.1/design.md §4). Plus Jakarta Sans dan Source Serif 4 di atas tetap dipakai admin.
+const PUBLIC_FONTS = [
+  { pkg: ['@fontsource-variable', 'inter'], dir: 'inter', files: ['inter-latin-wght-normal.woff2'] },
+  { pkg: ['@fontsource', 'crimson-text'], dir: 'crimson-text', files: ['crimson-text-latin-400-normal.woff2', 'crimson-text-latin-700-normal.woff2'] },
+  { pkg: ['@fontsource', 'ubuntu-mono'], dir: 'ubuntu-mono', files: ['ubuntu-mono-latin-400-normal.woff2'] },
+];
+for (const font of PUBLIC_FONTS) {
+  const from = path.join(NM, ...font.pkg);
+  for (const file of font.files) copy(path.join(from, 'files', file), path.join(ROOT, 'public', 'fonts', font.dir, file));
+  copy(path.join(from, 'LICENSE'), path.join(ROOT, 'public', 'fonts', font.dir, 'LICENSE'));
+}
 
 console.log('Alpine.js (CSP build)');
 copy(path.join(NM, '@alpinejs', 'csp', 'dist', 'cdn.min.js'), path.join(ROOT, 'public', 'js', 'vendor', 'alpine-csp.min.js'));

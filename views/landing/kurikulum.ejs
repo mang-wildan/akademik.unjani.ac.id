@@ -5,8 +5,8 @@
   breadcrumb: [{ label: 'Akademik' }, { label: 'Kurikulum' }],
 }) %>
 
-<div class="container-content pb-16">
-  <form method="get" class="mb-10 flex flex-wrap items-end gap-3 border-b border-line pb-6">
+<div class="container-content pt-10 pb-20 lg:pt-12 lg:pb-28">
+  <form method="get" class="mb-12 flex flex-wrap items-end gap-6 pb-4">
     <div>
       <label for="fakultas" class="field-label">Fakultas</label>
       <select id="fakultas" name="fakultas" class="field-control">
@@ -33,12 +33,12 @@
   <% } else { %>
   <div class="space-y-12">
     <% groups.forEach(g => { %>
-      <section class="grid gap-6 lg:grid-cols-[16rem_1fr] lg:gap-10">
+      <section class="grid gap-6 border-t border-ink pt-5 lg:grid-cols-[20rem_1fr] lg:gap-10">
         <div>
-          <h2 class="text-2xl"><%= g.fakultas %></h2>
-          <p class="mt-1 text-sm text-muted"><%= g.items.length %> program studi</p>
+          <h2 class="subsection-title max-w-[14rem]"><%= g.fakultas %></h2>
+          <p class="meta-sm mt-3"><%= g.items.length %> program studi</p>
         </div>
-        <table class="data-table data-table--stack border-t border-line-strong">
+        <table class="data-table data-table--stack">
           <caption class="sr-only">Kurikulum <%= g.fakultas %></caption>
           <thead><tr><th scope="col">Program Studi</th><th scope="col">Jenjang</th><th scope="col">Tahun Kurikulum</th><th scope="col"><span class="sr-only">Unduh</span></th></tr></thead>
           <tbody>
@@ -47,7 +47,7 @@
                 <td data-label="Program Studi" class="font-medium"><%= k.namaProdi %></td>
                 <td data-label="Jenjang"><%= k.jenjang %></td>
                 <td data-label="Tahun Kurikulum"><%= k.tahun %></td>
-                <td data-label="Unduh"><a href="<%= k.file %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold"><%- icon('download', 'size-4') %>Unduh<span class="sr-only"> kurikulum <%= k.namaProdi %> (PDF, tab baru)</span></a></td>
+                <td data-label="Unduh"><a href="<%= k.file %>" target="_blank" rel="noopener" class="link-arrow"><%- icon('download', 'size-4') %>Unduh<span class="sr-only"> kurikulum <%= k.namaProdi %> (PDF, tab baru)</span></a></td>
               </tr>
             <% }) %>
           </tbody>
