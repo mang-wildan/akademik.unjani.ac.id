@@ -270,6 +270,9 @@
 }
 
 @layer components {
+  /* Dasbor: panel kiri/kanan 660/396 di konten 1080px; stack saat ruang sempit. */
+  .dashboard-columns { @apply grid gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,3fr)]; }
+
   /* Label grup/eyebrow: Ubuntu Mono 11/16 uppercase, tracking 1.2px (DESIGN v0.1.0 §3). */
   .eyebrow {
     @apply font-mono text-[0.6875rem] leading-4 tracking-[0.075rem] uppercase;

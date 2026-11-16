@@ -70,6 +70,11 @@ test('v0.1.0: toast is dark ink with escaped text, roles, close and no undo', as
   }
 });
 
+test('page heading constrains unbroken names inside its wrapping flex row', async () => {
+  const html = await render('page-header', { heading: 'Nama'.repeat(200) });
+  assert.match(html, /<h1 class="min-w-0 max-w-full break-words/);
+});
+
 test('shared list controls keep 44px targets on coarse pointers at desktop widths', () => {
   const css = fs.readFileSync(path.join(__dirname, '../assets/css/admin.css'), 'utf8');
   const coarse = css.match(/@media \(pointer: coarse\) \{([\s\S]*?)\n  \}/)[1];

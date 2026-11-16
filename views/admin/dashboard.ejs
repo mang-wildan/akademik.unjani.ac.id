@@ -1,48 +1,78 @@
-<%- include('_ui/page-header', { heading: 'Dasbor' }) %>
-<div class="space-y-4">
-  <section aria-labelledby="perlu-perhatian" class="rounded-card border border-line bg-surface p-4">
-    <h2 id="perlu-perhatian" class="mb-3 text-md font-semibold">Perlu perhatian</h2>
-    <% if (issues.length) { %>
-      <ul class="divide-y divide-line">
-        <% issues.forEach(issue => { %>
-          <li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0">
-            <%- icon(issue.icon, 'mt-1 size-5 shrink-0 text-warning') %>
-            <div class="min-w-0 flex-1"><p class="text-sm font-medium"><%= issue.title %></p><% if (issue.text) { %><p class="mt-1 break-words text-xs text-muted"><%= issue.text %></p><% } %></div>
-            <%- include('_ui/button', { label: issue.label, href: issue.href, variant: 'secondary' }) %>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else { %><p class="text-sm text-muted">Tidak ada hal yang memerlukan perhatian.</p><% } %>
-  </section>
-  <section aria-labelledby="buat-cepat" class="rounded-card border border-line bg-surface p-4">
-    <h2 id="buat-cepat" class="mb-3 text-md font-semibold">Buat cepat</h2>
-    <div class="flex flex-wrap gap-2">
-      <%- include('_ui/button', { label: 'Pengumuman', href: '/admin/pengumuman/new', buttonIcon: 'add' }) %>
-      <%- include('_ui/button', { label: 'Berita', href: '/admin/news/new', buttonIcon: 'add', variant: 'secondary' }) %>
-      <%- include('_ui/button', { label: 'Dokumen', href: '/admin/academic-documents/new', buttonIcon: 'add', variant: 'secondary' }) %>
-    </div>
-  </section>
-  <section aria-labelledby="draf-terakhir" class="rounded-card border border-line bg-surface p-4">
-    <h2 id="draf-terakhir" class="mb-3 text-md font-semibold">Draf terakhir</h2>
-    <% if (drafts.length) { %><ul class="divide-y divide-line">
-      <% drafts.forEach(item => { %><li class="flex flex-wrap items-center gap-2 py-2"><a href="<%= item.href %>" class="min-w-0 flex-1 break-words text-sm font-medium text-ink hover:text-primary"><%= item.title %></a><%- include('_ui/badge', { text: item.label, tone: 'neutral' }) %><span class="text-xs text-muted"><%= formatTanggal(item.updatedAt) %></span></li><% }) %>
-    </ul><% } else { %><p class="text-sm text-muted">Belum ada draf.</p><% } %>
-  </section>
-  <section aria-labelledby="statistik">
-    <h2 id="statistik" class="mb-3 text-md font-semibold">Statistik</h2>
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+<% const name = locals.user && locals.user.name; %>
+<%- include('_ui/page-header', { heading: name ? `Selamat datang, ${name}` : 'Selamat datang' }) %>
+<div class="space-y-6">
+  <section aria-labelledby="statistik" class="on-brand overflow-hidden rounded-card bg-brand text-white">
+    <h2 id="statistik" class="sr-only">Statistik</h2>
+    <div class="grid sm:grid-cols-2 xl:grid-cols-4">
       <% [
-        { label: 'Berita terbit', value: stats.beritaTerbit, href: '/admin/news?status=published', icon: 'newspaper' },
-        { label: 'Pengumuman terbit', value: stats.pengumumanAktif, href: '/admin/pengumuman?status=published', icon: 'campaign' },
-        { label: 'Dokumen akademik', value: stats.dokCount, href: '/admin/academic-documents', icon: 'description' },
-        { label: 'Akreditasi kedaluwarsa', value: stats.akreditasiKedaluwarsa, href: '/admin/accreditations?status=kedaluwarsa', icon: 'workspace_premium' },
-      ].forEach(stat => { %><a href="<%= stat.href %>" class="rounded-card border border-line bg-surface p-4 text-ink no-underline hover:border-line-strong"><%- icon(stat.icon, 'mb-2 size-5 text-muted') %><p class="text-xl font-semibold tabular-nums"><%= formatAngka(stat.value) %></p><p class="mt-1 text-xs text-muted"><%= stat.label %></p></a><% }) %>
+        { label: 'Berita terbit', value: stats.beritaTerbit, href: '/admin/news?status=published' },
+        { label: 'Pengumuman terbit', value: stats.pengumumanAktif, href: '/admin/pengumuman?status=published' },
+        { label: 'Dokumen akademik', value: stats.dokCount, href: '/admin/academic-documents' },
+        { label: 'Akreditasi kedaluwarsa', value: stats.akreditasiKedaluwarsa, href: '/admin/accreditations?status=kedaluwarsa' },
+      ].forEach(stat => { %>
+        <a href="<%= stat.href %>" class="min-w-0 border-b border-white/20 px-6 py-6 text-white no-underline hover:bg-white/10 focus-visible:-outline-offset-4 sm:border-r xl:border-b-0 xl:px-8">
+          <p class="font-serif text-[3rem] leading-[3.25rem] font-bold tabular-nums"><%= formatAngka(stat.value) %></p>
+          <p class="mt-4 break-words text-base text-sidebar-text"><%= stat.label %></p>
+          <p class="mt-1 text-sm font-semibold">Lihat daftar<span class="sr-only"> <%= stat.label.toLowerCase() %></span></p>
+        </a>
+      <% }) %>
     </div>
   </section>
-  <section aria-labelledby="aktivitas-terbaru" class="rounded-card border border-line bg-surface p-4">
-    <h2 id="aktivitas-terbaru" class="mb-3 text-md font-semibold">Aktivitas terbaru</h2>
-    <% if (recentActivities.length) { %><ul class="divide-y divide-line">
-      <% recentActivities.forEach(item => { %><li class="flex items-start gap-3 py-3 first:pt-0 last:pb-0"><%- icon(item.icon, 'mt-1 size-5 shrink-0 text-muted') %><div class="min-w-0"><a href="<%= item.href %>" class="break-words text-sm font-medium text-ink hover:text-primary"><%= item.title %></a><p class="mt-1 text-xs text-muted"><%= item.label %> · <%= formatTanggal(item.date) %></p></div></li><% }) %>
-    </ul><% } else { %><p class="text-sm text-muted">Belum ada aktivitas.</p><% } %>
-  </section>
+  <div class="dashboard-columns">
+    <div class="min-w-0 space-y-6">
+      <section aria-labelledby="perlu-perhatian" class="rounded-card border border-line bg-surface p-6">
+        <h2 id="perlu-perhatian" class="mb-4 font-serif text-[1.375rem] leading-7 font-bold">Perlu perhatian</h2>
+        <% if (issues.length) { %>
+          <ul class="divide-y divide-line">
+            <% issues.forEach(issue => { %>
+              <li class="flex flex-wrap items-center gap-3 py-5 first:pt-2 last:pb-0">
+                <div class="min-w-0 flex-1 basis-48 border-l-3 border-warning pl-4">
+                  <p class="break-words text-base font-semibold"><%= issue.title %></p>
+                  <% if (issue.text) { %><p class="mt-1 break-words text-sm text-muted"><%= issue.text %></p><% } %>
+                </div>
+                <%- include('_ui/button', { label: issue.label, href: issue.href, variant: 'secondary' }) %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } else { %><p class="text-sm text-muted">Tidak ada hal yang memerlukan perhatian.</p><% } %>
+      </section>
+      <section aria-labelledby="draf-terakhir" class="rounded-card border border-line bg-surface p-6">
+        <h2 id="draf-terakhir" class="mb-4 font-serif text-[1.375rem] leading-7 font-bold">Draf terakhir</h2>
+        <% if (drafts.length) { %><ul class="divide-y divide-line">
+          <% drafts.forEach(item => { %>
+            <li class="flex flex-wrap items-center gap-3 py-4 last:pb-0">
+              <a href="<%= item.href %>" class="min-w-0 flex-1 basis-48 break-words text-base font-semibold text-ink hover:text-primary"><%= item.title %></a>
+              <span class="text-sm text-muted"><%= item.label %></span>
+              <span class="font-mono text-xs text-muted tabular-nums"><%= formatTanggal(item.updatedAt) %></span>
+            </li>
+          <% }) %>
+        </ul><% } else { %><p class="text-sm text-muted">Belum ada draf.</p><% } %>
+      </section>
+    </div>
+    <div class="min-w-0 space-y-6">
+      <section aria-labelledby="buat-cepat" class="rounded-card border border-line bg-surface p-6">
+        <h2 id="buat-cepat" class="mb-4 font-serif text-[1.375rem] leading-7 font-bold">Buat cepat</h2>
+        <div class="grid gap-3">
+          <%- include('_ui/button', { label: 'Tulis pengumuman', href: '/admin/pengumuman/new' }) %>
+          <%- include('_ui/button', { label: 'Tulis berita', href: '/admin/news/new', variant: 'secondary' }) %>
+          <%- include('_ui/button', { label: 'Unggah dokumen akademik', href: '/admin/academic-documents/new', variant: 'secondary' }) %>
+        </div>
+      </section>
+      <section aria-labelledby="aktivitas-terbaru" class="rounded-card border border-line bg-surface p-6">
+        <h2 id="aktivitas-terbaru" class="mb-4 font-serif text-[1.375rem] leading-7 font-bold">Aktivitas terbaru</h2>
+        <% if (recentActivities.length) { %><ul>
+          <% recentActivities.forEach(item => { %>
+            <li class="relative flex items-start gap-3 pb-5 last:pb-0">
+              <span class="mt-1.5 size-2 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
+              <div class="min-w-0 flex-1">
+                <a href="<%= item.href %>" class="break-words text-base font-semibold text-ink hover:text-primary"><%= item.title %></a>
+                <p class="mt-1 break-words text-sm text-muted"><%= item.label %></p>
+                <p class="mt-1 font-mono text-xs text-muted tabular-nums"><%= formatTanggal(item.date) %></p>
+              </div>
+            </li>
+          <% }) %>
+        </ul><% } else { %><p class="text-sm text-muted">Belum ada aktivitas.</p><% } %>
+      </section>
+    </div>
+  </div>
 </div>

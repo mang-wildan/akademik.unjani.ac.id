@@ -4,6 +4,51 @@ const path = require('node:path');
 const ejs = require('ejs');
 const { fakeModel, id } = require('./helpers/adminContentFixture');
 
+const render = (locals = {}) => ejs.renderFile(path.join(__dirname, '../views/admin/dashboard.ejs'), {
+  stats: { beritaTerbit: 0, pengumumanAktif: 0, dokCount: 0, akreditasiKedaluwarsa: 0 },
+  issues: [], drafts: [], recentActivities: [],
+  ...require('../utils/format'), icon: require('../utils/icons'), ...locals,
+});
+
+test('editorial dashboard greets user, leads with four linked zero stats and keeps empty panels', async () => {
+  const html = await render();
+  assert.equal((html.match(/<h1\b/g) || []).length, 1);
+  assert.match(html, /<h1[^>]*font-serif[^>]*>Selamat datang<\/h1>/);
+  const band = html.slice(html.indexOf('<section aria-labelledby="statistik"'), html.indexOf('<section aria-labelledby="perlu-perhatian"'));
+  assert.match(band, /on-brand[^\"]*bg-brand[^\"]*text-white/);
+  assert.equal((band.match(/>0<\/p>/g) || []).length, 4);
+  for (const href of ['/admin/news?status=published', '/admin/pengumuman?status=published', '/admin/academic-documents', '/admin/accreditations?status=kedaluwarsa']) {
+    assert.ok(band.includes(`href="${href}"`), href);
+  }
+  for (const id of ['perlu-perhatian', 'draf-terakhir', 'buat-cepat', 'aktivitas-terbaru']) {
+    assert.match(html, new RegExp(`<h2 id="${id}"[^>]*font-serif`));
+  }
+  assert.match(html, /Tidak ada hal yang memerlukan perhatian\./);
+  assert.match(html, /Belum ada draf\./);
+  assert.match(html, /Belum ada aktivitas\./);
+  assert.match(html, /dashboard-columns/);
+  assert.doesNotMatch(html, /\sonclick=|\sstyle=|<script/);
+});
+
+test('dashboard escapes greeting and long titles while retaining supplied activity links and dates', async () => {
+  const title = `<script>${'Judulsangatpanjang'.repeat(30)}</script>`;
+  const html = await render({
+    user: { name: `<b>Pengguna</b>${'NamaTanpaSpasi'.repeat(80)}` },
+    issues: [{ icon: 'warning', title, text: '<img>', label: 'Tinjau', href: '/admin/accreditations' }],
+    drafts: [{ title, label: 'Berita', href: '/admin/news/fixture/edit', updatedAt: new Date('2026-11-12T00:00:00Z') }],
+    recentActivities: [{ icon: 'description', title, label: '<i>Diperbarui</i>', href: '/admin/academic-documents?fixture=1', date: new Date('2026-11-13T00:00:00Z') }],
+  });
+  assert.match(html, /Selamat datang, &lt;b&gt;Pengguna&lt;\/b&gt;/);
+  assert.match(html, /&lt;script&gt;Judulsangatpanjang/);
+  assert.match(html, /&lt;img&gt;/);
+  assert.match(html, /&lt;i&gt;Diperbarui&lt;\/i&gt;/);
+  assert.match(html, /href="\/admin\/news\/fixture\/edit"/);
+  assert.match(html, /href="\/admin\/academic-documents\?fixture=1"/);
+  assert.ok(html.includes(require('../utils/format').formatTanggal(new Date('2026-11-13T00:00:00Z'))));
+  assert.doesNotMatch(html, /<script>|<img>|<b>Pengguna|\btruncate\b/);
+  assert.match(await render({ user: { name: '' } }), />Selamat datang<\/h1>/);
+});
+
 test('dashboard bounds accreditation at 90 WIB days, warns on old pinned content and merges five latest drafts', async t => {
   const now = new Date('2026-10-19T12:00:00Z');
   t.mock.timers.enable({ apis: ['Date'], now: now.getTime() });
@@ -39,7 +84,7 @@ test('dashboard bounds accreditation at 90 WIB days, warns on old pinned content
   const dueQuery = models.Accreditation.calls.find(([name, query]) => name === 'find' && query.berlakuSampai)?.[1];
   assert.equal(dueQuery.berlakuSampai.$lte.toISOString(), '2027-01-17T16:59:59.999Z');
   const html = await ejs.renderFile(path.join(__dirname, '../views/admin/dashboard.ejs'), { ...locals, ...require('../utils/format'), icon: require('../utils/icons') });
-  const sections = ['perlu-perhatian', 'buat-cepat', 'draf-terakhir', 'statistik', 'aktivitas-terbaru'].map(id => html.indexOf(`<section aria-labelledby="${id}"`));
+  const sections = ['statistik', 'perlu-perhatian', 'draf-terakhir', 'buat-cepat', 'aktivitas-terbaru'].map(id => html.indexOf(`<section aria-labelledby="${id}"`));
   assert.ok(sections.every((n, i) => n >= 0 && (i === 0 || n > sections[i - 1])));
   assert.match(html, /href="\/admin\/news\?status=published"/);
   assert.match(html, /href="\/admin\/accreditations\?status=kedaluwarsa"/);

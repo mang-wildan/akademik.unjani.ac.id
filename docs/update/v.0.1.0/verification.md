@@ -37,6 +37,18 @@
 - Fix audit HP: toast berpindah ke atas saat bulk aktif agar tidak menutup aksi terakhir; tes regresi gagal→lulus. Browser 390: toast y=80–136, bulk y=660–836; focus pause 5,5 dtk lulus di 1440/390.
 - Deviasi: tanpa tombol Urungkan (tidak ada endpoint undo).
 
+## Task 4: dasbor editorial
+
+- `node --test test/dashboard.test.js`: 3 gagal sebelum implementasi (salam, urutan band/panel), lalu 3 lulus. Tes controller/aturan 90 hari tetap.
+- Regresi nama tanpa spasi: browser menemukan H1 shared melebar; tambah `min-w-0 max-w-full` pada H1, tes `adminUi` gagal→lulus.
+- `npm run build:css:admin`: sukses. `npm test`: 269 lulus, 0 gagal.
+- Browser Chromium, route fixture lokal sementara (view dashboard + shell nyata, CSP self, data fiktif; tanpa DB/akun produksi), 1440/1024/820/768/390/320px:
+  - Light, dark, seluruh statistik 0/daftar kosong, nama/judul HTML tanpa spasi panjang: tanpa overflow horizontal, 404 atau page error.
+  - 1440: band x=312 lebar 1080px; panel kiri 660px, kanan 396px; tepi atas sejajar; gutter/gap 24px. Brand tetap `#14532D` light/dark, teks putih; font lokal termuat.
+  - 390: band dan kedua kolom stack; pesan kosong dan 0 tetap tampil.
+- Dibanding PNG Dasbor: komposisi band + dua kolom sesuai; salam “Selamat datang” bukan waktu palsu, tanpa tanggal/jam/angka contoh PNG. Aktivitas memakai tanggal/label fixture dari kontrak existing; bukan audit log baru.
+- Bukti: `screenshots/task-4-dashboard-1440-light.png`, `screenshots/task-4-dashboard-390-light.png`, `screenshots/task-4-dashboard-1440-dark.png`, `screenshots/task-4-dashboard-390-dark.png`.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.
@@ -65,7 +77,7 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 20 | Buku Wisuda _ Daftar | belum diuji | |
 | 21 | Buku Wisuda _ Tambah | belum diuji | |
 | 22 | Buku Wisuda _ Ubah | belum diuji | |
-| 23 | Dasbor _ Desktop 1440 | belum diuji | |
+| 23 | Dasbor _ Desktop 1440 | sesuai komposisi (fixture) | 1440/390 light/dark; tambahan 1024/820/768/320 tanpa overflow. Data fiktif, tanpa jam/tanggal palsu; lihat Task 4. |
 | 24 | Data Lulusan _ Daftar | belum diuji | |
 | 25 | Data Lulusan _ Tambah | belum diuji | |
 | 26 | Data Lulusan _ Ubah | belum diuji | |
