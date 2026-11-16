@@ -4,7 +4,8 @@
   <%- include('./bulk-bar', { id: 'bulk-form', action: `/admin/${basePath}/bulk`, noun: listLabel.toLowerCase(), total: pagination.total, state, actions: [{ value: 'publish', label: 'Terbitkan' }, { value: 'unpublish', label: 'Jadikan draf' }, { value: 'delete', label: 'Hapus' }] }) %>
   <%- include('./filter-bar', { state, searchLabel: `Cari judul ${listLabel.toLowerCase()}`, statusTabs: { options: [{ value: '', label: 'Semua' }, { value: 'published', label: 'Terbit' }, { value: 'draft', label: 'Draf' }] }, filters: [{ name: 'kategori', label: 'Kategori', options: kategoriList.map(k => ({ value: k._id, label: k.nama })) }] }) %>
   <% if (!items.length) { %>
-    <%- include('./empty-state', { text: `Tidak ada ${listLabel.toLowerCase()} yang cocok.`, emptyIcon: basePath === 'news' ? 'newspaper' : 'campaign', action: { label: 'Hapus filter', href: `/admin/${basePath}` } }) %>
+    <% const filtered = Boolean(state.q || state.status || state.kategori); %>
+    <%- include('./empty-state', { text: filtered ? `Tidak ada ${listLabel.toLowerCase()} yang cocok.` : `Belum ada ${listLabel.toLowerCase()}.`, emptyIcon: basePath === 'news' ? 'newspaper' : 'campaign', action: filtered ? { label: 'Hapus filter', href: `/admin/${basePath}` } : { label: `Tambah ${singularLabel}`, href: `/admin/${basePath}/new` } }) %>
   <% } else { %>
     <%- include('./data-table', {
       caption: `Daftar ${listLabel.toLowerCase()}`, items, state, rowHref: item => `/admin/${basePath}/${item._id}/edit`,

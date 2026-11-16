@@ -80,6 +80,28 @@ test('Books v2 searches literal text, paginates/sorts and exposes partial multip
   assert.match(res.headers.get('location'), /error=/);
 });
 
+test('Books failed edits keep values and current native uploads in full-page and stacked partial forms', async t => {
+  const { post, get } = await setup(t, 'books', [{ _id: id(1), title: 'Panduan', year: 2026, src: '/uploads/books/current.pdf', cover: '/uploads/books/current.webp' }]);
+  for (const suffix of ['', '?partial=1']) {
+    const res = await post('/' + id(1) + suffix, { title: 'Judul <uji>', year: '1940' });
+    assert.equal(res.status, 422);
+    const html = await res.text();
+    assert.match(html, suffix ? /publication-form--stacked/ : /class="publication-form"/);
+    assert.match(html, /data-form-main[\s\S]*name="title"[\s\S]*data-publication-panel/);
+    assert.match(html, /value="Judul &lt;uji&gt;"/);
+    assert.match(html, /value="1940"/);
+    assert.match(html, /href="\/uploads\/books\/current.pdf"/);
+    assert.match(html, /src="\/uploads\/books\/current.webp"/);
+    assert.match(html, /href="#f-year"/);
+    for (const input of html.matchAll(/<input type="file"[^>]*>/g)) assert.doesNotMatch(input[0], /\svalue=/);
+    if (suffix) assert.doesNotMatch(html, /<h1|<!DOCTYPE/);
+  }
+  const html = await (await get('')).text();
+  assert.match(html, new RegExp(`href="/admin/books/${id(1)}/edit"`));
+  assert.match(html, /aria-label="Aksi untuk Panduan"/);
+  assert.match(html, new RegExp(`method="POST" action="/admin/books/${id(1)}/delete"`));
+});
+
 test('Books upload/create/edit/replace/delete retains current files and cleans replaced uploads', async t => {
   const { Model, post } = await setup(t, 'books');
   const files = [];

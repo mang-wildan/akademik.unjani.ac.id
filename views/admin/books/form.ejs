@@ -1,15 +1,19 @@
 <% const heading = mode === 'edit' ? 'Ubah Buku' : 'Tambah Buku'; %>
 <% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
 <form method="POST" action="/admin/books<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>"
-      x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form rounded-card border border-line bg-surface' %>">
-  <div class="space-y-5 p-4">
-    <%- include('../_ui/error-summary', { errors }) %>
-    <%- include('../_ui/field', { name: 'title', label: 'Judul', required: true, value: values.title, error: errors.title, help: '3–200 karakter.' }) %>
-    <%- include('../_ui/field', { name: 'year', label: 'Tahun', type: 'number', value: values.year, error: errors.year, min: 1950, max: 2100, help: 'Opsional.' }) %>
-    <%- include('../_ui/field', { name: 'file', label: 'File PDF', type: 'file', accept: 'application/pdf', error: errors.file, help: 'PDF, maks. 10 MB. Pilih ulang setelah gagal validasi.', required: mode !== 'edit' }) %>
-    <% if (mode === 'edit' && item.src) { %><a href="<%= item.src %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center text-sm text-primary underline">Buka PDF saat ini (tab baru)</a><% } %>
-    <%- include('../_ui/field', { name: 'cover', label: 'Gambar sampul', type: 'file', accept: 'image/png,image/jpeg,image/webp', error: errors.cover, help: 'JPG/PNG/WEBP, maks. 5 MB. Pilih ulang setelah gagal validasi.', required: mode !== 'edit' }) %>
-    <% if (mode === 'edit' && item.cover) { %><img src="<%= item.cover %>" alt="Sampul saat ini" class="h-32 w-24 rounded-control object-cover"><% } %>
+      x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="publication-form<%= locals.partial ? ' publication-form--stacked' : '' %>">
+  <%- include('../_ui/error-summary', { errors }) %>
+  <div class="publication-layout">
+    <section data-form-main aria-label="Isi buku" class="form-panel space-y-5">
+      <%- include('../_ui/field', { name: 'title', label: 'Judul', required: true, value: values.title, error: errors.title, help: '3–200 karakter.' }) %>
+      <%- include('../_ui/upload-field', { name: 'file', label: 'File PDF', accept: 'application/pdf', error: errors.file, limitText: 'PDF, maks. 10 MB.', required: mode !== 'edit', current: mode === 'edit' && item.src ? { href: item.src, label: 'Buka PDF saat ini' } : null }) %>
+    </section>
+    <aside data-publication-panel aria-labelledby="publication-title" class="form-panel space-y-5">
+      <h2 id="publication-title" class="font-serif text-lg">Detail buku</h2>
+      <%- include('../_ui/field', { name: 'year', label: 'Tahun', type: 'number', value: values.year, error: errors.year, min: 1950, max: 2100, help: 'Opsional.' }) %>
+      <%- include('../_ui/upload-field', { name: 'cover', label: 'Gambar sampul', accept: 'image/png,image/jpeg,image/webp', error: errors.cover, limitText: 'JPG/PNG/WEBP, maks. 5 MB.', required: mode !== 'edit' }) %>
+      <% if (mode === 'edit' && item.cover) { %><img src="<%= item.cover %>" alt="Sampul saat ini" class="h-32 w-24 rounded-control object-cover"><% } %>
+    </aside>
   </div>
   <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
     <a href="/admin/books" data-slide-close class="btn btn-secondary">Batal</a>

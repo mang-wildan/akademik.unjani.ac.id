@@ -1,34 +1,38 @@
 <% const heading = mode === 'edit' ? `Ubah ${singularLabel}` : `Tambah ${singularLabel}`; %>
 <% if (!locals.partial) { %><%- include('./page-header', { heading }) %><% } %>
-<form method="POST" action="/admin/<%= basePath %><%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form
+<form method="POST" action="/admin/<%= basePath %><%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>"
       x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload"
-      class="max-w-form rounded-card border border-line bg-surface">
-  <% if (Object.values(errors).some(Boolean)) { %><div class="p-4"><%- include('./error-summary', { errors, fieldIds: { _form: 'f-pinned', body: 'f-body-field' } }) %></div><% } %>
-  <div class="grid gap-5 p-4 lg:grid-cols-3">
-    <div class="space-y-5 lg:col-span-2">
+      class="publication-form<%= locals.partial ? ' publication-form--stacked' : '' %>">
+  <%- include('./error-summary', { errors, fieldIds: { _form: 'f-pinned', body: 'f-body-field' } }) %>
+  <div class="publication-layout">
+    <section data-form-main aria-label="Isi konten" class="form-panel space-y-5">
       <%- include('./field', { name: 'title', label: 'Judul', required: true, value: values.title, error: errors.title, help: '5–150 karakter.' }) %>
       <%- include('./richtext-field', { name: 'body', label: 'Isi', required: true, value: values.body, error: errors.body }) %>
-    </div>
-    <div class="min-w-0 space-y-5">
-      <%- include('./field', { name: 'kategori', label: 'Kategori', type: 'select', placeholder: 'Tanpa kategori', value: values.kategori, error: errors.kategori, options: kategoriList.map(k => ({ value: k._id, label: k.nama })) }) %>
-      <%- include('./field', { name: 'status', label: 'Status', type: 'select', required: true, value: values.status || 'draft', error: errors.status, options: [{ value: 'draft', label: 'Draf' }, { value: 'published', label: 'Terbit' }] }) %>
-      <%- include('./field', { name: 'pinned', label: 'Sematkan di Beranda (maks. 4)', type: 'checkbox', checked: Boolean(values.pinned), error: errors.pinned }) %>
-      <%- include('./field', { name: 'featuredImage', label: 'Gambar sampul', type: 'file', accept: 'image/png,image/jpeg,image/webp', help: `JPG/PNG/WEBP, maks. 5 MB. Diubah otomatis ke WebP.${locals.requireFeaturedImageOnPublish ? ' Wajib saat diterbitkan.' : ''}`, error: errors.featuredImage }) %>
-      <% if (mode === 'edit' && item.featuredImage) { %><img src="<%= item.featuredImage %>" alt="Gambar sampul saat ini" class="aspect-video w-full rounded-control object-cover"><% } %>
       <% if (mode === 'edit' && item.attachments && item.attachments.length) { %>
-        <fieldset class="space-y-2">
+        <fieldset class="min-w-0 space-y-2">
           <legend class="text-sm font-medium">Lampiran saat ini</legend>
           <input type="hidden" name="attachmentsEditable" value="1">
           <% item.attachments.forEach(a => { %>
-            <%- include('./field', { name: 'keepAttachment', id: `keep-${a._id}`, type: 'checkbox', value: a._id, label: a.judul, checked: values.attachmentsEditable !== '1' || [].concat(values.keepAttachment || []).map(String).includes(String(a._id)) }) %>
+            <div class="min-w-0 break-words">
+              <%- include('./field', { name: 'keepAttachment', id: `keep-${a._id}`, type: 'checkbox', value: a._id, label: a.judul, checked: values.attachmentsEditable !== '1' || [].concat(values.keepAttachment || []).map(String).includes(String(a._id)) }) %>
+              <a href="<%= a.file %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center text-sm text-primary underline">Buka lampiran (tab baru)</a>
+            </div>
           <% }) %>
           <p class="text-xs text-muted">Hapus centang untuk menghapus lampiran saat disimpan.</p>
         </fieldset>
       <% } %>
-      <%- include('./field', { name: 'attachments', label: 'Tambah lampiran (PDF)', type: 'file', accept: 'application/pdf', multiple: true, help: 'Maks. 10 MB per file, sampai 5 file sekaligus. Setelah gagal validasi, pilih ulang file.', error: errors.attachments }) %>
-    </div>
+      <%- include('./upload-field', { name: 'attachments', label: 'Tambah lampiran (PDF)', accept: 'application/pdf', multiple: true, limitText: 'Maks. 10 MB per file, sampai 5 file sekaligus.', error: errors.attachments }) %>
+    </section>
+    <aside data-publication-panel aria-labelledby="publication-title" class="form-panel space-y-5">
+      <h2 id="publication-title" class="font-serif text-lg">Terbitkan</h2>
+      <%- include('./field', { name: 'kategori', label: 'Kategori', type: 'select', placeholder: 'Tanpa kategori', value: values.kategori, error: errors.kategori, options: kategoriList.map(k => ({ value: k._id, label: k.nama })) }) %>
+      <%- include('./field', { name: 'status', label: 'Status', type: 'select', required: true, value: values.status || 'draft', error: errors.status, options: [{ value: 'draft', label: 'Draf' }, { value: 'published', label: 'Terbit' }] }) %>
+      <%- include('./field', { name: 'pinned', label: 'Sematkan di Beranda (maks. 4)', type: 'checkbox', checked: Boolean(values.pinned), error: errors.pinned }) %>
+      <%- include('./upload-field', { name: 'featuredImage', label: 'Gambar sampul', accept: 'image/png,image/jpeg,image/webp', limitText: `JPG/PNG/WEBP, maks. 5 MB. Diubah otomatis ke WebP.${locals.requireFeaturedImageOnPublish ? ' Wajib saat diterbitkan.' : ''}`, error: errors.featuredImage }) %>
+      <% if (mode === 'edit' && item.featuredImage) { %><img src="<%= item.featuredImage %>" alt="Gambar sampul saat ini" class="aspect-video w-full rounded-control object-cover"><% } %>
+    </aside>
   </div>
-  <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]">
+  <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
     <% if (mode === 'edit') { %><%- include('./button', { label: 'Pratinjau versi tersimpan', variant: 'ghost', href: `/admin/${basePath}/${item._id}/preview` }) %><% } %>
     <%- include('./button', { label: 'Batal', variant: 'secondary', href: `/admin/${basePath}` }) %>
     <%- include('./button', { label: 'Simpan', type: 'submit', buttonIcon: 'check', title: 'Simpan (Ctrl+S)' }) %>

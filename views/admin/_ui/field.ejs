@@ -4,13 +4,13 @@
   const type = locals.type || 'text';
   const value = locals.value ?? (type === 'checkbox' ? 'on' : '');
   const describedBy = [locals.help && `${id}-help`, locals.error && `${id}-error`].filter(Boolean).join(' ');
-  const controlClass = `field-control${locals.error ? ' border-danger' : ''}`;
+  const controlClass = `field-control scroll-mt-20 scroll-mb-40${locals.error ? ' border-danger' : ''}`;
 %>
 <div class="space-y-1.5">
   <% if (type === 'checkbox') { %>
     <label for="<%= id %>" class="flex min-h-11 items-center gap-2 text-sm font-medium lg:min-h-6">
-      <input type="checkbox" id="<%= id %>" name="<%= locals.name %>" value="<%= value %>" class="size-5 shrink-0 accent-primary<%= locals.error ? ' outline outline-danger' : '' %>" aria-describedby="<%= describedBy %>" aria-invalid="<%= Boolean(locals.error) %>"<% if (locals.checked) { %> checked<% } %><% if (locals.required) { %> required<% } %><% if (locals.disabled) { %> disabled<% } %>>
-      <span><%= locals.label %><% if (locals.required) { %> <span class="text-muted">(wajib)</span><% } %></span>
+      <input type="checkbox" id="<%= id %>" name="<%= locals.name %>" value="<%= value %>" class="size-5 shrink-0 scroll-mt-20 scroll-mb-40 accent-primary<%= locals.error ? ' outline outline-danger' : '' %>" aria-describedby="<%= describedBy %>" aria-invalid="<%= Boolean(locals.error) %>"<% if (locals.checked) { %> checked<% } %><% if (locals.required) { %> required<% } %><% if (locals.disabled) { %> disabled<% } %>>
+      <span class="min-w-0 break-words"><%= locals.label %><% if (locals.required) { %> <span class="text-muted">(wajib)</span><% } %></span>
     </label>
   <% } else { %>
   <label for="<%= id %>" class="block text-sm font-medium"><%= locals.label %><% if (locals.required) { %> <span class="text-muted">(wajib)</span><% } %></label>

@@ -49,6 +49,22 @@
 - Dibanding PNG Dasbor: komposisi band + dua kolom sesuai; salam “Selamat datang” bukan waktu palsu, tanpa tanggal/jam/angka contoh PNG. Aktivitas memakai tanggal/label fixture dari kontrak existing; bukan audit log baru.
 - Bukti: `screenshots/task-4-dashboard-1440-light.png`, `screenshots/task-4-dashboard-390-light.png`, `screenshots/task-4-dashboard-1440-dark.png`, `screenshots/task-4-dashboard-390-dark.png`.
 
+## Task 5: form dan modul publikasi
+
+- Empat tes baru gagal dulu: struktur form publikasi, upload dashed, CTA kosong awal, serta form Buku gagal ubah. Sesudah perubahan: targeted `adminUi/adminPengumuman/adminNewsBooks/slideOver` 51 lulus; `npm test` 274 lulus, 0 gagal. Assertion keamanan/upload existing tetap; multipart PDF/WebP, penghapusan file dan bulk tetap diuji.
+- `npm run build:css:admin`: sukses; CSS hasil build disertakan.
+- Browser Chromium memakai route, middleware, CSP dan EJS nyata dengan DB fixture in-memory (`test/helpers/adminContentFixture`), user/data fiktif. Bukan login/DB produksi.
+  - Seluruh 18 frame publikasi pada 1440px: Pengumuman/Berita masing-masing daftar, kosong, bulk, hapus, tambah, gagal validasi, ubah; Buku daftar, hapus, tambah, ubah. Tab published/draft dan dialog melalui kontrol nyata; fokus awal Batal, Escape menutup.
+  - Form 1440px: kolom 720/336px, gap 24px. Pada 1360px: 640/336px; 1024/390/320px stack. Tidak ada overflow horizontal, 404 atau page error.
+  - POST gagal ubah pada 390px: title escaped, status, pinned dan keepAttachment tetap; PDF/sampul existing tetap. Nama lampiran tanpa spasi panjang tetap membungkus. File baru harus dipilih ulang.
+  - Light/dark 1440/390; Buku slide-over 560px desktop/fullscreen HP selalu stacked, tanpa H1 ganda. Dirty Escape meminta buang perubahan. Tanpa JS, tautan Buku membuka full-page dan textarea isi tetap terlihat.
+- Audit link summary menemukan target editor tertutup header fixed (y=0). Tes browser dan regresi render gagal→lulus setelah scroll margin; target kini y=80px dan mendapat fokus. Review independen: tanpa temuan actionable; 90 tes terkait/shared caller dan cek Buku 820/768px lulus (DB tetap fixture).
+- Adaptasi acuan: status tetap select native (query/field existing), tidak membuat segmented state baru. Upload native tanpa klaim drag-and-drop; editor/preview/intent publish dan sticky action bar existing dipertahankan. Lampiran dalam panel utama, metadata/sampul di panel kanan. Tidak membuat lampiran kosong palsu atau aksi baru.
+- Bukti PNG (semua relatif ke `screenshots/`):
+  - `task-5-pengumuman-1440-list.png`, `task-5-pengumuman-1440-empty.png`, `task-5-pengumuman-1440-bulk.png`, `task-5-pengumuman-1440-delete.png`, `task-5-pengumuman-1440-new.png`, `task-5-pengumuman-1440-validation.png`, `task-5-pengumuman-1440-edit.png`, `task-5-pengumuman-1440-dark-edit.png`, `task-5-pengumuman-390-edit.png`, `task-5-pengumuman-390-failed-edit.png`, `task-5-pengumuman-390-dark-edit.png`.
+  - `task-5-news-1440-list.png`, `task-5-news-1440-empty.png`, `task-5-news-1440-bulk.png`, `task-5-news-1440-delete.png`, `task-5-news-1440-new.png`, `task-5-news-1440-validation.png`, `task-5-news-1440-edit.png`, `task-5-news-1440-dark-edit.png`, `task-5-news-390-edit.png`, `task-5-news-390-failed-edit.png`, `task-5-news-390-dark-edit.png`.
+  - `task-5-books-1440-list.png`, `task-5-books-1440-delete.png`, `task-5-books-1440-new.png`, `task-5-books-1440-edit.png`, `task-5-books-1440-dark-edit.png`, `task-5-books-1440-slide.png`, `task-5-books-390-edit.png`, `task-5-books-390-failed-edit.png`, `task-5-books-390-dark-edit.png`, `task-5-books-390-slide.png`.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.
@@ -63,17 +79,17 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 6 | Akun Pengguna _ Konfirmasi nonaktif | belum diuji | |
 | 7 | Akun Pengguna _ Tambah | belum diuji | |
 | 8 | Akun Pengguna _ Ubah | belum diuji | |
-| 9 | Berita _ Daftar | belum diuji | |
-| 10 | Berita _ Hasil kosong | belum diuji | |
-| 11 | Berita _ Konfirmasi hapus | belum diuji | |
-| 12 | Berita _ Pilih massal | belum diuji | |
-| 13 | Berita _ Tambah — gagal validasi | belum diuji | |
-| 14 | Berita _ Tambah | belum diuji | |
-| 15 | Berita _ Ubah | belum diuji | |
-| 16 | Buku _ Daftar | belum diuji | |
-| 17 | Buku _ Konfirmasi hapus | belum diuji | |
-| 18 | Buku _ Tambah | belum diuji | |
-| 19 | Buku _ Ubah | belum diuji | |
+| 9 | Berita _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 10 | Berita _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 11 | Berita _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 12 | Berita _ Pilih massal | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 13 | Berita _ Tambah — gagal validasi | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 14 | Berita _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 15 | Berita _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 16 | Buku _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 17 | Buku _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 18 | Buku _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 19 | Buku _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 20 | Buku Wisuda _ Daftar | belum diuji | |
 | 21 | Buku Wisuda _ Tambah | belum diuji | |
 | 22 | Buku Wisuda _ Ubah | belum diuji | |
@@ -104,13 +120,13 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 47 | Lembaga Akreditasi _ Tambah | belum diuji | |
 | 48 | Lembaga Akreditasi _ Ubah | belum diuji | |
 | 49 | Pengaturan Situs _ Ubah | belum diuji | |
-| 50 | Pengumuman _ Daftar | belum diuji | |
-| 51 | Pengumuman _ Hasil kosong | belum diuji | |
-| 52 | Pengumuman _ Konfirmasi hapus | belum diuji | |
-| 53 | Pengumuman _ Pilih massal | belum diuji | |
-| 54 | Pengumuman _ Tambah — gagal validasi | belum diuji | |
-| 55 | Pengumuman _ Tambah | belum diuji | |
-| 56 | Pengumuman _ Ubah | belum diuji | |
+| 50 | Pengumuman _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 51 | Pengumuman _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 52 | Pengumuman _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 53 | Pengumuman _ Pilih massal | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 54 | Pengumuman _ Tambah — gagal validasi | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 55 | Pengumuman _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
+| 56 | Pengumuman _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 57 | Pimpinan & Staf _ Daftar | belum diuji | |
 | 58 | Pimpinan & Staf _ Tambah | belum diuji | |
 | 59 | Pimpinan & Staf _ Ubah | belum diuji | |

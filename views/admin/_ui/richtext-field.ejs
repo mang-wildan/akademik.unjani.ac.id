@@ -5,7 +5,7 @@
   include('../_ui/richtext-field', { name: 'body', label: 'Isi', required: true, value: values.body, error: errors.body })
 %>
 <% const id = `f-${locals.name}`; %>
-<div id="<%= id %>-field" tabindex="-1" x-data="richtext">
+<div id="<%= id %>-field" tabindex="-1" x-data="richtext" class="scroll-mt-20 scroll-mb-40">
   <label for="<%= id %>" class="block text-sm font-medium mb-1.5">
     <%= locals.label %><% if (locals.required) { %> <span class="text-danger" aria-hidden="true">*</span><span class="sr-only">(wajib)</span><% } %>
   </label>

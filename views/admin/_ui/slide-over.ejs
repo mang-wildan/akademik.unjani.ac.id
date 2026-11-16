@@ -14,7 +14,7 @@
   <dialog x-ref="panel" x-on:keydown.escape="escape" x-on:cancel="cancel" x-on:close="nativeClose" x-on:click="backdrop" aria-labelledby="slide-over-title" class="slide-over">
     <div class="flex h-full flex-col">
       <div class="flex h-14 shrink-0 items-center gap-2 border-b border-line pr-2 pl-4 lg:h-12">
-        <h2 id="slide-over-title" class="min-w-0 flex-1 truncate text-md font-semibold" x-text="title"></h2>
+        <h2 id="slide-over-title" class="min-w-0 flex-1 break-words font-serif text-lg" x-text="title"></h2>
         <button type="button" x-on:click="requestClose" aria-label="Tutup panel" class="btn btn-icon text-muted"><%- icon('close', 'size-5') %></button>
       </div>
 

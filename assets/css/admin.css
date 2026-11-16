@@ -286,7 +286,7 @@
   .btn-danger { @apply bg-danger-solid text-white hover:opacity-90; }
   .btn-icon { @apply size-11 p-0 lg:size-10; }
   .field-control {
-    @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3 py-2 text-sm text-ink disabled:bg-sunken disabled:text-muted max-md:text-[1rem] lg:min-h-8 lg:py-1;
+    @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3 py-2 text-sm text-ink disabled:bg-sunken disabled:text-muted max-md:text-[1rem] lg:min-h-10;
   }
   .field-control.border-danger { @apply border-danger; }
   .spinner {
@@ -362,6 +362,21 @@
     nav[aria-label="Halaman"] a,
     nav[aria-label="Halaman"] span[aria-current],
     [data-toast] button { @apply min-h-11 min-w-11; }
+  }
+
+  /* Kontainer, bukan viewport: main ≥640px + gap 24px + panel 336px. */
+  .publication-form { container-type: inline-size; @apply space-y-6; }
+  .publication-layout { @apply grid items-start gap-6; }
+  .form-panel { @apply min-w-0 rounded-card border border-line bg-surface p-4 md:p-6; }
+  @container (min-width: 1000px) {
+    .publication-form:not(.publication-form--stacked) > .publication-layout { grid-template-columns: minmax(0, 1fr) 336px; }
+  }
+  .publication-form--stacked .form-panel { @apply rounded-none border-0 p-4; }
+  .publication-form--stacked .publication-layout { @apply gap-0; }
+  .publication-form--stacked > [role="alert"] { @apply mx-4 mt-4; }
+  .field-control[type="file"] { @apply min-w-0 max-w-full px-2 text-xs file:mr-2 file:rounded-control file:border-0 file:bg-sunken file:px-2 file:py-2 file:text-ink; }
+  @media (pointer: coarse) {
+    .field-control { @apply min-h-11; }
   }
 
   /* Panel samping (views/admin/_ui/slide-over.ejs, DESIGN §7.7): dialog modal menempel di kanan,

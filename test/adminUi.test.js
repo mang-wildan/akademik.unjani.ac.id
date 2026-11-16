@@ -96,6 +96,74 @@ test('admin toast has a five-second pausable timer, correct roles and no empty m
   assert.match(await render('toast', { error: '<script>' }), /role="alert"[\s\S]*x-on:focusout="resume"[\s\S]*&lt;script&gt;/);
 });
 
+test('publication forms separate main fields and publication panel without duplicating partial headings', async () => {
+  for (const basePath of ['pengumuman', 'news']) {
+    const locals = { mode: 'edit', basePath, singularLabel: 'Konten', item: { _id: 'p1', featuredImage: '/uploads/news/current.webp', attachments: [{ _id: 'a1', judul: '<PDF>', file: '/uploads/news/current.pdf' }, { _id: 'a2', judul: 'Dihapus', file: '/uploads/news/removed.pdf' }] }, values: { title: 'Judul <uji>', body: '<p>Isi</p>', status: 'published', kategori: 'k1', pinned: 'on', attachmentsEditable: '1', keepAttachment: ['a1'] }, errors: { title: 'Perbaiki judul', body: 'Perbaiki isi', _form: 'Batas sematan', attachments: 'Periksa file' }, kategoriList: [{ _id: 'k1', nama: 'Akademik' }] };
+    const html = await render('content-form', locals);
+    assert.match(html, /class="publication-form"/);
+    assert.match(html, /class="publication-layout"/);
+    assert.match(html, /data-form-main[\s\S]*name="title"[\s\S]*name="body"[\s\S]*name="attachments"[\s\S]*data-publication-panel/);
+    assert.match(html, /aria-labelledby="publication-title"/);
+    assert.match(html, /id="publication-title"[^>]*>Terbitkan/);
+    assert.match(html, /value="Judul &lt;uji&gt;"/);
+    assert.match(html, /value="published" selected/);
+    assert.match(html, /value="k1" selected/);
+    assert.match(html, /name="pinned"[^>]*checked/);
+    assert.match(html, /id="keep-a1"[^>]*checked/);
+    assert.doesNotMatch(html, /id="keep-a2"[^>]*checked/);
+    assert.match(html, /href="\/uploads\/news\/current.pdf"/);
+    assert.match(html, /src="\/uploads\/news\/current.webp"/);
+    for (const input of html.matchAll(/<input type="file"[^>]*>/g)) assert.doesNotMatch(input[0], /\svalue=/);
+    assert.match(html, /[Pp]ilih ulang/);
+    for (const target of html.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${target[1]}"`), target[1]);
+    assert.match(html, /name="intent" value="publish"/);
+    assert.match(html, /data-save-form[\s\S]*x-data="dirtyGuard"/);
+    const partial = await render('content-form', { ...locals, partial: true });
+    assert.match(partial, /class="publication-form publication-form--stacked"/);
+    assert.doesNotMatch(partial, /<h1|<!DOCTYPE/);
+    assert.match(partial, /name="body"/);
+  }
+});
+
+test('summary targets reserve space beneath sticky header and form actions', async () => {
+  const field = await render('field', { name: 'title', label: 'Judul' });
+  assert.match(field, /<input[^>]*class="[^"]*scroll-mt-20 scroll-mb-40/);
+  const editor = await render('richtext-field', { name: 'body', label: 'Isi' });
+  assert.match(editor, /id="f-body-field"[^>]*class="scroll-mt-20 scroll-mb-40"/);
+});
+
+test('upload field wraps native file control and exposes escaped current-file link', async () => {
+  const html = await render('upload-field', { name: 'file', label: 'PDF', value: 'private.pdf', current: { href: '/uploads/books/test.pdf', label: '<Panduan>' }, limitText: 'PDF, maks. 10 MB.' });
+  assert.match(html, /border-dashed/);
+  assert.match(html, /<input type="file"[^>]*id="f-file"/);
+  assert.doesNotMatch(html, /value="private.pdf"|[Tt]arik file/);
+  assert.match(html, /href="\/uploads\/books\/test.pdf"[^>]*rel="noopener"[\s\S]*&lt;Panduan&gt;/);
+  assert.match(html, /Pilih ulang setelah gagal validasi/);
+});
+
+test('empty publication lists distinguish initial state from filtered results and retain real actions', async () => {
+  const { listHref, pageItems } = require('../utils/listQuery');
+  for (const basePath of ['pengumuman', 'news']) {
+    const common = { basePath, listLabel: basePath === 'news' ? 'Berita' : 'Pengumuman', singularLabel: 'Konten', counts: { total: 0 }, pagination: { total: 0, page: 1, totalPages: 1, pageSize: 20 }, kategoriList: [], listHref, pageItems, formatTanggal: () => '16 Nov 2026' };
+    const empty = await render('content-list', { ...common, state: {}, items: [] });
+    assert.match(empty, /Belum ada/);
+    assert.equal((empty.match(new RegExp(`href="/admin/${basePath}/new"`, 'g')) || []).length, 2);
+    for (const status of ['published', 'draft']) {
+      const html = await render('content-list', { ...common, state: { q: 'Uji', status, kategori: 'k1' }, items: [] });
+      assert.match(html, /Tidak ada[\s\S]*yang cocok/);
+      assert.match(html, new RegExp(`href="/admin/${basePath}"[^>]*>[\\s\\S]*Hapus filter`));
+      assert.match(html, /status=published/);
+      assert.match(html, /status=draft/);
+      assert.match(html, /q=Uji/);
+    }
+    const row = await render('content-actions', { basePath, item: { _id: 'p1', title: '<Judul>', pinned: true } });
+    assert.match(row, new RegExp(`href="/admin/${basePath}/p1/edit"`));
+    assert.match(row, /<summary[^>]*aria-label="Aksi untuk &lt;Judul&gt;"/);
+    assert.match(row, new RegExp(`method="POST" action="/admin/${basePath}/p1/pin"`));
+    assert.match(row, new RegExp(`method="POST" action="/admin/${basePath}/p1/delete"`));
+  }
+});
+
 const runtime = () => {
   const components = {}, handlers = {}, windowHandlers = {}, timers = new Map();
   let now = 0, sequence = 0;
