@@ -70,6 +70,12 @@ test('v0.1.0: toast is dark ink with escaped text, roles, close and no undo', as
   }
 });
 
+test('mobile toast moves above an active bulk bar rather than covering its final actions', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../assets/css/admin.css'), 'utf8');
+  const mobile = css.slice(css.indexOf('@media (width < 64rem) {', css.indexOf('/* Di luar layer')));
+  assert.match(mobile, /body:has\(\[data-bulk-active\]\) \[data-toast\] \{\s*top: 5rem;\s*bottom: auto;/);
+});
+
 test('admin toast has a five-second pausable timer, correct roles and no empty message', async () => {
   assert.equal((await render('toast')).trim(), '');
   assert.match(await render('toast', { success: 'Tersimpan' }), /data-toast-duration="5000"[^>]*role="status"[\s\S]*x-on:mouseenter="pause"/);

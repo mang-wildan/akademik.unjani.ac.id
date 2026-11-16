@@ -346,6 +346,11 @@
 @media (width < 64rem) {
   /* Ruang gulir agar akhir daftar tetap bisa dijangkau di atas bilah bulk HP. */
   main:has([data-bulk-active]) { padding-bottom: calc(18rem + env(safe-area-inset-bottom)); }
+  /* Toast sementara tidak boleh menutup aksi terakhir bilah bulk HP. */
+  body:has([data-bulk-active]) [data-toast] {
+    top: 5rem;
+    bottom: auto;
+  }
 }
 
 @layer components {

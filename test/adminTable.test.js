@@ -135,6 +135,21 @@ test('v0.1.0: long/HTML titles wrap escaped, null metadata renders empty, header
   assert.ok(wrap.includes('break-words') && !wrap.includes('truncate'), 'judul panjang membungkus');
 });
 
+test('publication title callbacks wrap long escaped titles without inner truncation', async () => {
+  for (const name of ['content-title', 'book-title']) {
+    const filename = path.join(__dirname, '../views/admin/_ui', `${name}.ejs`);
+    const title = `<script>${'Judul panjang '.repeat(40)}</script>`;
+    const html = await render('data-table', {
+      caption: 'Publikasi', selectable: false,
+      columns: [{ key: 'title', label: 'Judul', cell: item => ejs.render(fs.readFileSync(filename, 'utf8'), { item, icon: require('../utils/icons') }, { filename }) }],
+      items: [{ _id: '1', title }], rowHref: () => '/admin/news/1/edit',
+    });
+    assert.match(html, /&lt;script&gt;Judul panjang/);
+    assert.doesNotMatch(html, /<script>|\btruncate\b/);
+    assert.match(html, /class="min-w-0 break-words"/);
+  }
+});
+
 test('v0.1.0: pagination keeps q/status/sort, marks current page and disables edges', async () => {
   const state = { q: 'wisuda', status: 'draft', sort: 'title', dir: 'asc', page: '1' };
   const html = await render('pagination', { page: 1, totalPages: 3, total: 60, pageSize: 25, noun: 'berita', state });

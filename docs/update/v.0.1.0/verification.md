@@ -26,13 +26,15 @@
 
 ## Task 3: daftar, bulk, dialog, toast
 
-- 5 tes baru gagal dulu (H1 serif, badge titik+teks, dialog 480px bar danger, toast ink, tabel mono/60px/bungkus, pagination "Menampilkan", bulk band brand), lalu lulus; `npm test`: 263 lulus, 0 gagal.
+- 5 tes baru gagal dulu (H1 serif, badge titik+teks, dialog 480px bar danger, toast ink, tabel mono/60px/bungkus, pagination "Menampilkan", bulk band brand), lalu lulus; verifikasi akhir `npm test`: 265 lulus, 0 gagal.
 - Browser (Chromium headless, `/dev/admin-v2`, data fiktif), 1440 & 390:
   - Tanpa overflow horizontal (daftar, bulk aktif, hasil kosong `?q=zzzzzz`); tanpa 404/page error. H1 Crimson Text, header tabel Ubuntu Mono, baris 60px desktop.
   - Toast `?success=<b>…</b>` tampil escaped; hover 5,5 dtk tetap tampil (pause).
   - Dialog hapus: fokus awal Batal, Escape menutup dan fokus kembali ke pemicu.
   - Bulk: 2 baris dipilih → "2 pengumuman dipilih"; HP lewat tombol Pilih.
   - Gelap: band bulk tetap brand `#14532D` teks putih; toast memakai token ink (terang di gelap), kontras tetap tinggi.
+- Review callback nyata: hapus `truncate` di content-title/book-title agar judul Pengumuman/Berita/Buku ikut membungkus; tes komposisi HTML panjang gagal→lulus.
+- Fix audit HP: toast berpindah ke atas saat bulk aktif agar tidak menutup aksi terakhir; tes regresi gagal→lulus. Browser 390: toast y=80–136, bulk y=660–836; focus pause 5,5 dtk lulus di 1440/390.
 - Deviasi: tanpa tombol Urungkan (tidak ada endpoint undo).
 
 ## Matriks frame
