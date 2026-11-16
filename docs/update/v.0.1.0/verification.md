@@ -77,6 +77,18 @@
 - Adaptasi acuan: select/checkbox native, fakultas manual dan field existing tetap; tanpa segmented state/aktif baru. Upload native tanpa klaim drag-and-drop. PDF tetap 10 MB; Task 10/11 belum. Kurikulum memisahkan Berkas; kalender memisahkan impor dengan anchor tanpa JS. Lulusan impor tetap details (terbuka saat error); hapus lewat aksi daftar existing.
 - Bukti: `screenshots/task-6-{academic-documents,rpl-documents,kurikulum,academic-calendars,accreditations,lembaga-akreditasi,graduation-books,lulusan}-{1440,390}-{list,new,edit}.png`; kalender/lulusan juga `{1440,768,390,320}-import-error.png`; kalender `320-long-edit.png`, akreditasi `390-dark-edit.png`.
 
+## Task 7: organisasi dan data master
+
+- Tes markup baru gagal dulu (panel serif, grouping Profil/Staf, error inline CSV). Akhir: `node --test test/adminOrganization.test.js test/adminProgramStudi.test.js test/adminKategori.test.js`: **30 lulus, 0 gagal**; `npm test`: **301 lulus, 0 gagal**. Assertion role, escaping, upload, validasi, null/0 dan kontrak POST/CSV existing tetap. Build CSS sukses, hasil disertakan.
+- Browser Chromium: route/middleware/CSP/EJS nyata, DB fixture in-memory dan data fiktif; bukan login/DB produksi.
+  - **17 state** acuan pada 1440/390px; seluruh route view juga 1024/820/768/320px. Tanpa overflow horizontal, 404 atau page error. Teks panjang/HTML, relasi null, light/dark, slide-over dan fallback tanpa JS dicek.
+  - Impor prodi invalid pada 1440/768/390/320: error **Baris 2**, summary menuju file CSV, error inline dan data tidak bertambah. Foto staf/gambar unit existing tampil sebagai pratinjau dan tautan; nilai urutan 0 tetap.
+  - Audit visual seluruh 17 acuan dan screenshot runtime: mengikuti pola shell/daftar/panel serif, bukan pixel-identical. Profil empat panel, Staf tiga panel, Unit memisahkan gambar. Sticky actions existing tetap; konten panjang dapat digulir melewati bar.
+- **Konflik rencana/pre-existing gap:** `models/Faculty.js` dan `utils/academicAdmin.js` tidak memiliki guard hapus Fakultas berelasi. Task 7 melarang perubahan backend. Tes/browser menyuntik kegagalan `deleteOne`: menguji respons error, record tidak terhapus dan tanpa success; **tidak membuktikan proteksi relasi nyata**. Hapus satuan tetap HTTP 500 existing; bulk kembali ke daftar dengan toast error generik, bukan panel alasan relasi pada PNG. Guard backend perlu pekerjaan terpisah sebelum klaim Fakultas berelasi terlindungi.
+- Review independen: tidak ada regresi Critical/Important pada diff UI. Konflik guard Fakultas dicatat di atas. Temuan Minor ditutup dengan assertion GET tujuan redirect bulk: toast error berisi `1 fakultas gagal dihapus`, tanpa toast sukses aktif (template inert dikecualikan). HTTP 500 fixture bukan bukti halaman error produksi.
+- Adaptasi acuan: textarea profil existing (satu butir per baris), select/checkbox native, field/opsi/urutan existing dipertahankan; tidak menambah editor dinamis, segmented state, urutan Fakultas atau endpoint. Daftar dan aksi shared sudah memakai pola Task 3/5, tidak diduplikasi.
+- Bukti: `screenshots/task-7-{profil-akademik,staff,unit,faculties,program-studi,kategori}-{1440,390}-{list,new,edit}.png` (Profil hanya edit); Fakultas `{1440,390}-delete-error.png` (injection); prodi `{1440,768,390,320}-import-error.png`; staf `390-dark-edit.png`.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.
@@ -115,16 +127,16 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 30 | Dokumen RPL _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 31 | Dokumen RPL _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 32 | Dokumen RPL _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 33 | Fakultas _ Daftar | belum diuji | |
-| 34 | Fakultas _ Gagal hapus | belum diuji | |
-| 35 | Fakultas _ Tambah | belum diuji | |
-| 36 | Fakultas _ Ubah | belum diuji | |
+| 33 | Fakultas _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 34 | Fakultas _ Gagal hapus | beda; error path diuji (injection) | 1440/390; toast error existing, bukan panel relasi PNG. Guard relasi backend belum ada; lihat konflik Task 7. |
+| 35 | Fakultas _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 36 | Fakultas _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 37 | Kalender Akademik _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 38 | Kalender Akademik _ Kelola 2026-2027 | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 39 | Kalender Akademik _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 40 | Kategori _ Daftar | belum diuji | |
-| 41 | Kategori _ Tambah | belum diuji | |
-| 42 | Kategori _ Ubah | belum diuji | |
+| 40 | Kategori _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 41 | Kategori _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 42 | Kategori _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 43 | Kurikulum _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 44 | Kurikulum _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 45 | Kurikulum _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
@@ -139,16 +151,16 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 54 | Pengumuman _ Tambah — gagal validasi | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 55 | Pengumuman _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 56 | Pengumuman _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 57 | Pimpinan & Staf _ Daftar | belum diuji | |
-| 58 | Pimpinan & Staf _ Tambah | belum diuji | |
-| 59 | Pimpinan & Staf _ Ubah | belum diuji | |
-| 60 | Profil Bidang _ Ubah | belum diuji | |
+| 57 | Pimpinan & Staf _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 58 | Pimpinan & Staf _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 59 | Pimpinan & Staf _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 60 | Profil Bidang _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 61 | Profil Saya _ Ringkasan | belum diuji | |
 | 62 | Profil Saya _ Ubah password | belum diuji | |
 | 63 | Profil Saya _ Ubah profil | belum diuji | |
-| 64 | Program Studi _ Daftar | belum diuji | |
-| 65 | Program Studi _ Tambah | belum diuji | |
-| 66 | Program Studi _ Ubah | belum diuji | |
-| 67 | Unit _ Daftar | belum diuji | |
-| 68 | Unit _ Tambah | belum diuji | |
-| 69 | Unit _ Ubah | belum diuji | |
+| 64 | Program Studi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 65 | Program Studi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 66 | Program Studi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 67 | Unit _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 68 | Unit _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 69 | Unit _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |

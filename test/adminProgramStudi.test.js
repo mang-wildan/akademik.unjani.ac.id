@@ -12,6 +12,14 @@ const setup=async(t,docs=[],role='superadmin')=>{
  return{Model,get:s=>fetch(base+s),post:(s,body)=>fetch(base+s,{method:'POST',body:body instanceof FormData?body:new URLSearchParams(body),redirect:'manual'})};
 };
 const csv=text=>{const body=new FormData();body.set('csv',new Blob([text],{type:'text/csv'}),`f4-05-${randomUUID()}.csv`);return body;};
+test('Program Studi serif forms retain null references and escaped long names with full-page links',async t=>{
+ const {get}=await setup(t,[{_id:id(1),nama:'Prodi <uji>'+ 'Panjang'.repeat(40),singkatan:'PD',fakultas:null}]);
+ for(const route of ['/new',`/${id(1)}/edit`]){const r=await get(route),html=await r.text();assert.equal(r.status,200,html);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.match(html,/<h2[^>]*class="[^"]*font-serif/);assert.match(html,/name="fakultas"/);}
+ const html=await(await get('')).text();assert.match(html,/Prodi &lt;uji&gt;/);assert.doesNotMatch(html,/<uji>/);assert.match(html,new RegExp(`href="/admin/program-studi/${id(1)}/edit"`));assert.match(html,/>Ubah<\/a>/);
+});
+test('Program Studi import errors show row numbers and connect the file error',async t=>{
+ const {post}=await setup(t);const r=await post('/import',csv('nama,singkatan,fakultas\nBaru,BR,Tidak ada\n'));assert.equal(r.status,422);const html=await r.text();assert.match(html,/Baris 2/);assert.match(html,/id="f-csv"[^>]*aria-invalid="true"/);assert.match(html,/href="#f-csv"/);
+});
 test('Program Studi v2 searches literal text, filters faculty, sorts/paginates and exposes a partial form',async t=>{
  const docs=Array.from({length:26},(_,n)=>({_id:id(n+1),nama:`Prodi (${String(n).padStart(2,'0')})`,singkatan:'PD'+n,fakultas:faculty._id}));
  const{get,Model}=await setup(t,docs);let r=await get('?q=%28&sort=nama&dir=desc&page=2&fakultas='+faculty._id);

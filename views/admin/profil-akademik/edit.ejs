@@ -1,23 +1,30 @@
-<%- include('../_ui/page-header',{heading:'Profil Bidang Akademik'}) %>
+<% if (!locals.partial) { %><%- include('../_ui/page-header',{heading:'Profil Bidang Akademik'}) %><% } %>
 <p class="mb-4 text-sm text-muted">Terakhir diperbarui <%= formatTanggal(lastUpdatedAt,{long:true}) %>.</p>
-<form method="POST" action="/admin/profil-akademik" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-5 rounded-card border border-line bg-surface p-4">
+<form method="POST" action="/admin/profil-akademik" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-6" data-panel-title="Profil Bidang Akademik">
+  <section class="form-panel space-y-5">
+  <h2 class="font-serif text-lg">Ringkasan</h2>
   <%- include('../_ui/error-summary',{errors}) %>
   <%- include('../_ui/field', { name: 'judulHalaman', label: 'Judul Halaman', required: true, value: values.judulHalaman, error: errors.judulHalaman }) %>
   <%- include('../_ui/field', { name: 'ringkasan', label: 'Ringkasan', type: 'textarea', required: true, value: values.ringkasan, error: errors.ringkasan, rows: 6, help: '300-1200 karakter.' }) %>
+  </section>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Visi dan misi</h2>
   <%- include('../_ui/field', { name: 'visi', label: 'Visi', type: 'textarea', required: true, value: values.visi, error: errors.visi, rows: 3, help: '80-500 karakter.' }) %>
-
-  <div class="space-y-5">
     <%- include('../_ui/field', { name: 'misi', label: 'Misi', type: 'textarea', required: true, value: values.misi, error: errors.misi, rows: 5, help: 'Satu butir per baris.' }) %>
+  </section>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Tugas dan fungsi</h2>
     <%- include('../_ui/field', { name: 'tugas', label: 'Tugas', type: 'textarea', required: true, value: values.tugas, error: errors.tugas, rows: 5, help: 'Satu butir per baris.' }) %>
     <%- include('../_ui/field', { name: 'fungsi', label: 'Fungsi', type: 'textarea', required: true, value: values.fungsi, error: errors.fungsi, rows: 5, help: 'Satu butir per baris.' }) %>
-  </div>
+  </section>
 
-  <div class="space-y-5">
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Kontak layanan</h2>
     <%- include('../_ui/field', { name: 'kontakEmail', label: 'Email Kontak', type: 'email', value: values.kontakEmail, error: errors.kontakEmail, help: 'Opsional.' }) %>
     <%- include('../_ui/field', { name: 'kontakTelepon', label: 'Telepon Kontak', value: values.kontakTelepon, error: errors.kontakTelepon, help: 'Opsional.' }) %>
     <%- include('../_ui/field', { name: 'alamatLayanan', label: 'Alamat Layanan', value: values.alamatLayanan, error: errors.alamatLayanan, help: 'Opsional.' }) %>
     <%- include('../_ui/field', { name: 'jamLayanan', label: 'Jam Layanan', value: values.jamLayanan, error: errors.jamLayanan, placeholder: 'Senin-Jumat, 08.00-15.30 WIB' }) %>
-  </div>
+  </section>
 
   <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]">
     <%- include('../_ui/button',{label:'Batal',href:'/admin/dashboard',variant:'secondary'}) %>

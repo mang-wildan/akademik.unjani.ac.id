@@ -13,6 +13,28 @@ const setup=async(t,basePath,docs=[],role='superadmin')=>{
  return{Model,get:s=>fetch(base+s),post:(s,body)=>fetch(base+s,{method:'POST',body:body instanceof FormData?body:new URLSearchParams(body),redirect:'manual'})};
 };
 const profile={_id:id(1),judulHalaman:'Profil Akademik',ringkasan:'Layanan akademik. '.repeat(25),visi:'Layanan bermutu. '.repeat(8),misi:['Misi pertama','Misi kedua'],tugas:['Tugas pertama'],fungsi:['Fungsi pertama']};
+test('organization forms use serif panels, preserve full-page fallback and expose current images',async t=>{
+ for(const base of ['profil-akademik','staff','unit','faculties'])await t.test(base,async t=>{
+  const doc=base==='profil-akademik'?{...profile}:{_id:id(1),nama:'Nama <uji>'+ 'Panjang'.repeat(40),singkatan:'FT',jabatan:'Layanan',tingkat:'anggota',nomorUrut:0,foto:'/img/staf-uji.png',img:'/img/unit-uji.png'};
+  const {get}=await setup(t,base,[doc]);
+  for(const url of base==='profil-akademik'?['']:['/new',`/${id(1)}/edit`]){
+   const r=await get(url),html=await r.text();assert.equal(r.status,200,html);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.match(html,/<h2[^>]*class="[^"]*font-serif/);assert.match(html,/method="POST"/);
+   if(base==='profil-akademik')for(const heading of ['Ringkasan','Visi dan misi','Tugas dan fungsi','Kontak layanan'])assert.match(html,new RegExp(`<h2[^>]*>${heading}</h2>`));
+   if(base==='staff')for(const heading of ['Identitas','Jabatan','Foto'])assert.match(html,new RegExp(`<h2[^>]*>${heading}</h2>`));
+   const partial=await(await get(url+'?partial=1')).text();assert.doesNotMatch(partial,/<h1\b|<!DOCTYPE/);
+   if(url.includes('/edit')&&['staff','unit'].includes(base))assert.match(html,new RegExp(`<img[^>]*src="${base==='staff'?doc.foto:doc.img}"`));
+  }
+  if(base!=='profil-akademik'){const html=await(await get('')).text();assert.match(html,/Nama &lt;uji&gt;/);assert.doesNotMatch(html,/<uji>/);assert.match(html,new RegExp(`href="/admin/${base}/${id(1)}/edit"`));assert.match(html,/>Ubah<\/a>/);}
+ });
+});
+test('Faculty deletion errors never produce a success response or remove the record',async t=>{
+ const {get,post,Model}=await setup(t,'faculties',[{_id:id(1),nama:'Teknik',singkatan:'FT'}]);
+ // Failure injection covers error responses only; existing backend has no relationship deletion guard.
+ t.mock.method(require('../models/Faculty'),'deleteOne',async()=>{throw new Error('Fakultas masih dipakai program studi.');});
+ let r=await post(`/${id(1)}/delete`,{});assert.equal(r.status,500);assert.equal(r.headers.get('location'),null);assert.equal(Model.docs.length,1);
+ r=await post('/bulk',{action:'delete',ids:id(1)});assert.equal(r.status,303);assert.match(r.headers.get('location'),/error=/);assert.doesNotMatch(r.headers.get('location'),/success=/);assert.equal(Model.docs.length,1);
+ const page=await get(new URL(r.headers.get('location'),'http://fixture.local').search),html=await page.text();assert.equal(page.status,200);assert.match(html,/<div[^>]*data-toast[^>]*role="alert"/);assert.match(html,/<p[^>]*data-toast-message>1 fakultas gagal dihapus<\/p>/);assert.doesNotMatch(html.replace(/<template\b[^>]*>[\s\S]*?<\/template>/g,''),/<div[^>]*data-toast[^>]*role="status"/);
+});
 test('Profil full-page/partial validation preserves line lists and saves singleton as arrays',async t=>{
  const{Model,get,post}=await setup(t,'profil-akademik',[{...profile}]);
  let r=await get('');assert.equal(r.status,200);assert.match(r.headers.get('content-security-policy'),/script-src 'self'/);assert.match(await r.text(),/data-save-form/);

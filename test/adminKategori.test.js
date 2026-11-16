@@ -20,6 +20,12 @@ const setup = async (t, options = {}) => {
   };
 };
 
+test('Kategori forms have serif panels and one heading with no-JS edit links',async t=>{
+ const {get}=await setup(t);
+ for(const route of ['/new',`/${id(1)}/edit`]){const r=await get(route),html=await r.text();assert.equal(r.status,200);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.match(html,/<h2[^>]*class="[^"]*font-serif/);assert.match(html,/method="POST"/);const partial=await(await get(route+'?partial=1')).text();assert.doesNotMatch(partial,/<h1\b|<!DOCTYPE/);}
+ const html=await(await get('')).text();assert.match(html,new RegExp(`href="/admin/kategori/${id(1)}/edit"`));assert.match(html,/aria-label="Aksi untuk Perkuliahan"/);assert.match(html,/>\s*Ubah\s*<\/a>/);
+});
+
 test('Kategori uses v2, whitelist filters, escaped search, sortable pagination and slide-over links', async t => {
   const { Model, get } = await setup(t);
   let res = await get('?jenis=pengumuman&isActive=false&q=%28&sort=nama&dir=desc&page=900');

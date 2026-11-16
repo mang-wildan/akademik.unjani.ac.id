@@ -4,10 +4,10 @@
   {key:'fakultas',label:'Fakultas',cell:item=>include('../_ui/text',{text:item.fakultas?.nama})},
 ],listFilters:[{name:'fakultas',label:'Fakultas',options:facultyList.map(f=>({value:String(f._id),label:f.nama}))}]}) %>
 <details class="mt-6 rounded-card border border-line bg-surface" <%= locals.importErrors?'open':'' %>>
-  <summary class="min-h-11 cursor-pointer p-4 font-semibold">Impor Program Studi dari CSV</summary>
-  <form method="POST" action="/admin/program-studi/import<%= listHref(state,{page:state.page}) %>" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
+  <summary class="min-h-11 cursor-pointer p-4"><h2 class="inline font-serif text-lg">Impor Program Studi dari CSV</h2></summary>
+  <form method="POST" action="/admin/program-studi/import<%= listHref(state,{page:state.page}) %>" enctype="multipart/form-data" class="space-y-5 border-t border-line p-4 md:p-6">
     <%- include('../_ui/error-summary',{errors:locals.importErrors?{csv:importErrors.join(' ')}:{}}) %>
-    <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',accept:'.csv,text/csv',required:true,limitText:'Kolom: nama, singkatan, fakultas. Gunakan nama atau singkatan fakultas.'}) %>
+    <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',accept:'.csv,text/csv',required:true,limitText:'Kolom: nama, singkatan, fakultas. Gunakan nama atau singkatan fakultas.',error:locals.importErrors?importErrors.join(' '):null}) %>
     <%- include('../_ui/button',{label:'Impor',type:'submit'}) %>
   </form>
 </details>
