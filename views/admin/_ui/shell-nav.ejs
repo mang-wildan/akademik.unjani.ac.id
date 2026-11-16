@@ -1,18 +1,19 @@
 <%#
-  Daftar menu admin per grup (DESIGN §7.1). Dipakai sidebar desktop dan laci HP.
+  Daftar menu admin per grup (DESIGN v0.1.0 §4). Dipakai sidebar desktop dan laci HP, keduanya di atas brand.
   include('../admin/_ui/shell-nav', { groups, currentPath, collapsible })
   collapsible: true di sidebar desktop — label disembunyikan saat sidebar diciutkan,
   nama item tetap terbaca pembaca layar dan muncul sebagai tooltip (title).
+  Aktif: latar ivory, teks primary, garis kiri emas 3px; item lain bergaris transparan agar lebar tetap.
 %>
 <% const collapsible = Boolean(locals.collapsible); %>
 <% groups.forEach((group, index) => { %>
-  <p class="px-2 pb-1 text-xs font-medium text-muted<%= index ? ' pt-4' : '' %><%= collapsible ? ' lg:collapsed:sr-only' : '' %>"><%= group.group %></p>
-  <ul class="space-y-0.5">
+  <p class="eyebrow px-6 pb-2 text-sidebar-label<%= index ? ' pt-5' : '' %><%= collapsible ? ' lg:collapsed:sr-only' : '' %>"><%= group.group %></p>
+  <ul class="space-y-0.5 px-3">
     <% group.items.forEach(item => { const active = isActive(item.href, currentPath); %>
       <li>
         <a href="<%= item.href %>"<%- active ? ' aria-current="page"' : '' %><% if (collapsible) { %> title="<%= item.label %>"<% } %>
-           class="flex h-11 items-center gap-2.5 rounded-control px-2 text-sm font-medium no-underline lg:h-8 <%= active ? 'bg-primary-soft text-primary' : 'text-muted hover:bg-sunken hover:text-ink' %><%= collapsible ? ' lg:collapsed:justify-center lg:collapsed:px-0' : '' %>">
-          <%- icon(item.icon, 'size-5') %><span class="truncate<%= collapsible ? ' lg:collapsed:sr-only' : '' %>"><%= item.label %></span>
+           class="flex h-11 items-center gap-2.5 rounded-control border-l-3 px-3 text-sm no-underline lg:h-8 <%= active ? 'border-accent bg-canvas font-semibold text-primary' : 'border-transparent text-sidebar-text hover:bg-white/10 hover:text-white' %><%= collapsible ? ' lg:collapsed:justify-center lg:collapsed:px-0' : '' %>">
+          <span class="hidden<%= collapsible ? ' lg:collapsed:inline' : '' %>"><%- icon(item.icon, 'size-5') %></span><span class="truncate<%= collapsible ? ' lg:collapsed:sr-only' : '' %>"><%= item.label %></span>
         </a>
       </li>
     <% }) %>

@@ -29,6 +29,13 @@ document.addEventListener('alpine:init', () => {
       if (first) location.assign(first.href);
     },
     shortcut(event) {
+      // Ctrl/Cmd+K berlaku juga saat mengetik di kolom (seperti palet perintah umumnya).
+      if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
+        if (document.querySelector('dialog[open]')) return;
+        event.preventDefault();
+        this.focus();
+        return;
+      }
       if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey || event.defaultPrevented) return;
       if (event.target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
       if (document.querySelector('dialog[open]')) return;

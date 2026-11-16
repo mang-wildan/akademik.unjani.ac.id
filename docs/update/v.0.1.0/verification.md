@@ -14,6 +14,16 @@
 - Placeholder web = `muted` `#5B5E57` (referensi FigCraft `#8A8C84` gagal 4.5:1).
 - Font 404: belum dicek di browser.
 
+## Task 2: shell dan navigasi
+
+- Tes baru gagal dulu (sidebar/topbar, Cari menu + Ctrl/Cmd+K), lalu lulus; `npm test`: 258 lulus, 0 gagal.
+- Browser (Chromium headless, `/dev/admin-v2`, data fiktif):
+  - 1440 & 1024: sidebar 264px, topbar 64px, tanpa overflow horizontal; font Inter/Crimson Text/Ubuntu Mono termuat, tanpa 404/page error.
+  - 390: tanpa overflow; laci hijau terbuka dari "Menu", Escape menutup dan fokus kembali ke tombol Menu.
+  - Ctrl+K fokus ke `#cari-modul`; menu akun Escape mengembalikan fokus ke pemicu.
+  - Ciut + gelap: sidebar 64px tetap brand `#14532D`, item aktif terbaca.
+- Deviasi: ikon menu disembunyikan saat sidebar terbuka (frame tanpa ikon), tetap tampil saat ciut. Pintasan `/` lama tetap aktif.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.

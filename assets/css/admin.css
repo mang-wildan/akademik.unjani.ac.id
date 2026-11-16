@@ -226,6 +226,10 @@
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
+  /* Di atas hijau brand (sidebar, laci): cincin putih, bukan hijau di atas hijau. */
+  .on-brand :focus-visible {
+    outline-color: var(--color-white);
+  }
 
   ::placeholder {
     color: var(--color-placeholder);
@@ -266,6 +270,10 @@
 }
 
 @layer components {
+  /* Label grup/eyebrow: Ubuntu Mono 11/16 uppercase, tracking 1.2px (DESIGN v0.1.0 §3). */
+  .eyebrow {
+    @apply font-mono text-[0.6875rem] leading-4 tracking-[0.075rem] uppercase;
+  }
   .btn {
     @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control px-3 text-sm font-medium no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-8 lg:min-w-8;
   }

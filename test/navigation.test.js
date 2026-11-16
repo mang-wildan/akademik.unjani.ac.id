@@ -70,6 +70,14 @@ test('moduleSearch filters permitted links, enters the first result, handles no 
   search.shortcut(key(true)); assert.equal(prevented, 0);
   dialogOpen = true; search.shortcut(key(false)); assert.equal(prevented, 0);
   dialogOpen = false; search.shortcut(key(false)); assert.equal(prevented, 1); assert.equal(focus, 2);
+  // Ctrl/Cmd+K berlaku juga saat mengetik, tapi tidak saat dialog terbuka.
+  for (const mod of ['ctrlKey', 'metaKey']) {
+    const combo = { key: 'K', [mod]: true, target: { closest: () => true }, preventDefault() { prevented++; } };
+    const before = prevented;
+    dialogOpen = true; search.shortcut(combo); assert.equal(prevented, before);
+    dialogOpen = false; search.shortcut(combo); assert.equal(prevented, before + 1);
+  }
+  assert.equal(prevented, 3); assert.equal(focus, 4);
   search.focusout({ relatedTarget: 'inside' }); assert.equal(search.open, true);
   search.focusout({ relatedTarget: null }); assert.equal(search.open, false);
 });

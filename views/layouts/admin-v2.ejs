@@ -35,27 +35,23 @@
   <div x-data="shortcuts" x-on:keydown.window="keydown" hidden></div>
   <a class="skip-link sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-control focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-overlay" href="#konten">Langsung ke konten utama</a>
 
-  <%# Sidebar desktop (≥1024px): 240px, diciutkan 64px. %>
+  <%# Sidebar desktop (≥1024px): hijau brand 264px, diciutkan 64px (DESIGN v0.1.0 §4). %>
   <aside id="sidebar-admin" aria-label="Navigasi admin"
-         class="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-line bg-surface lg:flex lg:collapsed:w-16">
-    <div class="flex h-12 shrink-0 items-center border-b border-line px-4 lg:collapsed:justify-center lg:collapsed:px-0">
-      <a href="/admin/dashboard" class="flex min-w-0 items-center gap-2.5 text-ink no-underline">
-        <img src="/img/lambang-unjani.png" alt="" width="24" height="24" class="size-6 shrink-0 object-contain">
-        <span class="truncate text-sm font-semibold lg:collapsed:sr-only">Admin Akademik</span>
+         class="on-brand fixed inset-y-0 left-0 z-30 hidden flex-col bg-brand text-sidebar-text lg:flex lg:w-66 lg:collapsed:w-16">
+    <div class="flex h-16 shrink-0 items-center border-b border-white/15 px-5 lg:collapsed:justify-center lg:collapsed:px-0">
+      <a href="/admin/dashboard" class="flex min-w-0 items-center gap-3 text-white no-underline">
+        <img src="/img/lambang-unjani.png" alt="" width="28" height="28" class="size-7 shrink-0 object-contain">
+        <span class="truncate font-serif text-lg font-bold lg:collapsed:sr-only">Admin Akademik</span>
       </a>
     </div>
-    <nav class="flex-1 overflow-y-auto px-2 py-3">
+    <nav class="flex-1 overflow-y-auto py-4">
       <%- include('../admin/_ui/shell-nav', { groups, currentPath, collapsible: true }) %>
     </nav>
-    <div class="space-y-0.5 border-t border-line p-2">
-      <a href="/" title="Kembali ke situs"
-         class="flex h-8 items-center gap-2.5 rounded-control px-2 text-sm font-medium text-muted no-underline hover:bg-sunken hover:text-ink lg:collapsed:justify-center lg:collapsed:px-0">
-        <%- icon('arrow_back', 'size-5') %><span class="lg:collapsed:sr-only">Kembali ke situs</span>
-      </a>
+    <div class="border-t border-white/15 p-2">
       <button type="button" x-on:click="toggleSidebar" aria-controls="sidebar-admin"
               aria-expanded="<%= !collapsed %>" x-bind:aria-expanded="sidebarExpanded"
               aria-label="<%= collapsed ? 'Lebarkan sidebar' : 'Ciutkan sidebar' %>" x-bind:aria-label="sidebarToggleLabel"
-              class="flex h-8 w-full items-center gap-2.5 rounded-control px-2 text-sm font-medium text-muted hover:bg-sunken hover:text-ink lg:collapsed:justify-center lg:collapsed:px-0">
+              class="flex h-10 w-full items-center gap-2.5 rounded-control px-3 text-sm font-medium text-sidebar-text hover:bg-white/10 hover:text-white lg:collapsed:justify-center lg:collapsed:px-0">
         <span class="lg:collapsed:hidden"><%- icon('left_panel_close', 'size-5') %></span>
         <span class="hidden lg:collapsed:inline"><%- icon('left_panel_open', 'size-5') %></span>
         <span class="lg:collapsed:sr-only" aria-hidden="true">Ciutkan</span>
@@ -65,31 +61,31 @@
 
   <%# Laci HP (<1024px): <dialog> native menangani Escape, batas fokus, dan pengembalian fokus. %>
   <dialog x-ref="drawer" x-on:click="drawerBackdrop" aria-label="Menu admin"
-          class="m-0 h-dvh max-h-none w-70 max-w-[85vw] bg-surface p-0 text-ink backdrop:bg-black/50 lg:hidden">
+          class="on-brand m-0 h-dvh max-h-none w-66 max-w-full bg-brand p-0 text-sidebar-text backdrop:bg-black/50 lg:hidden">
     <div class="flex h-full flex-col">
-      <div class="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-line pl-4 pr-2">
-        <span class="flex min-w-0 items-center gap-2.5">
-          <img src="/img/lambang-unjani.png" alt="" width="24" height="24" class="size-6 shrink-0 object-contain">
-          <span class="truncate text-sm font-semibold">Admin Akademik</span>
+      <div class="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-white/15 pl-4 pr-2">
+        <span class="flex min-w-0 items-center gap-3 text-white">
+          <img src="/img/lambang-unjani.png" alt="" width="28" height="28" class="size-7 shrink-0 object-contain">
+          <span class="truncate font-serif text-lg font-bold">Admin Akademik</span>
         </span>
         <button type="button" x-on:click="closeDrawer" aria-label="Tutup menu"
-                class="inline-flex size-11 items-center justify-center rounded-control text-muted hover:bg-sunken hover:text-ink">
+                class="inline-flex size-11 items-center justify-center rounded-control text-white hover:bg-white/10">
           <%- icon('close', 'size-6') %>
         </button>
       </div>
-      <nav aria-label="Semua modul" class="flex-1 overflow-y-auto px-2 py-3">
+      <nav aria-label="Semua modul" class="flex-1 overflow-y-auto py-4">
         <%- include('../admin/_ui/shell-nav', { groups, currentPath, collapsible: false }) %>
       </nav>
-      <div class="border-t border-line p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-        <a href="/" class="flex h-11 items-center gap-2.5 rounded-control px-2 text-sm font-medium text-muted no-underline hover:bg-sunken hover:text-ink">
-          <%- icon('arrow_back', 'size-5') %>Kembali ke situs
+      <div class="border-t border-white/15 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+        <a href="/" class="flex h-11 items-center gap-2.5 rounded-control px-3 text-sm font-medium text-sidebar-text no-underline hover:bg-white/10 hover:text-white">
+          <%- icon('open_in_new', 'size-5') %>Lihat situs
         </a>
       </div>
     </div>
   </dialog>
 
-  <div class="lg:pl-60 lg:collapsed:pl-16">
-    <header class="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-line bg-surface px-4 lg:h-12 lg:px-6">
+  <div class="lg:pl-66 lg:collapsed:pl-16">
+    <header class="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-line bg-surface px-4 md:px-6 lg:gap-4 xl:px-12">
       <button type="button" x-on:click="openDrawer" aria-haspopup="dialog" aria-label="Buka menu"
               class="-ml-2 inline-flex size-11 shrink-0 items-center justify-center rounded-control text-muted hover:bg-sunken hover:text-ink lg:hidden">
         <%- icon('menu', 'size-6') %>
@@ -109,6 +105,9 @@
         </ol>
       </nav>
       <%- include('../admin/_ui/module-search', { groups }) %>
+      <a href="/" class="hidden h-10 shrink-0 items-center gap-1.5 rounded-control px-2 text-sm font-semibold text-primary no-underline hover:bg-primary-soft lg:inline-flex">
+        Lihat situs<%- icon('open_in_new', 'size-4') %>
+      </a>
       <%- include('../admin/_ui/shell-account', { me, theme }) %>
     </header>
 
@@ -116,7 +115,7 @@
       <%- include('../admin/_ui/toast', { success: locals.alertSuccess, error: locals.alertError }) %>
     <% } %>
 
-    <main id="konten" tabindex="-1" class="px-4 pt-4 pb-24 focus:outline-none lg:px-6 lg:py-6">
+    <main id="konten" tabindex="-1" class="px-4 pt-6 pb-24 focus:outline-none md:px-6 lg:py-8 xl:px-12">
       <%- body %>
     </main>
   </div>

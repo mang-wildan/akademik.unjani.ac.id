@@ -67,6 +67,50 @@ test('admin-v2 shell: skip link, breadcrumb, account menu, drawer, bottom nav', 
   assert.match(html, /<nav aria-label="Navigasi cepat"[\s\S]*Dasbor[\s\S]*Pengumuman[\s\S]*Berita[\s\S]*x-on:click="openDrawer"/);
 });
 
+// Kelas pada tag pembuka pertama yang cocok `opening` (DESIGN v0.1.0 §4).
+const classesOf = (html, opening) => {
+  const m = html.match(new RegExp(`${opening}[^>]*?class="([^"]*)"`));
+  assert.ok(m, `tag tidak ditemukan: ${opening}`);
+  return m[1].split(/\s+/);
+};
+
+test('admin-v2 shell editorial: sidebar hijau 264px, topbar 64px, link aktif bergaris aksen 3px', async () => {
+  const html = await render({ adminSidebar: 'open' });
+  const aside = classesOf(html, '<aside id="sidebar-admin"');
+  for (const cls of ['bg-brand', 'text-sidebar-text', 'lg:w-66', 'lg:collapsed:w-16']) assert.ok(aside.includes(cls), `aside: ${cls}`);
+  assert.match(html, /<aside id="sidebar-admin"[\s\S]*?<nav class="[^"]*\boverflow-y-auto\b/, 'menu sidebar scroll sendiri');
+  assert.match(html, /<div class="lg:pl-66 lg:collapsed:pl-16">/);
+  assert.ok(classesOf(html, '<header').includes('h-16'));
+  assert.ok(classesOf(html, '<main id="konten"').includes('xl:px-12'), 'gutter 48px di desktop lebar');
+  const active = classesOf(html, '<a href="/admin/pengumuman" aria-current="page"');
+  for (const cls of ['border-l-3', 'border-accent', 'bg-canvas', 'text-primary']) assert.ok(active.includes(cls), `aktif: ${cls}`);
+  const idle = classesOf(html, '<a href="/admin/news"');
+  assert.ok(idle.includes('border-l-3') && idle.includes('border-transparent'), 'lebar item tidak berubah saat aktif');
+  assert.match(html, /<dialog x-ref="drawer"[^>]*class="[^"]*\bbg-brand\b/);
+});
+
+test('admin-v2 subpath ubah tetap menandai modul dan role editor hanya melihat modul berizin', async () => {
+  const html = await render({ path: '/admin/pengumuman/abc123/edit', user: { name: 'Editor', role: 'editor' } });
+  assert.match(html, /<a href="\/admin\/pengumuman" aria-current="page"/);
+  for (const href of ['/admin/settings', '/admin/users']) assert.doesNotMatch(html, new RegExp(`href="${href}"`));
+});
+
+test('admin-v2 meng-escape nama pengguna dan breadcrumb panjang', async () => {
+  const long = `${'Judul sangat panjang '.repeat(12)}<img src=x onerror=alert(1)>`;
+  const html = await render({ user: { name: '<script>alert(1)</script>', role: 'superadmin' }, breadcrumb: [{ label: '<b>Grup</b>', href: '/admin/news' }, { label: long }] });
+  assert.doesNotMatch(html, /<script>alert|<img src=x|<b>Grup/);
+  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.match(html, /aria-current="page"[^>]*>Judul sangat panjang [^<]*&lt;img src=x/);
+});
+
+test('admin-v2 topbar: Cari menu dengan Ctrl/Cmd+K dan tautan Lihat situs', async () => {
+  const html = await render();
+  assert.match(html, /<input id="cari-modul"[^>]*placeholder="Cari menu/);
+  assert.match(html, /aria-keyshortcuts="Control\+K Meta\+K"/);
+  assert.match(html, /<kbd[^>]*>Ctrl K<\/kbd>/);
+  assert.match(html, /<header[\s\S]*<a href="\/"[^>]*>[\s\S]*?Lihat situs[\s\S]*<\/header>/);
+});
+
 test('admin-v2 toast: status for success, alert for error, absent otherwise', async () => {
   assert.match(await render({ alertSuccess: '3 berita diterbitkan' }), /role="status"[\s\S]*3 berita diterbitkan/);
   assert.match(await render({ alertError: 'Gagal menyimpan' }), /role="alert"[\s\S]*Gagal menyimpan/);

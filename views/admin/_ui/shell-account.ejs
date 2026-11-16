@@ -14,11 +14,11 @@
 %>
 <div class="relative shrink-0" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="escapeIfOpen">
   <button type="button" x-ref="trigger" x-on:click="toggle" aria-expanded="false" x-bind:aria-expanded="open" aria-haspopup="true" aria-controls="menu-akun"
-          class="flex h-11 items-center gap-2 rounded-control px-1.5 hover:bg-sunken lg:h-9">
+          class="flex h-11 items-center gap-2 rounded-control px-1.5 hover:bg-sunken lg:h-10">
     <% if (avatarUrl) { %>
       <img src="<%= avatarUrl %>" alt="" width="28" height="28" class="size-7 shrink-0 rounded-full object-cover">
     <% } else { %>
-      <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon('person', 'size-4') %></span>
+      <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary"><%- icon('person', 'size-4') %></span>
     <% } %>
     <span class="sr-only text-left leading-tight sm:not-sr-only sm:block">
       <span class="block max-w-40 truncate text-sm font-medium"><%= me.name || me.email || 'Admin' %></span>
