@@ -60,6 +60,29 @@
   src: url("/fonts/plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2") format("woff2");
 }
 
+/* Font lokal sama dengan landing; wajah lama tetap tersedia untuk caller existing. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter/inter-latin-wght-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Crimson Text";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/crimson-text/crimson-text-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Ubuntu Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ubuntu-mono/ubuntu-mono-latin-400-normal.woff2") format("woff2");
+}
+
 /* `static`: semua variabel selalu dikeluarkan, karena blok gelap dan admin.js
    merujuknya lewat var() meski belum ada utilitas yang memakainya. */
 @theme static {
@@ -71,32 +94,39 @@
   --color-current: currentColor;
 
   /* Netral (terang). Nilai gelap di blok @variant dark. */
-  --color-canvas: #fafafa;
+  --color-canvas: #f4f1ea;
   --color-surface: #ffffff;
-  --color-sunken: #f4f4f5;
-  --color-line: #e4e4e7;
-  --color-line-strong: #d4d4d8;
-  --color-control: #71717a;        /* batas input & checkbox, ≥3:1 */
-  --color-ink: #18181b;
-  --color-muted: #52525b;
-  --color-placeholder: #71717a;
+  --color-surface-subtle: #fbfaf6;
+  --color-sunken: #ede8dc;
+  --color-line: #d8d3c5;
+  --color-line-strong: #8c8778;
+  --color-control: #8c8778;        /* batas input & checkbox, ≥3:1 */
+  --color-ink: #16181a;
+  --color-muted: #5b5e57;
+  --color-placeholder: #5b5e57;    /* muted: referensi FigCraft #8a8c84 gagal AA */
 
-  /* Aksen hijau UNJANI + status */
-  --color-primary: #15803d;
-  --color-primary-hover: #166534;
+  /* Aksen hijau UNJANI + status (DESIGN v0.1.0 §2). */
+  --color-primary: #14532d;
+  --color-primary-hover: #103f23;
   --color-on-primary: #ffffff;
-  --color-primary-soft: #f0fdf4;
-  --color-success: #166534;
-  --color-success-soft: #dcfce7;
-  --color-warning: #92400e;
-  --color-warning-soft: #fef3c7;
-  --color-danger: #991b1b;
-  --color-danger-soft: #fee2e2;
-  --color-danger-solid: #b91c1c;   /* tombol hapus, teks putih */
+  --color-primary-soft: #e3ede4;
+  --color-brand: #14532d;
+  --color-accent: #b8892b;
+  --color-sidebar-text: #d9e5dc;
+  --color-sidebar-label: #a8c4ae;  /* FigCraft #9dbba7 = 4.38:1 di brand; nilai landing 4.9:1 */
+  --color-success: #14532d;
+  --color-success-soft: #e3ede4;
+  --color-warning: #8a5a00;
+  --color-warning-soft: #f6ebd3;
+  --color-danger: #9f1d1d;
+  --color-danger-soft: #fbedea;
+  --color-danger-solid: #9f1d1d;   /* tombol hapus, teks putih */
   --color-info: #1e3a8a;
   --color-info-soft: #eff6ff;
 
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Crimson Text", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "Ubuntu Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Skala teks admin (desktop). HP menaikkan sm/base di bawah. */
   --text-*: initial;
@@ -114,8 +144,8 @@
   --text-xl--line-height: 2rem;
 
   --radius-*: initial;
-  --radius-control: 0.375rem;      /* 6px: tombol, input, badge */
-  --radius-card: 0.5rem;           /* 8px: kartu, panel, dialog */
+  --radius-control: 0.25rem;       /* 4px: tombol, input, badge */
+  --radius-card: 0.375rem;         /* 6px: kartu, panel, dialog */
 
   /* Bayangan hanya untuk lapisan melayang; kartu memakai garis. */
   --shadow-*: initial;
@@ -139,6 +169,7 @@
 
     --color-canvas: #09090b;
     --color-surface: #18181b;
+    --color-surface-subtle: #1f1f22;
     --color-sunken: #27272a;
     --color-line: #27272a;
     --color-line-strong: #3f3f46;
@@ -151,6 +182,11 @@
     --color-primary-hover: #86efac;
     --color-on-primary: #052e16;
     --color-primary-soft: rgb(74 222 128 / 0.12);
+    /* Sidebar/band tetap hijau tua; primary gelap yang terang bukan latar. */
+    --color-brand: #14532d;
+    --color-accent: #d4a849;
+    --color-sidebar-text: #d9e5dc;
+    --color-sidebar-label: #a8c4ae;
     --color-success: #4ade80;
     --color-success-soft: rgb(74 222 128 / 0.12);
     --color-warning: #fbbf24;

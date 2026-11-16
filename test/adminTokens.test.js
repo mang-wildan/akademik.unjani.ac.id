@@ -79,7 +79,26 @@ const PAIRS = [
   ['white', 'danger-solid', 4.5],
   ['control', 'surface', 3], ['control', 'canvas', 3],
   ['primary', 'surface', 3], // cincin fokus
+  ['muted', 'surface-subtle', 4.5], ['ink', 'surface-subtle', 4.5],
+  // Sidebar & band statistik: brand tetap hijau tua di kedua tema; fokus di sana putih.
+  ['white', 'brand', 4.5], ['sidebar-text', 'brand', 4.5], ['sidebar-label', 'brand', 4.5],
 ];
+
+// Redesign institusional v0.1.0 (docs/update/v.0.1.0/DESIGN.md §2/§3).
+test('token terang, radius, dan font mengikuti redesign institusional', () => {
+  const theme = blockAfter('@theme static') || '';
+  const lower = v => (v || '').toLowerCase();
+  assert.equal(lower(light.canvas), '#f4f1ea');
+  assert.equal(lower(light.primary), '#14532d');
+  assert.equal(lower(light.brand), '#14532d');
+  assert.equal(lower(light.ink), '#16181a');
+  assert.match(theme, /--radius-control:\s*0\.25rem;/);
+  assert.match(theme, /--radius-card:\s*0\.375rem;/);
+  for (const [token, family] of [['sans', 'Inter'], ['serif', 'Crimson Text'], ['mono', 'Ubuntu Mono']]) {
+    assert.match(theme, new RegExp(`--font-${token}:\\s*"${family}"`), `--font-${token} harus ${family}`);
+    assert.match(css, new RegExp(`font-family:\\s*"${family}";[^}]*url\\("/fonts/`), `@font-face ${family} lokal tidak ada`);
+  }
+});
 
 test('admin.css punya blok token terang (@theme static) dan gelap (@variant dark)', () => {
   assert.ok(Object.keys(light).length > 0, 'blok `@theme static` dengan --color-* tidak ditemukan');
