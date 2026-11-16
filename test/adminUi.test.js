@@ -47,6 +47,29 @@ test('header, empty state, badges and confirmation expose text and a no-JS POST 
   assert.doesNotMatch(html, /<script|\sonclick=|\sstyle=/);
 });
 
+test('v0.1.0: serif header keeps 0, badge dot is decorative text, dialog 480px with status bar', async () => {
+  assert.match(await render('page-header', { heading: 'Data', count: 0 }), /<h1[^>]*class="[^"]*font-serif[^"]*">Data<\/h1>[\s\S]*>0<\/span>/);
+  const badge = await render('badge', { text: 'Terbit', tone: 'success' });
+  assert.match(badge, /<span[^>]*aria-hidden="true"[^>]*><\/span>Terbit<\/span>/);
+  assert.match(await render('badge', { text: 'Admin', badgeIcon: 'verified' }), /<svg[\s\S]*Admin<\/span>/);
+  const html = await render('confirm-dialog', { dialogId: 'd1', dialogTitle: '<b>Hapus?</b>', dialogText: 'x', action: '/admin/x/1/delete' });
+  assert.match(html, /<dialog[^>]*class="[^"]*max-w-\[480px\][^"]*border-t-4 border-t-danger/);
+  assert.match(html, /<h2[^>]*font-serif[^>]*>&lt;b&gt;Hapus\?&lt;\/b&gt;<\/h2>/);
+  assert.match(html, /method="POST" action="\/admin\/x\/1\/delete"/);
+  assert.match(html, /formmethod="dialog" formnovalidate autofocus[^>]*>Batal/);
+});
+
+test('v0.1.0: toast is dark ink with escaped text, roles, close and no undo', async () => {
+  for (const [key, role] of [['success', 'status'], ['error', 'alert']]) {
+    const html = await render('toast', { [key]: '<img src=x>' });
+    assert.match(html, new RegExp(`data-toast-duration="5000"[^>]*role="${role}"`));
+    assert.match(html, /bg-ink text-canvas/);
+    assert.match(html, /&lt;img src=x&gt;/);
+    assert.match(html, /aria-label="Tutup pesan"/);
+    assert.doesNotMatch(html, /Urungkan|<img/);
+  }
+});
+
 test('admin toast has a five-second pausable timer, correct roles and no empty message', async () => {
   assert.equal((await render('toast')).trim(), '');
   assert.match(await render('toast', { success: 'Tersimpan' }), /data-toast-duration="5000"[^>]*role="status"[\s\S]*x-on:mouseenter="pause"/);

@@ -138,3 +138,11 @@ test('bulk partial renders POST contract, escaped state, live count and a native
   assert.doesNotMatch(html, /<dialog[^>]* open|<script|\sstyle=/);
   assert.doesNotMatch(await render({ actions: [{ value: 'deactivate', label: 'Nonaktifkan' }] }), /<dialog|value="delete"/);
 });
+
+test('v0.1.0: bulk bar is a brand band with white focus ring and the shared 480px delete dialog', async () => {
+  const html = await render();
+  assert.match(html, /<form id="bulk-test"[^>]*class="on-brand [^"]*bg-brand text-white/);
+  assert.match(html, /x-on:click="clearSelection">Batalkan pilihan</);
+  assert.match(html, /<dialog[^>]*class="[^"]*max-w-\[480px\][^"]*border-t-4 border-t-danger/);
+  assert.match(html, /<h2[^>]*font-serif[^>]*x-text="deleteTitle"/);
+});

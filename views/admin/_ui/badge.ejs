@@ -1,5 +1,5 @@
-<%# Params: text (wajib), tone=neutral (success|warning|danger|info), badgeIcon?. %>
+<%# Params: text (wajib), tone=neutral (success|warning|danger|info), badgeIcon?. Status = titik dekoratif + teks (bukan warna saja). %>
 <%
-  const tones = { neutral: 'bg-sunken text-muted', success: 'bg-success-soft text-success', warning: 'bg-warning-soft text-warning', danger: 'bg-danger-soft text-danger', info: 'bg-info-soft text-info' };
+  const tones = { neutral: 'text-muted', success: 'text-success', warning: 'text-warning', danger: 'text-danger', info: 'text-info' };
 %>
-<span class="inline-flex h-5 items-center gap-1 rounded-control px-1.5 text-xs font-medium <%= tones[locals.tone] || tones.neutral %>"><% if (locals.badgeIcon) { %><%- icon(locals.badgeIcon, 'size-4') %><% } %><%= locals.text %></span>
+<span class="inline-flex items-center gap-1.5 text-sm font-medium <%= tones[locals.tone] || tones.neutral %>"><% if (locals.badgeIcon) { %><%- icon(locals.badgeIcon, 'size-4') %><% } else { %><span class="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span><% } %><%= locals.text %></span>

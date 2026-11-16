@@ -24,6 +24,17 @@
   - Ciut + gelap: sidebar 64px tetap brand `#14532D`, item aktif terbaca.
 - Deviasi: ikon menu disembunyikan saat sidebar terbuka (frame tanpa ikon), tetap tampil saat ciut. Pintasan `/` lama tetap aktif.
 
+## Task 3: daftar, bulk, dialog, toast
+
+- 5 tes baru gagal dulu (H1 serif, badge titik+teks, dialog 480px bar danger, toast ink, tabel mono/60px/bungkus, pagination "Menampilkan", bulk band brand), lalu lulus; `npm test`: 263 lulus, 0 gagal.
+- Browser (Chromium headless, `/dev/admin-v2`, data fiktif), 1440 & 390:
+  - Tanpa overflow horizontal (daftar, bulk aktif, hasil kosong `?q=zzzzzz`); tanpa 404/page error. H1 Crimson Text, header tabel Ubuntu Mono, baris 60px desktop.
+  - Toast `?success=<b>…</b>` tampil escaped; hover 5,5 dtk tetap tampil (pause).
+  - Dialog hapus: fokus awal Batal, Escape menutup dan fokus kembali ke pemicu.
+  - Bulk: 2 baris dipilih → "2 pengumuman dipilih"; HP lewat tombol Pilih.
+  - Gelap: band bulk tetap brand `#14532D` teks putih; toast memakai token ink (terang di gelap), kontras tetap tinggi.
+- Deviasi: tanpa tombol Urungkan (tidak ada endpoint undo).
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.

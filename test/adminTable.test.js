@@ -112,6 +112,38 @@ test('data-table renders sortable headers, escaped cells and form-bound row chec
   assert.match(html, /href="\/edit\/id1">Ubah/);
 });
 
+test('v0.1.0: long/HTML titles wrap escaped, null metadata renders empty, header is mono 60px rows', async () => {
+  const long = `<i>${'Pengumuman sangat panjang '.repeat(20)}</i>`;
+  const html = await render('data-table', {
+    caption: 'Daftar <uji>', state: { sort: 'title', dir: 'desc' },
+    columns: [{ key: 'title', label: 'Judul', sortable: true, primary: true }, { key: 'kategori', label: 'Kategori' }],
+    items: [{ _id: 'a1', title: long, kategori: null }],
+    rowHref: item => `/admin/x/${item._id}/edit`,
+  });
+  assert.match(html, /<caption class="sr-only">Daftar &lt;uji&gt;<\/caption>/);
+  assert.equal((html.match(/<th scope="col"/g) || []).length, 3);
+  assert.match(html, /aria-sort="descending"[\s\S]*?href="\?sort=title&amp;dir=asc"/);
+  assert.match(html, /aria-label="Pilih &lt;i&gt;Pengumuman sangat panjang/);
+  assert.doesNotMatch(html, /<i>Pengumuman/);
+  assert.match(html, /<td class="dt-meta">\s*<\/td>/);
+  assert.doesNotMatch(html, /null|undefined/);
+  const css = fs.readFileSync(path.join(__dirname, '../assets/css/admin.css'), 'utf8');
+  const rule = selector => css.match(new RegExp(`\\${selector} \\{\\s*@apply ([^;]+);`))[1].split(' ');
+  for (const cls of ['font-mono', 'uppercase', 'top-16']) assert.ok(rule('.data-table th').includes(cls), `th tanpa ${cls}`);
+  assert.ok(rule('.data-table td').includes('h-15'), 'baris minimum 60px');
+  const wrap = css.match(/\.data-table \.dt-text \{ @apply ([^;]+);/)[1].split(' ');
+  assert.ok(wrap.includes('break-words') && !wrap.includes('truncate'), 'judul panjang membungkus');
+});
+
+test('v0.1.0: pagination keeps q/status/sort, marks current page and disables edges', async () => {
+  const state = { q: 'wisuda', status: 'draft', sort: 'title', dir: 'asc', page: '1' };
+  const html = await render('pagination', { page: 1, totalPages: 3, total: 60, pageSize: 25, noun: 'berita', state });
+  assert.match(html, /Menampilkan 1–25 dari 60 berita/);
+  assert.match(html, /href="\?q=wisuda&amp;status=draft&amp;sort=title&amp;dir=asc&amp;page=2"/);
+  assert.match(html, /aria-current="page" class="[^"]*bg-primary text-on-primary/);
+  assert.doesNotMatch(html, /rel="prev"/);
+});
+
 test('data-table without selection renders no checkboxes', async () => {
   const html = await render('data-table', { caption: 'x', state: {}, selectable: false, columns: [{ key: 'title', label: 'Judul', primary: true }], items: [{ _id: '1', title: 'A' }] });
   assert.doesNotMatch(html, /type="checkbox"/);

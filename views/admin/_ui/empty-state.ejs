@@ -1,6 +1,6 @@
 <%# Params: text, emptyIcon=info, action?={label,href,buttonIcon?}. Gunakan Tambah data atau Hapus filter sesuai keadaan. %>
-<div class="flex flex-col items-center gap-3 rounded-card border border-line bg-surface px-4 py-8 text-center">
-  <%- icon(locals.emptyIcon || 'info', 'size-6 text-muted') %>
-  <p class="text-sm text-muted"><%= locals.text %></p>
+<div class="flex flex-col items-center gap-4 bg-surface px-4 py-12 text-center">
+  <span class="inline-flex size-14 items-center justify-center rounded-full bg-primary-soft text-primary"><%- icon(locals.emptyIcon || 'info', 'size-6') %></span>
+  <p class="max-w-md font-serif text-[1.375rem] leading-7 font-bold text-ink"><%= locals.text %></p>
   <% if (locals.action) { %><%- include('button', { ...locals.action, variant: 'secondary' }) %><% } %>
 </div>

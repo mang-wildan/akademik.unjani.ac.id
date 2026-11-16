@@ -275,13 +275,18 @@
     @apply font-mono text-[0.6875rem] leading-4 tracking-[0.075rem] uppercase;
   }
   .btn {
-    @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control px-3 text-sm font-medium no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-8 lg:min-w-8;
+    @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-control px-4 text-base font-semibold no-underline transition-colors disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-10 lg:min-w-10;
   }
   .btn-primary { @apply bg-primary text-on-primary hover:bg-primary-hover; }
-  .btn-secondary { @apply border border-line-strong bg-surface text-ink hover:bg-sunken; }
+  .btn-secondary { @apply border border-control bg-surface text-ink hover:bg-sunken; }
   .btn-ghost, .btn-icon { @apply text-ink hover:bg-sunken; }
   .btn-danger { @apply bg-danger-solid text-white hover:opacity-90; }
-  .btn-icon { @apply size-11 p-0 lg:size-8; }
+  .btn-icon { @apply size-11 p-0 lg:size-10; }
+  /* Layar sentuh: target ≥44px walau viewport desktop (DESIGN §5). */
+  @media (pointer: coarse) {
+    .btn { @apply min-h-11 min-w-11; }
+    .btn-icon { @apply size-11; }
+  }
   .field-control {
     @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3 py-2 text-sm text-ink disabled:bg-sunken disabled:text-muted max-md:text-[1rem] lg:min-h-8 lg:py-1;
   }
@@ -294,13 +299,14 @@
      memakai overflow-clip, bukan overflow-hidden, agar header tetap sticky. */
   .data-table { @apply w-full border-collapse text-left text-sm; }
   .data-table th {
-    @apply sticky top-14 z-10 h-10 bg-sunken px-3 text-xs font-medium whitespace-nowrap text-muted lg:top-12;
+    @apply sticky top-16 z-10 h-10 bg-sunken px-3 font-mono text-[0.6875rem] leading-4 font-normal tracking-[0.075rem] whitespace-nowrap text-muted uppercase first:pl-4 last:pr-4 lg:first:pl-6 lg:last:pr-6;
   }
-  .data-table td { @apply h-10 px-3 whitespace-nowrap; }
-  .data-table tbody tr { @apply border-t border-line hover:bg-sunken has-checked:bg-primary-soft; }
-  .data-table .dt-primary { @apply w-full max-w-0; }
+  .data-table td { @apply h-15 px-3 py-2 whitespace-nowrap first:pl-4 last:pr-4 lg:first:pl-6 lg:last:pr-6; }
+  .data-table tbody tr { @apply border-t border-line hover:bg-surface-subtle has-checked:bg-primary-soft; }
+  .data-table .dt-primary { @apply w-full max-w-0 whitespace-normal; }
+  /* Judul panjang membungkus (Review Focus 1), tidak dipotong dan tidak melebarkan halaman. */
   .data-table .dt-link,
-  .data-table .dt-text { @apply block truncate font-medium text-ink no-underline; }
+  .data-table .dt-text { @apply block break-words font-semibold text-ink no-underline; }
   .data-table .dt-link { @apply hover:text-primary hover:underline; }
   .data-table .dt-check { @apply w-10 pr-0; }
   .data-table .dt-actions { @apply text-right; }
@@ -316,7 +322,7 @@
     .data-table tbody,
     .data-table td { @apply block; }
     .data-table tbody tr { @apply relative flex flex-wrap items-center gap-x-2 gap-y-1 py-3 pr-14 pl-3; }
-    .data-table td { @apply h-auto p-0 whitespace-normal; }
+    .data-table td { @apply h-auto p-0 whitespace-normal first:pl-0 last:pr-0; }
     .data-table .dt-primary { @apply w-full max-w-none basis-full; }
     .data-table .dt-link::after { @apply absolute inset-0 content-['']; }
     .data-table .dt-meta { @apply text-xs text-muted; }

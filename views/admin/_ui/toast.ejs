@@ -7,11 +7,11 @@
 <div x-data="toast" data-toast data-toast-duration="5000" x-show="visible" role="<%= isError ? 'alert' : 'status' %>"
      x-on:mouseenter="pause" x-on:mouseleave="resume" x-on:focusin="pause" x-on:focusout="resume"
      class="fixed inset-x-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 lg:inset-x-auto lg:right-6 lg:bottom-6 lg:w-96">
-  <div class="flex items-start gap-3 rounded-card border bg-surface p-3 shadow-overlay <%= isError ? 'border-danger' : 'border-line-strong' %>">
-    <%- icon(isError ? 'error' : 'check_circle', `size-5 mt-0.5 ${isError ? 'text-danger' : 'text-success'}`) %>
-    <p class="flex-1 text-sm font-medium" data-toast-message><%= message %></p>
+  <div class="flex items-start gap-3 rounded-card bg-ink text-canvas p-3 pl-4 shadow-overlay">
+    <%- icon(isError ? 'error' : 'check_circle', 'size-5 mt-0.5') %>
+    <p class="flex-1 break-words text-sm font-medium" data-toast-message><%= message %></p>
     <button type="button" x-on:click="dismiss" aria-label="Tutup pesan"
-            class="-m-1.5 inline-flex size-11 items-center justify-center rounded-control text-muted hover:bg-sunken hover:text-ink lg:size-8">
+            class="-m-1.5 inline-flex size-11 items-center justify-center rounded-control text-canvas/80 hover:bg-canvas/10 hover:text-canvas focus-visible:outline-canvas lg:size-8">
       <%- icon('close', 'size-4') %>
     </button>
   </div>

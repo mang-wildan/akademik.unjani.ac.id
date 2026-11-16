@@ -8,33 +8,33 @@
 <% const formId = locals.id || 'bulk-form'; const hasDelete = (locals.actions || []).some(action => action.value === 'delete'); %>
 <form id="<%= formId %>" method="POST" action="<%= locals.action %>" x-ref="bulkForm" data-total="<%= locals.total %>" data-noun="<%= locals.noun %>"
       x-on:submit="submit" x-show="active" x-cloak aria-label="Aksi massal"
-      class="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 border-y border-line-strong bg-primary-soft p-3 lg:static lg:border-t-0">
+      class="on-brand fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 bg-brand text-white px-4 py-3 lg:static lg:rounded-t-card lg:px-6">
   <input type="hidden" name="scope" value="selected" x-bind:value="scope">
   <% Object.entries(locals.state || {}).forEach(([name, value]) => { %><input type="hidden" name="<%= name %>" value="<%= value %>"><% }) %>
-  <div class="flex flex-wrap items-center gap-2">
-    <p class="text-sm font-medium" x-text="selectionLabel">0 <%= locals.noun %> dipilih</p>
-    <button type="button" class="min-h-11 text-left text-sm text-primary underline disabled:cursor-not-allowed disabled:text-muted lg:min-h-8" x-show="canSelectAll" x-bind:disabled="tooManyResults" x-on:click="selectAll" x-text="selectAllLabel"></button>
+  <div class="flex flex-wrap items-center gap-3">
+    <p class="text-sm font-semibold" x-text="selectionLabel">0 <%= locals.noun %> dipilih</p>
+    <button type="button" class="min-h-11 text-left text-sm text-white underline disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-10" x-show="canSelectAll" x-bind:disabled="tooManyResults" x-on:click="selectAll" x-text="selectAllLabel"></button>
     <div class="flex flex-wrap gap-2 lg:ml-auto">
       <% (locals.actions || []).forEach(action => { %>
         <% if (action.value === 'delete') { %>
-          <button type="button" class="btn btn-ghost text-danger" x-bind:disabled="cannotSubmit" x-on:click="openDelete" aria-haspopup="dialog" aria-controls="<%= formId %>-delete"><%= action.label %></button>
+          <button type="button" class="btn border border-white/60 text-white hover:bg-white/10" x-bind:disabled="cannotSubmit" x-on:click="openDelete" aria-haspopup="dialog" aria-controls="<%= formId %>-delete"><%= action.label %></button>
         <% } else { %>
-          <button type="submit" name="action" value="<%= action.value %>" class="btn btn-secondary" x-bind:disabled="cannotSubmit"><%= action.label %></button>
+          <button type="submit" name="action" value="<%= action.value %>" class="btn border border-white/60 text-white hover:bg-white/10" x-bind:disabled="cannotSubmit"><%= action.label %></button>
         <% } %>
       <% }) %>
-      <button type="button" class="btn btn-ghost" x-on:click="clearSelection">Batal</button>
+      <button type="button" class="btn text-white hover:bg-white/10" x-on:click="clearSelection">Batalkan pilihan</button>
     </div>
   </div>
-  <p x-show="tooManyResults" class="mt-1 text-xs text-muted">Maksimal 500 data per aksi. Persempit filter untuk memilih semua hasil.</p>
-  <p x-show="error" x-text="error" role="alert" class="mt-1 text-sm text-danger"></p>
+  <p x-show="tooManyResults" class="mt-1 text-xs text-white">Maksimal 500 data per aksi. Persempit filter untuk memilih semua hasil.</p>
+  <p x-show="error" x-text="error" role="alert" class="mt-1 text-sm text-white"></p>
 </form>
 <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" x-text="selectionLabel"></p>
 <% if (hasDelete) { %>
 <dialog id="<%= formId %>-delete" x-ref="deleteDialog" x-on:click="deleteBackdrop" aria-labelledby="<%= formId %>-delete-title" aria-describedby="<%= formId %>-delete-text"
-        class="m-auto w-[calc(100%-2rem)] max-w-[400px] rounded-card border border-line-strong bg-surface p-4 text-ink shadow-overlay backdrop:bg-canvas/60">
-  <h2 id="<%= formId %>-delete-title" class="text-md font-semibold" x-text="deleteTitle">Hapus data terpilih?</h2>
-  <p id="<%= formId %>-delete-text" class="mt-2 text-sm text-muted">Data yang dipilih akan dihapus permanen dan tidak bisa dikembalikan.</p>
-  <div class="mt-6 flex justify-end gap-2">
+        class="confirm-dialog m-auto w-[calc(100%-2rem)] max-w-[480px] rounded-card border border-line-strong border-t-4 border-t-danger bg-surface p-6 text-ink shadow-overlay backdrop:bg-ink/40">
+  <h2 id="<%= formId %>-delete-title" class="break-words font-serif text-[1.375rem] leading-7 font-bold" x-text="deleteTitle">Hapus data terpilih?</h2>
+  <p id="<%= formId %>-delete-text" class="mt-3 break-words text-sm text-muted">Data yang dipilih akan dihapus permanen dan tidak bisa dikembalikan.</p>
+  <div class="mt-8 flex flex-wrap justify-end gap-2">
     <button type="button" class="btn btn-secondary" x-on:click="closeDelete" autofocus>Batal</button>
     <button type="submit" form="<%= formId %>" name="action" value="delete" x-ref="deleteConfirm" x-bind:disabled="cannotSubmit" class="btn btn-danger">Hapus</button>
   </div>
