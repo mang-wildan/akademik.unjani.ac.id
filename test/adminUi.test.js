@@ -70,6 +70,15 @@ test('v0.1.0: toast is dark ink with escaped text, roles, close and no undo', as
   }
 });
 
+test('shared list controls keep 44px targets on coarse pointers at desktop widths', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../assets/css/admin.css'), 'utf8');
+  const coarse = css.match(/@media \(pointer: coarse\) \{([\s\S]*?)\n  \}/)[1];
+  for (const selector of ['.dt-box-hit', '.dt-sort', '[data-filter-bar] nav a', 'nav[aria-label="Halaman"] a', '[data-toast] button']) {
+    const rule = coarse.slice(coarse.indexOf(selector)).split('}')[0];
+    assert.ok(coarse.includes(selector) && rule.includes('min-h-11') && rule.includes('min-w-11'), selector);
+  }
+});
+
 test('mobile toast moves above an active bulk bar rather than covering its final actions', () => {
   const css = fs.readFileSync(path.join(__dirname, '../assets/css/admin.css'), 'utf8');
   const mobile = css.slice(css.indexOf('@media (width < 64rem) {', css.indexOf('/* Di luar layer')));

@@ -282,11 +282,6 @@
   .btn-ghost, .btn-icon { @apply text-ink hover:bg-sunken; }
   .btn-danger { @apply bg-danger-solid text-white hover:opacity-90; }
   .btn-icon { @apply size-11 p-0 lg:size-10; }
-  /* Layar sentuh: target ≥44px walau viewport desktop (DESIGN §5). */
-  @media (pointer: coarse) {
-    .btn { @apply min-h-11 min-w-11; }
-    .btn-icon { @apply size-11; }
-  }
   .field-control {
     @apply block min-h-11 w-full rounded-control border border-control bg-surface px-3 py-2 text-sm text-ink disabled:bg-sunken disabled:text-muted max-md:text-[1rem] lg:min-h-8 lg:py-1;
   }
@@ -354,6 +349,18 @@
 }
 
 @layer components {
+  /* Layar sentuh: target ≥44px walau viewport desktop (DESIGN §5). */
+  @media (pointer: coarse) {
+    .btn,
+    .btn-icon,
+    .dt-box-hit,
+    .dt-sort,
+    [data-filter-bar] nav a,
+    nav[aria-label="Halaman"] a,
+    nav[aria-label="Halaman"] span[aria-current],
+    [data-toast] button { @apply min-h-11 min-w-11; }
+  }
+
   /* Panel samping (views/admin/_ui/slide-over.ejs, DESIGN §7.7): dialog modal menempel di kanan,
      layar penuh di HP. Masuk 200ms dari kanan; prefers-reduced-motion mematikannya (base). */
   .slide-over {

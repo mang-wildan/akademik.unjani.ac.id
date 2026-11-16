@@ -26,7 +26,7 @@
 
 ## Task 3: daftar, bulk, dialog, toast
 
-- 5 tes baru gagal dulu (H1 serif, badge titik+teks, dialog 480px bar danger, toast ink, tabel mono/60px/bungkus, pagination "Menampilkan", bulk band brand), lalu lulus; verifikasi akhir `npm test`: 265 lulus, 0 gagal.
+- 5 tes baru gagal dulu (H1 serif, badge titik+teks, dialog 480px bar danger, toast ink, tabel mono/60px/bungkus, pagination "Menampilkan", bulk band brand), lalu lulus; verifikasi akhir `npm test`: 266 lulus, 0 gagal. Target kontrol list pada pointer coarse desktop diberi minimum 44px (tes regresi gagal→lulus).
 - Browser (Chromium headless, `/dev/admin-v2`, data fiktif), 1440 & 390:
   - Tanpa overflow horizontal (daftar, bulk aktif, hasil kosong `?q=zzzzzz`); tanpa 404/page error. H1 Crimson Text, header tabel Ubuntu Mono, baris 60px desktop.
   - Toast `?success=<b>…</b>` tampil escaped; hover 5,5 dtk tetap tampil (pause).
