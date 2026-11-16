@@ -1,1 +1,1 @@
-<a href="<%= entry.file %>" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center text-primary underline"><%= entry.judul %> (tab baru)</a>
+<% if (entry.file) { %><a href="<%= entry.file %>" target="_blank" rel="noopener" class="inline-block min-h-11 max-w-full wrap-anywhere text-primary underline"><%= entry.judul %> (tab baru)</a><% } else { %><span class="break-words"><%= entry.judul %> — file tidak tersedia</span><% } %>

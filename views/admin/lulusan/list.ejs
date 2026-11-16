@@ -1,11 +1,11 @@
 <%- include('../_ui/academic-list',{basePath:'lulusan',slideOver:true,columns:[{key:'programStudi',label:'Program Studi',cell:i=>include('../_ui/text',{text:i.programStudi?.nama||'—'})},{key:'fakultas',label:'Fakultas',cell:i=>include('../_ui/text',{text:i.fakultas?.singkatan||'—'})},{key:'tahun',label:'Tahun',sortable:true},{key:'periode',label:'Periode',sortable:true},{key:'jumlah',label:'Lulusan',sortable:true}],listFilters:[{name:'programStudi',label:'Program Studi',options:prodiList.map(p=>({value:String(p._id),label:p.nama}))},{name:'tahun',label:'Tahun',options:tahunList.map(value=>({value:String(value),label:String(value)}))}],bulkActions:[]}) %>
 
 <details class="mt-6 rounded-card border border-line bg-surface" <%= locals.importErrors?'open':'' %>>
- <summary class="min-h-11 cursor-pointer p-4 font-semibold">Impor data lulusan dari CSV</summary>
- <form method="POST" action="/admin/lulusan/import" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
+ <summary class="min-h-11 cursor-pointer p-4"><h2 class="inline font-serif text-lg">Impor data lulusan dari CSV</h2></summary>
+ <form method="POST" action="/admin/lulusan/import" enctype="multipart/form-data" class="space-y-5 border-t border-line p-4 md:p-6">
   <%- include('../_ui/error-summary',{errors:locals.importErrors?{csv:importErrors.join(' ')}:{}}) %>
   <%- include('../_ui/button',{label:'Unduh template CSV',href:'/admin/lulusan/template.csv',variant:'secondary'}) %>
-  <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',required:true,accept:'.csv,text/csv',limitText:'CSV sesuai template.'}) %>
+  <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',required:true,accept:'.csv,text/csv',limitText:'CSV sesuai template.',error:locals.importErrors?importErrors.join(' '):null}) %>
   <%- include('../_ui/button',{label:'Impor',type:'submit'}) %>
  </form>
 </details>

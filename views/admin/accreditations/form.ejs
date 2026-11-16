@@ -1,46 +1,33 @@
 <% const heading = mode === 'edit' ? 'Ubah Akreditasi' : 'Tambah Akreditasi'; %>
 <% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
-<form method="POST" action="/admin/accreditations<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form rounded-card border border-line bg-surface' %>">
-<div class="space-y-5 p-4">
-<%- include('../_ui/error-summary', { errors }) %>
-  <%- include('../_ui/field', {
-    name: 'jenis', label: 'Jenis', type: 'select', required: true, value: values.jenis, error: errors.jenis, options: jenisOptions,
-  }) %>
-  <%- include('../_ui/field', {
-    name: 'peringkat', label: 'Peringkat', type: 'select', required: true, value: values.peringkat, error: errors.peringkat, options: peringkatOptions,
-  }) %>
-
-  <%- include('../_ui/field', {
-    name: 'programStudi', label: 'Program Studi', type: 'select', value: values.programStudi && String(values.programStudi._id || values.programStudi), error: errors.programStudi,
-    placeholder: 'Pilih program studi', help: 'Isi hanya jika Jenis = Program Studi.',
-    options: prodiList.map(p => ({ value: p._id, label: p.labelFakultas })),
-  }) %>
-  <%- include('../_ui/field', {
-    name: 'namaUnit', label: 'Nama Unit', value: values.namaUnit, error: errors.namaUnit,
-    help: 'Isi hanya jika Jenis = Institusi atau Lainnya.', placeholder: 'mis. Perpustakaan, Fakultas Teknik',
-  }) %>
-
-  <%- include('../_ui/field', {
-    name: 'lembaga', label: 'Lembaga Akreditasi', type: 'select', required: true, value: values.lembaga && String(values.lembaga._id || values.lembaga), error: errors.lembaga,
-    placeholder: 'Pilih lembaga', options: lembagaList.map(l => ({ value: l._id, label: `${l.nama} (${l.singkatan})` })),
-  }) %>
-  <%- include('../_ui/field', { name: 'nomorSK', label: 'Nomor SK', value: values.nomorSK, error: errors.nomorSK }) %>
-
-  <%- include('../_ui/field', { name: 'tanggalBerlaku', label: 'Tanggal Berlaku', type: 'date', required: true, value: values.tanggalBerlaku && !Number.isNaN(new Date(values.tanggalBerlaku).getTime()) ? new Date(values.tanggalBerlaku).toISOString().slice(0,10) : '', error: errors.tanggalBerlaku }) %>
-  <%- include('../_ui/field', { name: 'berlakuSampai', label: 'Berlaku Sampai', type: 'date', required: true, value: values.berlakuSampai && !Number.isNaN(new Date(values.berlakuSampai).getTime()) ? new Date(values.berlakuSampai).toISOString().slice(0,10) : '', error: errors.berlakuSampai }) %>
-
-  <div class="md:col-span-2">
-    <%- include('../_ui/field', { name: 'catatanPerpanjangan', label: 'Catatan Perpanjangan', type: 'textarea', value: values.catatanPerpanjangan, error: errors.catatanPerpanjangan, help: 'Opsional, mis. status pengajuan perpanjangan.' }) %>
-  </div>
-
-  <div class="md:col-span-2">
-    <%- include('../_ui/upload-field', {
-      name: 'sertifikat', label: 'Sertifikat (PDF)', accept: 'application/pdf', error: errors.sertifikat,
-      limitText: 'PDF, maks. 10 MB.', current: (mode === 'edit' && item.sertifikat) ? { label: 'Sertifikat saat ini', href: item.sertifikat } : null,
+<form method="POST" action="/admin/accreditations<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-6">
+  <%- include('../_ui/error-summary', { errors }) %>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Unit terakreditasi</h2>
+    <%- include('../_ui/field', { name: 'jenis', label: 'Jenis', type: 'select', required: true, value: values.jenis, error: errors.jenis, options: jenisOptions }) %>
+    <%- include('../_ui/field', {
+      name: 'programStudi', label: 'Program Studi', type: 'select', value: values.programStudi && String(values.programStudi._id || values.programStudi), error: errors.programStudi,
+      placeholder: 'Pilih program studi', help: 'Isi hanya jika Jenis = Program Studi.', options: prodiList.map(p => ({ value: p._id, label: p.labelFakultas })),
     }) %>
-  </div>
-
-</div>
+    <%- include('../_ui/field', { name: 'namaUnit', label: 'Nama Unit', value: values.namaUnit, error: errors.namaUnit, help: 'Isi hanya jika Jenis = Institusi atau Lainnya.', placeholder: 'mis. Perpustakaan, Fakultas Teknik' }) %>
+  </section>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Hasil akreditasi</h2>
+    <div class="grid gap-5 md:grid-cols-2">
+      <%- include('../_ui/field', { name: 'peringkat', label: 'Peringkat', type: 'select', required: true, value: values.peringkat, error: errors.peringkat, options: peringkatOptions }) %>
+      <%- include('../_ui/field', { name: 'lembaga', label: 'Lembaga Akreditasi', type: 'select', required: true, value: values.lembaga && String(values.lembaga._id || values.lembaga), error: errors.lembaga, placeholder: 'Pilih lembaga', options: lembagaList.map(l => ({ value: l._id, label: `${l.nama} (${l.singkatan})` })) }) %>
+    </div>
+    <%- include('../_ui/field', { name: 'nomorSK', label: 'Nomor SK', value: values.nomorSK, error: errors.nomorSK }) %>
+    <div class="grid gap-5 md:grid-cols-2">
+      <%- include('../_ui/field', { name: 'tanggalBerlaku', label: 'Tanggal Berlaku', type: 'date', required: true, value: values.tanggalBerlaku && !Number.isNaN(new Date(values.tanggalBerlaku).getTime()) ? new Date(values.tanggalBerlaku).toISOString().slice(0,10) : '', error: errors.tanggalBerlaku }) %>
+      <%- include('../_ui/field', { name: 'berlakuSampai', label: 'Berlaku Sampai', type: 'date', required: true, value: values.berlakuSampai && !Number.isNaN(new Date(values.berlakuSampai).getTime()) ? new Date(values.berlakuSampai).toISOString().slice(0,10) : '', error: errors.berlakuSampai }) %>
+    </div>
+    <%- include('../_ui/field', { name: 'catatanPerpanjangan', label: 'Catatan Perpanjangan', type: 'textarea', value: values.catatanPerpanjangan, error: errors.catatanPerpanjangan, help: 'Opsional, mis. status pengajuan perpanjangan.' }) %>
+  </section>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Sertifikat</h2>
+    <%- include('../_ui/upload-field', { name: 'sertifikat', label: 'Sertifikat (PDF)', accept: 'application/pdf', error: errors.sertifikat, limitText: 'PDF, maks. 10 MB.', current: (mode === 'edit' && item.sertifikat) ? { label: 'Sertifikat saat ini', href: item.sertifikat } : null }) %>
+  </section>
   <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
     <a href="/admin/accreditations" data-slide-close class="btn btn-secondary">Batal</a>
     <%- include('../_ui/button', { label: 'Simpan', type: 'submit', buttonIcon: 'check' }) %>

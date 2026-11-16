@@ -1,9 +1,10 @@
 <% const heading = mode === 'edit' ? 'Ubah Dokumen Akademik' : 'Tambah Dokumen Akademik'; %>
 <% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
-<form method="POST" action="/admin/academic-documents<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form rounded-card border border-line bg-surface' %>">
-<div class="space-y-5 p-4">
-<%- include('../_ui/error-summary', { errors }) %>
-  <div class="md:col-span-2">
+<form method="POST" action="/admin/academic-documents<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form space-y-6' %>">
+<section class="form-panel space-y-5">
+  <h2 class="font-serif text-lg">Data dokumen</h2>
+<%- include('../_ui/error-summary', { errors, fieldIds: { _form: 'f-pinned' } }) %>
+  <div class="min-w-0">
     <%- include('../_ui/field', { name: 'name', label: 'Judul Dokumen', required: true, value: values.name, error: errors.name }) %>
   </div>
   <%- include('../_ui/field', {
@@ -11,16 +12,19 @@
     placeholder: 'Pilih kategori', options: kategoriList.map(k => ({ value: k._id, label: k.nama })),
   }) %>
   <%- include('../_ui/field', { name:'pinned',label:'Sematkan di Beranda (maks. 4)',type:'checkbox',checked:values.pinned }) %>
-  <div class="md:col-span-2">
+  <div class="min-w-0">
     <%- include('../_ui/field', { name: 'keterangan', label: 'Keterangan', type: 'textarea', value: values.keterangan, error: errors.keterangan, help: 'Opsional.' }) %>
   </div>
-  <div class="md:col-span-2">
+</section>
+<section class="form-panel space-y-5">
+  <h2 class="font-serif text-lg">Berkas</h2>
+  <div class="min-w-0">
     <%- include('../_ui/upload-field', {
       name: 'file', label: 'File (PDF)', accept: 'application/pdf', error: errors.file,
       limitText: 'PDF, maks. 10 MB.', current: (mode === 'edit' && item.file) ? { label: 'File saat ini', href: item.file } : null,
     }) %>
   </div>
-</div>
+</section>
   <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
     <a href="/admin/academic-documents" data-slide-close class="btn btn-secondary">Batal</a>
     <%- include('../_ui/button', { label: 'Simpan', type: 'submit', buttonIcon: 'check' }) %>

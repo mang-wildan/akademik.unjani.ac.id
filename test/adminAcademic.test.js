@@ -30,6 +30,66 @@ for(const base of modules)test(`${base}: v2 list, partial form, 422 and safe bul
  r=await post('?partial=1',{}); const invalid=await r.text();assert.equal(r.status,422,invalid);assert.match(invalid,/aria-invalid="true"/);assert.doesNotMatch(invalid,/<!DOCTYPE/);
  r=await post('/bulk',{action:'unexpected',ids:id(1)});assert.equal(r.status,303);assert.match(r.headers.get('location'),/error=/);
 });
+test('academic forms expose one page heading and serif panels, with stacked partial fallback', async t=>{
+ for(const base of modules){
+  await t.test(base,async t=>{
+   const doc={_id:id(1),title:'Judul <uji>',name:'Dokumen <uji>',judul:'RPL <uji>',nama:'Lembaga <uji>',singkatan:'UJI',urutan:0,tahun:'2026',year:2026,periode:'I',jumlah:0,tahunAjaran:'2026/2027',nomorSK:'SK <uji>',programStudi:null,prodi:null,kategori:null,fakultas:null,lembaga:null,jenis:'institusi',namaUnit:'Unit <uji>',peringkat:'Unggul',events:[],lampiran:[]};
+   const {get}=await setup(t,base,[doc]);
+   for(const url of ['/new',`/${id(1)}/edit`]){
+    const r=await get(url),html=await r.text();assert.equal(r.status,200,html);
+    assert.equal((html.match(/<h1\b/g)||[]).length,1);
+    assert.match(html,/<h2[^>]*class="[^"]*font-serif/);
+    if(['academic-documents','rpl-documents','kurikulum','graduation-books'].includes(base))assert.match(html,/<h2[^>]*>Berkas<\/h2>/);
+    assert.doesNotMatch(html,/<input type="file"[^>]*\svalue=/);
+    const partial=await(await get(url+'?partial=1')).text();
+    assert.doesNotMatch(partial,/<h1\b|<!DOCTYPE/);
+    assert.match(partial,/name=/);
+   }
+   const list=await(await get('')).text();
+   assert.equal((list.match(/<h1\b/g)||[]).length,1);
+   assert.doesNotMatch(list,/<script>/);
+   if(base==='lulusan')assert.match(list,/<td class="dt-meta">\s*0\s*<\/td>/);
+   if(base==='accreditations')assert.match(list,/Tanggal belum diisi/);
+  });
+ }
+});
+
+test('academic empty lists distinguish initial state from filtered results',async t=>{
+ const {get}=await setup(t,'kurikulum');
+ const initial=await(await get('')).text();assert.match(initial,/Belum ada kurikulum/i);assert.equal((initial.match(/href="\/admin\/kurikulum\/new"/g)||[]).length,2);
+ const filtered=await(await get('?q=kosong')).text();assert.match(filtered,/Tidak ada kurikulum yang cocok/i);assert.match(filtered,/Hapus filter/);
+});
+
+test('calendar groups have native anchor navigation and keep nested form contracts and errors',async t=>{
+ const {get,post}=await setup(t,'academic-calendars',[{_id:id(1),tahunAjaran:'2026/2027',nomorSK:'SK Uji',file:'/uploads/academic-calendars/current.pdf',events:[],lampiran:[]}]);
+ let html=await(await get(`/${id(1)}/edit`)).text();
+ for(const target of ['data-kalender','kegiatan','impor-kegiatan','lampiran']){assert.match(html,new RegExp(`href="#${target}"`));assert.match(html,new RegExp(`id="${target}"`));}
+ assert.match(html,new RegExp(`method="POST" action="/admin/academic-calendars/${id(1)}/events/import" enctype="multipart/form-data"`));
+ assert.match(html,/href="\/uploads\/academic-calendars\/current.pdf"/);
+ let r=await post(`/${id(1)}`,{tahunAjaran:'salah',nomorSK:'SK <baru>'});assert.equal(r.status,422);html=await r.text();assert.match(html,/value="salah"/);assert.match(html,/value="SK &lt;baru&gt;"/);assert.match(html,/current.pdf/);
+ r=await post(`/${id(1)}/events`,{nama:'Kegiatan <baru>',semester:'ganjil',mulai:'',selesai:''});assert.equal(r.status,422);html=await r.text();assert.match(html,/value="Kegiatan &lt;baru&gt;"/);assert.match(html,/href="#event-mulai"/);
+ r=await post(`/${id(1)}/lampiran`,{judul:'Surat <uji>',nomorSurat:'SE 1',tanggal:'2026-11-16'});assert.equal(r.status,422);html=await r.text();assert.match(html,/value="Surat &lt;uji&gt;"/);assert.match(html,/href="#f-lampiran"/);
+});
+
+test('failed academic edits retain text, selections, zero and valid existing-file links',async t=>{
+ const fixtures=[
+  ['academic-documents',{name:'Judul <uji>',kategori:id(104),pinned:'on',keterangan:'Catatan uji'}, {name:'',kategori:id(104),pinned:'on',keterangan:'Catatan <baru>'},'file','keterangan','Catatan &lt;baru&gt;'],
+  ['rpl-documents',{judul:'RPL uji',tahun:2026,status:true},{judul:'',tahun:'2027',status:'on',deskripsi:'Deskripsi <baru>'},'file','deskripsi','Deskripsi &lt;baru&gt;'],
+  ['kurikulum',{prodi:id(101),tahun:'2026'},{prodi:id(101),tahun:'salah'},'file','tahun','salah'],
+  ['graduation-books',{title:'Wisuda uji',year:2026,periode:'I'},{title:'',year:'2027',periode:'II'},'src','year','2027'],
+  ['accreditations',{jenis:'institusi',namaUnit:'Unit',lembaga:id(103),peringkat:'Unggul'},{jenis:'institusi',namaUnit:'Unit <baru>',lembaga:id(103),peringkat:'Unggul',tanggalBerlaku:'',berlakuSampai:''},'sertifikat','namaUnit','Unit &lt;baru&gt;'],
+  ['lulusan',{programStudi:id(101),fakultas:id(102),tahun:2026,periode:'I',jumlah:0},{programStudi:id(101),fakultas:id(102),tahun:'1900',periode:'II',jumlah:'0'},null,'jumlah','0'],
+ ];
+ for(const [base,seed,body,fileField,name,value]of fixtures)await t.test(base,async t=>{
+  const doc={_id:id(1),...seed,...(fileField?{[fileField]:`/uploads/${base}/current.pdf`}:{})};
+  const {post}=await setup(t,base,[doc]);const r=await post(`/${id(1)}?partial=1`,body),html=await r.text();assert.equal(r.status,422,html);
+  assert.match(html,new RegExp(`name="${name}"[^>]*value="${value}"|name="${name}"[^>]*>${value}`));
+  if(fileField)assert.match(html,new RegExp(`href="/uploads/${base}/current.pdf"`));
+  assert.doesNotMatch(html,/<input type="file"[^>]*\svalue=/);
+  for(const target of html.matchAll(/href="#([^"]+)"/g))assert.ok(html.includes(`id="${target[1]}"`),`${base}: ${target[1]}`);
+ });
+});
+
 test('Lembaga is restricted to superadmin',async t=>{const{get,post}=await setup(t,'lembaga-akreditasi',[],'editor');assert.equal((await get('')).status,403);assert.equal((await post('/bulk',{action:'delete',ids:id(1)})).status,403);});
 test('RPL boolean filters apply identically to bulk; selected IDs ignore the list filter',async t=>{
  const {Model,get,post}=await setup(t,'rpl-documents',[{_id:id(1),judul:'RPL (baru)',tahun:2026,status:true},{_id:id(2),judul:'Lama',tahun:2025,status:false}]);

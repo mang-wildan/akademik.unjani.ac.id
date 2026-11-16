@@ -5,7 +5,9 @@
     <%- include('filter-bar', { state, searchLabel: `Cari ${title.toLowerCase()}`, filters: locals.listFilters || [] }) %>
     <% if (items.length) { %>
       <%- include('data-table', { caption: title, items, state, bulkForm: `bulk-${basePath}`, columns, itemLabel: item => { const value=item[columns[0].key]; return String(value?.nama || value || item._id); }, rowHref: item => `/admin/${basePath}/${item._id}/edit`, slideOver, actions: item => include('academic-actions', { item, basePath, slideOver }) }) %>
-    <% } else { %><%- include('empty-state', { text: 'Belum ada data yang cocok.', emptyIcon: 'info', action: { label: 'Hapus filter', href: `/admin/${basePath}` } }) %><% } %>
+    <% } else { const filtered = Boolean(state.q || (locals.listFilters || []).some(f => state[f.name])); %>
+      <%- include('empty-state', { text: filtered ? `Tidak ada ${title.toLowerCase()} yang cocok.` : `Belum ada ${title.toLowerCase()}.`, emptyIcon: 'info', action: filtered ? { label: 'Hapus filter', href: `/admin/${basePath}` } : { label: `Tambah ${title}`, href: `/admin/${basePath}/new`, slideOver } }) %>
+    <% } %>
     <%- include('pagination', { ...pagination, state, noun: title.toLowerCase() }) %>
   </div>
 </div>

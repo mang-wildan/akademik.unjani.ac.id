@@ -65,15 +65,27 @@
   - `task-5-news-1440-list.png`, `task-5-news-1440-empty.png`, `task-5-news-1440-bulk.png`, `task-5-news-1440-delete.png`, `task-5-news-1440-new.png`, `task-5-news-1440-validation.png`, `task-5-news-1440-edit.png`, `task-5-news-1440-dark-edit.png`, `task-5-news-390-edit.png`, `task-5-news-390-failed-edit.png`, `task-5-news-390-dark-edit.png`.
   - `task-5-books-1440-list.png`, `task-5-books-1440-delete.png`, `task-5-books-1440-new.png`, `task-5-books-1440-edit.png`, `task-5-books-1440-dark-edit.png`, `task-5-books-1440-slide.png`, `task-5-books-390-edit.png`, `task-5-books-390-failed-edit.png`, `task-5-books-390-dark-edit.png`, `task-5-books-390-slide.png`.
 
+## Task 6: akademik, akreditasi dan wisuda
+
+- Tes baru `adminAcademic` gagal dulu: heading/panel, CTA kosong, anchor kalender dan retensi gagal ubah. Akhir: **36 lulus, 0 gagal**; `npm test`: **292 lulus, 0 gagal**. Kontrak/assertion upload/CSV/role existing tetap. Build CSS sukses, hasil disertakan.
+- Browser Chromium: route/middleware/CSP/EJS nyata, DB fixture in-memory dan data fiktif; bukan login/DB produksi.
+  - Delapan modul × daftar/tambah/ubah = **24 frame** pada 1440/390px; seluruh route juga 1024/820/768/320px. Tanpa overflow horizontal, 404 atau page error.
+  - Kalender Kelola: empat section terbuka dengan anchor di bawah header. Kalender/lulusan impor invalid pada 1440/768/390/320: error tampil, kegiatan/jumlah 0 tetap; lulusan menampilkan **Baris 2**.
+  - Teks HTML panjang, relasi null, light/dark, slide-over dan tanpa JS dicek. Retensi file lama/nilai escaped/pilihan saat gagal diuji route tests.
+  - Regresi overflow: metadata nowrap dibatasi/dibungkus, link lampiran flex menjadi inline-block. Audit visual: minimum kolom metadata 96px menjaga tanggal/semester terbaca. Check permanen `scripts/check-academic-layout.cjs`: normal/panjang, enam viewport, Playwright/Chromium lingkungan tanpa dependency baru.
+- Review independen: tanpa temuan Critical/Important/Minor. Seluruh PNG acuan dibanding screenshot runtime: sesuai pola, bukan pixel-identical.
+- Adaptasi acuan: select/checkbox native, fakultas manual dan field existing tetap; tanpa segmented state/aktif baru. Upload native tanpa klaim drag-and-drop. PDF tetap 10 MB; Task 10/11 belum. Kurikulum memisahkan Berkas; kalender memisahkan impor dengan anchor tanpa JS. Lulusan impor tetap details (terbuka saat error); hapus lewat aksi daftar existing.
+- Bukti: `screenshots/task-6-{academic-documents,rpl-documents,kurikulum,academic-calendars,accreditations,lembaga-akreditasi,graduation-books,lulusan}-{1440,390}-{list,new,edit}.png`; kalender/lulusan juga `{1440,768,390,320}-import-error.png`; kalender `320-long-edit.png`, akreditasi `390-dark-edit.png`.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.
 
 | # | Frame | Status | Catatan |
 |---|---|---|---|
-| 1 | Akreditasi _ Daftar | belum diuji | |
-| 2 | Akreditasi _ Tambah | belum diuji | |
-| 3 | Akreditasi _ Ubah | belum diuji | |
+| 1 | Akreditasi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 2 | Akreditasi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 3 | Akreditasi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 4 | Akun Pengguna _ Atur ulang password | belum diuji | |
 | 5 | Akun Pengguna _ Daftar | belum diuji | |
 | 6 | Akun Pengguna _ Konfirmasi nonaktif | belum diuji | |
@@ -90,35 +102,35 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 17 | Buku _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 18 | Buku _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 19 | Buku _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 20 | Buku Wisuda _ Daftar | belum diuji | |
-| 21 | Buku Wisuda _ Tambah | belum diuji | |
-| 22 | Buku Wisuda _ Ubah | belum diuji | |
+| 20 | Buku Wisuda _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 21 | Buku Wisuda _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 22 | Buku Wisuda _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 23 | Dasbor _ Desktop 1440 | sesuai komposisi (fixture) | 1440/390 light/dark; tambahan 1024/820/768/320 tanpa overflow. Data fiktif, tanpa jam/tanggal palsu; lihat Task 4. |
-| 24 | Data Lulusan _ Daftar | belum diuji | |
-| 25 | Data Lulusan _ Tambah | belum diuji | |
-| 26 | Data Lulusan _ Ubah | belum diuji | |
-| 27 | Dokumen Akademik _ Daftar | belum diuji | |
-| 28 | Dokumen Akademik _ Tambah | belum diuji | |
-| 29 | Dokumen Akademik _ Ubah | belum diuji | |
-| 30 | Dokumen RPL _ Daftar | belum diuji | |
-| 31 | Dokumen RPL _ Tambah | belum diuji | |
-| 32 | Dokumen RPL _ Ubah | belum diuji | |
+| 24 | Data Lulusan _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 25 | Data Lulusan _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 26 | Data Lulusan _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 27 | Dokumen Akademik _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 28 | Dokumen Akademik _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 29 | Dokumen Akademik _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 30 | Dokumen RPL _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 31 | Dokumen RPL _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 32 | Dokumen RPL _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 33 | Fakultas _ Daftar | belum diuji | |
 | 34 | Fakultas _ Gagal hapus | belum diuji | |
 | 35 | Fakultas _ Tambah | belum diuji | |
 | 36 | Fakultas _ Ubah | belum diuji | |
-| 37 | Kalender Akademik _ Daftar | belum diuji | |
-| 38 | Kalender Akademik _ Kelola 2026-2027 | belum diuji | |
-| 39 | Kalender Akademik _ Tambah | belum diuji | |
+| 37 | Kalender Akademik _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 38 | Kalender Akademik _ Kelola 2026-2027 | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 39 | Kalender Akademik _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 40 | Kategori _ Daftar | belum diuji | |
 | 41 | Kategori _ Tambah | belum diuji | |
 | 42 | Kategori _ Ubah | belum diuji | |
-| 43 | Kurikulum _ Daftar | belum diuji | |
-| 44 | Kurikulum _ Tambah | belum diuji | |
-| 45 | Kurikulum _ Ubah | belum diuji | |
-| 46 | Lembaga Akreditasi _ Daftar | belum diuji | |
-| 47 | Lembaga Akreditasi _ Tambah | belum diuji | |
-| 48 | Lembaga Akreditasi _ Ubah | belum diuji | |
+| 43 | Kurikulum _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 44 | Kurikulum _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 45 | Kurikulum _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 46 | Lembaga Akreditasi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 47 | Lembaga Akreditasi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
+| 48 | Lembaga Akreditasi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 49 | Pengaturan Situs _ Ubah | belum diuji | |
 | 50 | Pengumuman _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 51 | Pengumuman _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |

@@ -302,6 +302,7 @@
   .data-table td { @apply h-15 px-3 py-2 whitespace-nowrap first:pl-4 last:pr-4 lg:first:pl-6 lg:last:pr-6; }
   .data-table tbody tr { @apply border-t border-line hover:bg-surface-subtle has-checked:bg-primary-soft; }
   .data-table .dt-primary { @apply w-full max-w-0 whitespace-normal; }
+  .data-table .dt-meta { @apply min-w-24 max-w-64 whitespace-normal; overflow-wrap: anywhere; }
   /* Judul panjang membungkus (Review Focus 1), tidak dipotong dan tidak melebarkan halaman. */
   .data-table .dt-link,
   .data-table .dt-text { @apply block break-words font-semibold text-ink no-underline; }

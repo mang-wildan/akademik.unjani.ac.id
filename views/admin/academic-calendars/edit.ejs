@@ -1,55 +1,61 @@
-<%- include('../_ui/page-header',{heading:`Kalender ${item.tahunAjaran}`,actions:[{label:'Kembali ke daftar',href:'/admin/academic-calendars',variant:'secondary'}]}) %>
+<% if (!locals.partial) { %><%- include('../_ui/page-header',{heading:`Kalender ${item.tahunAjaran}`,actions:[{label:'Kembali ke daftar',href:'/admin/academic-calendars',variant:'secondary'}]}) %><% } %>
 <% const events=item.events||[], lampiran=item.lampiran||[]; %>
+<nav aria-label="Bagian kalender" class="mb-6 flex flex-wrap gap-2">
+  <a href="#data-kalender" class="btn btn-secondary">Data tahun ajaran</a>
+  <a href="#kegiatan" class="btn btn-secondary">Kegiatan (<%= events.length %>)</a>
+  <a href="#impor-kegiatan" class="btn btn-secondary">Impor CSV</a>
+  <a href="#lampiran" class="btn btn-secondary">Lampiran (<%= lampiran.length %>)</a>
+</nav>
 <div class="space-y-6">
-  <form method="POST" action="/admin/academic-calendars/<%= item._id %>" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form rounded-card border border-line bg-surface">
-    <div class="space-y-5 p-4">
-      <h2 class="font-semibold">Data Tahun Ajaran</h2>
-      <%- include('../_ui/error-summary',{errors}) %>
+  <form id="data-kalender" method="POST" action="/admin/academic-calendars/<%= item._id %>" enctype="multipart/form-data" data-save-form data-panel-title="Kalender <%= item.tahunAjaran %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="form-panel scroll-mt-20 space-y-5">
+    <h2 class="font-serif text-lg">Data tahun ajaran</h2>
+    <%- include('../_ui/error-summary',{errors}) %>
+    <div class="grid gap-5 md:grid-cols-2">
       <%- include('../_ui/field',{name:'tahunAjaran',label:'Tahun Ajaran',required:true,value:values.tahunAjaran,error:errors.tahunAjaran,help:'Ditulis seperti 2026/2027.'}) %>
       <%- include('../_ui/field',{name:'nomorSK',label:'Nomor SK Rektor',value:values.nomorSK,error:errors.nomorSK}) %>
-      <%- include('../_ui/upload-field',{name:'file',label:'SK Rektor (PDF)',accept:'application/pdf',error:errors.file,current:{href:item.file,label:'SK saat ini'}}) %>
     </div>
-    <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]"><%- include('../_ui/button',{label:'Simpan Perubahan',type:'submit'}) %></div>
+    <%- include('../_ui/upload-field',{name:'file',label:'SK Rektor (PDF)',accept:'application/pdf',error:errors.file,current:item.file?{href:item.file,label:'SK saat ini'}:null}) %>
+    <div class="flex justify-end"><%- include('../_ui/button',{label:'Simpan Perubahan',type:'submit'}) %></div>
   </form>
-  <section class="space-y-4 rounded-card border border-line bg-surface p-4" aria-labelledby="kegiatan-title">
-    <h2 id="kegiatan-title" class="font-semibold">Kegiatan (<%= events.length %>)</h2>
+  <section id="kegiatan" class="form-panel scroll-mt-20 space-y-5" aria-labelledby="kegiatan-title">
+    <h2 id="kegiatan-title" class="font-serif text-lg">Kegiatan (<%= events.length %>)</h2>
     <% if(events.length){ %><%- include('../_ui/data-table',{id:'tabel-events',selectable:false,caption:'Daftar kegiatan',items:events.slice().sort((a,b)=>new Date(a.mulai)-new Date(b.mulai)),state:{},columns:[{key:'nama',label:'Nama'},{key:'semester',label:'Semester'},{key:'mulai',label:'Mulai',cell:e=>formatTanggal(e.mulai)},{key:'selesai',label:'Selesai',cell:e=>e.selesai?formatTanggal(e.selesai):'—'}],actions:entry=>include('../_ui/calendar-delete',{entry,item,kind:'events'})}) %><% }else{ %><%- include('../_ui/empty-state',{text:'Belum ada kegiatan.',emptyIcon:'event'}) %><% } %>
-    <details class="rounded-control border border-line" <%= Object.keys(eventErrors).length?'open':'' %>>
-      <summary class="min-h-11 cursor-pointer px-4 py-2.5 font-semibold">Tambah kegiatan manual</summary>
-      <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events" class="space-y-4 border-t border-line p-4" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
-        <%- include('../_ui/error-summary',{errors:eventErrors,fieldIds:{nama:'event-nama',semester:'event-semester',mulai:'event-mulai',selesai:'event-selesai'}}) %>
+    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events" class="space-y-5 border-t border-line pt-5" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
+      <h3 class="font-serif text-md">Tambah kegiatan</h3>
+      <%- include('../_ui/error-summary',{errors:eventErrors,fieldIds:{nama:'event-nama',semester:'event-semester',mulai:'event-mulai',selesai:'event-selesai'}}) %>
+      <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         <%- include('../_ui/field',{id:'event-semester',name:'semester',label:'Semester',type:'select',required:true,options:semesterOptions,value:eventValues.semester,error:eventErrors.semester}) %>
         <%- include('../_ui/field',{id:'event-nama',name:'nama',label:'Nama Kegiatan',required:true,value:eventValues.nama,error:eventErrors.nama}) %>
         <%- include('../_ui/field',{id:'event-mulai',name:'mulai',label:'Tanggal Mulai',type:'date',required:true,value:eventValues.mulai,error:eventErrors.mulai}) %>
         <%- include('../_ui/field',{id:'event-selesai',name:'selesai',label:'Tanggal Selesai',type:'date',value:eventValues.selesai,error:eventErrors.selesai,help:'Kosongkan untuk kegiatan satu hari.'}) %>
-        <%- include('../_ui/button',{label:'Tambah Kegiatan',type:'submit'}) %>
-      </form>
-    </details>
-    <details class="rounded-control border border-line" <%= importErrors?'open':'' %>>
-      <summary class="min-h-11 cursor-pointer px-4 py-2.5 font-semibold">Impor kegiatan dari CSV</summary>
-      <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events/import" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4">
-        <%- include('../_ui/error-summary',{errors:importErrors?{csv:importErrors.join(' ')}:{}}) %>
-        <p class="text-sm text-muted">Impor mengganti seluruh daftar kegiatan tahun ajaran ini. Periksa berkas sebelum melanjutkan.</p>
-        <%- include('../_ui/button',{label:'Unduh template CSV',href:'/admin/academic-calendars/template.csv',variant:'secondary'}) %>
-        <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',accept:'.csv,text/csv',required:true,limitText:'CSV sesuai template.'}) %>
-        <%- include('../_ui/field',{name:'confirmReplace',type:'checkbox',label:`Saya setuju mengganti ${events.length} kegiatan dengan isi CSV.`,required:true}) %>
-        <%- include('../_ui/button',{label:'Impor dan Ganti Kegiatan',type:'submit',variant:'danger'}) %>
-      </form>
-    </details>
+      </div>
+      <%- include('../_ui/button',{label:'Tambah Kegiatan',type:'submit'}) %>
+    </form>
   </section>
-  <section class="space-y-4 rounded-card border border-line bg-surface p-4" aria-labelledby="lampiran-title">
-    <h2 id="lampiran-title" class="font-semibold">Lampiran Surat Edaran (<%= lampiran.length %>)</h2>
+  <section id="impor-kegiatan" class="form-panel scroll-mt-20 space-y-5" aria-labelledby="impor-title">
+    <h2 id="impor-title" class="font-serif text-lg">Impor kegiatan dari CSV</h2>
+    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events/import" enctype="multipart/form-data" class="space-y-5">
+      <%- include('../_ui/error-summary',{errors:importErrors?{csv:importErrors.join(' ')}:{}}) %>
+      <p class="border-l-[3px] border-warning bg-warning-soft p-4 text-sm text-warning">Impor mengganti seluruh daftar kegiatan tahun ajaran ini. Periksa berkas sebelum melanjutkan.</p>
+      <%- include('../_ui/button',{label:'Unduh template CSV',href:'/admin/academic-calendars/template.csv',variant:'secondary'}) %>
+      <%- include('../_ui/upload-field',{name:'csv',label:'File CSV',accept:'.csv,text/csv',required:true,limitText:'CSV sesuai template.',error:importErrors?importErrors.join(' '):null}) %>
+      <%- include('../_ui/field',{name:'confirmReplace',type:'checkbox',label:`Saya setuju mengganti ${events.length} kegiatan dengan isi CSV.`,required:true}) %>
+      <%- include('../_ui/button',{label:'Impor dan Ganti Kegiatan',type:'submit',variant:'danger'}) %>
+    </form>
+  </section>
+  <section id="lampiran" class="form-panel scroll-mt-20 space-y-5" aria-labelledby="lampiran-title">
+    <h2 id="lampiran-title" class="font-serif text-lg">Lampiran surat edaran (<%= lampiran.length %>)</h2>
     <% if(lampiran.length){ %><%- include('../_ui/data-table',{id:'tabel-lampiran',selectable:false,caption:'Lampiran surat edaran',items:lampiran,state:{},columns:[{key:'judul',label:'Judul',cell:entry=>include('../_ui/calendar-file',{entry})},{key:'nomorSurat',label:'Nomor Surat'},{key:'tanggal',label:'Tanggal',cell:l=>l.tanggal?formatTanggal(l.tanggal):'—'}],actions:entry=>include('../_ui/calendar-delete',{entry,item,kind:'lampiran'})}) %><% }else{ %><%- include('../_ui/empty-state',{text:'Belum ada lampiran.',emptyIcon:'info'}) %><% } %>
-    <details class="rounded-control border border-line" <%= Object.keys(lampiranErrors).length?'open':'' %>>
-      <summary class="min-h-11 cursor-pointer px-4 py-2.5 font-semibold">Tambah lampiran</summary>
-      <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran" enctype="multipart/form-data" class="space-y-4 border-t border-line p-4" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
-        <%- include('../_ui/error-summary',{errors:lampiranErrors,fieldIds:{file:'f-lampiran'}}) %>
+    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran" enctype="multipart/form-data" class="space-y-5 border-t border-line pt-5" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
+      <h3 class="font-serif text-md">Tambah lampiran</h3>
+      <%- include('../_ui/error-summary',{errors:lampiranErrors,fieldIds:{file:'f-lampiran'}}) %>
+      <div class="grid gap-5 md:grid-cols-3">
         <%- include('../_ui/field',{name:'judul',label:'Judul Surat',required:true,value:lampiranValues.judul,error:lampiranErrors.judul}) %>
         <%- include('../_ui/field',{name:'nomorSurat',label:'Nomor Surat',value:lampiranValues.nomorSurat,error:lampiranErrors.nomorSurat}) %>
         <%- include('../_ui/field',{name:'tanggal',label:'Tanggal Surat',type:'date',value:lampiranValues.tanggal,error:lampiranErrors.tanggal}) %>
-        <%- include('../_ui/upload-field',{name:'lampiran',label:'File PDF',accept:'application/pdf',required:true,error:lampiranErrors.file}) %>
-        <%- include('../_ui/button',{label:'Tambah Lampiran',type:'submit'}) %>
-      </form>
-    </details>
+      </div>
+      <%- include('../_ui/upload-field',{name:'lampiran',label:'File PDF',accept:'application/pdf',required:true,error:lampiranErrors.file}) %>
+      <%- include('../_ui/button',{label:'Tambah Lampiran',type:'submit'}) %>
+    </form>
   </section>
 </div>

@@ -1,6 +1,8 @@
-<%- include('../_ui/page-header',{heading:'Tambah Kalender Akademik'}) %>
+<% if (!locals.partial) { %><%- include('../_ui/page-header',{heading:'Tambah Kalender Akademik'}) %><% } %>
 <%- include('../_ui/error-summary',{errors}) %>
-<form method="POST" action="/admin/academic-calendars" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-5 rounded-card border border-line bg-surface p-4">
+<form method="POST" action="/admin/academic-calendars" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form" data-panel-title="Tambah Kalender Akademik">
+  <section class="form-panel space-y-5">
+  <h2 class="font-serif text-lg">Data tahun ajaran</h2>
   <%- include('../_ui/field', {
     name: 'tahunAjaran', label: 'Tahun Ajaran', required: true, value: values.tahunAjaran, error: errors.tahunAjaran,
     placeholder: '2026/2027', help: 'Ditulis seperti 2026/2027.',
@@ -12,6 +14,7 @@
     name: 'file', label: 'File SK Rektor (PDF)', accept: 'application/pdf', required: true,
     limitText: 'PDF, maks. 10 MB.', error: errors.file,
   }) %>
+  </section>
   <div class="form-actions max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]">
     <a href="/admin/academic-calendars" class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan &amp; Lanjutkan</button>
