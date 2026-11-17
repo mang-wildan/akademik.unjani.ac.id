@@ -602,7 +602,8 @@ function busyLabel(form, button) {
   if (intent === 'delete' || form.dataset?.intent === 'delete' || /\/delete$/.test(action)) return 'Menghapus…';
   if ((form.hasAttribute('data-pdf-upload') || /^\/admin\/graduation-books(\/|$)/i.test(action)) && form.enctype === 'multipart/form-data') {
     const fileInput = form.querySelector('input[type="file"][name="file"]');
-    if (fileInput && fileInput.files && fileInput.files.length > 0) return 'Mengunggah dan mengompres PDF…';
+    const pdf = fileInput?.files?.[0];
+    if (pdf) return pdf.size > 50 * 1024 * 1024 ? 'Mengunggah dan mengompres PDF…' : 'Mengunggah PDF…';
   }
   if (/\/(bulk|import|reset-password|pin)$/.test(action)) return 'Memproses…';
   if (form.hasAttribute('data-save-form') || /^\/admin\/[^/]+(\/new|$)/i.test(action) || /^\/admin\/[^/]+\/[a-f0-9]{24}$/i.test(action)) {
@@ -617,7 +618,9 @@ function showBusy(button, form) {
   button.setAttribute('aria-busy', 'true');
   if (!form) form = button.closest('form');
   button.disabled = true;
-  button.innerHTML = '<span class="spinner" aria-hidden="true"></span>' + busyLabel(form, button);
+  const label = busyLabel(form, button);
+  const spinner = label.includes('mengompres') ? '<span class="pdf-compress-loader" aria-hidden="true"><span></span></span>' : '<span class="spinner" aria-hidden="true"></span>';
+  button.innerHTML = spinner + label;
 }
 
 function clearBusy(button) {

@@ -315,12 +315,20 @@ test('busy label: Buku Wisuda with new PDF uses "Mengunggah dan mengompres PDFâ€
   const attrs = {};
   const button = { innerHTML: 'Simpan', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
   const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/graduation-books', dataset: {}, enctype: 'multipart/form-data' };
-  const fileInput = { files: [new Blob(['%PDF-1.4'], { type: 'application/pdf' })] };
+  const fileInput = { files: [{ size: 50 * 1024 * 1024 + 1 }] };
   form.querySelector = sel => sel === 'input[type="file"][name="file"]' ? fileInput : null;
   const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
   handlers.submit(event);
   timers.values().next().value.fn();
+  assert.match(button.innerHTML, /pdf-compress-loader/);
   assert.match(button.innerHTML, /Mengunggah dan mengompres PDF/);
+  fileInput.files = [{ size: 50 * 1024 * 1024 }];
+  delete button.disabled;
+  form.getAttribute = () => undefined;
+  handlers.submit(event);
+  [...timers.values()].at(-1).fn();
+  assert.match(button.innerHTML, /Mengunggah PDF/);
+  assert.doesNotMatch(button.innerHTML, /mengompres/);
 });
 
 test('busy label: data-busy-label attribute overrides default', () => {

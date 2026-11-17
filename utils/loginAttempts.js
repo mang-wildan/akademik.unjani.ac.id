@@ -1,6 +1,6 @@
 // shortcut: bounded process-local tracking resets on restart; use a shared persistent store for multiple workers or restart-safe bans.
 const WINDOW_MS = 15 * 60 * 1000;
-const CAPTCHA_AFTER_FAILURES = 2;
+const CAPTCHA_AFTER_FAILURES = 3;
 const BLOCK_AFTER_FAILURES = 10;
 const BLOCK_MS = 60 * 60 * 1000;
 const MAX_TRACKED_KEYS = 10000;

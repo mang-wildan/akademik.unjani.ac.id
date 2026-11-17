@@ -10,16 +10,16 @@ const fresh = () => {
   return { ip: `10.0.0.${n}`, email: `user${n}@unjani.ac.id` };
 };
 
-test('no captcha before 2 failures', () => {
+test('no captcha before 3 failures', () => {
   const who = fresh();
   assert.equal(loginAttempts.captchaRequired(who, T0), false);
-  loginAttempts.recordFailure(who, T0);
+  for (let i = 0; i < 2; i += 1) loginAttempts.recordFailure(who, T0);
   assert.equal(loginAttempts.captchaRequired(who, T0), false);
 });
 
-test('captcha required from the 2nd failure on', () => {
+test('captcha required from the 3rd failure on', () => {
   const who = fresh();
-  for (let i = 0; i < 2; i += 1) loginAttempts.recordFailure(who, T0);
+  for (let i = 0; i < 3; i += 1) loginAttempts.recordFailure(who, T0);
   assert.equal(loginAttempts.captchaRequired(who, T0), true);
 });
 

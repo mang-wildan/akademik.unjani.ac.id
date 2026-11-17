@@ -3,11 +3,14 @@ const path = require('node:path');
 const { randomUUID } = require('node:crypto');
 const childProcess = require('node:child_process');
 
+const COMPRESS_ABOVE_BYTES = 50 * 1024 * 1024;
+
 exports.compressPdf = async filePath => {
   let before = 0;
   const temp = path.join(path.dirname(filePath), `.compress-${randomUUID()}.pdf`);
   try {
     before = (await fs.stat(filePath)).size;
+    if (before <= COMPRESS_ABOVE_BYTES) return { compressed: false, before, after: before };
     await new Promise((resolve, reject) => {
       childProcess.execFile(process.env.PDF_PYTHON || 'python3', [path.join(__dirname, '../scripts/compress-pdf.py'), filePath, temp], { timeout: 600000 }, err => err ? reject(err) : resolve());
     });

@@ -17,26 +17,26 @@ const response = () => ({
   redirect(url) { this.redirected = url; return this; },
 });
 
-test('2 failed logins show CAPTCHA; failed/missing CAPTCHA counts toward a 10-failure block', async t => {
+test('3 failed logins show CAPTCHA; failed/missing CAPTCHA counts toward a 10-failure block', async t => {
   const req = { ip: 'login-policy-block', body: { email: 'preview@example.test', password: 'wrong-test-password' } };
   const lookup = t.mock.method(User, 'findOne', async () => ({ comparePassword: async () => false }));
   const verify = t.mock.method(globalThis, 'fetch', async () => ({ json: async () => ({ success: false }) }));
   let res;
   for (let i = 1; i <= 10; i += 1) {
-    if (i === 3) req.body['g-recaptcha-response'] = 'invalid-test-token';
-    if (i === 4) delete req.body['g-recaptcha-response'];
+    if (i === 4) req.body['g-recaptcha-response'] = 'invalid-test-token';
+    if (i === 5) delete req.body['g-recaptcha-response'];
     res = response();
     await controller.login(req, res);
     assert.equal(res.code, i === 10 ? 429 : 400);
-    if (i < 10) assert.equal(res.data.requireCaptcha, i >= 2);
+    if (i < 10) assert.equal(res.data.requireCaptcha, i >= 3);
   }
-  assert.equal(lookup.mock.callCount(), 2);
+  assert.equal(lookup.mock.callCount(), 3);
   assert.equal(verify.mock.callCount(), 1);
   assert.equal(res.data.loginBlocked, true);
   assert.ok(Number(res.headers['Retry-After']) >= 3590);
   assert.equal(res.data.requireCaptcha, false);
   await controller.login(req, response());
-  assert.equal(lookup.mock.callCount(), 2);
+  assert.equal(lookup.mock.callCount(), 3);
   assert.equal(verify.mock.callCount(), 1);
   const reload = response();
   controller.getLogin({ ip: req.ip }, reload);
@@ -69,14 +69,14 @@ test('valid CAPTCHA never resets the wrong-password count', async t => {
     assert.equal(res.code, i === 10 ? 429 : 400);
   }
   assert.equal(lookup.mock.callCount(), 10);
-  assert.equal(verify.mock.callCount(), 8);
+  assert.equal(verify.mock.callCount(), 7);
 });
 
 test('an inactive account with the right password still counts as a failed login', async t => {
   const req = { ip: 'login-policy-inactive', body: { email: 'inactive@example.test', password: 'correct-test-password' } };
   const who = { ip: req.ip, email: req.body.email };
   t.mock.method(User, 'findOne', async () => ({ isActive: false, comparePassword: async () => true }));
-  attempts.recordFailure(who);
+  for (let i = 0; i < 2; i += 1) attempts.recordFailure(who);
   const res = response();
   await controller.login(req, res);
   assert.equal(res.code, 400);
@@ -102,7 +102,7 @@ test('a request that becomes blocked during password verification cannot start a
 
 test('fresh login page and another account are unaffected by CAPTCHA failures on a shared IP', async t => {
   const ip = 'login-shared-ip';
-  for (let i = 0; i < 2; i += 1) attempts.recordFailure({ ip, email: 'different@example.test' });
+  for (let i = 0; i < 3; i += 1) attempts.recordFailure({ ip, email: 'different@example.test' });
   const page = response();
   controller.getLogin({ ip }, page);
   assert.equal(page.code, 200);
@@ -116,7 +116,7 @@ test('fresh login page and another account are unaffected by CAPTCHA failures on
 
 test('reloading a clean form cannot bypass CAPTCHA enforcement for a previously failed email', async t => {
   const who = { ip: 'login-reload', email: 'reload@example.test' };
-  for (let i = 0; i < 2; i += 1) attempts.recordFailure(who);
+  for (let i = 0; i < 3; i += 1) attempts.recordFailure(who);
   const page = response();
   controller.getLogin({ ip: who.ip }, page);
   assert.equal(page.data.requireCaptcha, false);

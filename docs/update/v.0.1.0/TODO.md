@@ -247,7 +247,7 @@ Kerjakan setelah Task 10.
 - [x] **Step 3: Buat script Python.** Buka input dengan `pymupdf.open`, jalankan `doc.rewrite_images(dpi_threshold=200, dpi_target=150, quality=75)`, simpan dengan `garbage=4, deflate=True, clean=True`. Buka ulang output dan bandingkan jumlah halaman; bila beda, hapus output dan exit 2. Tulis ke file sementara di folder yang sama, bukan ke input langsung.
 - [x] **Step 4: Buat `compressPdf` dan panggil di controller.** Pakai `child_process.execFile(process.env.PDF_PYTHON || 'python3', [script, input, temp], { timeout: 600000 })`. Ganti file asli dengan `fs.promises.rename` hanya jika output lebih kecil; selalu hapus temp. Panggil sebelum `create`/`save` di controller Buku Wisuda; catat ukuran sebelum/sesudah di log. Isi `requirements-pdf.txt` dengan `PyMuPDF==1.28.0`.
 - [x] **Step 5: Jalankan ulang tes Step 2, lalu `npm test`.** Semua harus PASS. Uji lokal dengan PDF contoh berisi gambar besar: hasil terbuka, halaman sama, ukuran turun.
-- [ ] **Step 6: Siapkan dan uji di CentOS Stream 9 x86_64.** Jalankan berurutan:
+- [x] **Step 6: Siapkan dan uji di CentOS Stream 9 x86_64.** Jalankan berurutan:
   ```bash
   sudo dnf install -y python3.11
   sudo python3.11 -m venv /opt/akademik-pdf/venv

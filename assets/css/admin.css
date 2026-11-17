@@ -292,6 +292,18 @@
   .spinner {
     @apply size-4 animate-spin rounded-full border-2 border-current border-r-transparent;
   }
+  /* Halaman PDF yang dipadatkan; ritme lambat menandai proses panjang. */
+  .pdf-compress-loader {
+    @apply relative h-5 w-4 shrink-0 overflow-hidden rounded-[2px] border-2 border-current;
+  }
+  .pdf-compress-loader span {
+    @apply absolute inset-x-0.5 top-0.5 h-0.5 bg-current;
+    box-shadow: 0 4px currentColor, 0 8px currentColor;
+    animation: pdf-compress 1.2s ease-in-out infinite;
+  }
+  @keyframes pdf-compress {
+    50% { transform: scaleY(.45); opacity: .55; }
+  }
 
   /* Tabel data (views/admin/_ui/data-table.ejs, DESIGN §7.5). Pembungkus kartu
      memakai overflow-clip, bukan overflow-hidden, agar header tetap sticky. */
