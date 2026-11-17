@@ -111,8 +111,9 @@ const link = (href, extra = {}) => ({
 });
 const form = ({ fields = [['nama', 'Akademik']], enctype = 'application/x-www-form-urlencoded', action = `http://admin.test/admin/kategori/${ID}` } = {}) => ({
   nodeName: 'FORM', method: 'post', action, enctype, fields,
-  attrs: {}, setAttribute(k, v) { this.attrs[k] = v; }, removeAttribute(k) { delete this.attrs[k]; }, hasAttribute: k => k === 'data-no-slide' && false,
+  attrs: {}, getAttribute(k) { return this.attrs[k]; }, setAttribute(k, v) { this.attrs[k] = v; }, removeAttribute(k) { delete this.attrs[k]; }, hasAttribute(k) { return Object.hasOwn(this.attrs, k); },
 });
+const busyButton = () => ({ name: '', value: '', disabled: false, innerHTML: 'Simpan', dataset: {}, setAttribute(k,v) { this[k]=v; }, removeAttribute(k) { delete this[k]; } });
 const submitEvent = (target, submitter = null) => ({ target, submitter, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; } });
 
 test('slideOver maps panel URLs to ?edit / ?new and ignores malformed ids', () => {
@@ -196,7 +197,7 @@ test('a saved form closes through history, reloads the list region and shows a t
   await settle();
   env.queueResponse({ type: 'application/json', body: '{"ok":true,"message":"Kategori disimpan"}' }, { body: '<div data-list-region>baru</div>' });
   const target = form();
-  const event = submitEvent(target, { name: 'action', value: 'save', disabled: false });
+  const event = submitEvent(target, { ...busyButton(), name: 'action', value: 'save' });
   await env.slide.submit(event);
   assert.equal(event.defaultPrevented, true);
   const post = env.calls.fetch[1];
@@ -262,7 +263,7 @@ test('server, session and network failures keep the form and explain', async () 
     const env = setup({ responses: [reply] });
     env.panel.open = true;
     env.body.html = FORM_HTML;
-    const submitter = { name: '', value: '', disabled: false };
+    const submitter = busyButton();
     await env.slide.submit(submitEvent(form(), submitter));
     assert.equal(env.slide.error, message);
     assert.equal(env.body.html, FORM_HTML);
@@ -279,6 +280,65 @@ test('a second submit while saving is ignored', async () => {
   assert.equal(second.defaultPrevented, true);
   await first;
   assert.equal(env.calls.fetch.filter(call => call.method === 'POST').length, 1);
+});
+
+test('slide-over submit applies busy label by action type', async () => {
+  const cases = [
+    { action: '/admin/kategori/new', label: 'Menyimpan' },
+    { action: `/admin/kategori/${ID}`, label: 'Menyimpan' },
+    { action: `/admin/kategori/${ID}/delete`, label: 'Menghapus' },
+    { action: '/admin/kategori/bulk', label: 'Memproses' },
+  ];
+  for (const { action, label } of cases) {
+    const env = setup({ responses: [{ type: 'application/json', body: '{"ok":true}' }] });
+    const target = form({ action });
+    const submitter = busyButton();
+    const pending = env.slide.submit(submitEvent(target, submitter));
+    assert.equal(target.attrs['aria-busy'], 'true');
+    assert.equal(submitter.disabled, true);
+    assert.match(submitter.innerHTML, new RegExp(label));
+    assert.match(submitter.innerHTML, /spinner/);
+    await pending;
+    assert.equal(submitter.innerHTML, 'Simpan');
+    assert.equal(submitter.disabled, false);
+  }
+});
+
+test('slide-over submit applies data-busy-label override', async () => {
+  const env = setup({ responses: [{ type: 'application/json', body: '{"ok":true}' }] });
+  const target = form({ action: '/admin/kategori/new' });
+  target.setAttribute('data-busy-label', 'Kustom…');
+  const submitter = busyButton();
+  const pending = env.slide.submit(submitEvent(target, submitter));
+  assert.equal(target.attrs['aria-busy'], 'true');
+  assert.equal(submitter.disabled, true);
+  assert.match(submitter.innerHTML, /Kustom/);
+  await pending;
+  assert.equal(submitter.innerHTML, 'Simpan');
+  assert.equal(submitter.disabled, false);
+});
+
+test('slide-over restores button after validation response', async () => {
+  const env = setup({responses:[{status:422,body:FORM_HTML}]});
+  const target = form();
+  const button = busyButton();
+  const pending = env.slide.submit(submitEvent(target,button));
+  assert.match(button.innerHTML,/spinner/);
+  await pending;
+  assert.equal(button.disabled,false);
+  assert.equal(button.innerHTML,'Simpan');
+  assert.equal(button['aria-busy'],undefined);
+  assert.equal(target.attrs['aria-busy'],undefined);
+});
+
+test('slide-over submit restores button after fetch failure', async () => {
+  const env = setup({ responses: [new TypeError('Failed to fetch')] });
+  const target = form({ action: `/admin/kategori/${ID}` });
+  const submitter = busyButton();
+  await env.slide.submit(submitEvent(target, submitter));
+  assert.equal(env.slide.error, 'Koneksi terputus. Periksa jaringan lalu coba lagi.');
+  assert.equal(submitter.disabled, false);
+  assert.equal(submitter.innerHTML, 'Simpan');
 });
 
 test('closing with unsaved changes asks first; Escape and Back are routed through the same check', async () => {

@@ -182,7 +182,7 @@ test('Buku Wisuda compresses each uploaded PDF once before persistence; failure 
 test('Buku Wisuda create/edit advertise 200 MB PDFs with 5 MB covers',async t=>{
  const {get}=await setup(t,'graduation-books',[{_id:id(1),title:'Buku uji',year:2026,periode:'I'}]);
  for(const url of ['/new',`/${id(1)}/edit`]){
-  const html=await(await get(url)).text();assert.match(html,/PDF, maks\. 200 MB\./);assert.match(html,/JPG\/PNG\/WEBP, maks\. 5 MB\./);
+  const html=await(await get(url)).text();assert.match(html,/PDF, maks\. 200 MB\./);assert.match(html,/JPG\/PNG\/WEBP, maks\. 5 MB\./);assert.match(html,/data-pdf-upload/);
  }
 });
 test('Buku Wisuda size errors use ADM-09, discard uploads, and preserve records',async t=>{

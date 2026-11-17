@@ -328,7 +328,7 @@ document.addEventListener('alpine:init', () => {
       this.busy = true;
       this.error = '';
       form.setAttribute('aria-busy', 'true');
-      if (submitter) submitter.disabled = true;
+      if (!form.hasAttribute('data-no-busy')) showBusy(submitter, form);
       try {
         const res = await fetch(withPartial(form.action), { method: 'POST', body, headers: { Accept: ACCEPT }, credentials: 'same-origin' });
         const type = res.headers.get('content-type') || '';
@@ -354,7 +354,7 @@ document.addEventListener('alpine:init', () => {
       } finally {
         this.busy = false;
         form.removeAttribute('aria-busy');
-        if (submitter) submitter.disabled = false;
+        if (!form.hasAttribute('data-no-busy')) clearBusy(submitter);
       }
     },
     saved(message) {
@@ -593,6 +593,43 @@ document.addEventListener('alpine:init', () => {
   }));
 });
 
+// Tentukan label tombol saat proses (ADM-11).
+function busyLabel(form, button) {
+  const custom = button?.dataset?.busyLabel || form.getAttribute?.('data-busy-label');
+  if (custom) return custom;
+  const action = (form.getAttribute?.('action') || (typeof form.action === 'string' ? form.action : '')).split('?')[0].replace(/^https?:\/\/[^/]+/, '');
+  const intent = button?.name === 'intent' || button?.name === 'action' ? button.value : '';
+  if (intent === 'delete' || form.dataset?.intent === 'delete' || /\/delete$/.test(action)) return 'Menghapus…';
+  if ((form.hasAttribute('data-pdf-upload') || /^\/admin\/graduation-books(\/|$)/i.test(action)) && form.enctype === 'multipart/form-data') {
+    const fileInput = form.querySelector('input[type="file"][name="file"]');
+    if (fileInput && fileInput.files && fileInput.files.length > 0) return 'Mengunggah dan mengompres PDF…';
+  }
+  if (/\/(bulk|import|reset-password|pin)$/.test(action)) return 'Memproses…';
+  if (form.hasAttribute('data-save-form') || /^\/admin\/[^/]+(\/new|$)/i.test(action) || /^\/admin\/[^/]+\/[a-f0-9]{24}$/i.test(action)) {
+    return 'Menyimpan…';
+  }
+  return 'Memproses…';
+}
+
+function showBusy(button, form) {
+  if (!button) return;
+  button.dataset.busyOriginal = button.innerHTML;
+  button.setAttribute('aria-busy', 'true');
+  if (!form) form = button.closest('form');
+  button.disabled = true;
+  button.innerHTML = '<span class="spinner" aria-hidden="true"></span>' + busyLabel(form, button);
+}
+
+function clearBusy(button) {
+  if (!button) return;
+  button.disabled = false;
+  button.removeAttribute('aria-busy');
+  if (button.dataset.busyOriginal !== undefined) {
+    button.innerHTML = button.dataset.busyOriginal;
+    delete button.dataset.busyOriginal;
+  }
+}
+
 // Tunda disable sampai browser mengumpulkan name/value tombol submit.
 document.addEventListener('submit', event => {
   const form = event.target;
@@ -604,22 +641,15 @@ document.addEventListener('submit', event => {
   const button = event.submitter || form.querySelector('button[type="submit"]');
   form.setAttribute('aria-busy', 'true');
   if (!button) return;
-  button.dataset.busyOriginal = button.innerHTML;
   button.setAttribute('aria-busy', 'true');
-  setTimeout(() => {
-    button.disabled = true;
-    button.innerHTML = '<span class="spinner" aria-hidden="true"></span>Memproses…';
-  }, 0);
+  setTimeout(() => showBusy(button, form), 0);
 });
 window.addEventListener('pageshow', event => {
   if (!event.persisted) return;
   document.querySelectorAll('form[aria-busy="true"]').forEach(form => {
     form.removeAttribute('aria-busy');
-    form.querySelectorAll('button[data-busy-original]').forEach(button => {
-      button.disabled = false;
-      button.removeAttribute('aria-busy');
-      button.innerHTML = button.dataset.busyOriginal;
-      delete button.dataset.busyOriginal;
+    [...(form.elements || form.querySelectorAll('button[data-busy-original]'))].forEach(button => {
+      if (button.dataset?.busyOriginal !== undefined) clearBusy(button);
     });
   });
 });

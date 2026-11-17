@@ -252,6 +252,129 @@ test('POST busy state prevents duplicate submission, preserves submitter initial
   assert.equal(attrs['aria-busy'], undefined);
 });
 
+test('bfcache restores external bulk confirm button', () => {
+  const { handlers, windowHandlers, timers, document } = runtime();
+  const attrs = {};
+  const button = { name:'action', value:'delete', innerHTML:'Hapus', dataset:{}, setAttribute(k,v){this[k]=v;}, removeAttribute(k){delete this[k];} };
+  const form = { method:'post', action:'/admin/news/bulk', hasAttribute:()=>false, getAttribute:k=>attrs[k], setAttribute(k,v){attrs[k]=v;}, removeAttribute(k){delete attrs[k];}, querySelectorAll:()=>[], elements:[button] };
+  handlers.submit({target:form,submitter:button});
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML,/Menghapus/);
+  document.querySelectorAll=()=>[form];
+  windowHandlers.pageshow({persisted:true});
+  assert.equal(button.disabled,false);
+  assert.equal(button.innerHTML,'Hapus');
+});
+
+test('explicit data-no-busy leaves POST untouched', () => {
+  const {handlers,timers}=runtime();
+  handlers.submit({target:{method:'post',hasAttribute:k=>k==='data-no-busy'}});
+  assert.equal(timers.size,0);
+});
+
+test('calendar nested create forms opt into saving label', () => {
+  const source=fs.readFileSync(path.join(__dirname,'../views/admin/academic-calendars/edit.ejs'),'utf8');
+  for(const suffix of ['events','lampiran']) assert.match(source,new RegExp('action="/admin/academic-calendars/<%= item._id %>/'+suffix+'"[^>]*data-save-form'));
+});
+
+test('busy label: create/update uses "Menyimpan…"', () => {
+  const { handlers, timers, document } = runtime();
+  const attrs = {};
+  const button = { innerHTML: 'Simpan', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
+  const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/kategori', dataset: {}, enctype: 'application/x-www-form-urlencoded' };
+  const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
+  handlers.submit(event);
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Menyimpan/);
+});
+
+test('busy label: delete action uses "Menghapus…"', () => {
+  const { handlers, timers, document } = runtime();
+  const attrs = {};
+  const button = { innerHTML: 'Hapus', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
+  const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/kategori/123/delete', dataset: {}, enctype: 'application/x-www-form-urlencoded' };
+  const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
+  handlers.submit(event);
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Menghapus/);
+});
+
+test('busy label: intent=delete uses "Menghapus…"', () => {
+  const { handlers, timers, document } = runtime();
+  const attrs = {};
+  const button = { innerHTML: 'Hapus', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
+  const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/kategori', dataset: { intent: 'delete' }, enctype: 'application/x-www-form-urlencoded' };
+  const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
+  handlers.submit(event);
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Menghapus/);
+});
+
+test('busy label: Buku Wisuda with new PDF uses "Mengunggah dan mengompres PDF…"', () => {
+  const { handlers, timers, document } = runtime();
+  const attrs = {};
+  const button = { innerHTML: 'Simpan', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
+  const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/graduation-books', dataset: {}, enctype: 'multipart/form-data' };
+  const fileInput = { files: [new Blob(['%PDF-1.4'], { type: 'application/pdf' })] };
+  form.querySelector = sel => sel === 'input[type="file"][name="file"]' ? fileInput : null;
+  const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
+  handlers.submit(event);
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Mengunggah dan mengompres PDF/);
+});
+
+test('busy label: data-busy-label attribute overrides default', () => {
+  const { handlers, timers, document } = runtime();
+  const attrs = { 'data-busy-label': 'Kustom…' };
+  const button = { innerHTML: 'Simpan', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
+  const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/kategori', dataset: {}, enctype: 'application/x-www-form-urlencoded' };
+  const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
+  handlers.submit(event);
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Kustom/);
+});
+
+test('bulk action control does not shadow busy-label action URL', () => {
+  const { handlers, timers } = runtime();
+  const attrs = {};
+  const button = { name: 'action', value: 'publish', innerHTML: 'Terbitkan', dataset: {}, setAttribute(k, v) { this[k] = v; } };
+  const form = { method: 'post', action: button, hasAttribute: () => false,
+    getAttribute: k => k === 'action' ? '/admin/news/bulk' : attrs[k], setAttribute(k, v) { attrs[k] = v; } };
+  handlers.submit({ target: form, submitter: button });
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Memproses…/);
+});
+
+test('busy labels cover import, PDF without replacement, and submitter override', () => {
+  for (const [action, files, custom, expected] of [
+    ['/admin/academic-calendars/123/import', [], '', 'Memproses…'],
+    ['/admin/graduation-books', [], '', 'Menyimpan…'],
+    ['/admin/kategori', [], 'Tunggu sebentar…', 'Tunggu sebentar…'],
+  ]) {
+    const { handlers, timers } = runtime();
+    const attrs = {};
+    const button = { innerHTML: 'Simpan', dataset: { busyLabel: custom }, setAttribute(k, v) { this[k] = v; } };
+    const form = { method: 'post', action, enctype: 'multipart/form-data', hasAttribute: () => false,
+      getAttribute: k => attrs[k], setAttribute(k, v) { attrs[k] = v; }, querySelector: () => ({ files }) };
+    handlers.submit({ target: form, submitter: button });
+    timers.values().next().value.fn();
+    assert.equal(button.disabled, true);
+    assert.equal(attrs['aria-busy'], 'true');
+    assert.ok(button.innerHTML.endsWith(expected));
+  }
+});
+
+test('busy label: other actions use "Memproses…"', () => {
+  const { handlers, timers, document } = runtime();
+  const attrs = {};
+  const button = { innerHTML: 'Proses', dataset: {}, setAttribute(name, value) { this[name] = value; }, removeAttribute(name) { delete this[name]; } };
+  const form = { method: 'post', hasAttribute: name => name === 'data-busy-label', getAttribute: name => attrs[name], setAttribute(name, value) { attrs[name] = value; }, removeAttribute(name) { delete attrs[name]; }, querySelectorAll: () => [button], action: '/admin/kategori/bulk', dataset: {}, enctype: 'application/x-www-form-urlencoded' };
+  const event = { target: form, submitter: button, preventDefault() { this.defaultPrevented = true; } };
+  handlers.submit(event);
+  timers.values().next().value.fn();
+  assert.match(button.innerHTML, /Memproses/);
+});
+
 // Audit F5-03: sel tabel ber-white-space:nowrap membuat tautan inline-flex di menu ⋯ berjejer
 // keluar kartu ("Reset Password" di Akun Pengguna menjorok ke luar layar).
 test('row action menus stack their items and allow wrapping inside nowrap table cells', () => {

@@ -20,7 +20,7 @@
   <section id="kegiatan" class="form-panel scroll-mt-20 space-y-5" aria-labelledby="kegiatan-title">
     <h2 id="kegiatan-title" class="font-serif text-lg">Kegiatan (<%= events.length %>)</h2>
     <% if(events.length){ %><%- include('../_ui/data-table',{id:'tabel-events',selectable:false,caption:'Daftar kegiatan',items:events.slice().sort((a,b)=>new Date(a.mulai)-new Date(b.mulai)),state:{},columns:[{key:'nama',label:'Nama'},{key:'semester',label:'Semester'},{key:'mulai',label:'Mulai',cell:e=>formatTanggal(e.mulai)},{key:'selesai',label:'Selesai',cell:e=>e.selesai?formatTanggal(e.selesai):'—'}],actions:entry=>include('../_ui/calendar-delete',{entry,item,kind:'events'})}) %><% }else{ %><%- include('../_ui/empty-state',{text:'Belum ada kegiatan.',emptyIcon:'event'}) %><% } %>
-    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events" class="space-y-5 border-t border-line pt-5" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
+    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/events" class="space-y-5 border-t border-line pt-5" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
       <h3 class="font-serif text-md">Tambah kegiatan</h3>
       <%- include('../_ui/error-summary',{errors:eventErrors,fieldIds:{nama:'event-nama',semester:'event-semester',mulai:'event-mulai',selesai:'event-selesai'}}) %>
       <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -46,7 +46,7 @@
   <section id="lampiran" class="form-panel scroll-mt-20 space-y-5" aria-labelledby="lampiran-title">
     <h2 id="lampiran-title" class="font-serif text-lg">Lampiran surat edaran (<%= lampiran.length %>)</h2>
     <% if(lampiran.length){ %><%- include('../_ui/data-table',{id:'tabel-lampiran',selectable:false,caption:'Lampiran surat edaran',items:lampiran,state:{},columns:[{key:'judul',label:'Judul',cell:entry=>include('../_ui/calendar-file',{entry})},{key:'nomorSurat',label:'Nomor Surat'},{key:'tanggal',label:'Tanggal',cell:l=>l.tanggal?formatTanggal(l.tanggal):'—'}],actions:entry=>include('../_ui/calendar-delete',{entry,item,kind:'lampiran'})}) %><% }else{ %><%- include('../_ui/empty-state',{text:'Belum ada lampiran.',emptyIcon:'info'}) %><% } %>
-    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran" enctype="multipart/form-data" class="space-y-5 border-t border-line pt-5" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
+    <form method="POST" action="/admin/academic-calendars/<%= item._id %>/lampiran" enctype="multipart/form-data" class="space-y-5 border-t border-line pt-5" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload">
       <h3 class="font-serif text-md">Tambah lampiran</h3>
       <%- include('../_ui/error-summary',{errors:lampiranErrors,fieldIds:{file:'f-lampiran'}}) %>
       <div class="grid gap-5 md:grid-cols-3">

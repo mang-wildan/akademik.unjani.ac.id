@@ -1,6 +1,6 @@
 <% const heading = mode === 'edit' ? 'Ubah Buku Wisuda' : 'Tambah Buku Wisuda'; %>
 <% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
-<form method="POST" action="/admin/graduation-books<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form space-y-6' %>">
+<form method="POST" action="/admin/graduation-books<%= mode === 'edit' ? `/${item._id}` : '' %>" enctype="multipart/form-data" data-save-form data-pdf-upload data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? '' : 'max-w-form space-y-6' %>">
 <section class="form-panel space-y-5">
   <h2 class="font-serif text-lg">Data buku wisuda</h2>
 <%- include('../_ui/error-summary', { errors }) %>
