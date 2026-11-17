@@ -1,9 +1,14 @@
 <% const heading = mode === 'edit' ? 'Ubah Akun' : 'Tambah Akun'; %>
 <% if (!locals.partial) { %><%- include('../_ui/page-header', { heading }) %><% } %>
-<form method="POST" action="/admin/users<%= mode === 'edit' ? `/${item._id}` : '' %>" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="max-w-form space-y-5 rounded-card border border-line bg-surface p-4">
+<form method="POST" action="/admin/users<%= mode === 'edit' ? `/${item._id}` : '' %>" data-save-form data-panel-title="<%= heading %>" x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="<%= locals.partial ? 'space-y-6' : 'max-w-form space-y-6' %>">
   <%- include('../_ui/error-summary', { errors }) %>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Identitas</h2>
   <%- include('../_ui/field', { name: 'name', label: 'Nama', required: true, value: values.name, error: errors.name }) %>
   <%- include('../_ui/field', { name: 'email', label: 'Email', type: 'email', required: true, value: values.email, error: errors.email }) %>
+  </section>
+  <section class="form-panel space-y-5">
+    <h2 class="font-serif text-lg">Akses</h2>
   <%- include('../_ui/field', {
     name: 'role', label: 'Peran', type: 'select', required: true, value: values.role === 'admin' ? 'superadmin' : values.role, error: errors.role,
     options: [{ value: 'superadmin', label: 'Super Admin' }, { value: 'editor', label: 'Editor' }],
@@ -16,8 +21,9 @@
       <input type="checkbox" id="f-isActive" name="isActive" value="on" <%= values.isActive === true || values.isActive === 'on' ? 'checked' : '' %> class="size-6 shrink-0 rounded border-control text-primary focus:ring-primary">
       <label for="f-isActive" class="text-sm font-medium">Aktif <span class="text-muted">(nonaktifkan untuk mencegah akun ini masuk)</span></label>
     </div>
-    <p class="field-help -mt-3">Untuk mengubah password, gunakan "Reset Password" dari daftar akun.</p>
+    <p class="field-help -mt-3">Untuk mengubah password, gunakan "Atur Ulang Password" dari menu aksi akun.</p>
   <% } %>
+  </section>
   <div class="form-actions<%= locals.partial ? '' : ' max-lg:bottom-[calc(4rem+env(safe-area-inset-bottom))]' %>">
     <a href="/admin/users" data-slide-close class="btn btn-secondary">Batal</a>
     <button type="submit" class="btn btn-primary">Simpan</button>

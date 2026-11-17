@@ -61,3 +61,29 @@ test('Editor is denied every account route including bulk and reset password', a
   for (const p of ['', '/new', `/${id(1)}/edit`, `/${id(1)}/reset-password`]) assert.equal((await get(p)).status, 403);
   for (const p of ['', '/bulk', `/${id(1)}`, `/${id(1)}/delete`, `/${id(1)}/reset-password`]) assert.equal((await post(p, {})).status, 403);
 });
+test('Task 8: deactivate and reset are distinct confirmations on existing POST routes, no undo', async t => {
+  const { get } = await setup(t, [user(200, { role: 'superadmin' }), user(1), user(2, { isActive: false })]);
+  const html = await (await get('')).text();
+  const dialog = html.match(/<dialog[^>]*id="nonaktif-[^"]+"[\s\S]*?<\/dialog>/)?.[0] || '';
+  assert.match(dialog, /action="\/admin\/users\/bulk"/); assert.match(dialog, /name="action" value="deactivate"/); assert.match(dialog, new RegExp(`name="ids" value="${id(1)}"`));
+  assert.match(dialog, /tidak bisa masuk/); assert.match(dialog, />\s*Nonaktifkan\s*</);
+  assert.equal((html.match(/<dialog[^>]*id="nonaktif-/g) || []).length, 1, 'only active non-self accounts');
+  assert.doesNotMatch(html, /Urungkan|Undo/i);
+  const reset = await (await get(`/${id(1)}/reset-password`)).text();
+  assert.match(reset, /Password lama langsung tidak berlaku/); assert.match(reset, /Atur Ulang Password/); assert.doesNotMatch(reset, /tidak bisa masuk|Urungkan|HASH-PRIVATE/);
+  const filtered = (await (await get('?role=editor&isActive=true')).text()).match(/<dialog[^>]*id="nonaktif-[^"]+"[\s\S]*?<\/dialog>/)[0];
+  assert.match(filtered, /name="role" value="editor"/); assert.match(filtered, /name="isActive" value="true"/);
+});
+test('Task 8: account form uses serif section panels for identity and access', async t => {
+  const { get } = await setup(t, [user(1)]);
+  for (const p of ['/new', `/${id(1)}/edit`]) {
+    const html = await (await get(p)).text();
+    for (const h of ['Identitas', 'Akses']) assert.match(html, new RegExp(`<section class="form-panel[^"]*">\\s*<h2 class="font-serif[^"]*">${h}</h2>`));
+  }
+});
+test('Task 8: per-row deactivate fields deactivate only that account and return to the filtered list', async t => {
+  const { Model, post } = await setup(t, [user(200, { role: 'superadmin' }), user(1), user(2)]);
+  const r = await post('/bulk', { role: 'editor', action: 'deactivate', ids: id(1) });
+  assert.equal(r.status, 303); assert.match(r.headers.get('location'), /role=editor/); assert.match(r.headers.get('location'), /success=/);
+  assert.deepEqual(Model.docs.map(d => d.isActive), [true, false, true]);
+});

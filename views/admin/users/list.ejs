@@ -9,7 +9,7 @@
     ] }) %>
     <% if (items.length) { %>
       <%- include('../_ui/data-table', { caption: title, items, state, bulkForm: 'bulk-users', slideOver: true,
-        rowHref: item => `/admin/users/${item._id}/edit`, actions: item => include('actions', { item, currentUserId }), columns: [
+        rowHref: item => `/admin/users/${item._id}/edit`, actions: item => include('actions', { item, currentUserId, state }), columns: [
           { key: 'name', label: 'Nama', sortable: true, cell: item => include('../_ui/text', { text: `${item.name || item.email}${String(item._id) === currentUserId ? ' (Anda)' : ''}` }) },
           { key: 'email', label: 'Email', sortable: true },
           { key: 'role', label: 'Peran', cell: item => include('../_ui/text', { text: roleLabel(item) }) },

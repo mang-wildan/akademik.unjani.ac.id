@@ -48,3 +48,15 @@ test('Profile photo multipart upload, removal and forged image rejection retain 
  r=await post('/edit',valid);assert.equal(r.status,303);const file=path.join(__dirname,'../public',doc.profilePhoto);t.after(()=>fs.unlink(file));assert.ok((await fs.stat(file)).size>0);
  r=await post('/edit',{name:doc.name,email:doc.email,removeProfilePhoto:'1'});assert.equal(r.status,303);assert.equal(doc.profilePhoto,'');
 });
+test('Task 8: profile summary serif heading with real links; password errors linked without refilled values',async t=>{
+ const doc=me(),{get,post}=await setup(t,'profile',[doc],'editor');
+ const html=await(await get('')).text();assert.match(html,/<h2 id="profil-nama" class="[^"]*font-serif/);assert.match(html,/href="\/profile\/edit"/);assert.match(html,/href="\/profile\/password"/);
+ const r=await post('/password',{currentPassword:'wrong',newPassword:'NewSecret123!',confirmPassword:'NewSecret123!'});const p=await r.text();
+ assert.match(p,/role="alert"[\s\S]*href="#f-currentPassword"/);assert.match(p,/id="f-currentPassword"[^>]*aria-describedby="f-currentPassword-error"[^>]*aria-invalid="true"/);assert.match(p,/id="f-currentPassword-error"/);
+ for(const n of ['currentPassword','newPassword','confirmPassword'])assert.match(p,new RegExp(`type="password" id="f-${n}"[^>]*value=""`));
+});
+test('Task 8: settings sections use serif headings and keep every existing field',async t=>{
+ const {get}=await setup(t,'settings',[setting()]);const html=await(await get('')).text();
+ for(const h of ['Kontak &amp; Footer','Media Sosial','Gambar','Tautan Cepat (Footer)'])assert.match(html,new RegExp(`<h2 class="[^"]*font-serif[^"]*">${h.replace(/[()]/g,'\\$&')}</h2>`));
+ for(const n of ['kontakEmail','kontakTelepon','alamat','jamLayanan','landingFooterDescription','landingVideoUrl','socialFacebook','socialInstagram','socialYoutube','socialTiktok','socialTwitter','socialLinkedin','favicon','strukturOrganisasiImage','label','url','target'])assert.match(html,new RegExp(`name="${n}"`));
+});

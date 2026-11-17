@@ -89,6 +89,16 @@
 - Adaptasi acuan: textarea profil existing (satu butir per baris), select/checkbox native, field/opsi/urutan existing dipertahankan; tidak menambah editor dinamis, segmented state, urutan Fakultas atau endpoint. Daftar dan aksi shared sudah memakai pola Task 3/5, tidak diduplikasi.
 - Bukti: `screenshots/task-7-{profil-akademik,staff,unit,faculties,program-studi,kategori}-{1440,390}-{list,new,edit}.png` (Profil hanya edit); Fakultas `{1440,390}-delete-error.png` (injection); prodi `{1440,768,390,320}-import-error.png`; staf `390-dark-edit.png`.
 
+## Task 8: sistem, akun dan profil
+
+- Tes markup baru gagal dulu (heading serif profil/settings, panel form akun, dialog nonaktif via POST existing, state filter dibawa). Akhir: `node --test test/adminUsers.test.js test/adminSettingsProfile.test.js`: **17 lulus, 0 gagal**; `npm test`: **306 lulus, 0 gagal**. Build CSS sukses; tidak ada kelas baru sehingga `public/css/admin.css` tidak berubah.
+- Nonaktif dan atur ulang password dibedakan: nonaktif memakai `confirm-dialog` bersama (field hidden baru opsional) yang POST ke `/admin/users/bulk` `action=deactivate` existing, hanya untuk akun aktif selain diri sendiri, membawa filter daftar; konsekuensi "tidak bisa masuk ... konten tetap ada". Atur ulang password tetap route terpisah `/:id/reset-password`, teks "Password lama langsung tidak berlaku; status akun tidak berubah". Tanpa tombol undo. Editor tetap 403 di semua route akun/settings (server).
+- Password gagal (profil dan reset admin): summary `role="alert"` menaut ke field, `aria-invalid`/`aria-describedby` ke pesan inline, semua input password `value=""`; hash/password tidak pernah dirender.
+- Browser Chromium: route/middleware/CSP/EJS nyata, DB fixture in-memory, akun fiktif sekali pakai (`disposable@example.org`); bukan login/DB produksi. Semua route (akun daftar/tambah/ubah/reset, settings, profil ringkasan/ubah/password) pada 1440/1024/820/768/390/320 tanpa overflow, 404 atau page error. Dialog nonaktif diklik sampai submit: hanya akun target nonaktif, akun sendiri tetap aktif. Reset gagal lalu sukses; password profil gagal 1440/390.
+- Review independen: tanpa Critical/Important. Minor ditutup: state filter dibawa dialog per-baris + tes POST `ids` tunggal. Minor ditunda: judul tab/toast controller masih "Reset Password"/"direset" (di luar view); trigger Nonaktifkan bergaya danger sama dengan Hapus.
+- Adaptasi acuan: peran tetap select native (bukan segmented), checkbox `isActive` tetap di form ubah, tanpa toggle "Tampilkan" password, tanpa baris "Password diubah"/panel samping settings atau editor tautan inline (butuh model/route baru). Minimal 8 karakter mengikuti validasi existing, bukan 12 pada PNG.
+- Bukti: `screenshots/task-8-users-{1440,390}-{list,new,edit,reset}.png`, `task-8-users-1440-{confirm-deactivate,reset-error}.png`, `task-8-settings-{1440,390}-edit.png`, `task-8-profile-{1440,390}-{summary,edit,password,password-error}.png`.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.
@@ -98,11 +108,11 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 1 | Akreditasi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 2 | Akreditasi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 3 | Akreditasi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 4 | Akun Pengguna _ Atur ulang password | belum diuji | |
-| 5 | Akun Pengguna _ Daftar | belum diuji | |
-| 6 | Akun Pengguna _ Konfirmasi nonaktif | belum diuji | |
-| 7 | Akun Pengguna _ Tambah | belum diuji | |
-| 8 | Akun Pengguna _ Ubah | belum diuji | |
+| 4 | Akun Pengguna _ Atur ulang password | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
+| 5 | Akun Pengguna _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
+| 6 | Akun Pengguna _ Konfirmasi nonaktif | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
+| 7 | Akun Pengguna _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
+| 8 | Akun Pengguna _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
 | 9 | Berita _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 10 | Berita _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 11 | Berita _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
@@ -143,7 +153,7 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 46 | Lembaga Akreditasi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 47 | Lembaga Akreditasi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
 | 48 | Lembaga Akreditasi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 49 | Pengaturan Situs _ Ubah | belum diuji | |
+| 49 | Pengaturan Situs _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
 | 50 | Pengumuman _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 51 | Pengumuman _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
 | 52 | Pengumuman _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
@@ -155,9 +165,9 @@ Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yan
 | 58 | Pimpinan & Staf _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 59 | Pimpinan & Staf _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 60 | Profil Bidang _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 61 | Profil Saya _ Ringkasan | belum diuji | |
-| 62 | Profil Saya _ Ubah password | belum diuji | |
-| 63 | Profil Saya _ Ubah profil | belum diuji | |
+| 61 | Profil Saya _ Ringkasan | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
+| 62 | Profil Saya _ Ubah password | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
+| 63 | Profil Saya _ Ubah profil | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
 | 64 | Program Studi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 65 | Program Studi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
 | 66 | Program Studi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |

@@ -4,7 +4,7 @@
 
 <form method="POST" action="/admin/settings" enctype="multipart/form-data" data-save-form x-data="dirtyGuard" x-on:input="mark" x-on:change="mark" x-on:submit="submitted" x-on:beforeunload.window="beforeUnload" class="mb-6 grid max-w-form gap-5 rounded-card border border-line bg-surface p-4">
   <%- include('../_ui/error-summary', { errors }) %>
-  <h2 class="font-semibold">Kontak &amp; Footer</h2>
+  <h2 class="font-serif text-xl font-bold">Kontak &amp; Footer</h2>
   <div class="grid gap-5 md:grid-cols-2">
     <%- include('../_ui/field', { name: 'kontakEmail', label: 'Email Kontak', type: 'email', value: values.kontakEmail, error: errors.kontakEmail, help: 'Opsional.' }) %>
     <%- include('../_ui/field', { name: 'kontakTelepon', label: 'Telepon Kontak', value: values.kontakTelepon, error: errors.kontakTelepon, help: 'Opsional.' }) %>
@@ -14,7 +14,7 @@
   <%- include('../_ui/field', { name: 'landingFooterDescription', label: 'Deskripsi Footer', type: 'textarea', value: values.landingFooterDescription, error: errors.landingFooterDescription, help: 'Opsional, maks. 300 karakter.' }) %>
   <%- include('../_ui/field', { name: 'landingVideoUrl', label: 'URL Video Profil (Beranda)', type: 'url', value: values.landingVideoUrl, error: errors.landingVideoUrl, help: 'Opsional. Tempel tautan YouTube biasa (watch, youtu.be, atau shorts); otomatis dijadikan tautan sematan. Kosongkan untuk sembunyikan bagian video.' }) %>
 
-  <h2 class="pt-2 font-semibold">Media Sosial</h2>
+  <h2 class="pt-2 font-serif text-xl font-bold">Media Sosial</h2>
   <div class="grid gap-5 md:grid-cols-2">
     <%- include('../_ui/field', { name: 'socialFacebook', label: 'Facebook', type: 'url', value: values.socialFacebook, error: errors.socialFacebook }) %>
     <%- include('../_ui/field', { name: 'socialInstagram', label: 'Instagram', type: 'url', value: values.socialInstagram, error: errors.socialInstagram }) %>
@@ -24,7 +24,7 @@
     <%- include('../_ui/field', { name: 'socialLinkedin', label: 'LinkedIn', type: 'url', value: values.socialLinkedin, error: errors.socialLinkedin }) %>
   </div>
 
-  <h2 class="pt-2 font-semibold">Gambar</h2>
+  <h2 class="pt-2 font-serif text-xl font-bold">Gambar</h2>
   <div class="grid gap-5 md:grid-cols-2">
     <%- include('../_ui/upload-field', {
       name: 'favicon', label: 'Favicon', accept: 'image/png,image/jpeg,image/webp', error: errors.favicon,
@@ -43,7 +43,7 @@
 </form>
 
 <div class="max-w-form space-y-4 rounded-card border border-line bg-surface p-4">
-  <h2 class="font-semibold">Tautan Cepat (Footer)</h2>
+  <h2 class="font-serif text-xl font-bold">Tautan Cepat (Footer)</h2>
   <% if (item.quickLinks && item.quickLinks.length) { %>
     <ul class="space-y-2">
       <% item.quickLinks.forEach(l => { %>

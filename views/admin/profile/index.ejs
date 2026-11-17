@@ -15,7 +15,7 @@
         <span class="flex size-24 shrink-0 items-center justify-center rounded-full bg-primary-soft text-3xl font-bold text-primary" aria-hidden="true"><%= inisial %></span>
       <% } %>
       <div class="min-w-0">
-        <h2 id="profil-nama" class="text-xl font-bold break-words"><%= nama || 'Tanpa nama' %></h2>
+        <h2 id="profil-nama" class="font-serif text-xl font-bold break-words"><%= nama || 'Tanpa nama' %></h2>
         <p class="break-all text-muted"><%= profile.email %></p>
         <p class="mt-2"><%- include('../_ui/badge', { text: roleLabel(profile), tone: superadmin ? 'gold' : 'info', badgeIcon: superadmin ? 'verified' : 'person' }) %></p>
       </div>

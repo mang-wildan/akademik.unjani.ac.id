@@ -3,8 +3,9 @@
   <summary class="btn btn-icon" aria-label="Aksi untuk <%= item.name || item.email %>"><%- icon('more_horiz', 'size-5') %></summary>
   <div class="absolute right-0 z-20 flex flex-col whitespace-normal min-w-48 rounded-card border border-line bg-surface p-2 shadow-overlay">
     <a href="/admin/users/<%= item._id %>/edit" data-slide-over class="btn btn-ghost w-full">Ubah</a>
-    <a href="/admin/users/<%= item._id %>/reset-password" class="btn btn-ghost w-full">Reset Password</a>
+    <a href="/admin/users/<%= item._id %>/reset-password" class="btn btn-ghost w-full">Atur Ulang Password</a>
     <% if (String(item._id) !== currentUserId) { %>
+      <% if (item.isActive) { %><%- include('../_ui/confirm-dialog', { dialogId: `nonaktif-${item._id}`, dialogTitle: `Nonaktifkan akun ${item.name || item.email}?`, dialogText: 'Akun ini tidak bisa masuk ke panel admin sampai diaktifkan lagi lewat Ubah. Konten yang ditulisnya tetap ada.', action: '/admin/users/bulk', fields: { ...(locals.state || {}), action: 'deactivate', ids: item._id }, confirmLabel: 'Nonaktifkan', triggerLabel: 'Nonaktifkan' }) %><% } %>
       <%- include('../_ui/confirm-dialog', { dialogId: `hapus-${item._id}`, dialogTitle: `Hapus akun ${item.email}?`, dialogText: 'Akun ini akan dihapus permanen.', action: `/admin/users/${item._id}/delete`, confirmLabel: 'Hapus' }) %>
     <% } %>
   </div>
