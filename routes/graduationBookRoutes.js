@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-const { safeFilename, checkUploads, fileError, isAllowedImage, DOCUMENT_LIMITS } = require('../utils/upload');
+const { safeFilename, checkUploads, fileError, isAllowedImage, GRADUATION_BOOK_LIMITS } = require('../utils/upload');
 const { requireAuth, requireAdmin } = require('../middleware/authMiddleware');
 const graduationBookController = require('../controllers/graduationBookController');
 
@@ -22,8 +22,14 @@ const fileFilter = (_req, file, cb) => {
   cb(null, true);
 };
 
-const upload = multer({ storage, fileFilter, limits: DOCUMENT_LIMITS });
+const upload = multer({ storage, fileFilter, limits: GRADUATION_BOOK_LIMITS });
 const uploadFields = upload.fields([{ name: 'file', maxCount: 1 }, { name: 'cover', maxCount: 1 }]);
+const handleUploadError = (err, _req, _res, next) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return next(Object.assign(fileError('Ukuran file terlalu besar. Batas maksimal: PDF Buku Wisuda 200 MB, gambar 5 MB.'), { status: 413 }));
+  }
+  return next(err);
+};
 
 router.use(requireAuth, requireAdmin);
 
@@ -31,9 +37,9 @@ router.post('/bulk', graduationBookController.bulk);
 
 router.get('/', graduationBookController.list);
 router.get('/new', graduationBookController.showCreate);
-router.post('/', uploadFields, checkUploads, graduationBookController.create);
+router.post('/', uploadFields, checkUploads, handleUploadError, graduationBookController.create);
 router.get('/:id/edit', graduationBookController.showEdit);
-router.post('/:id', uploadFields, checkUploads, graduationBookController.update);
+router.post('/:id', uploadFields, checkUploads, handleUploadError, graduationBookController.update);
 router.post('/:id/delete', graduationBookController.destroy);
 
 module.exports = router;

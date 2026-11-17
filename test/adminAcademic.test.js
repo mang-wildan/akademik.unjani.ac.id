@@ -148,6 +148,39 @@ test('Buku Wisuda multipart cover/PDF survive edit and are removed by bulk delet
  r=await post('/bulk',{action:'delete',ids:item._id});assert.equal(r.status,303);assert.equal(Model.docs.length,0);
  for(const file of files)await assert.rejects(fs.access(path.join(__dirname,'../public',file)),{code:'ENOENT'});
 });
+test('Buku Wisuda accepts a 150 MB PDF, replaces it, and cleans files rejected above 200 MB',async t=>{
+ const {Model,post}=await setup(t,'graduation-books');const fields={title:'Buku besar',year:'2026',periode:'I'};
+ const png=await require('sharp')({create:{width:2,height:2,channels:3,background:'#ffffff'}}).png().toBuffer();
+ const pdf=Buffer.alloc(150*1024*1024,32);pdf.write('%PDF-1.4\n');
+ const bodyCreate=multipart(fields,'file',pdf);
+ bodyCreate.set('cover',new Blob([png],{type:'image/png'}),`f3-test-${randomUUID()}.png`);
+ let r=await post('',bodyCreate);assert.equal(r.status,303,await r.clone().text());
+ const item=Model.docs[0],old=path.join(__dirname,'../public',item.src);assert.equal((await fs.stat(old)).size,pdf.length);
+ r=await post(`/${item._id}`,multipart(fields));assert.equal(r.status,303);await assert.rejects(fs.access(old),{code:'ENOENT'});
+ const current=item.src;
+ const tooLarge=Buffer.alloc(200*1024*1024+1,32);tooLarge.write('%PDF-1.4\n');
+ const dir=path.join(__dirname,'../public/uploads/graduation-books'),before=(await fs.readdir(dir)).sort();
+ r=await post(`/${item._id}`,multipart(fields,'file',tooLarge));assert.equal(r.status,413);assert.match(await r.text(),/PDF Buku Wisuda 200 MB/);
+ assert.equal(item.src,current);assert.deepEqual((await fs.readdir(dir)).sort(),before);
+ await post('/bulk',{action:'delete',ids:item._id});assert.equal(Model.docs.length,0);
+ await assert.rejects(fs.access(path.join(__dirname,'../public',current)),{code:'ENOENT'});
+});
+test('Buku Wisuda create/edit advertise 200 MB PDFs with 5 MB covers',async t=>{
+ const {get}=await setup(t,'graduation-books',[{_id:id(1),title:'Buku uji',year:2026,periode:'I'}]);
+ for(const url of ['/new',`/${id(1)}/edit`]){
+  const html=await(await get(url)).text();assert.match(html,/PDF, maks\. 200 MB\./);assert.match(html,/JPG\/PNG\/WEBP, maks\. 5 MB\./);
+ }
+});
+test('Buku Wisuda size errors use ADM-09, discard uploads, and preserve records',async t=>{
+ const {Model,post}=await setup(t,'graduation-books',[{_id:id(1),title:'Buku lama',year:2026,periode:'I'}]);
+ const png=Buffer.alloc(5*1024*1024+1);Buffer.from([0x89,0x50,0x4e,0x47]).copy(png);
+ for(const url of ['',`/${id(1)}`]){
+  const body=multipart({title:'Buku baru',year:'2026',periode:'I'});
+  body.set('cover',new Blob([png],{type:'image/png'}),`f3-test-${randomUUID()}.png`);
+  const r=await post(url,body);assert.equal(r.status,413);assert.match(await r.text(),/Ukuran file terlalu besar\. Batas maksimal: PDF Buku Wisuda 200 MB, gambar 5 MB\./);
+  assert.equal(Model.docs.length,1);assert.equal(Model.docs[0].title,'Buku lama');
+ }
+});
 test('Failed file deletion is reported by bulk and retains the database record',async t=>{
  t.mock.method(console,'error',()=>{});
  const{Model,post}=await setup(t,'academic-documents',[{_id:id(1),name:'Path tidak aman',file:'/uploads/academic-documents/../../private.pdf'}]);

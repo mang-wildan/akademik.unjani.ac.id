@@ -26,6 +26,7 @@ const IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'imag
 // add enforceImageLimit after the multer middleware to hold images to 5 MB.
 exports.IMAGE_LIMITS = { fileSize: IMAGE_MAX_BYTES };
 exports.DOCUMENT_LIMITS = { fileSize: DOCUMENT_MAX_BYTES };
+exports.GRADUATION_BOOK_LIMITS = { fileSize: 200 * MB };
 
 exports.isAllowedImage = file => IMAGE_TYPES.includes(file.mimetype);
 

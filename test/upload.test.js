@@ -3,7 +3,19 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { safeFilename, matchesSignature } = require('../utils/upload');
+const { safeFilename, matchesSignature, checkUploads, GRADUATION_BOOK_LIMITS, DOCUMENT_LIMITS, uploadErrorMessage } = require('../utils/upload');
+
+test('graduation PDFs have a dedicated 200 MB limit; other PDFs remain 10 MB', () => {
+  assert.equal(GRADUATION_BOOK_LIMITS?.fileSize, 209715200);
+  assert.equal(DOCUMENT_LIMITS.fileSize, 10485760);
+  assert.equal(uploadErrorMessage({ code: 'LIMIT_FILE_SIZE' }), 'Ukuran file terlalu besar. Batas maksimal: gambar 5 MB, PDF 10 MB.');
+});
+
+test('mixed PDF uploads still reject valid PNG above 5 MB', async () => {
+  const file = tmp('oversize.png', [0x89, 0x50, 0x4e, 0x47]);
+  const err = await new Promise(resolve => checkUploads({ files: { cover: [{ path: file, mimetype: 'image/png', size: 5 * 1024 * 1024 + 1, fieldname: 'cover' }] } }, {}, resolve));
+  assert.equal(err.code, 'LIMIT_FILE_SIZE');
+});
 
 test('safeFilename strips any path so uploads stay in their folder', () => {
   assert.equal(safeFilename('../../../../server.js'), 'server.js');

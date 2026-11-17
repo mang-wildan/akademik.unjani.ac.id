@@ -17,7 +17,7 @@
   <h2 class="font-serif text-lg">Berkas</h2>
   <%- include('../_ui/upload-field', {
     name: 'file', label: 'File (PDF)', accept: 'application/pdf', error: errors.file,
-    limitText: 'PDF, maks. 10 MB.', current: (mode === 'edit' && item.src) ? { label: 'File saat ini', href: item.src } : null,
+    limitText: 'PDF, maks. 200 MB.', current: (mode === 'edit' && item.src) ? { label: 'File saat ini', href: item.src } : null,
   }) %>
   <%- include('../_ui/upload-field', {
     name: 'cover', label: 'Gambar Sampul', accept: 'image/png,image/jpeg,image/webp', error: errors.cover,
