@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="id"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beranda | Bidang Akademik UNJANI</title>
+  
+  <meta name="description" content="Kalender, kurikulum, dokumen, dan informasi akademik resmi Universitas Jenderal Achmad Yani.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Bidang Akademik UNJANI">
+  <meta property="og:title" content="Beranda | Bidang Akademik UNJANI">
+  <meta property="og:description" content="Kalender, kurikulum, dokumen, dan informasi akademik resmi Universitas Jenderal Achmad Yani.">
+  <meta property="og:image" content="/img/lambang-unjani.png">
+  
+  <meta property="og:url" content="http://localhost:8503/">
+  <link rel="canonical" href="http://localhost:8503/">
+  
+  
+  <link rel="preload" href="/img/hero-kampus.webp" imagesrcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" imagesizes="(min-width: 1024px) 50vw, 100vw" as="image" fetchpriority="high">
+  
+  <link rel="icon" href="/assets/landing-page/images/favicon.ico">
+  <link rel="preload" href="/fonts/inter/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="preload" href="/fonts/crimson-text/crimson-text-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="preload" href="/fonts/ubuntu-mono/ubuntu-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin="">
+  <link rel="stylesheet" href="/css/app.css?v=2aa670316b">
+  <script src="/js/shared.js?v=5dc507fa53" defer=""></script>
+  <script src="/js/app.js?v=99d0ec5b0b" defer=""></script>
+  <script src="/js/vendor/alpine-csp.min.js" defer=""></script>
+</head>
+<body class="flex min-h-screen flex-col">
+  <a class="skip-link" href="#konten">Langsung ke konten utama</a>
+
+  
+  <aside class="hidden border-b border-line lg:block" aria-label="Kontak layanan">
+    <div class="container-content flex h-11 items-center justify-between gap-6 font-mono text-xs">
+      <ul class="flex min-w-0 items-center gap-x-3 tracking-[0.05em] text-muted">
+        <li class="min-w-0"><a href="mailto:akademik@unjani.ac.id" class="flex min-h-11 min-w-0 items-center text-muted no-underline hover:text-ink"><span class="truncate" title="akademik@unjani.ac.id">akademik@unjani.ac.id</span></a></li>
+        <li aria-hidden="true">/</li>
+        <li class="shrink-0"><a href="https://wa.me/6285861328758" target="_blank" rel="noopener noreferrer" aria-label="(+62) 85861328758 (Chat Only) - chat WhatsApp (membuka tab baru)" class="flex min-h-11 items-center whitespace-nowrap text-muted no-underline hover:text-ink">WhatsApp layanan akademik</a></li>
+      </ul>
+      <p class="shrink-0 tracking-[0.08em] text-primary uppercase">Layanan Senin-Jumat, 08.00-15.30 WIB</p>
+    </div>
+  </aside>
+
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas" x-data="disclosure" x-on:keydown.escape.window="closeAndFocus">
+    <div class="container-content flex h-20 items-center justify-between gap-6">
+      <a href="/" class="flex min-w-0 shrink-0 items-center gap-3 no-underline">
+        <img src="/img/lambang-unjani.png" alt="" width="44" height="42" class="h-[42px] w-11 object-contain">
+        <span>
+          <span class="block font-serif text-[1.4375rem] leading-[1.625rem] font-bold text-ink">Bidang Akademik</span>
+          <span class="mt-px hidden text-xs leading-4 tracking-[0.015em] text-muted sm:block">Universitas Jenderal Achmad Yani</span>
+        </span>
+      </a>
+
+      <div class="flex items-center gap-6 xl:gap-8">
+        <nav class="hidden lg:block" aria-label="Menu utama">
+          <ul class="flex items-center gap-6 xl:gap-7">
+            
+              
+                <li><a href="/" class="nav-link nav-active" aria-current="page">Beranda</a></li>
+              
+            
+              
+                <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
+                  <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true" class="nav-link cursor-pointer " aria-expanded="false">
+                    Profil<svg class="size-4 text-muted shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z"></path></svg>
+                  </button>
+                  <ul x-show="open" class="menu-enter absolute top-full -left-3 min-w-64 rounded-b-card border border-t-0 border-line bg-surface p-2 shadow-raised" style="display: none;">
+                    
+                      <li><a href="/profil" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Profil Bidang Akademik</a></li>
+                    
+                      <li><a href="/struktur-organisasi" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Struktur Organisasi</a></li>
+                    
+                      <li><a href="/pimpinan-dan-staff" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Pimpinan &amp; Staf</a></li>
+                    
+                  </ul>
+                </li>
+              
+            
+              
+                <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
+                  <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true" class="nav-link cursor-pointer " aria-expanded="false">
+                    Akademik<svg class="size-4 text-muted shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z"></path></svg>
+                  </button>
+                  <ul x-show="open" class="menu-enter absolute top-full -left-3 min-w-64 rounded-b-card border border-t-0 border-line bg-surface p-2 shadow-raised" style="display: none;">
+                    
+                      <li><a href="/kalender-akademik" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Kalender Akademik</a></li>
+                    
+                      <li><a href="/kurikulum" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Kurikulum</a></li>
+                    
+                      <li><a href="/dokumen-akademik" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Dokumen Akademik</a></li>
+                    
+                      <li><a href="/rpl" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Rekognisi Pembelajaran Lampau (RPL)</a></li>
+                    
+                  </ul>
+                </li>
+              
+            
+              
+                <li><a href="/akreditasi" class="nav-link ">Akreditasi</a></li>
+              
+            
+              
+                <li class="relative" x-data="disclosure" x-on:click.outside="close" x-on:keydown.escape="closeAndFocus">
+                  <button type="button" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-haspopup="true" class="nav-link cursor-pointer " aria-expanded="false">
+                    Publikasi<svg class="size-4 text-muted shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M480-344 240-584l43-43 197 197 197-197 43 43-240 240Z"></path></svg>
+                  </button>
+                  <ul x-show="open" class="menu-enter absolute top-full -left-3 min-w-64 rounded-b-card border border-t-0 border-line bg-surface p-2 shadow-raised" style="display: none;">
+                    
+                      <li><a href="/berita" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Berita</a></li>
+                    
+                      <li><a href="/pengumuman" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Pengumuman</a></li>
+                    
+                      <li><a href="/buku" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Buku</a></li>
+                    
+                      <li><a href="/buku-wisuda" class="flex min-h-11 items-center rounded-control px-3 text-[0.9375rem] no-underline hover:bg-sunken text-ink">Buku Wisuda</a></li>
+                    
+                  </ul>
+                </li>
+              
+            
+          </ul>
+        </nav>
+
+        <div class="flex items-center gap-2 lg:gap-5">
+          
+          <a href="/cari" class="hidden min-h-11 items-center gap-2 text-[0.9375rem] text-muted no-underline hover:text-ink lg:inline-flex" aria-keyshortcuts="/">Cari<kbd class="flex size-[22px] items-center justify-center rounded-[3px] border border-control font-mono text-[0.8125rem] leading-none" aria-hidden="true">/</kbd></a>
+          <a href="/cari" class="btn-icon lg:hidden" aria-label="Cari"><svg class="size-6 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M796-121 533-384q-30 26-70 40.5T378-329q-108 0-183-75t-75-181q0-106 75-181t182-75q106 0 180.5 75T632-585q0 43-14 83t-42 75l264 262-44 44ZM377-389q81 0 138-57.5T572-585q0-81-57-138.5T377-781q-82 0-139.5 57.5T180-585q0 81 57.5 138.5T377-389Z"></path></svg></a>
+          
+          <a href="/dokumen-akademik" class="btn btn-dark hidden xl:inline-flex">Dokumen &amp; Formulir</a>
+          <button type="button" class="btn-icon lg:hidden" x-ref="trigger" x-on:click="toggle" x-bind:aria-expanded="open" aria-controls="menu-hp" aria-label="Buka menu" aria-expanded="false">
+            <svg class="size-6 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M120-240v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu HP: panel penuh di bawah header (FR-G-02) -->
+    <nav id="menu-hp" x-show="open" class="menu-enter max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-line bg-canvas lg:hidden" aria-label="Menu utama" style="display: none;">
+      <ul class="container-content pt-2 pb-4">
+        
+          
+            <li class="border-b border-line"><a href="/" class="flex min-h-13 items-center text-base no-underline font-bold text-ink" aria-current="page">Beranda</a></li>
+          
+        
+          
+            <li class="border-b border-line py-3">
+              <p class="meta py-2">Profil</p>
+              <ul>
+                
+                  <li><a href="/profil" class="flex min-h-11 items-center text-base no-underline text-ink">Profil Bidang Akademik</a></li>
+                
+                  <li><a href="/struktur-organisasi" class="flex min-h-11 items-center text-base no-underline text-ink">Struktur Organisasi</a></li>
+                
+                  <li><a href="/pimpinan-dan-staff" class="flex min-h-11 items-center text-base no-underline text-ink">Pimpinan &amp; Staf</a></li>
+                
+              </ul>
+            </li>
+          
+        
+          
+            <li class="border-b border-line py-3">
+              <p class="meta py-2">Akademik</p>
+              <ul>
+                
+                  <li><a href="/kalender-akademik" class="flex min-h-11 items-center text-base no-underline text-ink">Kalender Akademik</a></li>
+                
+                  <li><a href="/kurikulum" class="flex min-h-11 items-center text-base no-underline text-ink">Kurikulum</a></li>
+                
+                  <li><a href="/dokumen-akademik" class="flex min-h-11 items-center text-base no-underline text-ink">Dokumen Akademik</a></li>
+                
+                  <li><a href="/rpl" class="flex min-h-11 items-center text-base no-underline text-ink">Rekognisi Pembelajaran Lampau (RPL)</a></li>
+                
+              </ul>
+            </li>
+          
+        
+          
+            <li class="border-b border-line"><a href="/akreditasi" class="flex min-h-13 items-center text-base no-underline text-ink">Akreditasi</a></li>
+          
+        
+          
+            <li class="border-b border-line py-3">
+              <p class="meta py-2">Publikasi</p>
+              <ul>
+                
+                  <li><a href="/berita" class="flex min-h-11 items-center text-base no-underline text-ink">Berita</a></li>
+                
+                  <li><a href="/pengumuman" class="flex min-h-11 items-center text-base no-underline text-ink">Pengumuman</a></li>
+                
+                  <li><a href="/buku" class="flex min-h-11 items-center text-base no-underline text-ink">Buku</a></li>
+                
+                  <li><a href="/buku-wisuda" class="flex min-h-11 items-center text-base no-underline text-ink">Buku Wisuda</a></li>
+                
+              </ul>
+            </li>
+          
+        
+      </ul>
+      <div class="container-content pb-6">
+        <a href="/dokumen-akademik" class="btn btn-dark btn-lg w-full">Dokumen &amp; Formulir</a>
+        <ul class="mt-4 font-mono text-[0.8125rem] tracking-[0.03em] text-muted">
+          <li><a href="https://wa.me/6285861328758" target="_blank" rel="noopener noreferrer" aria-label="(+62) 85861328758 (Chat Only) - chat WhatsApp (membuka tab baru)" class="flex min-h-11 items-center text-muted no-underline">(+62) 85861328758 (Chat Only)</a></li>
+          <li><a href="mailto:akademik@unjani.ac.id" class="flex min-h-11 items-center text-muted no-underline">akademik@unjani.ac.id</a></li>
+          <li class="flex min-h-11 items-center text-primary uppercase">Layanan Senin-Jumat, 08.00-15.30 WIB</li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  
+
+  <main id="konten" class="flex-1" tabindex="-1">
+    
+
+
+<section class="home-hero" data-enter="" aria-labelledby="hero-judul">
+  <div class="container-content home-hero-grid">
+    <div class="home-hero-copy">
+      <p class="kicker">Portal resmi layanan akademik</p>
+      <h1 id="hero-judul" class="display mt-4">Layanan akademik<br class="hidden xl:block"> Universitas Jenderal<br class="hidden xl:block"> Achmad Yani.</h1>
+      <p class="mt-8 max-w-md text-base text-muted">Kalender, kurikulum, dokumen, dan informasi akademik resmi dalam satu tempat.</p>
+      <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
+        <a href="/pengumuman" class="btn btn-primary btn-lg">Pengumuman terbaru<svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></a>
+        <a href="/profil" class="link inline-flex min-h-11 items-center text-sm">Profil Bidang Akademik</a>
+      </div>
+    </div>
+    
+    <div class="home-hero-photo photo">
+      <img src="/img/hero-kampus.webp" srcset="/img/hero-kampus-800.webp 800w, /img/hero-kampus.webp 1600w" sizes="(min-width: 1024px) 50vw, 100vw" alt="Kampus Universitas Jenderal Achmad Yani" class="size-full object-cover" width="1600" height="903" fetchpriority="high">
+    </div>
+    
+  </div>
+</section>
+
+<div class="container-content pb-14 lg:pb-20">
+
+  <section class="pb-16" aria-labelledby="akses-judul">
+    <h2 id="akses-judul" class="sr-only">Akses cepat</h2>
+    <ul class="home-shortcuts grid border-t border-ink sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+      
+        <li class="border-b border-line sm:not-last:border-r on-brand bg-brand text-white">
+          <a href="/kalender-akademik" class="group block h-full p-6 no-underline hover:bg-primary-hover">
+            <span class="flex items-center justify-between font-mono text-xs text-on-brand-muted"><span>01</span><svg class="row-arrow size-5 text-white shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></span>
+            <span class="mt-4 block font-serif text-2xl font-bold">Kalender Akademik</span>
+            <span class="mt-2 block text-sm text-on-brand-muted">Jadwal kegiatan &amp; masa perkuliahan</span>
+          </a>
+        </li>
+      
+        <li class="border-b border-line sm:not-last:border-r ">
+          <a href="/dokumen-akademik" class="group block h-full p-6 no-underline text-ink hover:bg-sunken">
+            <span class="flex items-center justify-between font-mono text-xs text-muted"><span>02</span><svg class="row-arrow size-5  shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></span>
+            <span class="mt-4 block font-serif text-2xl font-bold">Dokumen &amp; Formulir</span>
+            <span class="mt-2 block text-sm text-muted">Unduh berkas dan formulir resmi</span>
+          </a>
+        </li>
+      
+        <li class="border-b border-line sm:not-last:border-r ">
+          <a href="/kurikulum" class="group block h-full p-6 no-underline text-ink hover:bg-sunken">
+            <span class="flex items-center justify-between font-mono text-xs text-muted"><span>03</span><svg class="row-arrow size-5  shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></span>
+            <span class="mt-4 block font-serif text-2xl font-bold">Kurikulum</span>
+            <span class="mt-2 block text-sm text-muted">Struktur kurikulum program studi</span>
+          </a>
+        </li>
+      
+        <li class="border-b border-line sm:not-last:border-r ">
+          <a href="/akreditasi" class="group block h-full p-6 no-underline text-ink hover:bg-sunken">
+            <span class="flex items-center justify-between font-mono text-xs text-muted"><span>04</span><svg class="row-arrow size-5  shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></span>
+            <span class="mt-4 block font-serif text-2xl font-bold">Akreditasi</span>
+            <span class="mt-2 block text-sm text-muted">Status akreditasi BAN-PT &amp; LAM</span>
+          </a>
+        </li>
+      
+    </ul>
+  </section>
+  
+  <section class="grid gap-8 py-4 lg:grid-cols-[18rem_1fr] lg:gap-12" aria-labelledby="info-penting">
+    <div>
+      <p class="eyebrow">Disematkan</p>
+      <h2 id="info-penting" class="section-title mt-4">Informasi<br class="hidden lg:block"> penting</h2>
+      <p class="mt-2 text-sm text-muted">Pengumuman, dokumen, dan berita yang disematkan Bidang Akademik.</p>
+    </div>
+
+    <ul class="divide-y divide-line border-y border-line">
+      
+        <li class="group relative flex flex-wrap items-center justify-between gap-4 py-4">
+          <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-5 gap-y-1">
+            <time datetime="2026-10-16T07:00:00.993Z" class="meta-sm shrink-0">16 Okt 2026</time>
+            <span class="meta-sm text-primary">Berita</span>
+            <a href="/berita/organisasi-mahasiswa-kenalkan-beragam-kegiatan-kampus-kepada-mahasiswa-baru" class="min-w-0 flex-1 font-semibold text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">Organisasi Mahasiswa Kenalkan Beragam Kegiatan Kampus kepada Mahasiswa Baru</a>
+          </div>
+          <svg class="size-4 shrink-0 text-muted group-hover:text-primary shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"></path></svg>
+        </li>
+      
+        <li class="group relative flex flex-wrap items-center justify-between gap-4 py-4">
+          <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-5 gap-y-1">
+            <time datetime="2026-10-02T02:25:07.821Z" class="meta-sm shrink-0">2 Okt 2026</time>
+            <span class="meta-sm text-primary">Dokumen · PDF</span>
+            <a href="/uploads/academic-documents/1790907907603-51.-SALINAN-PERMENRISTEKDIKTI-NO-51-TAHUN-2017.pdf" class="min-w-0 flex-1 font-semibold text-ink no-underline after:absolute after:inset-0 group-hover:text-primary" target="_blank" rel="noopener">PERMEN DIKTI<span class="sr-only"> (PDF, tab baru)</span></a>
+          </div>
+          <svg class="size-4 shrink-0 text-muted group-hover:text-primary shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"></path></svg>
+        </li>
+      
+        <li class="group relative flex flex-wrap items-center justify-between gap-4 py-4">
+          <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-5 gap-y-1">
+            <time datetime="2026-02-03T07:18:45.566Z" class="meta-sm shrink-0">3 Feb 2026</time>
+            <span class="meta-sm text-primary">Dokumen · PDF</span>
+            <a href="/uploads/academic-documents/1770103125509-FORMULIR_PEMBUATAN_IJAZAH.pdf" class="min-w-0 flex-1 font-semibold text-ink no-underline after:absolute after:inset-0 group-hover:text-primary" target="_blank" rel="noopener">FORMULIR PEMBUATAN IJAZAH<span class="sr-only"> (PDF, tab baru)</span></a>
+          </div>
+          <svg class="size-4 shrink-0 text-muted group-hover:text-primary shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"></path></svg>
+        </li>
+      
+    </ul>
+  </section>
+  
+</div>
+
+
+<section class="section" aria-labelledby="kegiatan-judul">
+  <div class="container-content">
+    
+<div class="mb-9 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+  <div class="min-w-0">
+    
+    <h2 id="kegiatan-judul" class="section-title">Kegiatan Akademik</h2>
+    
+  </div>
+  
+    <a href="/berita" class="section-link">Lihat semua berita<svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></a>
+  
+</div>
+
+    
+    <div class="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
+      <article class="group relative flex flex-col">
+        <div class="photo aspect-[72/43] border border-line"><img src="/uploads/news/1792134000698-Pameran_organisasi_mahasiswa_di_halaman_kampus.webp" alt="" class="size-full object-cover" loading="lazy"></div>
+        <p class="meta mt-5">
+          <span class="text-primary">Kemahasiswaan</span> · <time datetime="2026-10-16T07:00:00.993Z">16 Oktober 2026</time>
+        </p>
+        <h3 class="subsection-title mt-3">
+          <a href="/berita/organisasi-mahasiswa-kenalkan-beragam-kegiatan-kampus-kepada-mahasiswa-baru" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">Organisasi Mahasiswa Kenalkan Beragam Kegiatan Kampus kepada Mahasiswa Baru</a>
+        </h3>
+        <p class="mt-3 line-clamp-3 text-[0.9375rem] leading-6 text-muted">Beragam organisasi mahasiswa memperkenalkan kegiatan mereka melalui pameran aktivitas kemahasiswaan di lingkungan Universitas Jenderal Achmad Yani. Kegiatan ini menjadi ruang bagi…</p>
+      </article>
+
+      
+      <div class="divide-y divide-line border-t border-ink">
+        
+          <article class="group relative flex items-start justify-between gap-4 py-6">
+            <div class="min-w-0 flex-1">
+              <p class="meta-sm">
+                <span class="text-primary">Prestasi</span> · <time datetime="2026-10-16T07:07:08.955Z">16 Okt 2026</time>
+              </p>
+              <h3 class="mt-2 font-sans text-lg leading-snug font-bold">
+                <a href="/berita/tim-mahasiswa-unjani-raih-penghargaan-melalui-inovasi-pengelolaan-sampah" class="line-clamp-3 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">Tim Mahasiswa UNJANI Raih Penghargaan melalui Inovasi Pengelolaan Sampah</a>
+              </h3>
+            </div>
+            <img src="/uploads/news/1792134428644-Prestasi_mahasiswa_bersama_prototipe_pemilah_sampah.webp" alt="" class="photo h-[100px] w-[132px] shrink-0 object-cover" loading="lazy">
+          </article>
+        
+          <article class="group relative flex items-start justify-between gap-4 py-6">
+            <div class="min-w-0 flex-1">
+              <p class="meta-sm">
+                <span class="text-primary">Akademik</span> · <time datetime="2026-10-16T07:02:56.512Z">16 Okt 2026</time>
+              </p>
+              <h3 class="mt-2 font-sans text-lg leading-snug font-bold">
+                <a href="/berita/unjani-dan-mitra-industri-bahas-pengembangan-program-magang-mahasiswa" class="line-clamp-3 text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">UNJANI dan Mitra Industri Bahas Pengembangan Program Magang Mahasiswa</a>
+              </h3>
+            </div>
+            <img src="/uploads/news/1792134176126-Diskusi_Kolaborasi_Kampusa_Industri.webp" alt="" class="photo h-[100px] w-[132px] shrink-0 object-cover" loading="lazy">
+          </article>
+        
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+
+
+<div class="section section-dark">
+  <div class="container-content grid gap-12 lg:grid-cols-2 lg:items-start">
+    
+    <section aria-labelledby="mutu-judul">
+      <h2 id="mutu-judul" class="kicker font-normal text-on-brand-label">Penjaminan mutu</h2>
+      
+      <ul class="mt-2 space-y-6">
+        
+          <li>
+            <p class="font-serif text-[clamp(4rem,8vw,8.5rem)] leading-none font-bold tracking-tight text-white">B</p>
+            <p class="mt-6 text-sm text-on-brand-muted">Akreditasi institusi · BAN-PT · berlaku s.d. 28 Des 2026</p>
+            <p class="mt-1 text-xs text-on-brand-muted">Segera berakhir</p>
+          </li>
+        
+          <li>
+            <p class="font-serif text-[clamp(4rem,8vw,8.5rem)] leading-none font-bold tracking-tight text-white">Unggul</p>
+            <p class="mt-6 text-sm text-on-brand-muted">Akreditasi institusi · BAN-PT · berlaku s.d. 11 Feb 2026</p>
+            <p class="mt-1 text-xs text-on-brand-muted">Kedaluwarsa</p>
+          </li>
+        
+      </ul>
+      
+      
+      <a href="/akreditasi" class="link-arrow mt-5 text-white">Lihat data akreditasi<svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></a>
+    </section>
+    
+
+    
+    
+    <section aria-labelledby="lulusan-judul">
+      <h2 id="lulusan-judul" class="kicker mb-8 font-normal text-on-brand-label">Lulusan</h2>
+      <dl class="border-t border-white/25">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-white/25 py-4">
+          <dt class="text-sm text-on-brand-muted">Lulusan tahun 2025</dt>
+          <dd class="font-serif text-4xl leading-none font-bold tabular-nums sm:text-5xl xl:text-6xl text-white">6.289</dd>
+        </div>
+        <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-white/25 py-4">
+          <dt class="text-sm text-on-brand-muted">Total lulusan tercatat</dt>
+          <dd class="font-serif text-4xl leading-none font-bold tabular-nums sm:text-5xl xl:text-6xl text-white">11.769</dd>
+        </div>
+        
+        <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-white/25 py-4">
+          <dt class="text-sm text-on-brand-muted">Dibanding tahun sebelumnya</dt>
+          <dd class="flex items-center gap-2 font-serif text-4xl leading-none font-bold tabular-nums sm:text-5xl xl:text-6xl text-on-brand-muted">
+            <svg class="size-7 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m123-240-43-43 292-291 167 167 241-241H653v-60h227v227h-59v-123L538-321 371-488 123-240Z"></path></svg><span><span class="sr-only">naik </span>+14,8%</span>
+          </dd>
+        </div>
+        
+      </dl>
+    </section>
+    
+  </div>
+</div>
+
+
+
+<section class="section" aria-labelledby="pengumuman-judul">
+  <div class="container-content">
+    
+<div class="mb-9 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+  <div class="min-w-0">
+    
+    <h2 id="pengumuman-judul" class="section-title">Pengumuman Terbaru</h2>
+    <p class="section-lead">Informasi resmi seputar administrasi dan layanan akademik.</p>
+  </div>
+  
+    <a href="/pengumuman" class="section-link">Lihat semua pengumuman<svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="m560-242-43-42 168-168H160v-60h525L516-681l43-42 241 241-240 240Z"></path></svg></a>
+  
+</div>
+
+    
+    <div class="grid gap-10 lg:grid-cols-2">
+      <article class="group relative border-t border-ink pt-5">
+        <p class="text-xs font-semibold text-primary uppercase">Administrasi</p>
+        <div class="mt-4 flex items-start gap-5">
+          
+
+
+  <time datetime="2026-02-08T04:12:17.882Z" class="flex shrink-0 flex-col items-start">
+    <span class="font-serif text-[2.75rem] leading-none font-bold tracking-[-0.027em] sm:text-[3.5rem] text-primary">08</span>
+    <span class="mt-2.5 font-mono text-xs leading-4 tracking-[0.1em] text-ink uppercase">FEB 2026</span>
+  </time>
+
+
+        </div>
+        <div class="mt-5">
+          <h3 class="subsection-title min-w-0"><a href="/pengumuman/threhre" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">threhre</a></h3>
+        </div>
+        <p class="mt-4 text-muted">Humas - Universitas Jenderal Achmad Yani (Unjani) menggelar prosesi serah terima jabatan Kepala Pusat Satuan Pengawas Internal (SPI) pada Selasa (3/2/2026) di Ruang Serba Guna…</p>
+        <p class="mt-5 flex items-center gap-2 text-sm font-semibold text-primary" aria-hidden="true">Baca selengkapnya<svg class="size-4 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"></path></svg></p>
+      </article>
+      
+      <ul class="divide-y divide-line border-t border-ink">
+        
+          <li class="group relative flex items-start gap-5 py-5">
+            
+
+
+  <time datetime="2026-02-08T04:08:09.451Z" class="flex shrink-0 flex-col items-start">
+    <span class="font-serif text-[2.75rem] leading-none font-bold tracking-[-0.027em] sm:text-[3.5rem] text-ink">08</span>
+    <span class="mt-2.5 font-mono text-xs leading-4 tracking-[0.1em] text-ink uppercase">FEB 2026</span>
+  </time>
+
+
+            <div class="min-w-0 flex-1">
+              <h3 class="font-sans text-base leading-snug font-semibold"><a href="/pengumuman/pengumuman-baru" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">Pengumuman Baru</a></h3>
+              
+            </div>
+            <svg class="size-4 shrink-0 text-muted shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"></path></svg>
+          </li>
+        
+          <li class="group relative flex items-start gap-5 py-5">
+            
+
+
+  <time datetime="2026-02-03T08:20:10.172Z" class="flex shrink-0 flex-col items-start">
+    <span class="font-serif text-[2.75rem] leading-none font-bold tracking-[-0.027em] sm:text-[3.5rem] text-ink">03</span>
+    <span class="mt-2.5 font-mono text-xs leading-4 tracking-[0.1em] text-ink uppercase">FEB 2026</span>
+  </time>
+
+
+            <div class="min-w-0 flex-1">
+              <h3 class="font-sans text-base leading-snug font-semibold"><a href="/pengumuman/informasi-pendaftaran-wisuda-periode-i-tahun-2026" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">Informasi Pendaftaran Wisuda Periode I tahun 2026</a></h3>
+              
+            </div>
+            <svg class="size-4 shrink-0 text-muted shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"></path></svg>
+          </li>
+        
+          <li class="group relative flex items-start gap-5 py-5">
+            
+
+
+  <time datetime="2026-02-03T08:20:10.172Z" class="flex shrink-0 flex-col items-start">
+    <span class="font-serif text-[2.75rem] leading-none font-bold tracking-[-0.027em] sm:text-[3.5rem] text-ink">03</span>
+    <span class="mt-2.5 font-mono text-xs leading-4 tracking-[0.1em] text-ink uppercase">FEB 2026</span>
+  </time>
+
+
+            <div class="min-w-0 flex-1">
+              <h3 class="font-sans text-base leading-snug font-semibold"><a href="/pengumuman/informasi-pendaftaran-wisuda-periode-i-tahun-2026-2" class="text-ink no-underline after:absolute after:inset-0 group-hover:text-primary">Informasi Pendaftaran Wisuda Periode I tahun 2026</a></h3>
+              
+            </div>
+            <svg class="size-4 shrink-0 text-muted shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M686-450H160v-60h526L438-758l42-42 320 320-320 320-42-42 248-248Z"></path></svg>
+          </li>
+        
+      </ul>
+      
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section section-soft" aria-labelledby="unit-judul" aria-roledescription="carousel" x-data="carousel">
+  <div class="container-content">
+    
+<div class="mb-9 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+  <div class="min-w-0">
+    
+    <h2 id="unit-judul" class="section-title">Unit Kerja Bidang Akademik</h2>
+    <p class="section-lead">Unit yang melayani kebutuhan akademik sivitas akademika.</p>
+  </div>
+  
+</div>
+
+    <div class="-mt-4 mb-4 flex justify-end gap-2" x-show="canScroll">
+      <button type="button" class="btn-icon border border-line bg-surface" @click="prev" aria-label="Unit sebelumnya"><svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z"></path></svg></button>
+      <button type="button" class="btn-icon border border-line bg-surface" @click="toggle" :aria-label="toggleLabel" aria-label="Jeda slideshow">
+        <span x-show="playing"><svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M525-200v-560h235v560H525Zm-325 0v-560h235v560H200Zm385-60h115v-440H585v440Zm-325 0h115v-440H260v440Zm0-440v440-440Zm325 0v440-440Z"></path></svg></span><span x-show="!playing" style="display: none;"><svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M320-203v-560l440 280-440 280Zm60-280Zm0 171 269-171-269-171v342Z"></path></svg></span>
+      </button>
+      <button type="button" class="btn-icon border border-line bg-surface" @click="next" aria-label="Unit berikutnya"><svg class="size-5 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z"></path></svg></button>
+    </div>
+    
+    <ul x-ref="track" :class="centerClass" class="-mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-4 [scrollbar-width:none] motion-safe:scroll-smooth [&amp;::-webkit-scrollbar]:hidden" @mouseenter="hold" @mouseleave="release" @focusin="hold" @focusout="release">
+      
+        <li class="group relative shrink-0 basis-[85%] snap-start overflow-hidden sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
+          <img src="/uploads/unit/1791876742950-Perpustakaan_Kampus_dalam_Cahaya_Hangat.webp" alt="" class="aspect-[4/3] w-full rounded-card object-cover" loading="lazy" width="900" height="675">
+          <div class="pt-4">
+            <h3 class="font-sans text-base leading-snug font-semibold text-ink">Perpustakaan UNJANI</h3>
+            <a href="https://digilib.unjani.ac.id/" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Kunjungi unit<span class="sr-only"> Perpustakaan UNJANI (tab baru)</span><svg class="size-4 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"></path></svg></a>
+          </div>
+        </li>
+      
+        <li class="group relative shrink-0 basis-[85%] snap-start overflow-hidden sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
+          <img src="/uploads/unit/1791876556158-Laboratorium_hijau_dan_emas.webp" alt="" class="aspect-[4/3] w-full rounded-card object-cover" loading="lazy" width="900" height="675">
+          <div class="pt-4">
+            <h3 class="font-sans text-base leading-snug font-semibold text-ink">Lab Center</h3>
+            <a href="https://labcenter.unjani.ac.id/" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Kunjungi unit<span class="sr-only"> Lab Center (tab baru)</span><svg class="size-4 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"></path></svg></a>
+          </div>
+        </li>
+      
+        <li class="group relative shrink-0 basis-[85%] snap-start overflow-hidden sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
+          <img src="/uploads/unit/1791876455668-Kehidupan_Kampus_Indonesia_yang_Harmonis.webp" alt="" class="aspect-[4/3] w-full rounded-card object-cover" loading="lazy" width="900" height="675">
+          <div class="pt-4">
+            <h3 class="font-sans text-base leading-snug font-semibold text-ink">Bagian Administrasi Akademik</h3>
+            <a href="https://baa.unjani.ac.id/" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Kunjungi unit<span class="sr-only"> Bagian Administrasi Akademik (tab baru)</span><svg class="size-4 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"></path></svg></a>
+          </div>
+        </li>
+      
+        <li class="group relative shrink-0 basis-[85%] snap-start overflow-hidden sm:basis-[calc((100%-1.25rem)/2)] lg:basis-[calc((100%-2.5rem)/3)]">
+          <img src="/uploads/unit/1791876477161-Ruang_Bahasa_Kampus_Multikultural.webp" alt="" class="aspect-[4/3] w-full rounded-card object-cover" loading="lazy" width="900" height="675">
+          <div class="pt-4">
+            <h3 class="font-sans text-base leading-snug font-semibold text-ink">Pusat Bahasa</h3>
+            <a href="https://pusat-bahasa.unjani.ac.id/" target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary">Kunjungi unit<span class="sr-only"> Pusat Bahasa (tab baru)</span><svg class="size-4 shrink-0" viewBox="0 -960 960 960" fill="currentColor" aria-hidden="true" focusable="false"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h279v60H180v600h600v-279h60v279q0 24-18 42t-42 18H180Zm202-219-42-43 398-398H519v-60h321v321h-60v-218L382-339Z"></path></svg></a>
+          </div>
+        </li>
+      
+    </ul>
+  </div>
+</section>
+
+
+
+
+  </main>
+
+  
+  
+  <footer class="on-dark bg-ink text-on-ink">
+    <div class="container-content">
+      <section class="flex flex-col gap-8 py-16 md:flex-row md:items-center md:justify-between" aria-labelledby="cta-layanan">
+        <div>
+          <h2 id="cta-layanan" class="section-title text-on-ink">Ada pertanyaan akademik?</h2>
+          <p class="mt-3 text-base text-on-ink-muted">Layanan loket Senin-Jumat, 08.00-15.30 WIB.</p>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-4">
+          <a href="https://wa.me/6285861328758" class="btn btn-light btn-lg min-w-44" target="_blank" rel="noopener noreferrer">Chat WhatsApp<span class="sr-only"> (membuka tab baru)</span></a>
+          <a href="mailto:akademik@unjani.ac.id" class="btn btn-outline-light btn-lg min-w-44">Kirim email</a>
+        </div>
+      </section>
+
+      <div class="grid gap-10 border-t border-white/15 py-9 md:grid-cols-2 lg:grid-cols-[11fr_12fr_7fr] lg:gap-8">
+        <div>
+          <a href="/" class="inline-flex items-center gap-3 text-on-ink no-underline">
+            <img src="/img/lambang-unjani.png" alt="" width="40" height="39" class="h-[39px] w-10 object-contain">
+            <span>
+              <span class="block font-serif text-[1.3125rem] leading-6 font-bold">Bidang Akademik</span>
+              <span class="block text-xs leading-4 text-on-ink-muted">Universitas Jenderal Achmad Yani</span>
+            </span>
+          </a>
+          <p class="mt-6 max-w-xs text-sm leading-[1.375rem] text-on-ink-muted">Jl. Terusan Jend. Sudirman, Cibeber, Kec. Cimahi Sel., Kota Cimahi, Jawa Barat</p>
+          
+        </div>
+
+        <nav aria-labelledby="footer-jelajahi">
+          <h2 id="footer-jelajahi" class="footer-title">Jelajahi</h2>
+          
+          <ul class="grid grid-flow-col grid-rows-4 gap-x-8">
+            
+              <li><a href="/profil" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Profil</a></li>
+            
+              <li><a href="/pimpinan-dan-staff" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Pimpinan &amp; staf</a></li>
+            
+              <li><a href="/struktur-organisasi" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Struktur organisasi</a></li>
+            
+              <li><a href="/kalender-akademik" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Kalender akademik</a></li>
+            
+              <li><a href="/kurikulum" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Kurikulum</a></li>
+            
+              <li><a href="/akreditasi" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Akreditasi</a></li>
+            
+              <li><a href="/dokumen-akademik" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Dokumen akademik</a></li>
+            
+              <li><a href="/buku-wisuda" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]">Buku wisuda</a></li>
+            
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footer-tautan">
+          <h2 id="footer-tautan" class="footer-title">Tautan</h2>
+          <ul>
+            
+              <li><a href="https://unjani.ac.id" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]" target="_blank" rel="noopener noreferrer">UNJANI<span class="sr-only"> (membuka tab baru)</span></a></li>
+            
+              <li><a href="https://digilib.unjani.ac.id/" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]" target="_blank" rel="noopener noreferrer">Perpustkaan UNJANI<span class="sr-only"> (membuka tab baru)</span></a></li>
+            
+              <li><a href="https://pusat-bahasa.unjani.ac.id/" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]" target="_blank" rel="noopener noreferrer">Pusat Bahasa<span class="sr-only"> (membuka tab baru)</span></a></li>
+            
+              <li><a href="https://labcenter.unjani.ac.id/" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]" target="_blank" rel="noopener noreferrer">LabCenter UNJANI<span class="sr-only"> (membuka tab baru)</span></a></li>
+            
+              <li><a href="https://microcredentials.unjani.ac.id/" class="flex min-h-11 items-center text-sm text-on-ink no-underline hover:underline pointer-fine:min-h-[30px]" target="_blank" rel="noopener noreferrer">Micro Credensial UNJANI<span class="sr-only"> (membuka tab baru)</span></a></li>
+            
+          </ul>
+        </nav>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-x-6 border-t border-white/15 py-3 font-mono text-[0.6875rem] tracking-[0.11em] text-on-ink-muted uppercase">
+        <p>© 2026 Universitas Jenderal Achmad Yani</p>
+        <a href="/login" class="inline-flex min-h-11 items-center text-on-ink-muted no-underline hover:text-on-ink">Masuk admin</a>
+      </div>
+    </div>
+  </footer>
+
+  
+
+
+</body></html>

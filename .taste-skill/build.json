@@ -1,0 +1,11 @@
+{
+ "page": null,
+ "url": "http://localhost:8503/",
+ "root": null,
+ "kind": "service",
+ "category": "layanan akademik universitas",
+ "primary": "Pengumuman terbaru",
+ "rounds": 3,
+ "start": "2026-11-12T02:32:37.886Z",
+ "by": "gate.mjs --start"
+}

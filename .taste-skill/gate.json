@@ -1,0 +1,2048 @@
+{
+ "start": "2026-11-12T02:32:37.886Z",
+ "round": 1,
+ "idle": 0,
+ "errors": 0,
+ "status": "fail",
+ "history": [
+  {
+   "at": "2026-11-12T02:41:56.319Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 53,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": null,
+  "url": "http://localhost:8503/",
+  "root": null,
+  "kind": "service",
+  "category": "layanan akademik universitas",
+  "primary": "Pengumuman terbaru",
+  "rounds": 3,
+  "start": "2026-11-12T02:32:37.886Z",
+  "by": "gate.mjs --start"
+ },
+ "manual": true,
+ "roundKey": "4a2ab45e635824db:da39a3ee",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "4a2ab45e635824db",
+ "page": "http://localhost:8503/",
+ "found": {
+  "fails": [
+   {
+    "check": "hero-fill",
+    "where": "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\"",
+    "msg": "the next section shows on the first screen: it starts at 807px on a 900px screen (the hero ends at 806px)",
+    "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-fill"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\""
+    ]
+   },
+   {
+    "check": "nav",
+    "where": "header.sticky.top-0 > div.container-content.flex > a.flex.min-w-0 \"Bidang Akademik Universitas Jenderal Ach\"",
+    "msg": "nav link wraps to a second line",
+    "fix": "make the nav one bar from the content's left edge to its right edge, with every link and action inside it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "nav"
+    ],
+    "wheres": [
+     "header.sticky.top-0 > div.container-content.flex > a.flex.min-w-0 \"Bidang Akademik Universitas Jenderal Ach\""
+    ]
+   },
+   {
+    "check": "no-visual",
+    "where": "main#konten > div.section.section-dark \"PENJAMINAN MUTU\"",
+    "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+    "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "no-visual"
+    ],
+    "wheres": [
+     "main#konten > div.section.section-dark \"PENJAMINAN MUTU\""
+    ]
+   },
+   {
+    "check": "no-visual",
+    "where": "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\"",
+    "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+    "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "no-visual"
+    ],
+    "wheres": [
+     "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\""
+    ]
+   },
+   {
+    "check": "button-styles",
+    "where": "(one screen)",
+    "msg": "3 button styles on one screen: soft, fill #16181a (\"Dokumen & Formulir\"); soft, fill #f4f1ea (\"Chat WhatsApp (membuka tab baru)\"); soft, outline #ffffff (\"Kirim email\"); the odd one out: \"Kirim email\"",
+    "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "button-styles"
+    ],
+    "wheres": [
+     "(one screen)"
+    ]
+   },
+   {
+    "check": "button-styles",
+    "where": "(the page)",
+    "msg": "4 button styles on the page: soft, fill #16181a x1 (\"Dokumen & Formulir\"); soft, fill #14532d x1 (\"Pengumuman terbaru\"); soft, fill #f4f1ea x1 (\"Chat WhatsApp (membuka tab baru)\"); soft, outline #ffffff x1 (\"Kirim email\")",
+    "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "button-styles"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "cta",
+    "where": "main#konten > section.section.section-soft \"Unit Kerja Bidang Akademik\"",
+    "msg": "the last section before the footer ends with no button",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "cta"
+    ],
+    "wheres": [
+     "main#konten > section.section.section-soft \"Unit Kerja Bidang Akademik\""
+    ]
+   },
+   {
+    "check": "copy-headings",
+    "where": "h2#info-penting \"Informasi penting\"",
+    "msg": "\"Informasi penting\" names no product, part, place or section (12 headings like it; at most one brand line per page) (and 11 more like it: \"Organisasi Mahasiswa Ken\", \"Tim Mahasiswa UNJANI Rai\", \"UNJANI dan Mitra Industr\", \"PENJAMINAN MUTU\", ...)",
+    "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "copy-headings"
+    ],
+    "wheres": [
+     "h2#info-penting \"Informasi penting\""
+    ]
+   },
+   {
+    "check": "heading-scale",
+    "where": "div.container-content > div.grid.gap-8 > article.group.relative > h3.subsection-title.mt-3 \"Organisasi Mahasiswa Kenalkan Beragam Ke\"",
+    "msg": "an h3 at 40px, as large as the smallest h2 (13px) or larger (and 2 more like it: \"Tim Mahasiswa UNJANI Rai\", \"UNJANI dan Mitra Industr\")",
+    "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "heading-scale"
+    ],
+    "wheres": [
+     "div.container-content > div.grid.gap-8 > article.group.relative > h3.subsection-title.mt-3 \"Organisasi Mahasiswa Kenalkan Beragam Ke\""
+    ]
+   },
+   {
+    "check": "heading-scale",
+    "where": "h2#info-penting \"Informasi penting\"",
+    "msg": "h2 headings in 2 sizes, 13px (\"PENJAMINAN MUTU\") to 46px (x3.54)",
+    "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "heading-scale"
+    ],
+    "wheres": [
+     "h2#info-penting \"Informasi penting\""
+    ]
+   },
+   {
+    "check": "heading-scale",
+    "where": "section:nth-of-type(2) > dl.border-t > div.flex.flex-wrap:nth-of-type(1) > dd.font-serif.text-4xl \"6.289\"",
+    "msg": "the figure \"6.289\" is set at 60px, larger than the section headings (h2 46px); 6 more like it",
+    "fix": "set figures at the h2 size or under: a stat reads as data, not as the heading",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "heading-scale"
+    ],
+    "wheres": [
+     "section:nth-of-type(2) > dl.border-t > div.flex.flex-wrap:nth-of-type(1) > dd.font-serif.text-4xl \"6.289\""
+    ]
+   },
+   {
+    "check": "text-contrast",
+    "where": "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\"",
+    "msg": "body text in #5b5e57 on #f4f1ea reads 5.85:1 (needs 7:1); 2 like it, like \"Humas - Universitas Je\"",
+    "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-contrast"
+    ],
+    "wheres": [
+     "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\""
+    ]
+   },
+   {
+    "check": "section-gaps",
+    "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 / main#konten > section.section:nth-of-type(2)",
+    "msg": "172px between these sections, +62% against the median 106px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-gaps"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 > section.grid.gap-8 / main#konten > section.section:nth-of-type(2)"
+    ]
+   },
+   {
+    "check": "visual-empty",
+    "where": "div.container-content > ul.flex.snap-x > li.group.relative:nth-of-type(4) > img.w-full.rounded-card \"picture 1791876477161-Ruang_Bahasa_Kampu\"",
+    "msg": "the picture 1791876477161-Ruang_Bahasa_Kampus_Multikultu shows nothing at 1440px: 1 colour in its 387x290px, 100% one colour (27% of it on screen), an empty ground or frame where the visual should be",
+    "fix": "make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "visual-empty"
+    ],
+    "wheres": [
+     "div.container-content > ul.flex.snap-x > li.group.relative:nth-of-type(4) > img.w-full.rounded-card \"picture 1791876477161-Ruang_Bahasa_Kampu\""
+    ]
+   },
+   {
+    "check": "phone-number",
+    "where": "div.container-content.flex > ul.flex.min-w-0 > li.shrink-0 > a.flex.min-h-11 \"+62) 85861328758\"",
+    "msg": "a phone number in international format in its aria-label: \"+62) 85861328758\"; a visitor can dial it and reach a stranger (and 4 more like it: again here, div.container-content > section.flex.flex-col > div.flex.shrink-0 > a.btn.btn-light, div.container-content.pb-6 > ul.mt-4.font-mono > li:nth-of-type(1) > a.flex.min-h-11, ...)",
+    "fix": "drop the number and its tel: link (a \"Request a call\" form may stand in), unless the brief gives the number",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "phone-number"
+    ],
+    "wheres": [
+     "div.container-content.flex > ul.flex.min-w-0 > li.shrink-0 > a.flex.min-h-11 \"+62) 85861328758\""
+    ]
+   },
+   {
+    "check": "section-tile",
+    "where": "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\"",
+    "msg": "the section is 649px tall (0.72 screens at 1440x900), shorter than the screen: its tile (the screen from its top) shows 568px of it and 251px of the next section, its heading \"Unit Kerja Bidang Akademik\" on screen",
+    "fix": "set every section after the hero to one screen or two (height: calc(var(--h,1) * 100vh)) and fit its content above --padb",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-tile"
+    ],
+    "wheres": [
+     "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\""
+    ]
+   },
+   {
+    "check": "focus-visible",
+    "where": "section.pb-16:nth-of-type(1) > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\"",
+    "msg": "Tab stop 14, a \"01 Kalender Akademik Jadwal kegiatan & masa perkul\": its focus change is faint: 1.95:1 against the ground, 3:1 needed",
+    "fix": "keep the kit's ring (system.css :focus-visible, 2px in --action, there at once); a control that hides itself shows on focus",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "focus-visible"
+    ],
+    "wheres": [
+     "section.pb-16:nth-of-type(1) > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\""
+    ]
+   },
+   {
+    "check": "moment-none",
+    "where": "(the page)",
+    "msg": "a service page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+    "fix": "deal one (moments.mjs pick --page service --photo) and mount it in its own section",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "moment-none"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#konten > section.home-hero \"Portal resmi layanan akademik Layanan ak\"",
+    "msg": "the hero ends at 806px on a 900px screen, 94px above the fold: it ends at the fold, 1px either way (SR-1)",
+    "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#konten > section.home-hero \"Portal resmi layanan akademik Layanan ak\""
+    ]
+   },
+   {
+    "check": "hero-screen",
+    "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+    "msg": "94px of the next section shows on the first screen (from 806px on a 900px screen): nothing below the hero shows at load (SR-1)",
+    "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-screen"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+    "msg": "the section is 531px tall (0.6 screens), 369px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+    "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+     "main#konten > div.section.section-dark \"Penjaminan mutu B Akreditasi institusi ·\"",
+     "main#konten > section.section:nth-of-type(2) \"Kegiatan Akademik Lihat semua berita Kem\"",
+     "main#konten > section.section.section-soft > div.container-content > ul.flex.snap-x \"Perpustakaan UNJANI Kunjungi unit Perpus\""
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "footer.on-dark.bg-ink \"Ada pertanyaan akademik? Layanan loket S\"",
+    "msg": "the section is 536px tall (0.6 screens), 364px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+    "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "footer.on-dark.bg-ink \"Ada pertanyaan akademik? Layanan loket S\""
+    ]
+   },
+   {
+    "check": "section-air",
+    "where": "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\"",
+    "msg": "a top border across 95% of the container, between the section's content: sections and their parts are told apart by air and ground, not lines (SR-3)",
+    "fix": "take the rule out: sections and their parts are parted by their ground and the air between them",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-air"
+    ],
+    "wheres": [
+     "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\""
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "h2#mutu-judul \"Penjaminan mutu\"",
+    "msg": "the screen at scroll 1800px (stride 2) shows 441px of section 4 and the heading of section 4 whole and the content of 2 sections, over 24px each beside section 3: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+    "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "h2#mutu-judul \"Penjaminan mutu\""
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "h2#info-penting \"Informasi penting\"",
+    "msg": "the screen at scroll 900px (stride 1) shows 437px of section 2 and the heading of section 2 whole and the content of 2 sections, over 24px each beside section 3: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+    "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "h2#info-penting \"Informasi penting\""
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "h2#kegiatan-judul \"Kegiatan Akademik\"",
+    "msg": "the screen at scroll 806px (the top of section 2) shows 369px of section 3 and the heading of section 3 whole and the content of 2 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN) (and 8 more like it: scroll 3887px, scroll 2259px, scroll 2889px) (SR-4)",
+    "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "h2#kegiatan-judul \"Kegiatan Akademik\""
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+    "msg": "a <div> sits directly in <main>: every part of <main> is a <section> (SR-4)",
+    "fix": "put every block of <main> in a <section>, and give a band its own section instead of a ground inside one",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+     "main#konten > div.section.section-dark \"Penjaminan mutu B Akreditasi institusi ·\""
+    ]
+   },
+   {
+    "check": "one-heading",
+    "where": "h2#lulusan-judul \"Lulusan\"",
+    "msg": "the section holds 2 h2 headings: one per section, first in its .wrap (SR-5)",
+    "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-heading"
+    ],
+    "wheres": [
+     "h2#lulusan-judul \"Lulusan\""
+    ]
+   },
+   {
+    "check": "one-heading",
+    "where": "h2#footer-jelajahi \"Jelajahi\"",
+    "msg": "the section holds 3 h2 headings: one per section, first in its .wrap (SR-5)",
+    "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-heading"
+    ],
+    "wheres": [
+     "h2#footer-jelajahi \"Jelajahi\""
+    ]
+   },
+   {
+    "check": "one-heading",
+    "where": "h2#kegiatan-judul \"Kegiatan Akademik\"",
+    "msg": "headings of two sections show whole on one screen at 21 of 78 scroll positions (26.9%; at scroll 600, 650, 700, 750px), here with \"Informasi penting\": at most 3% on a desktop (SR-5)",
+    "fix": "make the sections one screen tall so their headings sit a screen apart and two never share one",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-heading"
+    ],
+    "wheres": [
+     "h2#kegiatan-judul \"Kegiatan Akademik\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "header.sticky.top-0 \"Bidang Akademik Universitas Jenderal Ach\"",
+    "msg": "the nav's content runs 120px from the left and 120px from the right (read from its outermost blocks: no .wrap): the page's container starts at 88px (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "header.sticky.top-0 \"Bidang Akademik Universitas Jenderal Ach\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+    "msg": "the content of section 2 runs 120px from the left and 120px from the right (read from its outermost blocks: no .wrap): the page's container starts at 88px (one container, equal margins, 2px either way) (SR-6)",
+    "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "a.skip-link \"Langsung ke konten utama\"",
+    "msg": "a <a> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "a.skip-link \"Langsung ke konten utama\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "aside.hidden.border-b \"akademik@unjani.ac.id / WhatsApp layanan\"",
+    "msg": "a <aside> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (and 9 more like it: \"Bidang Akademik Universi\", \"Ada pertanyaan akademik?\", \"Portal resmi layanan aka\") (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "aside.hidden.border-b \"akademik@unjani.ac.id / WhatsApp layanan\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "h2#footer-tautan \"Tautan\"",
+    "msg": "the h2 starts 967px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "h2#footer-tautan \"Tautan\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "h2#lulusan-judul \"Lulusan\"",
+    "msg": "the h2 starts 656px right of the container's left: every h1 and h2 starts on it, 2px either way (and 8 more like it: \"Jelajahi\", x 120, \"Layanan akademik Univers\") (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "h2#lulusan-judul \"Lulusan\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\"",
+    "msg": "a box over half the container wide runs 120-1320px, not on the container's lines at 88-1352px (SR-6)",
+    "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "footer.on-dark.bg-ink > div.container-content > div.flex.flex-wrap \"© 2026 Universitas Jenderal Achmad Yani \"",
+    "msg": "a box over half the container wide runs 120-1320px, not on the container's lines at 88-1352px (SR-6)",
+    "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "footer.on-dark.bg-ink > div.container-content > div.flex.flex-wrap \"© 2026 Universitas Jenderal Achmad Yani \""
+    ]
+   },
+   {
+    "check": "row-lines",
+    "where": "main#konten > section.section.section-soft > div.container-content > ul.flex.snap-x \"Perpustakaan UNJANI Kunjungi unit Perpus\"",
+    "msg": "a row of 4 items: its first item starts at 116px, the container's left line at 88px; its last item ends at 1723px, the container's right line at 1352px (2px either way) (SR-7)",
+    "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "row-lines"
+    ],
+    "wheres": [
+     "main#konten > section.section.section-soft > div.container-content > ul.flex.snap-x \"Perpustakaan UNJANI Kunjungi unit Perpus\""
+    ]
+   },
+   {
+    "check": "row-lines",
+    "where": "main#konten > div.section.section-dark > div.container-content.grid \"Penjaminan mutu B Akreditasi institusi ·\"",
+    "msg": "a row of 2 items: its first item starts at 120px, the container's left line at 88px; its last item ends at 1320px, the container's right line at 1352px; its items are 470/328px tall, not one height (2px either way) (SR-7)",
+    "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "row-lines"
+    ],
+    "wheres": [
+     "main#konten > div.section.section-dark > div.container-content.grid \"Penjaminan mutu B Akreditasi institusi ·\""
+    ]
+   },
+   {
+    "check": "row-lines",
+    "where": "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\"",
+    "msg": "a row of 3 items: its first item starts at 120px, the container's left line at 88px; its last item ends at 1320px, the container's right line at 1352px (2px either way) (and 1 more like it: \"Administrasi 08 FEB 2026\") (SR-7)",
+    "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "row-lines"
+    ],
+    "wheres": [
+     "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\""
+    ]
+   },
+   {
+    "check": "split-pair",
+    "where": "main#konten > section.home-hero > div.container-content.home-hero-grid \"Portal resmi layanan akademik Layanan ak\"",
+    "msg": "the two columns of the split start 17px apart at the top: a split's columns are top-aligned, 8px either way (SR-8)",
+    "fix": "top-align both columns of the split (align-items: start)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "split-pair"
+    ],
+    "wheres": [
+     "main#konten > section.home-hero > div.container-content.home-hero-grid \"Portal resmi layanan akademik Layanan ak\""
+    ]
+   },
+   {
+    "check": "split-pair",
+    "where": "main#konten > section.section:nth-of-type(2) > div.container-content > div.grid.gap-8 \"Kemahasiswaan · 16 Oktober 2026 Organisa\"",
+    "msg": "the split's left column starts with a picture or a box, not text: text left, the visual right, on every split (SR-8)",
+    "fix": "put the text in the left column and the visual in the right, on every split",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "split-pair"
+    ],
+    "wheres": [
+     "main#konten > section.section:nth-of-type(2) > div.container-content > div.grid.gap-8 \"Kemahasiswaan · 16 Oktober 2026 Organisa\""
+    ]
+   },
+   {
+    "check": "split-pair",
+    "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Disematkan Informasi penting Pengumuman,\"",
+    "msg": "the split's columns are off the page's one pair of lines: its right column starts at x 456, the first split's at 750; its right column starts at x 456, on none of the split lines 630 (k=5), 732 (k=6), 834 (k=7) (SR-8)",
+    "fix": "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "split-pair"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Disematkan Informasi penting Pengumuman,\""
+    ]
+   },
+   {
+    "check": "flush",
+    "where": "section.pb-16 > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\"",
+    "msg": "its first line sits 1px under the top edge of section.pb-16, where the ground changes",
+    "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "flush"
+    ],
+    "wheres": [
+     "section.pb-16 > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\""
+    ]
+   },
+   {
+    "check": "no-visual",
+    "where": "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\"",
+    "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+    "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "no-visual"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\""
+    ]
+   },
+   {
+    "check": "no-visual",
+    "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Informasi penting\"",
+    "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+    "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "no-visual"
+    ],
+    "wheres": [
+     "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Informasi penting\""
+    ]
+   },
+   {
+    "check": "heading-scale",
+    "where": "article.group.relative > div.mt-4.flex > time.flex.shrink-0 > span.font-serif.leading-none \"08\"",
+    "msg": "the figure \"08\" is set at 44px, larger than the section headings (h2 34px); 3 more like it",
+    "fix": "set figures at the h2 size or under: a stat reads as data, not as the heading",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "heading-scale"
+    ],
+    "wheres": [
+     "article.group.relative > div.mt-4.flex > time.flex.shrink-0 > span.font-serif.leading-none \"08\""
+    ]
+   },
+   {
+    "check": "off-grid",
+    "where": "li.border-b.border-line:nth-of-type(2) > a.group.block > span.flex.items-center > span \"02\"",
+    "msg": "left edge at 44px, 24px off the page margin at 20px (71 elements, like li.border-b.border-line:nth-of-type(1)); 8 more in this section off the grid too (span.mt-4.block at 44px, span.mt-2.block at 44px, span at 44px, span.mt-4.block at 44px, ...)",
+    "fix": "move it onto the page margin, or the column edge its section uses",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "off-grid"
+    ],
+    "wheres": [
+     "li.border-b.border-line:nth-of-type(2) > a.group.block > span.flex.items-center > span \"02\""
+    ]
+   },
+   {
+    "check": "collide",
+    "where": "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\"",
+    "msg": "the words \"Beragam organisasi mahasiswa mem\" lie over \"PRESTASI\": two lines in one place",
+    "fix": "on a phone nothing lies on anything else: let the section grow with its content (min-height for its screens, never a fixed height; --hm: 2 when it needs two) or cut what it holds; keep pictures and cards off the buttons; pad the page under a fixed bar by the bar's height (top: the first section; end: the footer)",
+    "widths": [
+     320
+    ],
+    "from": "consistency",
+    "ids": [
+     "collide"
+    ],
+    "wheres": [
+     "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\""
+    ]
+   },
+   {
+    "check": "collide",
+    "where": "article.group.relative:nth-of-type(1) > div.min-w-0.flex-1 > h3.mt-2.font-sans > a.line-clamp-3.text-ink \"Tim Mahasiswa UNJANI Raih Penghargaan me\"",
+    "msg": "the words \"Tim Mahasiswa UNJANI Raih Pengha\" lie over \"AKADEMIK\": two lines in one place",
+    "fix": "on a phone nothing lies on anything else: let the section grow with its content (min-height for its screens, never a fixed height; --hm: 2 when it needs two) or cut what it holds; keep pictures and cards off the buttons; pad the page under a fixed bar by the bar's height (top: the first section; end: the footer)",
+    "widths": [
+     320
+    ],
+    "from": "consistency",
+    "ids": [
+     "collide"
+    ],
+    "wheres": [
+     "article.group.relative:nth-of-type(1) > div.min-w-0.flex-1 > h3.mt-2.font-sans > a.line-clamp-3.text-ink \"Tim Mahasiswa UNJANI Raih Penghargaan me\""
+    ]
+   },
+   {
+    "check": "off-viewport",
+    "where": "header.sticky.top-0 > div.container-content.flex > div.flex.items-center",
+    "msg": "at 320px wide it runs 55px past the screen's right edge (the page is 375px wide and scrolls sideways)",
+    "fix": "keep it inside the screen at this width: let it shrink, wrap or stack",
+    "widths": [
+     320
+    ],
+    "from": "consistency",
+    "ids": [
+     "off-viewport"
+    ],
+    "wheres": [
+     "header.sticky.top-0 > div.container-content.flex > div.flex.items-center"
+    ]
+   },
+   {
+    "check": "container",
+    "where": "page",
+    "msg": "no .wrap",
+    "fix": "put the content in one .wrap",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "layout",
+    "ids": [
+     "container"
+    ],
+    "wheres": [
+     "page"
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "copy-buttons",
+    "where": "div.container-content.flex > div.flex.items-center > div.flex.items-center > a.btn.btn-dark \"Dokumen & Formulir\"",
+    "msg": "\"Dokumen & Formulir\" does not start with a verb (book, buy, try, start, get, see...) (and 2 more like it: \"Pengumuman terbaru\", \"Kirim email\")",
+    "fix": "label buttons with a verb and what the visitor gets (\"Book a room\", \"Start free trial\")",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-actions",
+    "where": "(the page)",
+    "msg": "the main action \"Pengumuman terbaru\" does not read word for word the same in the closing section",
+    "fix": "few actions, one wording: at most 2 in the hero, the main action word for word in nav, hero and close",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "heading-scale",
+    "where": "section:nth-of-type(1) > ul.mt-2.space-y-6 > li:nth-of-type(2) > p.font-serif.leading-none \"Unggul\"",
+    "msg": "1 line of plain text set larger than the section headings (115.2px against h2 46px)",
+    "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "col-edge",
+    "where": "section.section:nth-of-type(3) > div.container-content > div.grid.gap-10 > ul.divide-y.divide-line \"08 FEB 2026 Pengumuman Baru 03 FEB 2026 \"",
+    "msg": "the second column starts at 3 places: 740px (section.section:nth-of-type(3)), 750px (section.home-hero, div.section.section-dark), 853px (section.section:nth-of-type(2))",
+    "fix": "start the second column of every split on the same one or two grid columns",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "links",
+    "where": "ul.divide-y.divide-line > li.group.relative:nth-of-type(2) > div.flex.min-w-0 > a.min-w-0.flex-1 \"PERMEN DIKTI (PDF, tab baru)\"",
+    "msg": "\"PERMEN DIKTI (PDF, tab baru)\" goes to /uploads/academic-documents/1790907907603-51.-SALINAN-PERMENRISTEKDIKTI-NO-51-TAHUN-2017.pdf, which does not exist here",
+    "fix": "point every link at a real section, page or file",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-family",
+    "where": "header.sticky.top-0",
+    "msg": "the nav's links and actions use 2 type families (Inter, Ubuntu Mono)",
+    "fix": "keep one nav on every screen: the same bar, fill, links and type",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "link-styles",
+    "where": "div.container-content.home-hero-grid > div.home-hero-copy > div.mt-8.flex > a.link.inline-flex \"Profil Bidang Akademik\"",
+    "msg": "text links in 3 looks: no line, regular (7, like \"akademik@unjani.ac.i\"); underline, bold (1, like \"Profil Bidang Akadem\"); no line, bold (13, like \"PERMEN DIKTI (PDF, t\")",
+    "fix": "give text links one look wherever they sit: one underline, one weight",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-length",
+    "where": "h1#hero-judul \"Layanan akademik Universitas Jenderal Ac\"",
+    "msg": "a headline of 6 words on 4 lines at 72px: a paragraph set in display type",
+    "fix": "cut the heading to one short line (2 to 12 words) and move the rest into the text under it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "grounds",
+    "where": "main#konten > div.section.section-dark \"PENJAMINAN MUTU B Akreditasi institusi ·\"",
+    "msg": "4 flat grounds across the page (#f4f1ea section x3, #14532d section, #eae6da section, #16181a footer): three at most (the base, a surface, an inverse)",
+    "fix": "three flat grounds at most (the base, one surface, one inverse): lay the other bands on one of them",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "one-screen",
+    "where": "main#konten > div.section.section-dark \"PENJAMINAN MUTU\"",
+    "msg": "3 sections are shorter than the screen, so the next one's heading or picture shows with them: \"PENJAMINAN MUTU\" is 630px of the 819px under the nav, and \"Pengumuman Terbaru\" shows below it (\"Pengumuman Terbaru\", \"Unit Kerja Bidang Ak\")",
+    "fix": "give each section the screen (min-height: 100svh less the nav, its content centred), or join two short ones into one",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "skip-link",
+    "where": "a.skip-link \"Langsung ke konten utama\"",
+    "msg": "the first Tab stop is \"Langsung ke konten utama\", not a skip link: a keyboard user tabs through the whole nav on every visit",
+    "fix": "add the starter's skip link as the header's first child: <a class=\"skip-link\" href=\"#top\">Skip to content</a>",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "share-meta",
+    "where": "head",
+    "msg": "the head lacks twitter:card, theme-color: a shared link shows no picture or title of its own",
+    "fix": "copy the head block of starter.html: og tags, twitter:card, the icon and theme-color (references/system.md, Head)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav",
+    "where": "div.container-content.flex > div.flex.items-center > div.flex.items-center > button.btn-icon",
+    "msg": "the nav is lopsided: its last item ends 5px inside the content's edge (370px), while its first starts on the other edge",
+    "fix": "start the nav's first item and end its last on the content's two edges",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "header.sticky.top-0 > div.container-content.flex > a.flex.min-w-0 \"Bidang Akademik\"",
+    "msg": "a 235x42px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "ul.divide-y.divide-line > li.group.relative:nth-of-type(2) > div.flex.min-w-0 > a.min-w-0.flex-1 \"PERMEN DIKTI (PDF, tab baru)\"",
+    "msg": "a 124x26px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "article.group.relative > div.mt-5 > h3.subsection-title.min-w-0 > a.text-ink.no-underline \"threhre\"",
+    "msg": "a 96x39px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "li.group.relative:nth-of-type(1) > div.min-w-0.flex-1 > h3.font-sans.text-base > a.text-ink.no-underline \"Pengumuman Baru\"",
+    "msg": "a 147x20px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "li.group.relative:nth-of-type(2) > div.min-w-0.flex-1 > h3.font-sans.text-base > a.text-ink.no-underline \"Informasi Pendaftaran Wisuda Periode I t\"",
+    "msg": "a 223x42px tap target (and 1 more like it on this screen): under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "div.container-content > div.grid.gap-10 > div > a.inline-flex.items-center \"Bidang Akademik Universitas Jenderal Ach\"",
+    "msg": "a 246x40px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\"",
+    "msg": "clamped to 3 lines (and 2 more like it: \"Tim Mahasiswa UNJANI Rai\", \"UNJANI dan Mitra Industr\")",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "main#konten > section.home-hero / main#konten > div.container-content.pb-14 > section.pb-16",
+    "msg": "49px between these sections, -55% against the median 108px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 / main#konten > section.section:nth-of-type(2)",
+    "msg": "152px between these sections, +41% against the median 108px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "photo-set",
+    "where": "div.container-content > ul.flex.snap-x > li.group.relative:nth-of-type(3) > img.w-full.rounded-card \"1791876455668-Kehidupan_Kampus_Indonesia\"",
+    "msg": "4 photographs in more than one look: lightness from 0.37 to 0.75; the odd one out is 1791876455668-Kehidupan_Kampus_Indonesia_yang_Harmonis.webp",
+    "fix": "grade the photographs to one look (light, colour, warmth), or replace the odd one out",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "orphan",
+    "where": "section:nth-of-type(1) > ul.mt-2.space-y-6 > li:nth-of-type(1) > p.mt-6.text-sm \"Akreditasi institusi · BAN-PT · berlaku \"",
+    "msg": "its last line holds only \"2026\" (and 1 more like it: \"Akreditasi institusi · B\")",
+    "fix": "rebalance the text (text-wrap: pretty, or a shorter line) so the last line holds more than one short word",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "photo-weight",
+    "where": "div.grid.gap-8 > article.group.relative > div.photo.border > img.size-full.object-cover \"1792134000698-Pameran_organisasi_mahasis\"",
+    "msg": "a photograph is 3x or more wider than drawn on the phone, with no srcset: 1792134000698-Pameran_organisasi_mahasiswa_di_hala is 1600px (154 KB, lazy) for a 348px frame; on a phone it arrives late and its frame shows only its ground until then",
+    "fix": "give each photograph srcset and sizes (a 800px and a 1600px file), or a smaller file: the frame never shows empty",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-stat-strip",
+    "msg": "stat strip x1",
+    "fix": "a strip only of figures the brief gives (a price, hours, a count); otherwise put each number in the sentence it proves, or leave it out (references/copy-tells.md)",
+    "widths": [],
+    "from": "copy",
+    "where": "copy x1: \"6.289 / 11.769 / +14,8%\"",
+    "exact": false
+   },
+   {
+    "check": "copy-numbered",
+    "msg": "8 step numbers",
+    "fix": "number only steps that happen in order (references/copy-tells.md)",
+    "widths": [],
+    "from": "copy",
+    "where": "(the copy)",
+    "exact": false
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 110,
+   "layout": 15
+  }
+ },
+ "open": [
+  {
+   "check": "hero-fill",
+   "where": "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\"",
+   "msg": "the next section shows on the first screen: it starts at 807px on a 900px screen (the hero ends at 806px)",
+   "fix": "let the hero fill the first screen alone (min-height: 100svh, less above it): nothing of the next section on load",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-fill"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\""
+   ]
+  },
+  {
+   "check": "nav",
+   "where": "header.sticky.top-0 > div.container-content.flex > a.flex.min-w-0 \"Bidang Akademik Universitas Jenderal Ach\"",
+   "msg": "nav link wraps to a second line",
+   "fix": "make the nav one bar from the content's left edge to its right edge, with every link and action inside it",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "nav"
+   ],
+   "wheres": [
+    "header.sticky.top-0 > div.container-content.flex > a.flex.min-w-0 \"Bidang Akademik Universitas Jenderal Ach\""
+   ]
+  },
+  {
+   "check": "no-visual",
+   "where": "main#konten > div.section.section-dark \"PENJAMINAN MUTU\"",
+   "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+   "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "no-visual"
+   ],
+   "wheres": [
+    "main#konten > div.section.section-dark \"PENJAMINAN MUTU\""
+   ]
+  },
+  {
+   "check": "no-visual",
+   "where": "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\"",
+   "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+   "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "no-visual"
+   ],
+   "wheres": [
+    "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\""
+   ]
+  },
+  {
+   "check": "button-styles",
+   "where": "(one screen)",
+   "msg": "3 button styles on one screen: soft, fill #16181a (\"Dokumen & Formulir\"); soft, fill #f4f1ea (\"Chat WhatsApp (membuka tab baru)\"); soft, outline #ffffff (\"Kirim email\"); the odd one out: \"Kirim email\"",
+   "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "button-styles"
+   ],
+   "wheres": [
+    "(one screen)"
+   ]
+  },
+  {
+   "check": "button-styles",
+   "where": "(the page)",
+   "msg": "4 button styles on the page: soft, fill #16181a x1 (\"Dokumen & Formulir\"); soft, fill #14532d x1 (\"Pengumuman terbaru\"); soft, fill #f4f1ea x1 (\"Chat WhatsApp (membuka tab baru)\"); soft, outline #ffffff x1 (\"Kirim email\")",
+   "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "button-styles"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "cta",
+   "where": "main#konten > section.section.section-soft \"Unit Kerja Bidang Akademik\"",
+   "msg": "the last section before the footer ends with no button",
+   "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "cta"
+   ],
+   "wheres": [
+    "main#konten > section.section.section-soft \"Unit Kerja Bidang Akademik\""
+   ]
+  },
+  {
+   "check": "copy-headings",
+   "where": "h2#info-penting \"Informasi penting\"",
+   "msg": "\"Informasi penting\" names no product, part, place or section (12 headings like it; at most one brand line per page) (and 11 more like it: \"Organisasi Mahasiswa Ken\", \"Tim Mahasiswa UNJANI Rai\", \"UNJANI dan Mitra Industr\", \"PENJAMINAN MUTU\", ...)",
+   "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "copy-headings"
+   ],
+   "wheres": [
+    "h2#info-penting \"Informasi penting\""
+   ]
+  },
+  {
+   "check": "heading-scale",
+   "where": "div.container-content > div.grid.gap-8 > article.group.relative > h3.subsection-title.mt-3 \"Organisasi Mahasiswa Kenalkan Beragam Ke\"",
+   "msg": "an h3 at 40px, as large as the smallest h2 (13px) or larger (and 2 more like it: \"Tim Mahasiswa UNJANI Rai\", \"UNJANI dan Mitra Industr\")",
+   "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "heading-scale"
+   ],
+   "wheres": [
+    "div.container-content > div.grid.gap-8 > article.group.relative > h3.subsection-title.mt-3 \"Organisasi Mahasiswa Kenalkan Beragam Ke\""
+   ]
+  },
+  {
+   "check": "heading-scale",
+   "where": "h2#info-penting \"Informasi penting\"",
+   "msg": "h2 headings in 2 sizes, 13px (\"PENJAMINAN MUTU\") to 46px (x3.54)",
+   "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "heading-scale"
+   ],
+   "wheres": [
+    "h2#info-penting \"Informasi penting\""
+   ]
+  },
+  {
+   "check": "heading-scale",
+   "where": "section:nth-of-type(2) > dl.border-t > div.flex.flex-wrap:nth-of-type(1) > dd.font-serif.text-4xl \"6.289\"",
+   "msg": "the figure \"6.289\" is set at 60px, larger than the section headings (h2 46px); 6 more like it",
+   "fix": "set figures at the h2 size or under: a stat reads as data, not as the heading",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "heading-scale"
+   ],
+   "wheres": [
+    "section:nth-of-type(2) > dl.border-t > div.flex.flex-wrap:nth-of-type(1) > dd.font-serif.text-4xl \"6.289\""
+   ]
+  },
+  {
+   "check": "text-contrast",
+   "where": "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\"",
+   "msg": "body text in #5b5e57 on #f4f1ea reads 5.85:1 (needs 7:1); 2 like it, like \"Humas - Universitas Je\"",
+   "fix": "body text in the ink at 7:1 or more; grey (4.5:1 or more) only for captions and labels",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-contrast"
+   ],
+   "wheres": [
+    "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\""
+   ]
+  },
+  {
+   "check": "section-gaps",
+   "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 / main#konten > section.section:nth-of-type(2)",
+   "msg": "172px between these sections, +62% against the median 106px",
+   "fix": "use one gap between sections (all within 25% of each other)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-gaps"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 > section.grid.gap-8 / main#konten > section.section:nth-of-type(2)"
+   ]
+  },
+  {
+   "check": "visual-empty",
+   "where": "div.container-content > ul.flex.snap-x > li.group.relative:nth-of-type(4) > img.w-full.rounded-card \"picture 1791876477161-Ruang_Bahasa_Kampu\"",
+   "msg": "the picture 1791876477161-Ruang_Bahasa_Kampus_Multikultu shows nothing at 1440px: 1 colour in its 387x290px, 100% one colour (27% of it on screen), an empty ground or frame where the visual should be",
+   "fix": "make the visual draw at this width: a picture that loads, an effect that renders, or its still fallback; never an empty ground or frame",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "visual-empty"
+   ],
+   "wheres": [
+    "div.container-content > ul.flex.snap-x > li.group.relative:nth-of-type(4) > img.w-full.rounded-card \"picture 1791876477161-Ruang_Bahasa_Kampu\""
+   ]
+  },
+  {
+   "check": "phone-number",
+   "where": "div.container-content.flex > ul.flex.min-w-0 > li.shrink-0 > a.flex.min-h-11 \"+62) 85861328758\"",
+   "msg": "a phone number in international format in its aria-label: \"+62) 85861328758\"; a visitor can dial it and reach a stranger (and 4 more like it: again here, div.container-content > section.flex.flex-col > div.flex.shrink-0 > a.btn.btn-light, div.container-content.pb-6 > ul.mt-4.font-mono > li:nth-of-type(1) > a.flex.min-h-11, ...)",
+   "fix": "drop the number and its tel: link (a \"Request a call\" form may stand in), unless the brief gives the number",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "phone-number"
+   ],
+   "wheres": [
+    "div.container-content.flex > ul.flex.min-w-0 > li.shrink-0 > a.flex.min-h-11 \"+62) 85861328758\""
+   ]
+  },
+  {
+   "check": "section-tile",
+   "where": "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\"",
+   "msg": "the section is 649px tall (0.72 screens at 1440x900), shorter than the screen: its tile (the screen from its top) shows 568px of it and 251px of the next section, its heading \"Unit Kerja Bidang Akademik\" on screen",
+   "fix": "set every section after the hero to one screen or two (height: calc(var(--h,1) * 100vh)) and fit its content above --padb",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-tile"
+   ],
+   "wheres": [
+    "main#konten > section.section:nth-of-type(3) \"Pengumuman Terbaru\""
+   ]
+  },
+  {
+   "check": "focus-visible",
+   "where": "section.pb-16:nth-of-type(1) > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\"",
+   "msg": "Tab stop 14, a \"01 Kalender Akademik Jadwal kegiatan & masa perkul\": its focus change is faint: 1.95:1 against the ground, 3:1 needed",
+   "fix": "keep the kit's ring (system.css :focus-visible, 2px in --action, there at once); a control that hides itself shows on focus",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "focus-visible"
+   ],
+   "wheres": [
+    "section.pb-16:nth-of-type(1) > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\""
+   ]
+  },
+  {
+   "check": "moment-none",
+   "where": "(the page)",
+   "msg": "a service page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+   "fix": "deal one (moments.mjs pick --page service --photo) and mount it in its own section",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "moment-none"
+   ],
+   "wheres": [
+    "(the page)"
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#konten > section.home-hero \"Portal resmi layanan akademik Layanan ak\"",
+   "msg": "the hero ends at 806px on a 900px screen, 94px above the fold: it ends at the fold, 1px either way (SR-1)",
+   "fix": "make the hero exactly one screen (height: 100svh, its content fitted inside), never taller or shorter",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#konten > section.home-hero \"Portal resmi layanan akademik Layanan ak\""
+   ]
+  },
+  {
+   "check": "hero-screen",
+   "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+   "msg": "94px of the next section shows on the first screen (from 806px on a 900px screen): nothing below the hero shows at load (SR-1)",
+   "fix": "end the hero at the fold so nothing of the next section shows at load (hero height: 100svh)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-screen"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+   "msg": "the section is 531px tall (0.6 screens), 369px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+   "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+    "main#konten > div.section.section-dark \"Penjaminan mutu B Akreditasi institusi ·\"",
+    "main#konten > section.section:nth-of-type(2) \"Kegiatan Akademik Lihat semua berita Kem\"",
+    "main#konten > section.section.section-soft > div.container-content > ul.flex.snap-x \"Perpustakaan UNJANI Kunjungi unit Perpus\""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "footer.on-dark.bg-ink \"Ada pertanyaan akademik? Layanan loket S\"",
+   "msg": "the section is 536px tall (0.6 screens), 364px short of one screen (900px): every section after the hero is one screen or two, 2px either way (SR-2)",
+   "fix": "set the section to one screen or two (height: calc(var(--h,1) * 100vh), --h 1 or 2) and cut or split its content to fit",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "footer.on-dark.bg-ink \"Ada pertanyaan akademik? Layanan loket S\""
+   ]
+  },
+  {
+   "check": "section-air",
+   "where": "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\"",
+   "msg": "a top border across 95% of the container, between the section's content: sections and their parts are told apart by air and ground, not lines (SR-3)",
+   "fix": "take the rule out: sections and their parts are parted by their ground and the air between them",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-air"
+   ],
+   "wheres": [
+    "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\""
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "h2#mutu-judul \"Penjaminan mutu\"",
+   "msg": "the screen at scroll 1800px (stride 2) shows 441px of section 4 and the heading of section 4 whole and the content of 2 sections, over 24px each beside section 3: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+   "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "h2#mutu-judul \"Penjaminan mutu\""
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "h2#info-penting \"Informasi penting\"",
+   "msg": "the screen at scroll 900px (stride 1) shows 437px of section 2 and the heading of section 2 whole and the content of 2 sections, over 24px each beside section 3: a screen shows one section (another may peek 8px, 24px WARN) (SR-4)",
+   "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "h2#info-penting \"Informasi penting\""
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "h2#kegiatan-judul \"Kegiatan Akademik\"",
+   "msg": "the screen at scroll 806px (the top of section 2) shows 369px of section 3 and the heading of section 3 whole and the content of 2 sections, over 24px each beside section 2: a screen shows one section (another may peek 8px, 24px WARN) (and 8 more like it: scroll 3887px, scroll 2259px, scroll 2889px) (SR-4)",
+   "fix": "make each section exactly one screen or two, so a screen shows one section and no neighbour peeks",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "h2#kegiatan-judul \"Kegiatan Akademik\""
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+   "msg": "a <div> sits directly in <main>: every part of <main> is a <section> (SR-4)",
+   "fix": "put every block of <main> in a <section>, and give a band its own section instead of a ground inside one",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+    "main#konten > div.section.section-dark \"Penjaminan mutu B Akreditasi institusi ·\""
+   ]
+  },
+  {
+   "check": "one-heading",
+   "where": "h2#lulusan-judul \"Lulusan\"",
+   "msg": "the section holds 2 h2 headings: one per section, first in its .wrap (SR-5)",
+   "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-heading"
+   ],
+   "wheres": [
+    "h2#lulusan-judul \"Lulusan\""
+   ]
+  },
+  {
+   "check": "one-heading",
+   "where": "h2#footer-jelajahi \"Jelajahi\"",
+   "msg": "the section holds 3 h2 headings: one per section, first in its .wrap (SR-5)",
+   "fix": "give each section one h2, first in its .wrap, and the hero only its h1",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-heading"
+   ],
+   "wheres": [
+    "h2#footer-jelajahi \"Jelajahi\""
+   ]
+  },
+  {
+   "check": "one-heading",
+   "where": "h2#kegiatan-judul \"Kegiatan Akademik\"",
+   "msg": "headings of two sections show whole on one screen at 21 of 78 scroll positions (26.9%; at scroll 600, 650, 700, 750px), here with \"Informasi penting\": at most 3% on a desktop (SR-5)",
+   "fix": "make the sections one screen tall so their headings sit a screen apart and two never share one",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-heading"
+   ],
+   "wheres": [
+    "h2#kegiatan-judul \"Kegiatan Akademik\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "header.sticky.top-0 \"Bidang Akademik Universitas Jenderal Ach\"",
+   "msg": "the nav's content runs 120px from the left and 120px from the right (read from its outermost blocks: no .wrap): the page's container starts at 88px (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "header.sticky.top-0 \"Bidang Akademik Universitas Jenderal Ach\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \"",
+   "msg": "the content of section 2 runs 120px from the left and 120px from the right (read from its outermost blocks: no .wrap): the page's container starts at 88px (one container, equal margins, 2px either way) (SR-6)",
+   "fix": "use one container on every section and the nav (.wrap): one margin left and right, 64-120px on a desktop, 16-24px on a phone",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 \"Akses cepat 01 Kalender Akademik Jadwal \""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "a.skip-link \"Langsung ke konten utama\"",
+   "msg": "a <a> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "a.skip-link \"Langsung ke konten utama\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "aside.hidden.border-b \"akademik@unjani.ac.id / WhatsApp layanan\"",
+   "msg": "a <aside> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (and 9 more like it: \"Bidang Akademik Universi\", \"Ada pertanyaan akademik?\", \"Portal resmi layanan aka\") (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "aside.hidden.border-b \"akademik@unjani.ac.id / WhatsApp layanan\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "h2#footer-tautan \"Tautan\"",
+   "msg": "the h2 starts 967px right of the container's left: every h1 and h2 starts on it, 2px either way (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "h2#footer-tautan \"Tautan\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "h2#lulusan-judul \"Lulusan\"",
+   "msg": "the h2 starts 656px right of the container's left: every h1 and h2 starts on it, 2px either way (and 8 more like it: \"Jelajahi\", x 120, \"Layanan akademik Univers\") (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "h2#lulusan-judul \"Lulusan\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\"",
+   "msg": "a box over half the container wide runs 120-1320px, not on the container's lines at 88-1352px (SR-6)",
+   "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "footer.on-dark.bg-ink > div.container-content > div.flex.flex-wrap \"© 2026 Universitas Jenderal Achmad Yani \"",
+   "msg": "a box over half the container wide runs 120-1320px, not on the container's lines at 88-1352px (SR-6)",
+   "fix": "run the picture or box from the container's left line to its right line, or put it in a row or a split",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "footer.on-dark.bg-ink > div.container-content > div.flex.flex-wrap \"© 2026 Universitas Jenderal Achmad Yani \""
+   ]
+  },
+  {
+   "check": "row-lines",
+   "where": "main#konten > section.section.section-soft > div.container-content > ul.flex.snap-x \"Perpustakaan UNJANI Kunjungi unit Perpus\"",
+   "msg": "a row of 4 items: its first item starts at 116px, the container's left line at 88px; its last item ends at 1723px, the container's right line at 1352px (2px either way) (SR-7)",
+   "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "row-lines"
+   ],
+   "wheres": [
+    "main#konten > section.section.section-soft > div.container-content > ul.flex.snap-x \"Perpustakaan UNJANI Kunjungi unit Perpus\""
+   ]
+  },
+  {
+   "check": "row-lines",
+   "where": "main#konten > div.section.section-dark > div.container-content.grid \"Penjaminan mutu B Akreditasi institusi ·\"",
+   "msg": "a row of 2 items: its first item starts at 120px, the container's left line at 88px; its last item ends at 1320px, the container's right line at 1352px; its items are 470/328px tall, not one height (2px either way) (SR-7)",
+   "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "row-lines"
+   ],
+   "wheres": [
+    "main#konten > div.section.section-dark > div.container-content.grid \"Penjaminan mutu B Akreditasi institusi ·\""
+   ]
+  },
+  {
+   "check": "row-lines",
+   "where": "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\"",
+   "msg": "a row of 3 items: its first item starts at 120px, the container's left line at 88px; its last item ends at 1320px, the container's right line at 1352px (2px either way) (and 1 more like it: \"Administrasi 08 FEB 2026\") (SR-7)",
+   "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "row-lines"
+   ],
+   "wheres": [
+    "footer.on-dark.bg-ink > div.container-content > div.grid.gap-10 \"Bidang Akademik Universitas Jenderal Ach\""
+   ]
+  },
+  {
+   "check": "split-pair",
+   "where": "main#konten > section.home-hero > div.container-content.home-hero-grid \"Portal resmi layanan akademik Layanan ak\"",
+   "msg": "the two columns of the split start 17px apart at the top: a split's columns are top-aligned, 8px either way (SR-8)",
+   "fix": "top-align both columns of the split (align-items: start)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "split-pair"
+   ],
+   "wheres": [
+    "main#konten > section.home-hero > div.container-content.home-hero-grid \"Portal resmi layanan akademik Layanan ak\""
+   ]
+  },
+  {
+   "check": "split-pair",
+   "where": "main#konten > section.section:nth-of-type(2) > div.container-content > div.grid.gap-8 \"Kemahasiswaan · 16 Oktober 2026 Organisa\"",
+   "msg": "the split's left column starts with a picture or a box, not text: text left, the visual right, on every split (SR-8)",
+   "fix": "put the text in the left column and the visual in the right, on every split",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "split-pair"
+   ],
+   "wheres": [
+    "main#konten > section.section:nth-of-type(2) > div.container-content > div.grid.gap-8 \"Kemahasiswaan · 16 Oktober 2026 Organisa\""
+   ]
+  },
+  {
+   "check": "split-pair",
+   "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Disematkan Informasi penting Pengumuman,\"",
+   "msg": "the split's columns are off the page's one pair of lines: its right column starts at x 456, the first split's at 750; its right column starts at x 456, on none of the split lines 630 (k=5), 732 (k=6), 834 (k=7) (SR-8)",
+   "fix": "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "split-pair"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Disematkan Informasi penting Pengumuman,\""
+   ]
+  },
+  {
+   "check": "flush",
+   "where": "section.pb-16 > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\"",
+   "msg": "its first line sits 1px under the top edge of section.pb-16, where the ground changes",
+   "fix": "give the section its padding at the edge where the ground changes (the closing call keeps a clear gap above the footer)",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "flush"
+   ],
+   "wheres": [
+    "section.pb-16 > ul.home-shortcuts.grid > li.border-b.border-line:nth-of-type(1) > a.group.block \"01 Kalender Akademik Jadwal kegiatan & m\""
+   ]
+  },
+  {
+   "check": "no-visual",
+   "where": "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\"",
+   "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+   "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "no-visual"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 > section.pb-16 \"Akses cepat\""
+   ]
+  },
+  {
+   "check": "no-visual",
+   "where": "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Informasi penting\"",
+   "msg": "no picture, effect or mock in this section; a feature section needs a visual",
+   "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "no-visual"
+   ],
+   "wheres": [
+    "main#konten > div.container-content.pb-14 > section.grid.gap-8 \"Informasi penting\""
+   ]
+  },
+  {
+   "check": "heading-scale",
+   "where": "article.group.relative > div.mt-4.flex > time.flex.shrink-0 > span.font-serif.leading-none \"08\"",
+   "msg": "the figure \"08\" is set at 44px, larger than the section headings (h2 34px); 3 more like it",
+   "fix": "set figures at the h2 size or under: a stat reads as data, not as the heading",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "heading-scale"
+   ],
+   "wheres": [
+    "article.group.relative > div.mt-4.flex > time.flex.shrink-0 > span.font-serif.leading-none \"08\""
+   ]
+  },
+  {
+   "check": "off-grid",
+   "where": "li.border-b.border-line:nth-of-type(2) > a.group.block > span.flex.items-center > span \"02\"",
+   "msg": "left edge at 44px, 24px off the page margin at 20px (71 elements, like li.border-b.border-line:nth-of-type(1)); 8 more in this section off the grid too (span.mt-4.block at 44px, span.mt-2.block at 44px, span at 44px, span.mt-4.block at 44px, ...)",
+   "fix": "move it onto the page margin, or the column edge its section uses",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "off-grid"
+   ],
+   "wheres": [
+    "li.border-b.border-line:nth-of-type(2) > a.group.block > span.flex.items-center > span \"02\""
+   ]
+  },
+  {
+   "check": "collide",
+   "where": "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\"",
+   "msg": "the words \"Beragam organisasi mahasiswa mem\" lie over \"PRESTASI\": two lines in one place",
+   "fix": "on a phone nothing lies on anything else: let the section grow with its content (min-height for its screens, never a fixed height; --hm: 2 when it needs two) or cut what it holds; keep pictures and cards off the buttons; pad the page under a fixed bar by the bar's height (top: the first section; end: the footer)",
+   "widths": [
+    320
+   ],
+   "from": "consistency",
+   "ids": [
+    "collide"
+   ],
+   "wheres": [
+    "div.container-content > div.grid.gap-8 > article.group.relative > p.mt-3.line-clamp-3 \"Beragam organisasi mahasiswa memperkenal\""
+   ]
+  },
+  {
+   "check": "collide",
+   "where": "article.group.relative:nth-of-type(1) > div.min-w-0.flex-1 > h3.mt-2.font-sans > a.line-clamp-3.text-ink \"Tim Mahasiswa UNJANI Raih Penghargaan me\"",
+   "msg": "the words \"Tim Mahasiswa UNJANI Raih Pengha\" lie over \"AKADEMIK\": two lines in one place",
+   "fix": "on a phone nothing lies on anything else: let the section grow with its content (min-height for its screens, never a fixed height; --hm: 2 when it needs two) or cut what it holds; keep pictures and cards off the buttons; pad the page under a fixed bar by the bar's height (top: the first section; end: the footer)",
+   "widths": [
+    320
+   ],
+   "from": "consistency",
+   "ids": [
+    "collide"
+   ],
+   "wheres": [
+    "article.group.relative:nth-of-type(1) > div.min-w-0.flex-1 > h3.mt-2.font-sans > a.line-clamp-3.text-ink \"Tim Mahasiswa UNJANI Raih Penghargaan me\""
+   ]
+  },
+  {
+   "check": "off-viewport",
+   "where": "header.sticky.top-0 > div.container-content.flex > div.flex.items-center",
+   "msg": "at 320px wide it runs 55px past the screen's right edge (the page is 375px wide and scrolls sideways)",
+   "fix": "keep it inside the screen at this width: let it shrink, wrap or stack",
+   "widths": [
+    320
+   ],
+   "from": "consistency",
+   "ids": [
+    "off-viewport"
+   ],
+   "wheres": [
+    "header.sticky.top-0 > div.container-content.flex > div.flex.items-center"
+   ]
+  },
+  {
+   "check": "container",
+   "where": "page",
+   "msg": "no .wrap",
+   "fix": "put the content in one .wrap",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "layout",
+   "ids": [
+    "container"
+   ],
+   "wheres": [
+    "page"
+   ]
+  }
+ ],
+ "waived": [],
+ "warnCount": 27,
+ "at": "2026-11-12T02:41:56.322Z"
+}

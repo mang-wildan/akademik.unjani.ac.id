@@ -1,0 +1,3128 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1790832949.5912962,
+    "seen": 1792379706.3394148,
+    "ast_hash": "d6e40432383f943cb3f4a7f24e7614cd",
+    "semantic_hash": "d6e40432383f943cb3f4a7f24e7614cd"
+  },
+  "Referensi/Documentation/assets/js/google-code-prettify/prettify.js": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.3394203,
+    "ast_hash": "709bfcc456c694bfe8ee86d184a1c360",
+    "semantic_hash": "709bfcc456c694bfe8ee86d184a1c360"
+  },
+  "Referensi/Documentation/assets/js/jquery.easing.js": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.3394227,
+    "ast_hash": "6516449ed5089677ed3d7e2f11fc8942",
+    "semantic_hash": "6516449ed5089677ed3d7e2f11fc8942"
+  },
+  "Referensi/Documentation/assets/js/jquery.js": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.339424,
+    "ast_hash": "7fd8ffea25728006bfddf7e6c7c122cd",
+    "semantic_hash": "7fd8ffea25728006bfddf7e6c7c122cd"
+  },
+  "Referensi/Documentation/assets/js/jquery.scrollTo.js": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.3394253,
+    "ast_hash": "01cfd9d2d784a105c31aabf46367345c",
+    "semantic_hash": "01cfd9d2d784a105c31aabf46367345c"
+  },
+  "Referensi/Documentation/assets/js/script.js": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.3394263,
+    "ast_hash": "f17596549982094245875284d61b4554",
+    "semantic_hash": "f17596549982094245875284d61b4554"
+  },
+  "Referensi/qeducato/fontawesome/metadata/icons.json": {
+    "mtime": 1649835894.0,
+    "seen": 1792379706.3394275,
+    "ast_hash": "16836e5279e25874d1f28bb437204c24",
+    "semantic_hash": "16836e5279e25874d1f28bb437204c24"
+  },
+  "Referensi/qeducato/fontawesome/metadata/shims.json": {
+    "mtime": 1607669156.0,
+    "seen": 1792379706.3394287,
+    "ast_hash": "d30314bd45ab4710f0aa3c972adc2cbd",
+    "semantic_hash": "d30314bd45ab4710f0aa3c972adc2cbd"
+  },
+  "Referensi/qeducato/js/ajax-form.js": {
+    "mtime": 1615265516.0,
+    "seen": 1792379706.3394296,
+    "ast_hash": "1be30d77e5267cbcf399d6152253e315",
+    "semantic_hash": "1be30d77e5267cbcf399d6152253e315"
+  },
+  "Referensi/qeducato/js/bootstrap.min.js": {
+    "mtime": 1639476960.0,
+    "seen": 1792379706.3394308,
+    "ast_hash": "a08792f518b51f0f1422b5c96df9eb8a",
+    "semantic_hash": "a08792f518b51f0f1422b5c96df9eb8a"
+  },
+  "Referensi/qeducato/js/element-in-view.js": {
+    "mtime": 1615265514.0,
+    "seen": 1792379706.3394318,
+    "ast_hash": "c420ad93675430872630c4993dd18d43",
+    "semantic_hash": "c420ad93675430872630c4993dd18d43"
+  },
+  "Referensi/qeducato/js/imagesloaded.min.js": {
+    "mtime": 1615265514.0,
+    "seen": 1792379706.3394332,
+    "ast_hash": "f8d2169dcdbf5819788f88f82f0dcde9",
+    "semantic_hash": "f8d2169dcdbf5819788f88f82f0dcde9"
+  },
+  "Referensi/qeducato/js/jquery.countdown.min.js": {
+    "mtime": 1675793620.0,
+    "seen": 1792379706.339434,
+    "ast_hash": "384e8d4f3fa089a1c183a081c41b77a5",
+    "semantic_hash": "384e8d4f3fa089a1c183a081c41b77a5"
+  },
+  "Referensi/qeducato/js/jquery.counterup.min.js": {
+    "mtime": 1615265514.0,
+    "seen": 1792379706.339435,
+    "ast_hash": "4f0e0b047f2ed8512d5119b31432bdcf",
+    "semantic_hash": "4f0e0b047f2ed8512d5119b31432bdcf"
+  },
+  "Referensi/qeducato/js/jquery.magnific-popup.min.js": {
+    "mtime": 1615265514.0,
+    "seen": 1792379706.3394358,
+    "ast_hash": "b37d7edf99565d3858eaa1ad80df3cff",
+    "semantic_hash": "b37d7edf99565d3858eaa1ad80df3cff"
+  },
+  "Referensi/qeducato/js/jquery.meanmenu.min.js": {
+    "mtime": 1615265512.0,
+    "seen": 1792379706.3394368,
+    "ast_hash": "0444feb93a5bb35397275148613d7c07",
+    "semantic_hash": "0444feb93a5bb35397275148613d7c07"
+  },
+  "Referensi/qeducato/js/jquery.scrollUp.min.js": {
+    "mtime": 1615265512.0,
+    "seen": 1792379706.3394377,
+    "ast_hash": "e69b827c69c07f29665d0c274fd35bfd",
+    "semantic_hash": "e69b827c69c07f29665d0c274fd35bfd"
+  },
+  "Referensi/qeducato/js/jquery.waypoints.min.js": {
+    "mtime": 1650186746.0,
+    "seen": 1792379706.339439,
+    "ast_hash": "15cce1ffc084eced0bfd90e15d97b0ef",
+    "semantic_hash": "15cce1ffc084eced0bfd90e15d97b0ef"
+  },
+  "Referensi/qeducato/js/js_isotope.pkgd.min.js": {
+    "mtime": 1615265512.0,
+    "seen": 1792379706.3394399,
+    "ast_hash": "7f46b6ffd35ecb35201be7be8a019cea",
+    "semantic_hash": "7f46b6ffd35ecb35201be7be8a019cea"
+  },
+  "Referensi/qeducato/js/main.js": {
+    "mtime": 1675662246.0,
+    "seen": 1792379706.3394408,
+    "ast_hash": "c154823d2fe6f07993dec6bd8b426c10",
+    "semantic_hash": "c154823d2fe6f07993dec6bd8b426c10"
+  },
+  "Referensi/qeducato/js/one-page-nav-min.js": {
+    "mtime": 1615265510.0,
+    "seen": 1792379706.339442,
+    "ast_hash": "b669b308c77d71c51836ed5eca6531b7",
+    "semantic_hash": "b669b308c77d71c51836ed5eca6531b7"
+  },
+  "Referensi/qeducato/js/parallax-scroll.js": {
+    "mtime": 1615265510.0,
+    "seen": 1792379706.339443,
+    "ast_hash": "58d35988547129c9204295262c9f149a",
+    "semantic_hash": "58d35988547129c9204295262c9f149a"
+  },
+  "Referensi/qeducato/js/parallax.min.js": {
+    "mtime": 1615265508.0,
+    "seen": 1792379706.3394444,
+    "ast_hash": "c8c2c525c2cb6976313ffc53a9fb26d5",
+    "semantic_hash": "c8c2c525c2cb6976313ffc53a9fb26d5"
+  },
+  "Referensi/qeducato/js/paroller.js": {
+    "mtime": 1615265508.0,
+    "seen": 1792379706.3394456,
+    "ast_hash": "ae1aa112d9caaeeb96fecd1e1802d908",
+    "semantic_hash": "ae1aa112d9caaeeb96fecd1e1802d908"
+  },
+  "Referensi/qeducato/js/particles.app.js": {
+    "mtime": 1615265508.0,
+    "seen": 1792379706.3394463,
+    "ast_hash": "e8d1210bf473352c2399b9aee48985be",
+    "semantic_hash": "e8d1210bf473352c2399b9aee48985be"
+  },
+  "Referensi/qeducato/js/particles.js": {
+    "mtime": 1615265508.0,
+    "seen": 1792379706.3394473,
+    "ast_hash": "05c69acdd0f7b053f131b18f8792a3ab",
+    "semantic_hash": "05c69acdd0f7b053f131b18f8792a3ab"
+  },
+  "Referensi/qeducato/js/popper.min.js": {
+    "mtime": 1615265506.0,
+    "seen": 1792379706.3394482,
+    "ast_hash": "b1dbc64f8b1dfe0c089dd55b09bbbc72",
+    "semantic_hash": "b1dbc64f8b1dfe0c089dd55b09bbbc72"
+  },
+  "Referensi/qeducato/js/slick.min.js": {
+    "mtime": 1505617694.0,
+    "seen": 1792379706.3394494,
+    "ast_hash": "d5a61c749e44e47159af8a6579dda121",
+    "semantic_hash": "d5a61c749e44e47159af8a6579dda121"
+  },
+  "Referensi/qeducato/js/typed.js": {
+    "mtime": 1615265504.0,
+    "seen": 1792379706.3394504,
+    "ast_hash": "cebe5e4ad9f0bad435a637a80c91dbb1",
+    "semantic_hash": "cebe5e4ad9f0bad435a637a80c91dbb1"
+  },
+  "Referensi/qeducato/js/vendor/jquery-3.6.0.min.js": {
+    "mtime": 1618568376.0,
+    "seen": 1792379706.3394513,
+    "ast_hash": "0953699c9719447af3def30ab0bdce47",
+    "semantic_hash": "0953699c9719447af3def30ab0bdce47"
+  },
+  "Referensi/qeducato/js/vendor/modernizr-3.5.0.min.js": {
+    "mtime": 1615265518.0,
+    "seen": 1792379706.3394523,
+    "ast_hash": "2cd7bd9903f568c5fbf802972520ef64",
+    "semantic_hash": "2cd7bd9903f568c5fbf802972520ef64"
+  },
+  "Referensi/qeducato/js/wow.min.js": {
+    "mtime": 1615265504.0,
+    "seen": 1792379706.3394532,
+    "ast_hash": "e1f1ff6897992a9165e8ce009b4039e3",
+    "semantic_hash": "e1f1ff6897992a9165e8ce009b4039e3"
+  },
+  "Referensi/qeducato/mail.php": {
+    "mtime": 1615269562.0,
+    "seen": 1792379706.339454,
+    "ast_hash": "cddf1d8b8317a01ba2cace2bb2bf3fbb",
+    "semantic_hash": "cddf1d8b8317a01ba2cace2bb2bf3fbb"
+  },
+  "Referensi/qeducato/news-mail.php": {
+    "mtime": 1615269564.0,
+    "seen": 1792379706.339455,
+    "ast_hash": "cd94cefcc24225af2d6b8b93dfe68523",
+    "semantic_hash": "cd94cefcc24225af2d6b8b93dfe68523"
+  },
+  "config/db.js": {
+    "mtime": 1791274280.630998,
+    "seen": 1792379706.339456,
+    "ast_hash": "1bdbf5e95c9afee56ee0829ceda898b8",
+    "semantic_hash": "1bdbf5e95c9afee56ee0829ceda898b8"
+  },
+  "controllers/academicCalendarController.js": {
+    "mtime": 1790900361.358168,
+    "seen": 1792379706.339457,
+    "ast_hash": "55be221c70df5e708771324b1a16a03e",
+    "semantic_hash": "55be221c70df5e708771324b1a16a03e"
+  },
+  "controllers/academicDocumentController.js": {
+    "mtime": 1790900361.3591545,
+    "seen": 1792379706.339458,
+    "ast_hash": "616c438f499c245dfbd4034adc05662e",
+    "semantic_hash": "616c438f499c245dfbd4034adc05662e"
+  },
+  "controllers/academicProfileController.js": {
+    "mtime": 1790900361.361121,
+    "seen": 1792379706.3394592,
+    "ast_hash": "133e8080bab3efd162fa330f00184cf5",
+    "semantic_hash": "133e8080bab3efd162fa330f00184cf5"
+  },
+  "controllers/accreditationController.js": {
+    "mtime": 1791863605.3176606,
+    "seen": 1792379706.3394601,
+    "ast_hash": "4027688a0f4fd6d956faf945bea53419",
+    "semantic_hash": "4027688a0f4fd6d956faf945bea53419"
+  },
+  "controllers/adminContentController.js": {
+    "mtime": 1792126583.9036763,
+    "seen": 1792379706.3394608,
+    "ast_hash": "effe8ed3c9f1de002ea198597a524a15",
+    "semantic_hash": "effe8ed3c9f1de002ea198597a524a15"
+  },
+  "controllers/authController.js": {
+    "mtime": 1791273194.9555914,
+    "seen": 1792379706.3394618,
+    "ast_hash": "c74a1d7f1689e83cf55ebbfe05486d96",
+    "semantic_hash": "c74a1d7f1689e83cf55ebbfe05486d96"
+  },
+  "controllers/bookController.js": {
+    "mtime": 1790900361.3669662,
+    "seen": 1792379706.339463,
+    "ast_hash": "0f38d29f887b81690c062949aec9d032",
+    "semantic_hash": "0f38d29f887b81690c062949aec9d032"
+  },
+  "controllers/chatController.js": {
+    "mtime": 1792136888.4987,
+    "seen": 1792379706.3394637,
+    "ast_hash": "6a225fa9a4bca7559cb51c924c3bfca6",
+    "semantic_hash": "6a225fa9a4bca7559cb51c924c3bfca6"
+  },
+  "controllers/facultyController.js": {
+    "mtime": 1790900361.367973,
+    "seen": 1792379706.3394651,
+    "ast_hash": "edd293abc235ef3e1d81a8b523801046",
+    "semantic_hash": "edd293abc235ef3e1d81a8b523801046"
+  },
+  "controllers/graduationBookController.js": {
+    "mtime": 1790900361.3689566,
+    "seen": 1792379706.3394663,
+    "ast_hash": "8399140732c277a0d757ecf1917d01a3",
+    "semantic_hash": "8399140732c277a0d757ecf1917d01a3"
+  },
+  "controllers/homeController.js": {
+    "mtime": 1792126582.8060524,
+    "seen": 1792379706.3394673,
+    "ast_hash": "8c13f5114a0e9c980889bd98627d1c76",
+    "semantic_hash": "8c13f5114a0e9c980889bd98627d1c76"
+  },
+  "controllers/kategoriController.js": {
+    "mtime": 1790900361.3734748,
+    "seen": 1792379706.3394682,
+    "ast_hash": "d8ca9adc4a8c40c2dce1fd35ba7e2563",
+    "semantic_hash": "d8ca9adc4a8c40c2dce1fd35ba7e2563"
+  },
+  "controllers/kurikulumController.js": {
+    "mtime": 1790900361.3754222,
+    "seen": 1792379706.3394692,
+    "ast_hash": "69b49a0a4e71fe4f603c9ecb3ccbe831",
+    "semantic_hash": "69b49a0a4e71fe4f603c9ecb3ccbe831"
+  },
+  "controllers/lembagaAkreditasiController.js": {
+    "mtime": 1790900361.376398,
+    "seen": 1792379706.3394701,
+    "ast_hash": "cd8c58ddac2a4f568f81ab8952ea59d6",
+    "semantic_hash": "cd8c58ddac2a4f568f81ab8952ea59d6"
+  },
+  "controllers/lulusanController.js": {
+    "mtime": 1791863605.3206203,
+    "seen": 1792379706.339471,
+    "ast_hash": "e9914ca064d0d29fbbb222ad27a840e4",
+    "semantic_hash": "e9914ca064d0d29fbbb222ad27a840e4"
+  },
+  "controllers/masterDataController.js": {
+    "mtime": 1790900361.3793335,
+    "seen": 1792379706.3394718,
+    "ast_hash": "1937a0b93994ee13d36be781ee98619f",
+    "semantic_hash": "1937a0b93994ee13d36be781ee98619f"
+  },
+  "controllers/newsController.js": {
+    "mtime": 1790900361.380839,
+    "seen": 1792379706.339473,
+    "ast_hash": "6760a21d1ea4b4777e3f76989fe5b594",
+    "semantic_hash": "6760a21d1ea4b4777e3f76989fe5b594"
+  },
+  "controllers/pengumumanController.js": {
+    "mtime": 1790900361.3827994,
+    "seen": 1792379706.339474,
+    "ast_hash": "dd4c133538d331d2ace6cdb9003020df",
+    "semantic_hash": "dd4c133538d331d2ace6cdb9003020df"
+  },
+  "controllers/programStudiController.js": {
+    "mtime": 1790900361.384752,
+    "seen": 1792379706.339475,
+    "ast_hash": "b1c9ffe6dc03ad34bf32ed31f6d99f33",
+    "semantic_hash": "b1c9ffe6dc03ad34bf32ed31f6d99f33"
+  },
+  "controllers/rplDocumentController.js": {
+    "mtime": 1790900361.3867064,
+    "seen": 1792379706.3394759,
+    "ast_hash": "33a3f4314905e1a85aaa7488dd64a34a",
+    "semantic_hash": "33a3f4314905e1a85aaa7488dd64a34a"
+  },
+  "controllers/seoController.js": {
+    "mtime": 1790902641.6458693,
+    "seen": 1792379706.3394768,
+    "ast_hash": "4ea7ce1c15fbe39e8fe4f22825427a9d",
+    "semantic_hash": "4ea7ce1c15fbe39e8fe4f22825427a9d"
+  },
+  "controllers/siteSettingController.js": {
+    "mtime": 1790902641.6468515,
+    "seen": 1792379706.3394778,
+    "ast_hash": "44f0f0609e959311817ad0256dd48dad",
+    "semantic_hash": "44f0f0609e959311817ad0256dd48dad"
+  },
+  "controllers/staffController.js": {
+    "mtime": 1791788251.4254515,
+    "seen": 1792379706.3394787,
+    "ast_hash": "e49b7fc648017598bec8457d912c26bc",
+    "semantic_hash": "e49b7fc648017598bec8457d912c26bc"
+  },
+  "controllers/unitController.js": {
+    "mtime": 1791788582.7780194,
+    "seen": 1792379706.3394794,
+    "ast_hash": "6367691e8279c04d2f499069b2e252f8",
+    "semantic_hash": "6367691e8279c04d2f499069b2e252f8"
+  },
+  "controllers/userAccountController.js": {
+    "mtime": 1791863605.3235571,
+    "seen": 1792379706.3394806,
+    "ast_hash": "bed9fa1c03a7d05b706d28408c8879d8",
+    "semantic_hash": "bed9fa1c03a7d05b706d28408c8879d8"
+  },
+  "middleware/authMiddleware.js": {
+    "mtime": 1790900361.4099998,
+    "seen": 1792379706.3394816,
+    "ast_hash": "b321a9d1007ea1724bbd1be9de1d3bcf",
+    "semantic_hash": "b321a9d1007ea1724bbd1be9de1d3bcf"
+  },
+  "middleware/renderPage.js": {
+    "mtime": 1790900361.4119508,
+    "seen": 1792379706.3394823,
+    "ast_hash": "2a8074ebddfd97b6ae0df5130b19bd27",
+    "semantic_hash": "2a8074ebddfd97b6ae0df5130b19bd27"
+  },
+  "middleware/strictCsp.js": {
+    "mtime": 1790900361.4129305,
+    "seen": 1792379706.3394835,
+    "ast_hash": "762d303f73a562f69cf08da18bb4609d",
+    "semantic_hash": "762d303f73a562f69cf08da18bb4609d"
+  },
+  "middleware/verifyOrigin.js": {
+    "mtime": 1790900361.4139032,
+    "seen": 1792379706.3394845,
+    "ast_hash": "2eb38b2e969f78f4dda37017a448f302",
+    "semantic_hash": "2eb38b2e969f78f4dda37017a448f302"
+  },
+  "models/AcademicCalendar.js": {
+    "mtime": 1790900361.4148805,
+    "seen": 1792379706.3394852,
+    "ast_hash": "bed127a404b3099eae7da75c1b25f22a",
+    "semantic_hash": "bed127a404b3099eae7da75c1b25f22a"
+  },
+  "models/AcademicDocument.js": {
+    "mtime": 1790900361.415857,
+    "seen": 1792379706.3394861,
+    "ast_hash": "dc3b2f4db54a1074081976bb4d2d4ff7",
+    "semantic_hash": "dc3b2f4db54a1074081976bb4d2d4ff7"
+  },
+  "models/AcademicProfile.js": {
+    "mtime": 1770953246.0662663,
+    "seen": 1792379706.3394873,
+    "ast_hash": "156ad5777147f27faec44d678584f7da",
+    "semantic_hash": "156ad5777147f27faec44d678584f7da"
+  },
+  "models/Accreditation.js": {
+    "mtime": 1790900361.416841,
+    "seen": 1792379706.3394883,
+    "ast_hash": "0feebbff5fdb9b99a7f1cecdfe0ec059",
+    "semantic_hash": "0feebbff5fdb9b99a7f1cecdfe0ec059"
+  },
+  "models/Book.js": {
+    "mtime": 1769662297.5182972,
+    "seen": 1792379706.339489,
+    "ast_hash": "c9813e2b8ed0cd21ccfd313b967eeba1",
+    "semantic_hash": "c9813e2b8ed0cd21ccfd313b967eeba1"
+  },
+  "models/ChatLog.js": {
+    "mtime": 1792133491.324677,
+    "seen": 1792379706.33949,
+    "ast_hash": "815818fb9c469f2eeda4079e710273fc",
+    "semantic_hash": "815818fb9c469f2eeda4079e710273fc"
+  },
+  "models/Faculty.js": {
+    "mtime": 1770279635.5450191,
+    "seen": 1792379706.339491,
+    "ast_hash": "15573fb236902b2dcca2821af33c57aa",
+    "semantic_hash": "15573fb236902b2dcca2821af33c57aa"
+  },
+  "models/GraduationBook.js": {
+    "mtime": 1790900361.4183488,
+    "seen": 1792379706.3394918,
+    "ast_hash": "66cc960fd1510cd325b74cebdecaf2ad",
+    "semantic_hash": "66cc960fd1510cd325b74cebdecaf2ad"
+  },
+  "models/Kategori.js": {
+    "mtime": 1790900361.4203122,
+    "seen": 1792379706.3394928,
+    "ast_hash": "0c71eeb1153d05fe5ecd5f00fd6ea8f2",
+    "semantic_hash": "0c71eeb1153d05fe5ecd5f00fd6ea8f2"
+  },
+  "models/Kurikulum.js": {
+    "mtime": 1790900361.42129,
+    "seen": 1792379706.3394935,
+    "ast_hash": "09c72583d5816fa1622013be45cbf47e",
+    "semantic_hash": "09c72583d5816fa1622013be45cbf47e"
+  },
+  "models/LembagaAkreditasi.js": {
+    "mtime": 1790900361.4232411,
+    "seen": 1792379706.3394947,
+    "ast_hash": "fecca82e3636740525b12fdbda0e7ea9",
+    "semantic_hash": "fecca82e3636740525b12fdbda0e7ea9"
+  },
+  "models/Lulusan.js": {
+    "mtime": 1770619326.2079492,
+    "seen": 1792379706.3394957,
+    "ast_hash": "3621b35d78a3b9323e2efd94d308195e",
+    "semantic_hash": "3621b35d78a3b9323e2efd94d308195e"
+  },
+  "models/News.js": {
+    "mtime": 1790900361.4251995,
+    "seen": 1792379706.3394966,
+    "ast_hash": "081b615f3f9b861dd25b981724dbd861",
+    "semantic_hash": "081b615f3f9b861dd25b981724dbd861"
+  },
+  "models/Pengumuman.js": {
+    "mtime": 1790900361.4271488,
+    "seen": 1792379706.3394976,
+    "ast_hash": "c18ef1e0fdfd0c310d46d3c2eeb7c267",
+    "semantic_hash": "c18ef1e0fdfd0c310d46d3c2eeb7c267"
+  },
+  "models/ProgramStudi.js": {
+    "mtime": 1770280112.8787792,
+    "seen": 1792379706.3394985,
+    "ast_hash": "4d96487fa29d01ae096614772be13c23",
+    "semantic_hash": "4d96487fa29d01ae096614772be13c23"
+  },
+  "models/RplDocument.js": {
+    "mtime": 1790900361.4281561,
+    "seen": 1792379706.3394995,
+    "ast_hash": "5972b3782417642caa73f930e59251e6",
+    "semantic_hash": "5972b3782417642caa73f930e59251e6"
+  },
+  "models/SiteSetting.js": {
+    "mtime": 1790900361.4301186,
+    "seen": 1792379706.3395004,
+    "ast_hash": "10c2527495c116e01d8f2a3c6f51abd0",
+    "semantic_hash": "10c2527495c116e01d8f2a3c6f51abd0"
+  },
+  "models/Staff.js": {
+    "mtime": 1791788222.5254977,
+    "seen": 1792379706.3395014,
+    "ast_hash": "d4d20ff4766ae8df308dff93755d6581",
+    "semantic_hash": "d4d20ff4766ae8df308dff93755d6581"
+  },
+  "models/Unit.js": {
+    "mtime": 1770369483.6318138,
+    "seen": 1792379706.3395023,
+    "ast_hash": "bb33f8ba947eba22fb029062cfcb4a7e",
+    "semantic_hash": "bb33f8ba947eba22fb029062cfcb4a7e"
+  },
+  "models/User.js": {
+    "mtime": 1790900361.4330482,
+    "seen": 1792379706.3395033,
+    "ast_hash": "147236db6f29d1483544be2cf60001c5",
+    "semantic_hash": "147236db6f29d1483544be2cf60001c5"
+  },
+  "models/index.js": {
+    "mtime": 1790900361.4330482,
+    "seen": 1792379706.3395045,
+    "ast_hash": "28c17198d65abdbb6b563fdd1638e855",
+    "semantic_hash": "28c17198d65abdbb6b563fdd1638e855"
+  },
+  "models/plugins/content.js": {
+    "mtime": 1790900361.4349985,
+    "seen": 1792379706.3395054,
+    "ast_hash": "e9720a94e8fc6558076719e2ccb36e34",
+    "semantic_hash": "e9720a94e8fc6558076719e2ccb36e34"
+  },
+  "package.json": {
+    "mtime": 1791273195.001754,
+    "seen": 1792379706.339507,
+    "ast_hash": "3c5148b4a4d970fd8faeed63f106baa2",
+    "semantic_hash": "3c5148b4a4d970fd8faeed63f106baa2"
+  },
+  "public/asset-manifest.json": {
+    "mtime": 1792379166.678372,
+    "seen": 1792379706.3395083,
+    "ast_hash": "b3c23627e405e9a5dd0a25f2ebe99475",
+    "semantic_hash": "b3c23627e405e9a5dd0a25f2ebe99475"
+  },
+  "public/js/app.js": {
+    "mtime": 1792133541.4470527,
+    "seen": 1792379706.3395092,
+    "ast_hash": "0776804ce79209f6d528970a61d38f7c",
+    "semantic_hash": "0776804ce79209f6d528970a61d38f7c"
+  },
+  "public/js/vendor/alpine-csp.min.js": {
+    "mtime": 1791863242.0873928,
+    "seen": 1792379706.33951,
+    "ast_hash": "9ef4a2916a4e1ddd2176d948a800ef91",
+    "semantic_hash": "9ef4a2916a4e1ddd2176d948a800ef91"
+  },
+  "routes/academicCalendarRoutes.js": {
+    "mtime": 1790900361.4645066,
+    "seen": 1792379706.3395112,
+    "ast_hash": "fcdb789ab40c5efcd0c93a09046191f9",
+    "semantic_hash": "fcdb789ab40c5efcd0c93a09046191f9"
+  },
+  "routes/academicDocumentRoutes.js": {
+    "mtime": 1790900361.4654791,
+    "seen": 1792379706.339512,
+    "ast_hash": "5f295aff2661006e957f6ee983562f73",
+    "semantic_hash": "5f295aff2661006e957f6ee983562f73"
+  },
+  "routes/academicProfileRoutes.js": {
+    "mtime": 1790900361.466457,
+    "seen": 1792379706.339513,
+    "ast_hash": "27e9383d081f1f7fbbdcf27e202b070b",
+    "semantic_hash": "27e9383d081f1f7fbbdcf27e202b070b"
+  },
+  "routes/accreditationRoutes.js": {
+    "mtime": 1790900361.466457,
+    "seen": 1792379706.3395138,
+    "ast_hash": "ddf6dc77abd389fd1cfe149256e62803",
+    "semantic_hash": "ddf6dc77abd389fd1cfe149256e62803"
+  },
+  "routes/authRoutes.js": {
+    "mtime": 1791273195.0264606,
+    "seen": 1792379706.339515,
+    "ast_hash": "0ccf8328eb7dc5dee4fa5fbdd045e7ad",
+    "semantic_hash": "0ccf8328eb7dc5dee4fa5fbdd045e7ad"
+  },
+  "routes/bookRoutes.js": {
+    "mtime": 1790900361.470488,
+    "seen": 1792379706.339516,
+    "ast_hash": "90d235e7f2b5c95a5b2f32fbba538045",
+    "semantic_hash": "90d235e7f2b5c95a5b2f32fbba538045"
+  },
+  "routes/devRoutes.js": {
+    "mtime": 1791863750.4076746,
+    "seen": 1792379706.339517,
+    "ast_hash": "33abba78888f44af88729c7b390f90c2",
+    "semantic_hash": "33abba78888f44af88729c7b390f90c2"
+  },
+  "routes/facultyRoutes.js": {
+    "mtime": 1790900361.473674,
+    "seen": 1792379706.3395183,
+    "ast_hash": "9f50ea6127a213bc4ffd88c8016279f1",
+    "semantic_hash": "9f50ea6127a213bc4ffd88c8016279f1"
+  },
+  "routes/graduationBookRoutes.js": {
+    "mtime": 1790900361.474651,
+    "seen": 1792379706.339519,
+    "ast_hash": "f9e85077453a42f0e98c9c66c45822c1",
+    "semantic_hash": "f9e85077453a42f0e98c9c66c45822c1"
+  },
+  "routes/indexRoutes.js": {
+    "mtime": 1792133508.0805254,
+    "seen": 1792379706.33952,
+    "ast_hash": "b34ff809ef8fce59d564df93485702e1",
+    "semantic_hash": "b34ff809ef8fce59d564df93485702e1"
+  },
+  "routes/kategoriRoutes.js": {
+    "mtime": 1790900361.4766045,
+    "seen": 1792379706.339521,
+    "ast_hash": "fc98b0ce57c67a898d2113454efb0979",
+    "semantic_hash": "fc98b0ce57c67a898d2113454efb0979"
+  },
+  "routes/kurikulumRoutes.js": {
+    "mtime": 1790900361.4783826,
+    "seen": 1792379706.3395221,
+    "ast_hash": "763da1a92181014d231e103eb1b84df6",
+    "semantic_hash": "763da1a92181014d231e103eb1b84df6"
+  },
+  "routes/lembagaAkreditasiRoutes.js": {
+    "mtime": 1790900361.4783826,
+    "seen": 1792379706.339523,
+    "ast_hash": "778c659c59b72005008e83c56f3ece7e",
+    "semantic_hash": "778c659c59b72005008e83c56f3ece7e"
+  },
+  "routes/lulusanRoutes.js": {
+    "mtime": 1790900361.4793582,
+    "seen": 1792379706.3395238,
+    "ast_hash": "1c6d3c5bd15b2bae04bbeda5f74373ab",
+    "semantic_hash": "1c6d3c5bd15b2bae04bbeda5f74373ab"
+  },
+  "routes/newsRoutes.js": {
+    "mtime": 1791863330.031938,
+    "seen": 1792379706.3395247,
+    "ast_hash": "27662ab825c9d7e6aae36ec621fe89eb",
+    "semantic_hash": "27662ab825c9d7e6aae36ec621fe89eb"
+  },
+  "routes/pengumumanRoutes.js": {
+    "mtime": 1791863330.032896,
+    "seen": 1792379706.339526,
+    "ast_hash": "eeecfa3aeafc47b0019253aa297ced3e",
+    "semantic_hash": "eeecfa3aeafc47b0019253aa297ced3e"
+  },
+  "routes/programStudiRoutes.js": {
+    "mtime": 1790900361.4842424,
+    "seen": 1792379706.339527,
+    "ast_hash": "f4cd5836acb04a3e86fff4b1639b7fde",
+    "semantic_hash": "f4cd5836acb04a3e86fff4b1639b7fde"
+  },
+  "routes/rplDocumentRoutes.js": {
+    "mtime": 1790900361.4861946,
+    "seen": 1792379706.3395276,
+    "ast_hash": "210c965e868b2aa2cb3f0ccadf4f86d9",
+    "semantic_hash": "210c965e868b2aa2cb3f0ccadf4f86d9"
+  },
+  "routes/siteSettingRoutes.js": {
+    "mtime": 1790900361.4871712,
+    "seen": 1792379706.3395288,
+    "ast_hash": "b7730c895ac4f5b1a8c2c86c3e533e54",
+    "semantic_hash": "b7730c895ac4f5b1a8c2c86c3e533e54"
+  },
+  "routes/staffRoutes.js": {
+    "mtime": 1790900361.4881768,
+    "seen": 1792379706.3395298,
+    "ast_hash": "2156ff592523185ce63b9b43c895094a",
+    "semantic_hash": "2156ff592523185ce63b9b43c895094a"
+  },
+  "routes/unitRoutes.js": {
+    "mtime": 1790900361.4896832,
+    "seen": 1792379706.3395307,
+    "ast_hash": "e5928b2420581ee97511558d99195196",
+    "semantic_hash": "e5928b2420581ee97511558d99195196"
+  },
+  "routes/userAccountRoutes.js": {
+    "mtime": 1790900361.4928575,
+    "seen": 1792379706.3395314,
+    "ast_hash": "2a6286167b06174599692b86ace89b3b",
+    "semantic_hash": "2a6286167b06174599692b86ace89b3b"
+  },
+  "scripts/build-assets.js": {
+    "mtime": 1791863240.706288,
+    "seen": 1792379706.3395329,
+    "ast_hash": "04f25d747cf4b5328c9f8ff6d659ffaa",
+    "semantic_hash": "04f25d747cf4b5328c9f8ff6d659ffaa"
+  },
+  "scripts/build-manifest.js": {
+    "mtime": 1790902641.6585505,
+    "seen": 1792379706.3395336,
+    "ast_hash": "200ab478a87731440cf297d8cb05cb5f",
+    "semantic_hash": "200ab478a87731440cf297d8cb05cb5f"
+  },
+  "scripts/f0-cleanup-test-content.js": {
+    "mtime": 1790900361.496108,
+    "seen": 1792379706.3395345,
+    "ast_hash": "3ae596dc52e67c2eaf031b512e608c97",
+    "semantic_hash": "3ae596dc52e67c2eaf031b512e608c97"
+  },
+  "scripts/migrate/001-users-role.js": {
+    "mtime": 1790900361.4980984,
+    "seen": 1792379706.3395357,
+    "ast_hash": "f576fcba8de12e102b396ea011f274d7",
+    "semantic_hash": "f576fcba8de12e102b396ea011f274d7"
+  },
+  "scripts/migrate/002-master-seed.js": {
+    "mtime": 1790900361.4990816,
+    "seen": 1792379706.3395364,
+    "ast_hash": "4188d94e5185d30f7f3005dff9233439",
+    "semantic_hash": "4188d94e5185d30f7f3005dff9233439"
+  },
+  "scripts/migrate/003-accreditation.js": {
+    "mtime": 1790900361.5000877,
+    "seen": 1792379706.3395374,
+    "ast_hash": "33a745ac6e853a76a0d4f79f8ff225e3",
+    "semantic_hash": "33a745ac6e853a76a0d4f79f8ff225e3"
+  },
+  "scripts/migrate/004-kurikulum-prodi.js": {
+    "mtime": 1790900361.5010774,
+    "seen": 1792379706.3395383,
+    "ast_hash": "8094a87694e652e0304f1a646904c2c3",
+    "semantic_hash": "8094a87694e652e0304f1a646904c2c3"
+  },
+  "scripts/migrate/005-content-excerpt.js": {
+    "mtime": 1790900361.5020485,
+    "seen": 1792379706.3395395,
+    "ast_hash": "1e0241092bc4f18fee462ac8e11da6d0",
+    "semantic_hash": "1e0241092bc4f18fee462ac8e11da6d0"
+  },
+  "scripts/migrate/006-files-meta.js": {
+    "mtime": 1790900361.5030243,
+    "seen": 1792379706.3395405,
+    "ast_hash": "7d9c988fb2c91875b7c45100f6e6b91d",
+    "semantic_hash": "7d9c988fb2c91875b7c45100f6e6b91d"
+  },
+  "scripts/migrate/007-readiness.js": {
+    "mtime": 1790900361.5040064,
+    "seen": 1792379706.3395414,
+    "ast_hash": "c0e2f7a5e38f0b1fe57a0a342c8829af",
+    "semantic_hash": "c0e2f7a5e38f0b1fe57a0a342c8829af"
+  },
+  "scripts/migrate/008-berita-kategori-seed.js": {
+    "mtime": 1790900361.504977,
+    "seen": 1792379706.3395424,
+    "ast_hash": "262403e11ac92d8e6e11a2f4275b48ba",
+    "semantic_hash": "262403e11ac92d8e6e11a2f4275b48ba"
+  },
+  "scripts/migrate/009-staff-tingkat.js": {
+    "mtime": 1791788372.6296983,
+    "seen": 1792379706.3395433,
+    "ast_hash": "c35ef3141df7e237c724645f6bc3bf96",
+    "semantic_hash": "c35ef3141df7e237c724645f6bc3bf96"
+  },
+  "scripts/migrate/index.js": {
+    "mtime": 1791788356.7466252,
+    "seen": 1792379706.3395443,
+    "ast_hash": "d7cd78e2122c3b7f0e3b45f3cea11ff7",
+    "semantic_hash": "d7cd78e2122c3b7f0e3b45f3cea11ff7"
+  },
+  "server.js": {
+    "mtime": 1792133509.2829065,
+    "seen": 1792379706.339545,
+    "ast_hash": "47dd9ceb2a58de0a83d8bbb37202df22",
+    "semantic_hash": "47dd9ceb2a58de0a83d8bbb37202df22"
+  },
+  "skills-lock.json": {
+    "mtime": 1792375208.3354323,
+    "seen": 1792379706.3395462,
+    "ast_hash": "28c8f6d4d0460bbe4e032cf74ab1e8de",
+    "semantic_hash": "28c8f6d4d0460bbe4e032cf74ab1e8de"
+  },
+  "test/chat.test.js": {
+    "mtime": 1792136889.601036,
+    "seen": 1792379706.339547,
+    "ast_hash": "7642cd316095aff427a8601c88b40a09",
+    "semantic_hash": "7642cd316095aff427a8601c88b40a09"
+  },
+  "test/contact.test.js": {
+    "mtime": 1791273195.0408158,
+    "seen": 1792379706.3395479,
+    "ast_hash": "f55168cc04d8a145981445dfeeb420c9",
+    "semantic_hash": "f55168cc04d8a145981445dfeeb420c9"
+  },
+  "test/format.test.js": {
+    "mtime": 1790900361.5089183,
+    "seen": 1792379706.3395486,
+    "ast_hash": "9e45ea8ef0c2c822306e5f5a244e572b",
+    "semantic_hash": "9e45ea8ef0c2c822306e5f5a244e572b"
+  },
+  "test/image.test.js": {
+    "mtime": 1790900361.5089183,
+    "seen": 1792379706.3395498,
+    "ast_hash": "a47d4dcf2daffa4faba24914c6a628c3",
+    "semantic_hash": "a47d4dcf2daffa4faba24914c6a628c3"
+  },
+  "test/loginAttempts.test.js": {
+    "mtime": 1790900361.509896,
+    "seen": 1792379706.3395507,
+    "ast_hash": "2555d6949f0c6a99ad9b8997902d7b0b",
+    "semantic_hash": "2555d6949f0c6a99ad9b8997902d7b0b"
+  },
+  "test/pengumuman.test.js": {
+    "mtime": 1792375847.7649972,
+    "seen": 1792379706.3395514,
+    "ast_hash": "77735c3596653b9344af1a1ed209d4a4",
+    "semantic_hash": "77735c3596653b9344af1a1ed209d4a4"
+  },
+  "test/regex.test.js": {
+    "mtime": 1791863629.496423,
+    "seen": 1792379706.3395524,
+    "ast_hash": "fce15a64c9efa756feba8f062f95d3a6",
+    "semantic_hash": "fce15a64c9efa756feba8f062f95d3a6"
+  },
+  "test/roles.test.js": {
+    "mtime": 1790900361.5108733,
+    "seen": 1792379706.3395536,
+    "ast_hash": "9a75a65b074b9bbf307bd6bc7ff4ebbe",
+    "semantic_hash": "9a75a65b074b9bbf307bd6bc7ff4ebbe"
+  },
+  "test/rules.test.js": {
+    "mtime": 1790900361.5118487,
+    "seen": 1792379706.3395543,
+    "ast_hash": "f220781ba1219b8699de6d5d696df252",
+    "semantic_hash": "f220781ba1219b8699de6d5d696df252"
+  },
+  "test/staffTingkat.test.js": {
+    "mtime": 1791788299.2241812,
+    "seen": 1792379706.3395553,
+    "ast_hash": "ae05a9a29555328323e91be99c096cc9",
+    "semantic_hash": "ae05a9a29555328323e91be99c096cc9"
+  },
+  "test/upload.test.js": {
+    "mtime": 1790900361.5118487,
+    "seen": 1792379706.3395565,
+    "ast_hash": "290becc77284d16e41d2367f0f64f0b4",
+    "semantic_hash": "290becc77284d16e41d2367f0f64f0b4"
+  },
+  "test/validators.test.js": {
+    "mtime": 1791788247.2170973,
+    "seen": 1792379706.3395574,
+    "ast_hash": "0b9ed64870c7ca72d3411f443a11119a",
+    "semantic_hash": "0b9ed64870c7ca72d3411f443a11119a"
+  },
+  "test/videoEmbed.test.js": {
+    "mtime": 1791862837.7914176,
+    "seen": 1792379706.3395581,
+    "ast_hash": "1f3d054686074b07fc13804b2d82d1a9",
+    "semantic_hash": "1f3d054686074b07fc13804b2d82d1a9"
+  },
+  "utils/accreditation.js": {
+    "mtime": 1790900361.5138013,
+    "seen": 1792379706.339559,
+    "ast_hash": "33611bf3ef83ac940ea61ff572dd4309",
+    "semantic_hash": "33611bf3ef83ac940ea61ff572dd4309"
+  },
+  "utils/assetVersion.js": {
+    "mtime": 1790902641.6617086,
+    "seen": 1792379706.3395603,
+    "ast_hash": "537d69db62558b33b3105f1c1941f7f0",
+    "semantic_hash": "537d69db62558b33b3105f1c1941f7f0"
+  },
+  "utils/calendar.js": {
+    "mtime": 1790900361.5147786,
+    "seen": 1792379706.339561,
+    "ast_hash": "09f373d5dbbe1b567b21058df3006ad4",
+    "semantic_hash": "09f373d5dbbe1b567b21058df3006ad4"
+  },
+  "utils/calendarImport.js": {
+    "mtime": 1790900361.5157588,
+    "seen": 1792379706.339562,
+    "ast_hash": "f93b0afffc9db4fb0b696ed0854206c2",
+    "semantic_hash": "f93b0afffc9db4fb0b696ed0854206c2"
+  },
+  "utils/chat.js": {
+    "mtime": 1792133615.5400324,
+    "seen": 1792379706.339563,
+    "ast_hash": "013c24b9723cc83d4b8e1be411a93581",
+    "semantic_hash": "013c24b9723cc83d4b8e1be411a93581"
+  },
+  "utils/chatKnowledge.js": {
+    "mtime": 1792133490.094452,
+    "seen": 1792379706.3395638,
+    "ast_hash": "20641b5388d1f856b470bf1ade1bfebc",
+    "semantic_hash": "20641b5388d1f856b470bf1ade1bfebc"
+  },
+  "utils/chatLimits.js": {
+    "mtime": 1792133456.6772058,
+    "seen": 1792379706.3395648,
+    "ast_hash": "69ed3131a4f0ba24357365b7249f6b75",
+    "semantic_hash": "69ed3131a4f0ba24357365b7249f6b75"
+  },
+  "utils/contact.js": {
+    "mtime": 1791273195.0462377,
+    "seen": 1792379706.3395658,
+    "ast_hash": "efe13a95dacaf9c750acc301f693d2b5",
+    "semantic_hash": "efe13a95dacaf9c750acc301f693d2b5"
+  },
+  "utils/dates.js": {
+    "mtime": 1790900361.5157588,
+    "seen": 1792379706.3395667,
+    "ast_hash": "8a1843addef23fe1ea94dc9731fb0fee",
+    "semantic_hash": "8a1843addef23fe1ea94dc9731fb0fee"
+  },
+  "utils/format.js": {
+    "mtime": 1790900361.5167317,
+    "seen": 1792379706.3395677,
+    "ast_hash": "5acd5c395e823af61cd239ce657f241d",
+    "semantic_hash": "5acd5c395e823af61cd239ce657f241d"
+  },
+  "utils/gemini.js": {
+    "mtime": 1792136887.3659523,
+    "seen": 1792379706.3395686,
+    "ast_hash": "2939362e2ae1c40a9aea37e567b26dc6",
+    "semantic_hash": "2939362e2ae1c40a9aea37e567b26dc6"
+  },
+  "utils/html.js": {
+    "mtime": 1790900361.5167317,
+    "seen": 1792379706.3395696,
+    "ast_hash": "cc35951318c761c82d0c160a5ea6e581",
+    "semantic_hash": "cc35951318c761c82d0c160a5ea6e581"
+  },
+  "utils/icons.js": {
+    "mtime": 1791273195.0481918,
+    "seen": 1792379706.3395708,
+    "ast_hash": "d97bdcc63cf2ef22dc390c6a535c03ea",
+    "semantic_hash": "d97bdcc63cf2ef22dc390c6a535c03ea"
+  },
+  "utils/icons.json": {
+    "mtime": 1791863241.981632,
+    "seen": 1792379706.3395717,
+    "ast_hash": "584e0c72eebfbf446cd56453cbf48564",
+    "semantic_hash": "584e0c72eebfbf446cd56453cbf48564"
+  },
+  "utils/image.js": {
+    "mtime": 1790900361.5197432,
+    "seen": 1792379706.3395724,
+    "ast_hash": "75fb187e58d39bc9403756612e3510b0",
+    "semantic_hash": "75fb187e58d39bc9403756612e3510b0"
+  },
+  "utils/loginAttempts.js": {
+    "mtime": 1790900361.5207183,
+    "seen": 1792379706.3395736,
+    "ast_hash": "d94aa1147b896d0437415a8dfd436561",
+    "semantic_hash": "d94aa1147b896d0437415a8dfd436561"
+  },
+  "utils/lulusanImport.js": {
+    "mtime": 1790900361.522678,
+    "seen": 1792379706.3395746,
+    "ast_hash": "c890a95345cfb484f58dc702344d4eca",
+    "semantic_hash": "c890a95345cfb484f58dc702344d4eca"
+  },
+  "utils/navigation.js": {
+    "mtime": 1792375337.145216,
+    "seen": 1792379706.3395755,
+    "ast_hash": "42228033fa7c491cda9d3596dc88e143",
+    "semantic_hash": "42228033fa7c491cda9d3596dc88e143"
+  },
+  "utils/prodi.js": {
+    "mtime": 1790900361.5256054,
+    "seen": 1792379706.3395762,
+    "ast_hash": "3a0bc7eba209a0b5389ab717dfd55a42",
+    "semantic_hash": "3a0bc7eba209a0b5389ab717dfd55a42"
+  },
+  "utils/regex.js": {
+    "mtime": 1791863605.3156774,
+    "seen": 1792379706.3395774,
+    "ast_hash": "09e5e5a40e0891d1b225c82ddedbf5a2",
+    "semantic_hash": "09e5e5a40e0891d1b225c82ddedbf5a2"
+  },
+  "utils/roles.js": {
+    "mtime": 1790900361.5265803,
+    "seen": 1792379706.3395784,
+    "ast_hash": "08c10f33a775a38a5cf5100d11623fca",
+    "semantic_hash": "08c10f33a775a38a5cf5100d11623fca"
+  },
+  "utils/siteSettingCache.js": {
+    "mtime": 1790902641.662818,
+    "seen": 1792379706.3395793,
+    "ast_hash": "2504f829149b8f04344e78aa07553cb8",
+    "semantic_hash": "2504f829149b8f04344e78aa07553cb8"
+  },
+  "utils/slug.js": {
+    "mtime": 1790900361.5288346,
+    "seen": 1792379706.3395803,
+    "ast_hash": "f3b24e5b2ef67ebc45209ea25aaf7834",
+    "semantic_hash": "f3b24e5b2ef67ebc45209ea25aaf7834"
+  },
+  "utils/staffTingkat.js": {
+    "mtime": 1791788247.0556583,
+    "seen": 1792379706.3395813,
+    "ast_hash": "b0b299171afadf6770026f15974735e9",
+    "semantic_hash": "b0b299171afadf6770026f15974735e9"
+  },
+  "utils/tagNormalizer.js": {
+    "mtime": 1770967114.2342825,
+    "seen": 1792379706.3395822,
+    "ast_hash": "29565afc10e9a44fbe28fc71206f4bef",
+    "semantic_hash": "29565afc10e9a44fbe28fc71206f4bef"
+  },
+  "utils/upload.js": {
+    "mtime": 1790900361.529811,
+    "seen": 1792379706.339583,
+    "ast_hash": "ab6cfd5c65c076f25a2c96ccac1037dd",
+    "semantic_hash": "ab6cfd5c65c076f25a2c96ccac1037dd"
+  },
+  "utils/videoEmbed.js": {
+    "mtime": 1791862837.7458363,
+    "seen": 1792379706.339584,
+    "ast_hash": "ad5733aa554a79e86db988bc09a5ff90",
+    "semantic_hash": "ad5733aa554a79e86db988bc09a5ff90"
+  },
+  "validators/index.js": {
+    "mtime": 1791788243.170442,
+    "seen": 1792379706.339585,
+    "ast_hash": "5bfb390c5b370832a181988bdb69f243",
+    "semantic_hash": "5bfb390c5b370832a181988bdb69f243"
+  },
+  "views/admin/academic-calendars/create.ejs": {
+    "mtime": 1791863128.681463,
+    "seen": 1792379706.339586,
+    "ast_hash": "f3c0e86f13307617d8121dcb666914a0",
+    "semantic_hash": "f3c0e86f13307617d8121dcb666914a0"
+  },
+  "views/admin/academic-calendars/edit.ejs": {
+    "mtime": 1791863182.2492454,
+    "seen": 1792379706.339587,
+    "ast_hash": "1a053e188dcbaaabb3bb45fc5c933701",
+    "semantic_hash": "1a053e188dcbaaabb3bb45fc5c933701"
+  },
+  "views/admin/academic-calendars/list.ejs": {
+    "mtime": 1791863673.2808263,
+    "seen": 1792379706.3395882,
+    "ast_hash": "e9617860611b769ab5bae33efceb41c4",
+    "semantic_hash": "e9617860611b769ab5bae33efceb41c4"
+  },
+  "views/admin/academic-documents/form.ejs": {
+    "mtime": 1791863128.6843913,
+    "seen": 1792379706.3395905,
+    "ast_hash": "7bd70f23e453bc1a071187d3cb1f2834",
+    "semantic_hash": "7bd70f23e453bc1a071187d3cb1f2834"
+  },
+  "views/admin/academic-documents/list.ejs": {
+    "mtime": 1791863673.2818022,
+    "seen": 1792379706.3395917,
+    "ast_hash": "254390b5e2e2b32e6efb7929f3d026a9",
+    "semantic_hash": "254390b5e2e2b32e6efb7929f3d026a9"
+  },
+  "views/admin/accreditations/form.ejs": {
+    "mtime": 1791863128.6863441,
+    "seen": 1792379706.3395927,
+    "ast_hash": "2fb7d81b92ac07be01744429bae06c3a",
+    "semantic_hash": "2fb7d81b92ac07be01744429bae06c3a"
+  },
+  "views/admin/accreditations/list.ejs": {
+    "mtime": 1791863673.4006712,
+    "seen": 1792379706.3395936,
+    "ast_hash": "82d0e988e95eb134d3b7b7c733663946",
+    "semantic_hash": "82d0e988e95eb134d3b7b7c733663946"
+  },
+  "views/admin/books/form.ejs": {
+    "mtime": 1791863128.6882973,
+    "seen": 1792379706.3395946,
+    "ast_hash": "d28da0573fe34dddd4dbfd101b9e3138",
+    "semantic_hash": "d28da0573fe34dddd4dbfd101b9e3138"
+  },
+  "views/admin/books/list.ejs": {
+    "mtime": 1791863673.4026322,
+    "seen": 1792379706.3395956,
+    "ast_hash": "c74ffe792dde0e4e7f1a4dc64241507e",
+    "semantic_hash": "c74ffe792dde0e4e7f1a4dc64241507e"
+  },
+  "views/admin/dashboard.ejs": {
+    "mtime": 1791863370.442494,
+    "seen": 1792379706.3395965,
+    "ast_hash": "476e9635ac086ced49e8f4908200783d",
+    "semantic_hash": "476e9635ac086ced49e8f4908200783d"
+  },
+  "views/admin/faculties/form.ejs": {
+    "mtime": 1791863140.5252035,
+    "seen": 1792379706.3395975,
+    "ast_hash": "404db6046caa7c6f0fd241093e6e5c44",
+    "semantic_hash": "404db6046caa7c6f0fd241093e6e5c44"
+  },
+  "views/admin/faculties/list.ejs": {
+    "mtime": 1791863673.4045794,
+    "seen": 1792379706.3395984,
+    "ast_hash": "6348c5f902cc04255c046b07af4ec6d6",
+    "semantic_hash": "6348c5f902cc04255c046b07af4ec6d6"
+  },
+  "views/admin/graduation-books/form.ejs": {
+    "mtime": 1791863128.6902514,
+    "seen": 1792379706.3395994,
+    "ast_hash": "8a552f53f1525ecad04d7669478b90f4",
+    "semantic_hash": "8a552f53f1525ecad04d7669478b90f4"
+  },
+  "views/admin/graduation-books/list.ejs": {
+    "mtime": 1791863673.4065294,
+    "seen": 1792379706.3396003,
+    "ast_hash": "068bf9ebf9fcfdd6a26d187a96e00f7e",
+    "semantic_hash": "068bf9ebf9fcfdd6a26d187a96e00f7e"
+  },
+  "views/admin/kategori/form.ejs": {
+    "mtime": 1791863128.6912272,
+    "seen": 1792379706.339601,
+    "ast_hash": "925f47fb0cbc24f450b14e1528633cbf",
+    "semantic_hash": "925f47fb0cbc24f450b14e1528633cbf"
+  },
+  "views/admin/kategori/list.ejs": {
+    "mtime": 1791863673.4065294,
+    "seen": 1792379706.3396022,
+    "ast_hash": "a1344aaf6f875c8f4d2c7f95508b065c",
+    "semantic_hash": "a1344aaf6f875c8f4d2c7f95508b065c"
+  },
+  "views/admin/kurikulum/form.ejs": {
+    "mtime": 1791863128.6931808,
+    "seen": 1792379706.3396032,
+    "ast_hash": "8c9dcf2c7607fe61bb835b29cdd3f474",
+    "semantic_hash": "8c9dcf2c7607fe61bb835b29cdd3f474"
+  },
+  "views/admin/kurikulum/list.ejs": {
+    "mtime": 1791863673.4085233,
+    "seen": 1792379706.339604,
+    "ast_hash": "8eea134281a948a4d46c62999efed714",
+    "semantic_hash": "8eea134281a948a4d46c62999efed714"
+  },
+  "views/admin/lembaga-akreditasi/form.ejs": {
+    "mtime": 1791863140.5262005,
+    "seen": 1792379706.339605,
+    "ast_hash": "404db6046caa7c6f0fd241093e6e5c44",
+    "semantic_hash": "404db6046caa7c6f0fd241093e6e5c44"
+  },
+  "views/admin/lembaga-akreditasi/list.ejs": {
+    "mtime": 1791863673.4094992,
+    "seen": 1792379706.339606,
+    "ast_hash": "6348c5f902cc04255c046b07af4ec6d6",
+    "semantic_hash": "6348c5f902cc04255c046b07af4ec6d6"
+  },
+  "views/admin/lulusan/form.ejs": {
+    "mtime": 1791863128.6951337,
+    "seen": 1792379706.3396068,
+    "ast_hash": "45dac97f7e9ef1688dca19ac0f610abc",
+    "semantic_hash": "45dac97f7e9ef1688dca19ac0f610abc"
+  },
+  "views/admin/lulusan/list.ejs": {
+    "mtime": 1791863673.479607,
+    "seen": 1792379706.3396077,
+    "ast_hash": "923232b03314f341d147e27487b21aa3",
+    "semantic_hash": "923232b03314f341d147e27487b21aa3"
+  },
+  "views/admin/news/form.ejs": {
+    "mtime": 1791863330.082168,
+    "seen": 1792379706.3396087,
+    "ast_hash": "33c815402414532650acba82c194fd6b",
+    "semantic_hash": "33c815402414532650acba82c194fd6b"
+  },
+  "views/admin/news/list.ejs": {
+    "mtime": 1791863673.4805832,
+    "seen": 1792379706.3396096,
+    "ast_hash": "f23aaa22b0ee7f809f4f85ef95369c2a",
+    "semantic_hash": "f23aaa22b0ee7f809f4f85ef95369c2a"
+  },
+  "views/admin/pengumuman/form.ejs": {
+    "mtime": 1791863330.1252275,
+    "seen": 1792379706.3396106,
+    "ast_hash": "7d617203bdc664d94740cb31d3370dda",
+    "semantic_hash": "7d617203bdc664d94740cb31d3370dda"
+  },
+  "views/admin/pengumuman/list.ejs": {
+    "mtime": 1791863673.4825363,
+    "seen": 1792379706.3396115,
+    "ast_hash": "f23aaa22b0ee7f809f4f85ef95369c2a",
+    "semantic_hash": "f23aaa22b0ee7f809f4f85ef95369c2a"
+  },
+  "views/admin/profil-akademik/edit.ejs": {
+    "mtime": 1791863128.6990397,
+    "seen": 1792379706.3396125,
+    "ast_hash": "b36beecd50837dea6a9b8d35652090fc",
+    "semantic_hash": "b36beecd50837dea6a9b8d35652090fc"
+  },
+  "views/admin/profile/edit.ejs": {
+    "mtime": 1791863370.439565,
+    "seen": 1792379706.3396134,
+    "ast_hash": "e40af2fd2154bd018dba57e456d54548",
+    "semantic_hash": "e40af2fd2154bd018dba57e456d54548"
+  },
+  "views/admin/profile/index.ejs": {
+    "mtime": 1791863370.441518,
+    "seen": 1792379706.3396142,
+    "ast_hash": "3edcf40eeebeac816f1987ff030b98ca",
+    "semantic_hash": "3edcf40eeebeac816f1987ff030b98ca"
+  },
+  "views/admin/profile/password.ejs": {
+    "mtime": 1791863370.4405496,
+    "seen": 1792379706.3396153,
+    "ast_hash": "a3ea6ac0cf46ac609b0a80bb88ecfe40",
+    "semantic_hash": "a3ea6ac0cf46ac609b0a80bb88ecfe40"
+  },
+  "views/admin/program-studi/form.ejs": {
+    "mtime": 1791863128.7000165,
+    "seen": 1792379706.339616,
+    "ast_hash": "f85f12125be36a11a98be4af86dda5e3",
+    "semantic_hash": "f85f12125be36a11a98be4af86dda5e3"
+  },
+  "views/admin/program-studi/list.ejs": {
+    "mtime": 1791863673.4840474,
+    "seen": 1792379706.339617,
+    "ast_hash": "b2f1f00c913e4f048622b95c27699c06",
+    "semantic_hash": "b2f1f00c913e4f048622b95c27699c06"
+  },
+  "views/admin/rpl-documents/form.ejs": {
+    "mtime": 1791863128.7009954,
+    "seen": 1792379706.3396177,
+    "ast_hash": "ac797a7766f47e59390daa556859821e",
+    "semantic_hash": "ac797a7766f47e59390daa556859821e"
+  },
+  "views/admin/rpl-documents/list.ejs": {
+    "mtime": 1791863673.4861276,
+    "seen": 1792379706.339619,
+    "ast_hash": "1b284953b3293082d0d31aa52cd82fd4",
+    "semantic_hash": "1b284953b3293082d0d31aa52cd82fd4"
+  },
+  "views/admin/settings/edit.ejs": {
+    "mtime": 1791863182.2502198,
+    "seen": 1792379706.3396199,
+    "ast_hash": "98e0131befd77fbf43c924ea46b58a1d",
+    "semantic_hash": "98e0131befd77fbf43c924ea46b58a1d"
+  },
+  "views/admin/staff/form.ejs": {
+    "mtime": 1791863128.7029455,
+    "seen": 1792379706.3396206,
+    "ast_hash": "fadbbf8a438d3ced1bfd91b0348fd496",
+    "semantic_hash": "fadbbf8a438d3ced1bfd91b0348fd496"
+  },
+  "views/admin/staff/list.ejs": {
+    "mtime": 1791863673.4876332,
+    "seen": 1792379706.3396215,
+    "ast_hash": "dbed1b6a048b1b41c3ce81d460a82718",
+    "semantic_hash": "dbed1b6a048b1b41c3ce81d460a82718"
+  },
+  "views/admin/unit/form.ejs": {
+    "mtime": 1791863128.7048993,
+    "seen": 1792379706.3396227,
+    "ast_hash": "68b4dbc3eb922b1aee57455e55fc950f",
+    "semantic_hash": "68b4dbc3eb922b1aee57455e55fc950f"
+  },
+  "views/admin/unit/list.ejs": {
+    "mtime": 1791863673.488618,
+    "seen": 1792379706.3396235,
+    "ast_hash": "3494dd3df7b14111f663f5e9cda6f003",
+    "semantic_hash": "3494dd3df7b14111f663f5e9cda6f003"
+  },
+  "views/admin/users/form.ejs": {
+    "mtime": 1791863128.7058752,
+    "seen": 1792379706.3396244,
+    "ast_hash": "e48c9ce68a5ac4d3df82ee65a7f473f6",
+    "semantic_hash": "e48c9ce68a5ac4d3df82ee65a7f473f6"
+  },
+  "views/admin/users/list.ejs": {
+    "mtime": 1791863673.5353937,
+    "seen": 1792379706.3396254,
+    "ast_hash": "9e660b0f5ec2cb25d46dde97bf23d427",
+    "semantic_hash": "9e660b0f5ec2cb25d46dde97bf23d427"
+  },
+  "views/admin/users/reset-password.ejs": {
+    "mtime": 1791863140.527157,
+    "seen": 1792379706.3396263,
+    "ast_hash": "3a030342884065fcea5f6fdd38f917a7",
+    "semantic_hash": "3a030342884065fcea5f6fdd38f917a7"
+  },
+  "views/auth/login.ejs": {
+    "mtime": 1792379161.891882,
+    "seen": 1792379706.3396273,
+    "ast_hash": "5dd5842aa4ab7b38d7a30b27fa0e6c8d",
+    "semantic_hash": "5dd5842aa4ab7b38d7a30b27fa0e6c8d"
+  },
+  "views/components/alert.ejs": {
+    "mtime": 1790900361.5859866,
+    "seen": 1792379706.3396282,
+    "ast_hash": "92ef68b6be219324261bac001f095b0d",
+    "semantic_hash": "92ef68b6be219324261bac001f095b0d"
+  },
+  "views/components/badge.ejs": {
+    "mtime": 1790900361.58814,
+    "seen": 1792379706.3396292,
+    "ast_hash": "84f5b61d2ec531bbeb27b6f284a7bd7a",
+    "semantic_hash": "84f5b61d2ec531bbeb27b6f284a7bd7a"
+  },
+  "views/components/chat-widget.ejs": {
+    "mtime": 1792133523.040596,
+    "seen": 1792379706.3396301,
+    "ast_hash": "8e753da736c9f851fbd03ebbed059428",
+    "semantic_hash": "8e753da736c9f851fbd03ebbed059428"
+  },
+  "views/components/confirm-dialog.ejs": {
+    "mtime": 1790900361.5886817,
+    "seen": 1792379706.3396308,
+    "ast_hash": "b9713bc5741765cd7551ff10ba40d123",
+    "semantic_hash": "b9713bc5741765cd7551ff10ba40d123"
+  },
+  "views/components/content-sidebar.ejs": {
+    "mtime": 1791273195.068467,
+    "seen": 1792379706.3396318,
+    "ast_hash": "da329ed887e0848ce7ce2b0f44cf1748",
+    "semantic_hash": "da329ed887e0848ce7ce2b0f44cf1748"
+  },
+  "views/components/date-block.ejs": {
+    "mtime": 1791273195.071395,
+    "seen": 1792379706.339633,
+    "ast_hash": "c9c10fa7542ffb9f1b8e273c4818ba91",
+    "semantic_hash": "c9c10fa7542ffb9f1b8e273c4818ba91"
+  },
+  "views/components/empty-state.ejs": {
+    "mtime": 1790900361.5942254,
+    "seen": 1792379706.339634,
+    "ast_hash": "ce8c139af0a1efad191d584c5b73765e",
+    "semantic_hash": "ce8c139af0a1efad191d584c5b73765e"
+  },
+  "views/components/file-upload.ejs": {
+    "mtime": 1791863673.6062045,
+    "seen": 1792379706.3396347,
+    "ast_hash": "9d678f4ef645b35060fa60829c86c4a0",
+    "semantic_hash": "9d678f4ef645b35060fa60829c86c4a0"
+  },
+  "views/components/form-field.ejs": {
+    "mtime": 1790900361.596332,
+    "seen": 1792379706.3396356,
+    "ast_hash": "4009ac1f01007306f102247da4d9a9bf",
+    "semantic_hash": "4009ac1f01007306f102247da4d9a9bf"
+  },
+  "views/components/page-header.ejs": {
+    "mtime": 1791863673.6077118,
+    "seen": 1792379706.3396366,
+    "ast_hash": "6afb5061f5800b935e823d1691fb2707",
+    "semantic_hash": "6afb5061f5800b935e823d1691fb2707"
+  },
+  "views/components/pagination.ejs": {
+    "mtime": 1790900361.5993412,
+    "seen": 1792379706.3396375,
+    "ast_hash": "36b61c6ae51e48d7ac39820fde54775a",
+    "semantic_hash": "36b61c6ae51e48d7ac39820fde54775a"
+  },
+  "views/components/richtext-field.ejs": {
+    "mtime": 1791863240.708251,
+    "seen": 1792379706.3396385,
+    "ast_hash": "c9fa142799791119e3e5acaf5b3f5d36",
+    "semantic_hash": "c9fa142799791119e3e5acaf5b3f5d36"
+  },
+  "views/components/section-heading.ejs": {
+    "mtime": 1791273195.0743194,
+    "seen": 1792379706.3396392,
+    "ast_hash": "0a5350e00ac393eef2e38369a990f5ab",
+    "semantic_hash": "0a5350e00ac393eef2e38369a990f5ab"
+  },
+  "views/components/stat-tile.ejs": {
+    "mtime": 1790900361.6023312,
+    "seen": 1792379706.3396404,
+    "ast_hash": "24af0e5fcaf20b29c93e682d20c03f2a",
+    "semantic_hash": "24af0e5fcaf20b29c93e682d20c03f2a"
+  },
+  "views/components/toast.ejs": {
+    "mtime": 1791862251.0927577,
+    "seen": 1792379706.3396413,
+    "ast_hash": "36e25db8d6ea9f280fbc0f1ea100f79f",
+    "semantic_hash": "36e25db8d6ea9f280fbc0f1ea100f79f"
+  },
+  "views/dev/admin.ejs": {
+    "mtime": 1791862251.0898216,
+    "seen": 1792379706.339642,
+    "ast_hash": "48f0967b75882a5c3e853a4152c5568c",
+    "semantic_hash": "48f0967b75882a5c3e853a4152c5568c"
+  },
+  "views/dev/komponen.ejs": {
+    "mtime": 1791863736.6253767,
+    "seen": 1792379706.3396432,
+    "ast_hash": "05c5560d910505f0f2f913b6d4d412e6",
+    "semantic_hash": "05c5560d910505f0f2f913b6d4d412e6"
+  },
+  "views/landing/akreditasi.ejs": {
+    "mtime": 1791862926.9586082,
+    "seen": 1792379706.339644,
+    "ast_hash": "69fb872acb66cbf6730d8781bdae2441",
+    "semantic_hash": "69fb872acb66cbf6730d8781bdae2441"
+  },
+  "views/landing/berita-show.ejs": {
+    "mtime": 1791273195.0836954,
+    "seen": 1792379706.339645,
+    "ast_hash": "836effe0d6a1130ba3ff777b8d8ecd00",
+    "semantic_hash": "836effe0d6a1130ba3ff777b8d8ecd00"
+  },
+  "views/landing/berita.ejs": {
+    "mtime": 1791862251.094718,
+    "seen": 1792379706.3396456,
+    "ast_hash": "7a03c8bb3c3faa69224bb448ccd91c04",
+    "semantic_hash": "7a03c8bb3c3faa69224bb448ccd91c04"
+  },
+  "views/landing/buku-wisuda.ejs": {
+    "mtime": 1791862896.9856994,
+    "seen": 1792379706.3396468,
+    "ast_hash": "13f468a46f23eb2809a1450d96b38be7",
+    "semantic_hash": "13f468a46f23eb2809a1450d96b38be7"
+  },
+  "views/landing/buku.ejs": {
+    "mtime": 1791862896.914641,
+    "seen": 1792379706.3396478,
+    "ast_hash": "03131398a2ea62d0b4ed010d04b768df",
+    "semantic_hash": "03131398a2ea62d0b4ed010d04b768df"
+  },
+  "views/landing/cari.ejs": {
+    "mtime": 1791863673.6096752,
+    "seen": 1792379706.3396485,
+    "ast_hash": "54ff8ad752bc2264e6a3e9662e9c1ca7",
+    "semantic_hash": "54ff8ad752bc2264e6a3e9662e9c1ca7"
+  },
+  "views/landing/dokumen-akademik.ejs": {
+    "mtime": 1791862896.988639,
+    "seen": 1792379706.3396494,
+    "ast_hash": "394d4ee000df0e4c6b071034562fb715",
+    "semantic_hash": "394d4ee000df0e4c6b071034562fb715"
+  },
+  "views/landing/error.ejs": {
+    "mtime": 1791862926.9605763,
+    "seen": 1792379706.3396504,
+    "ast_hash": "fa5d4e1ed234711cb08b00a5a3834cc1",
+    "semantic_hash": "fa5d4e1ed234711cb08b00a5a3834cc1"
+  },
+  "views/landing/index.ejs": {
+    "mtime": 1792143239.093979,
+    "seen": 1792379706.3396513,
+    "ast_hash": "5f6d49a94000b56b43fccfc39f66226a",
+    "semantic_hash": "5f6d49a94000b56b43fccfc39f66226a"
+  },
+  "views/landing/kalender-akademik.ejs": {
+    "mtime": 1791862926.961542,
+    "seen": 1792379706.3396523,
+    "ast_hash": "d6e5711c5c5106079977f48539ed8e7e",
+    "semantic_hash": "d6e5711c5c5106079977f48539ed8e7e"
+  },
+  "views/landing/kurikulum.ejs": {
+    "mtime": 1790900361.619008,
+    "seen": 1792379706.339653,
+    "ast_hash": "d758907fce3880a37ac0366d2ceab66d",
+    "semantic_hash": "d758907fce3880a37ac0366d2ceab66d"
+  },
+  "views/landing/pengumuman-show.ejs": {
+    "mtime": 1792375709.325468,
+    "seen": 1792379706.3396542,
+    "ast_hash": "c95bd8fd034492a060b5ed328b7b650a",
+    "semantic_hash": "c95bd8fd034492a060b5ed328b7b650a"
+  },
+  "views/landing/pengumuman.ejs": {
+    "mtime": 1792375847.7630372,
+    "seen": 1792379706.339655,
+    "ast_hash": "474d8a7234c41e3f47d469f7444f1b80",
+    "semantic_hash": "474d8a7234c41e3f47d469f7444f1b80"
+  },
+  "views/landing/pimpinan-staff.ejs": {
+    "mtime": 1791788778.1616938,
+    "seen": 1792379706.3396559,
+    "ast_hash": "fb1791b47856cd6e5817cc43bbed8ac6",
+    "semantic_hash": "fb1791b47856cd6e5817cc43bbed8ac6"
+  },
+  "views/landing/profil.ejs": {
+    "mtime": 1791273195.1032276,
+    "seen": 1792379706.339657,
+    "ast_hash": "a9b003a4636a7388f408da6cf1c00dc8",
+    "semantic_hash": "a9b003a4636a7388f408da6cf1c00dc8"
+  },
+  "views/landing/rpl.ejs": {
+    "mtime": 1791862896.9876628,
+    "seen": 1792379706.3396578,
+    "ast_hash": "a1d059e567c3eb855d9c21e2ea5623da",
+    "semantic_hash": "a1d059e567c3eb855d9c21e2ea5623da"
+  },
+  "views/landing/struktur-organisasi.ejs": {
+    "mtime": 1790900361.6323142,
+    "seen": 1792379706.3396587,
+    "ast_hash": "d95fcd6a8ec52d1b092b449067b6c20e",
+    "semantic_hash": "d95fcd6a8ec52d1b092b449067b6c20e"
+  },
+  "views/layouts/admin.ejs": {
+    "mtime": 1791863673.2778714,
+    "seen": 1792379706.3396597,
+    "ast_hash": "92084368e1a3bb3ce2bb50d7ab70d8fa",
+    "semantic_hash": "92084368e1a3bb3ce2bb50d7ab70d8fa"
+  },
+  "views/layouts/public.ejs": {
+    "mtime": 1792375337.1520963,
+    "seen": 1792379706.3396606,
+    "ast_hash": "a66c33b3dbee10f0fef47bf794ad48d1",
+    "semantic_hash": "a66c33b3dbee10f0fef47bf794ad48d1"
+  },
+  ".qoder/skills/find-skills/SKILL.md": {
+    "mtime": 1792375208.3309257,
+    "seen": 1792379706.3396616,
+    "ast_hash": "62b297abdee9aea84c577ab2e04e1974",
+    "semantic_hash": "62b297abdee9aea84c577ab2e04e1974"
+  },
+  "README.md": {
+    "mtime": 1791273194.9516864,
+    "seen": 1792379706.3396626,
+    "ast_hash": "c002301228a3f28b33322c56666d3d4c",
+    "semantic_hash": "c002301228a3f28b33322c56666d3d4c"
+  },
+  "Referensi/Documentation/index.html": {
+    "mtime": 1676052242.0,
+    "seen": 1792379706.3396633,
+    "ast_hash": "413010f61b8d592a2f73a855b01f6c91",
+    "semantic_hash": "413010f61b8d592a2f73a855b01f6c91"
+  },
+  "Referensi/qeducato/404-error.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396645,
+    "ast_hash": "b0e8c567ba45a11cbe75f001999f4832",
+    "semantic_hash": "b0e8c567ba45a11cbe75f001999f4832"
+  },
+  "Referensi/qeducato/about.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396654,
+    "ast_hash": "3e6a1f82b8b887601270f6e724d1051f",
+    "semantic_hash": "3e6a1f82b8b887601270f6e724d1051f"
+  },
+  "Referensi/qeducato/blog-details.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396664,
+    "ast_hash": "64b8624271ef69427b79e097a7462a14",
+    "semantic_hash": "64b8624271ef69427b79e097a7462a14"
+  },
+  "Referensi/qeducato/blog.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.339667,
+    "ast_hash": "71f0102a8eb5ad607fd9f16d182cef03",
+    "semantic_hash": "71f0102a8eb5ad607fd9f16d182cef03"
+  },
+  "Referensi/qeducato/contact.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396683,
+    "ast_hash": "585053256114c3e1ae30976ba383dbb9",
+    "semantic_hash": "585053256114c3e1ae30976ba383dbb9"
+  },
+  "Referensi/qeducato/courses-2.html": {
+    "mtime": 1676482332.0,
+    "seen": 1792379706.3396692,
+    "ast_hash": "d9936a15ff50cef1570aed19782d081c",
+    "semantic_hash": "d9936a15ff50cef1570aed19782d081c"
+  },
+  "Referensi/qeducato/courses.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396702,
+    "ast_hash": "285df475d8518610cb2fbed1d784d6ef",
+    "semantic_hash": "285df475d8518610cb2fbed1d784d6ef"
+  },
+  "Referensi/qeducato/event.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396711,
+    "ast_hash": "2abc05385fa867c4eceadad2f6f8f530",
+    "semantic_hash": "2abc05385fa867c4eceadad2f6f8f530"
+  },
+  "Referensi/qeducato/faq.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.339672,
+    "ast_hash": "5875325341596f8e226980e969150fc8",
+    "semantic_hash": "5875325341596f8e226980e969150fc8"
+  },
+  "Referensi/qeducato/fontawesome/metadata/categories.yml": {
+    "mtime": 1649835876.0,
+    "seen": 1792379706.339673,
+    "ast_hash": "df5f5266cc53786fc67e9bfb936078b5",
+    "semantic_hash": "df5f5266cc53786fc67e9bfb936078b5"
+  },
+  "Referensi/qeducato/fontawesome/metadata/icons.yml": {
+    "mtime": 1649835894.0,
+    "seen": 1792379706.339674,
+    "ast_hash": "9907c38ac49a6db0f69a5486bc644d69",
+    "semantic_hash": "9907c38ac49a6db0f69a5486bc644d69"
+  },
+  "Referensi/qeducato/fontawesome/metadata/shims.yml": {
+    "mtime": 1607669154.0,
+    "seen": 1792379706.339675,
+    "ast_hash": "959dfdc43ff2c484a1a08a224d883044",
+    "semantic_hash": "959dfdc43ff2c484a1a08a224d883044"
+  },
+  "Referensi/qeducato/fontawesome/metadata/sponsors.yml": {
+    "mtime": 1649835876.0,
+    "seen": 1792379706.339676,
+    "ast_hash": "e10db0ecd27cce6388de174358b0cdd3",
+    "semantic_hash": "e10db0ecd27cce6388de174358b0cdd3"
+  },
+  "Referensi/qeducato/index-2.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396766,
+    "ast_hash": "98a046ecd82c44ff61517be04f18d474",
+    "semantic_hash": "98a046ecd82c44ff61517be04f18d474"
+  },
+  "Referensi/qeducato/index-3.html": {
+    "mtime": 1676482530.0,
+    "seen": 1792379706.3396778,
+    "ast_hash": "baba393c2b0886195a9b4f5eb7c686ce",
+    "semantic_hash": "baba393c2b0886195a9b4f5eb7c686ce"
+  },
+  "Referensi/qeducato/index.html": {
+    "mtime": 1676483266.0,
+    "seen": 1792379706.3396788,
+    "ast_hash": "0ffbcdc7e4e4b1a4e56335e6dba93f1a",
+    "semantic_hash": "0ffbcdc7e4e4b1a4e56335e6dba93f1a"
+  },
+  "Referensi/qeducato/pricing.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396795,
+    "ast_hash": "66f0ff93cc68ecec19ace72107a520fd",
+    "semantic_hash": "66f0ff93cc68ecec19ace72107a520fd"
+  },
+  "Referensi/qeducato/projects.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396804,
+    "ast_hash": "6c14edb52284c6c418c938777d76cadc",
+    "semantic_hash": "6c14edb52284c6c418c938777d76cadc"
+  },
+  "Referensi/qeducato/single-courses-2.html": {
+    "mtime": 1676482374.0,
+    "seen": 1792379706.3396816,
+    "ast_hash": "c7730f95467e7ea8ac5d50732680b053",
+    "semantic_hash": "c7730f95467e7ea8ac5d50732680b053"
+  },
+  "Referensi/qeducato/single-courses.html": {
+    "mtime": 1676482390.0,
+    "seen": 1792379706.3396823,
+    "ast_hash": "b13e7dcf41836b4f7a5055ffdfa66ac3",
+    "semantic_hash": "b13e7dcf41836b4f7a5055ffdfa66ac3"
+  },
+  "Referensi/qeducato/single-event.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396833,
+    "ast_hash": "3d16e2ef5f2c97b21096a32f672928ae",
+    "semantic_hash": "3d16e2ef5f2c97b21096a32f672928ae"
+  },
+  "Referensi/qeducato/single-projects.html": {
+    "mtime": 1676482574.0,
+    "seen": 1792379706.339684,
+    "ast_hash": "0b975ddd43bc31ff5b0c0386f83f68ca",
+    "semantic_hash": "0b975ddd43bc31ff5b0c0386f83f68ca"
+  },
+  "Referensi/qeducato/single-service.html": {
+    "mtime": 1676482144.0,
+    "seen": 1792379706.3396852,
+    "ast_hash": "a4027a5fbea6281dc81a55a089b62e90",
+    "semantic_hash": "a4027a5fbea6281dc81a55a089b62e90"
+  },
+  "Referensi/qeducato/team-single.html": {
+    "mtime": 1676482640.0,
+    "seen": 1792379706.3396862,
+    "ast_hash": "693e1b31823c402e2e014d7879412edf",
+    "semantic_hash": "693e1b31823c402e2e014d7879412edf"
+  },
+  "Referensi/qeducato/team.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.339687,
+    "ast_hash": "53b3cea20c11519dc9185229d6827342",
+    "semantic_hash": "53b3cea20c11519dc9185229d6827342"
+  },
+  "Referensi/qeducato/thank-you.html": {
+    "mtime": 1676482224.0,
+    "seen": 1792379706.3396883,
+    "ast_hash": "3261d8c57d462c365c2dbdae4f77b196",
+    "semantic_hash": "3261d8c57d462c365c2dbdae4f77b196"
+  },
+  "docs/AUDIT-UIUX-v2.md": {
+    "mtime": 1790902641.648807,
+    "seen": 1792379706.339689,
+    "ast_hash": "4c02b785edf8b22c725cdadf1006ce53",
+    "semantic_hash": "4c02b785edf8b22c725cdadf1006ce53"
+  },
+  "docs/AUDIT-UIUX-v3.md": {
+    "mtime": 1791273194.9629924,
+    "seen": 1792379706.33969,
+    "ast_hash": "f0d26d8d8118e5b41f2bcf2763339b7c",
+    "semantic_hash": "f0d26d8d8118e5b41f2bcf2763339b7c"
+  },
+  "docs/AUDIT-UIUX-v4.md": {
+    "mtime": 1791863424.9917843,
+    "seen": 1792379706.339691,
+    "ast_hash": "9c598e02d5312ca4e238131d1cdc91ba",
+    "semantic_hash": "9c598e02d5312ca4e238131d1cdc91ba"
+  },
+  "docs/AUDIT-UIUX.md": {
+    "mtime": 1790842307.889561,
+    "seen": 1792379706.3396919,
+    "ast_hash": "960b7308e71d067a4103e3a163a03b74",
+    "semantic_hash": "960b7308e71d067a4103e3a163a03b74"
+  },
+  "docs/Design/akreditasi_institusi_program_studi_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396928,
+    "ast_hash": "cbe7313d6806a29075c6d9d9bfe9f7f7",
+    "semantic_hash": "cbe7313d6806a29075c6d9d9bfe9f7f7"
+  },
+  "docs/Design/akreditasi_mobile_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396938,
+    "ast_hash": "b812e3327956a172481381a1db123567",
+    "semantic_hash": "b812e3327956a172481381a1db123567"
+  },
+  "docs/Design/beranda_layanan_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396945,
+    "ast_hash": "7f5652725592a4978a5ea4e45087060d",
+    "semantic_hash": "7f5652725592a4978a5ea4e45087060d"
+  },
+  "docs/Design/beranda_mobile_layanan_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396957,
+    "ast_hash": "ceaf237e592c01ff16bfb5dd325dfd79",
+    "semantic_hash": "ceaf237e592c01ff16bfb5dd325dfd79"
+  },
+  "docs/Design/buku_wisuda_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396966,
+    "ast_hash": "da449ef30c9a85bab44a3838ac36b400",
+    "semantic_hash": "da449ef30c9a85bab44a3838ac36b400"
+  },
+  "docs/Design/dasbor_admin_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396974,
+    "ast_hash": "9045e187bf0363a630cff4ab69506af3",
+    "semantic_hash": "9045e187bf0363a630cff4ab69506af3"
+  },
+  "docs/Design/detail_pengumuman_wisuda_periode_i_2026_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396983,
+    "ast_hash": "4e171f85665860537a1084972c701069",
+    "semantic_hash": "4e171f85665860537a1084972c701069"
+  },
+  "docs/Design/dokumen_akademik_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3396995,
+    "ast_hash": "c08b5d47a971e0c1c2eaeb59757734be",
+    "semantic_hash": "c08b5d47a971e0c1c2eaeb59757734be"
+  },
+  "docs/Design/dokumen_akademik_mobile_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397005,
+    "ast_hash": "26fd7de8fead7c690ee22888c5c13aa2",
+    "semantic_hash": "26fd7de8fead7c690ee22888c5c13aa2"
+  },
+  "docs/Design/kalender_akademik_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397014,
+    "ast_hash": "8b72029703a872c43d9ced09e09bb5f0",
+    "semantic_hash": "8b72029703a872c43d9ced09e09bb5f0"
+  },
+  "docs/Design/kalender_akademik_mobile_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397024,
+    "ast_hash": "0804fc0f2c7654797411bcf0ab18275e",
+    "semantic_hash": "0804fc0f2c7654797411bcf0ab18275e"
+  },
+  "docs/Design/kelola_pengumuman_admin_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397033,
+    "ast_hash": "82be22eeefcc9514f76ad75099afe31b",
+    "semantic_hash": "82be22eeefcc9514f76ad75099afe31b"
+  },
+  "docs/Design/kurikulum_mobile_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397043,
+    "ast_hash": "1770c1b962cda65c35896d52371d4466",
+    "semantic_hash": "1770c1b962cda65c35896d52371d4466"
+  },
+  "docs/Design/kurikulum_program_studi_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397052,
+    "ast_hash": "d2aaba1b4e2b9466da478fd135f7d902",
+    "semantic_hash": "d2aaba1b4e2b9466da478fd135f7d902"
+  },
+  "docs/Design/logo_lambang_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397064,
+    "ast_hash": "fd966b336b796712e54dee5b0d4bc7fa",
+    "semantic_hash": "fd966b336b796712e54dee5b0d4bc7fa"
+  },
+  "docs/Design/pengumuman_akademik_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397074,
+    "ast_hash": "0d12cbe32403513014aa18ca06619d96",
+    "semantic_hash": "0d12cbe32403513014aa18ca06619d96"
+  },
+  "docs/Design/pimpinan_dan_staf_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.339708,
+    "ast_hash": "a527dd16d6f79bda3456209a9b1c5f37",
+    "semantic_hash": "a527dd16d6f79bda3456209a9b1c5f37"
+  },
+  "docs/Design/sistem_informasi_akademik_unjani/DESIGN.md": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3397093,
+    "ast_hash": "1b66b4193af90ea9f8845284b9e16879",
+    "semantic_hash": "1b66b4193af90ea9f8845284b9e16879"
+  },
+  "docs/Design/tambah_akreditasi_admin_bidang_akademik_unjani/code.html": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.33971,
+    "ast_hash": "90cf311126a7bf90def3d07148e42f9a",
+    "semantic_hash": "90cf311126a7bf90def3d07148e42f9a"
+  },
+  "docs/MIGRASI-F2.md": {
+    "mtime": 1790900361.3936357,
+    "seen": 1792379706.339711,
+    "ast_hash": "51dd54652ea361a8c0e12270b7a7296d",
+    "semantic_hash": "51dd54652ea361a8c0e12270b7a7296d"
+  },
+  "docs/PLAN.md": {
+    "mtime": 1791862084.277913,
+    "seen": 1792379706.339712,
+    "ast_hash": "9a4a62b7f3df3041384a9c833675dfb2",
+    "semantic_hash": "9a4a62b7f3df3041384a9c833675dfb2"
+  },
+  "docs/POLA-ADMIN.md": {
+    "mtime": 1791863694.6694317,
+    "seen": 1792379706.339713,
+    "ast_hash": "d8f48f05d8491c8b27d30207ca4604c4",
+    "semantic_hash": "d8f48f05d8491c8b27d30207ca4604c4"
+  },
+  "docs/PROMPT-STITCH.md": {
+    "mtime": 1790837840.787006,
+    "seen": 1792379706.3397138,
+    "ast_hash": "2f2d9fc75ef50c55a1fa47ef9762848d",
+    "semantic_hash": "2f2d9fc75ef50c55a1fa47ef9762848d"
+  },
+  "docs/SRS.md": {
+    "mtime": 1791862070.0749018,
+    "seen": 1792379706.3397148,
+    "ast_hash": "60f91a142c0b8398e483719b7d560355",
+    "semantic_hash": "60f91a142c0b8398e483719b7d560355"
+  },
+  "docs/TODO.md": {
+    "mtime": 1791869430.1232686,
+    "seen": 1792379706.339716,
+    "ast_hash": "d5aa624aa6aefe648cf45322f88acd70",
+    "semantic_hash": "d5aa624aa6aefe648cf45322f88acd70"
+  },
+  "Referensi/Documentation/assets/css/img/info.png": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.339717,
+    "ast_hash": "fa2c98f6642b4018073f6fa61dea63cc",
+    "semantic_hash": "fa2c98f6642b4018073f6fa61dea63cc"
+  },
+  "Referensi/Documentation/assets/css/img/warning.png": {
+    "mtime": 1480735740.0,
+    "seen": 1792379706.3397176,
+    "ast_hash": "2ff7eaacfe56faed3822adf536c13d88",
+    "semantic_hash": "2ff7eaacfe56faed3822adf536c13d88"
+  },
+  "Referensi/Documentation/assets/images/contact-from-mailchange.png": {
+    "mtime": 1611767716.0,
+    "seen": 1792379706.3397186,
+    "ast_hash": "2dba7be93efe5a23bf4520d768d5c62c",
+    "semantic_hash": "2dba7be93efe5a23bf4520d768d5c62c"
+  },
+  "Referensi/Documentation/assets/images/contact-from-mailchange1.png": {
+    "mtime": 1611768140.0,
+    "seen": 1792379706.3397198,
+    "ast_hash": "5abd1495f64229b1378952796b3e1c70",
+    "semantic_hash": "5abd1495f64229b1378952796b3e1c70"
+  },
+  "Referensi/Documentation/assets/images/image_1.png": {
+    "mtime": 1674795978.0,
+    "seen": 1792379706.3397207,
+    "ast_hash": "492a9760eb2f2654d3b4ca4b30cb68a3",
+    "semantic_hash": "492a9760eb2f2654d3b4ca4b30cb68a3"
+  },
+  "Referensi/qeducato/fontawesome/webfonts/fa-brands-400.svg": {
+    "mtime": 1607669230.0,
+    "seen": 1792379706.3397214,
+    "ast_hash": "5009bbfb97151db7398ec811cf0beef4",
+    "semantic_hash": "5009bbfb97151db7398ec811cf0beef4"
+  },
+  "Referensi/qeducato/fontawesome/webfonts/fa-duotone-900.svg": {
+    "mtime": 1649835876.0,
+    "seen": 1792379706.3397224,
+    "ast_hash": "cec0d0965e34d58ae21f20da1caf5a8c",
+    "semantic_hash": "cec0d0965e34d58ae21f20da1caf5a8c"
+  },
+  "Referensi/qeducato/fontawesome/webfonts/fa-light-300.svg": {
+    "mtime": 1649835876.0,
+    "seen": 1792379706.3397236,
+    "ast_hash": "fa1604d34fee31913ea53ef88a92de37",
+    "semantic_hash": "fa1604d34fee31913ea53ef88a92de37"
+  },
+  "Referensi/qeducato/fontawesome/webfonts/fa-regular-400.svg": {
+    "mtime": 1649835876.0,
+    "seen": 1792379706.3397243,
+    "ast_hash": "c42d01c23af654794784e9d2c91f32c3",
+    "semantic_hash": "c42d01c23af654794784e9d2c91f32c3"
+  },
+  "Referensi/qeducato/fontawesome/webfonts/fa-solid-900.svg": {
+    "mtime": 1649835876.0,
+    "seen": 1792379706.3397253,
+    "ast_hash": "9b4a2286d57534ba01df1cddbcb4c15a",
+    "semantic_hash": "9b4a2286d57534ba01df1cddbcb4c15a"
+  },
+  "Referensi/qeducato/fonts/dripicons-v2.svg": {
+    "mtime": 1607669276.0,
+    "seen": 1792379706.3397264,
+    "ast_hash": "ecde201320cc644c19461b11ba79f8ed",
+    "semantic_hash": "ecde201320cc644c19461b11ba79f8ed"
+  },
+  "Referensi/qeducato/fonts/fa-brands-400.svg": {
+    "mtime": 1607669272.0,
+    "seen": 1792379706.3397274,
+    "ast_hash": "ee698d1f98a60900ef37577de1967ffc",
+    "semantic_hash": "ee698d1f98a60900ef37577de1967ffc"
+  },
+  "Referensi/qeducato/fonts/fa-regular-400.svg": {
+    "mtime": 1607669266.0,
+    "seen": 1792379706.3397284,
+    "ast_hash": "5df24ccfa0e1a2765724cd968b855418",
+    "semantic_hash": "5df24ccfa0e1a2765724cd968b855418"
+  },
+  "Referensi/qeducato/fonts/fa-solid-900.svg": {
+    "mtime": 1607669262.0,
+    "seen": 1792379706.3397293,
+    "ast_hash": "0e467838f7ee7b6cb069234be57d39d3",
+    "semantic_hash": "0e467838f7ee7b6cb069234be57d39d3"
+  },
+  "Referensi/qeducato/img/bg/404-img.png": {
+    "mtime": 1675769604.0,
+    "seen": 1792379706.3397303,
+    "ast_hash": "d230c09503a77c39f2e9948e9ed2349c",
+    "semantic_hash": "d230c09503a77c39f2e9948e9ed2349c"
+  },
+  "Referensi/qeducato/img/bg/admission_bg.png": {
+    "mtime": 1675352400.0,
+    "seen": 1792379706.3397312,
+    "ast_hash": "f5f56007cfa57a93cf2129a40027f92a",
+    "semantic_hash": "f5f56007cfa57a93cf2129a40027f92a"
+  },
+  "Referensi/qeducato/img/bg/an-img-01.png": {
+    "mtime": 1675432922.0,
+    "seen": 1792379706.3397322,
+    "ast_hash": "0b144b58e498f35f960a007b07227e6d",
+    "semantic_hash": "0b144b58e498f35f960a007b07227e6d"
+  },
+  "Referensi/qeducato/img/bg/an-img-02.png": {
+    "mtime": 1675188530.0,
+    "seen": 1792379706.339733,
+    "ast_hash": "4d0bf4dfd43cc2baca7e09cb4e852651",
+    "semantic_hash": "4d0bf4dfd43cc2baca7e09cb4e852651"
+  },
+  "Referensi/qeducato/img/bg/an-img-03.png": {
+    "mtime": 1675267730.0,
+    "seen": 1792379706.339734,
+    "ast_hash": "dd7d83799ab0060b44fd8659fb8d15cc",
+    "semantic_hash": "dd7d83799ab0060b44fd8659fb8d15cc"
+  },
+  "Referensi/qeducato/img/bg/an-img-04.png": {
+    "mtime": 1675332810.0,
+    "seen": 1792379706.339735,
+    "ast_hash": "aa0c948e8778d03055ccbb142d045d23",
+    "semantic_hash": "aa0c948e8778d03055ccbb142d045d23"
+  },
+  "Referensi/qeducato/img/bg/an-img-05.png": {
+    "mtime": 1675332836.0,
+    "seen": 1792379706.3397357,
+    "ast_hash": "a7a619439984bf5bda2a12b9e444d03d",
+    "semantic_hash": "a7a619439984bf5bda2a12b9e444d03d"
+  },
+  "Referensi/qeducato/img/bg/an-img-06.png": {
+    "mtime": 1675327418.0,
+    "seen": 1792379706.339737,
+    "ast_hash": "62d0e500521cc47733d6789bc0021ef5",
+    "semantic_hash": "62d0e500521cc47733d6789bc0021ef5"
+  },
+  "Referensi/qeducato/img/bg/an-img-07.png": {
+    "mtime": 1675327482.0,
+    "seen": 1792379706.339738,
+    "ast_hash": "b9e81f34d19d2832380faf8104b789fd",
+    "semantic_hash": "b9e81f34d19d2832380faf8104b789fd"
+  },
+  "Referensi/qeducato/img/bg/an-img-08.png": {
+    "mtime": 1675327464.0,
+    "seen": 1792379706.3397388,
+    "ast_hash": "d4e61ab0d7207916e41c614260f5e412",
+    "semantic_hash": "d4e61ab0d7207916e41c614260f5e412"
+  },
+  "Referensi/qeducato/img/bg/an-img-09.png": {
+    "mtime": 1675327496.0,
+    "seen": 1792379706.3397396,
+    "ast_hash": "c09872a05f7cd6099f74f14a9411ccba",
+    "semantic_hash": "c09872a05f7cd6099f74f14a9411ccba"
+  },
+  "Referensi/qeducato/img/bg/an-img-10.png": {
+    "mtime": 1675268418.0,
+    "seen": 1792379706.3397408,
+    "ast_hash": "3d7b1057cc127a72e0ed97bd561aaa23",
+    "semantic_hash": "3d7b1057cc127a72e0ed97bd561aaa23"
+  },
+  "Referensi/qeducato/img/bg/an-img-11.png": {
+    "mtime": 1675434924.0,
+    "seen": 1792379706.3397417,
+    "ast_hash": "149ca61e23c67f2b883ae360ae391d2a",
+    "semantic_hash": "149ca61e23c67f2b883ae360ae391d2a"
+  },
+  "Referensi/qeducato/img/bg/an-img-12.png": {
+    "mtime": 1675434936.0,
+    "seen": 1792379706.3397427,
+    "ast_hash": "093938ae9789046bd4fa34bb9f49e55f",
+    "semantic_hash": "093938ae9789046bd4fa34bb9f49e55f"
+  },
+  "Referensi/qeducato/img/bg/an-img-13.png": {
+    "mtime": 1675434950.0,
+    "seen": 1792379706.3397439,
+    "ast_hash": "e15559c796bd885b7f05b143cfdcfb21",
+    "semantic_hash": "e15559c796bd885b7f05b143cfdcfb21"
+  },
+  "Referensi/qeducato/img/bg/an-img-14.png": {
+    "mtime": 1675611244.0,
+    "seen": 1792379706.3397446,
+    "ast_hash": "603f4357e796d44a9d0e4aeff7876fac",
+    "semantic_hash": "603f4357e796d44a9d0e4aeff7876fac"
+  },
+  "Referensi/qeducato/img/bg/an-img-15.png": {
+    "mtime": 1675611264.0,
+    "seen": 1792379706.3397455,
+    "ast_hash": "0fa42d00c617a0cdfd3407b688b8af2a",
+    "semantic_hash": "0fa42d00c617a0cdfd3407b688b8af2a"
+  },
+  "Referensi/qeducato/img/bg/an-img-16.png": {
+    "mtime": 1675611280.0,
+    "seen": 1792379706.3397462,
+    "ast_hash": "88be8627086699b13e1cc11fba655311",
+    "semantic_hash": "88be8627086699b13e1cc11fba655311"
+  },
+  "Referensi/qeducato/img/bg/an-img-17.png": {
+    "mtime": 1675611606.0,
+    "seen": 1792379706.3397477,
+    "ast_hash": "e3764545185141b227362cb0575b25c3",
+    "semantic_hash": "e3764545185141b227362cb0575b25c3"
+  },
+  "Referensi/qeducato/img/bg/an-img-18.png": {
+    "mtime": 1675614532.0,
+    "seen": 1792379706.3397484,
+    "ast_hash": "20af2c08c1862321e9d86554e8e57226",
+    "semantic_hash": "20af2c08c1862321e9d86554e8e57226"
+  },
+  "Referensi/qeducato/img/bg/an-img-19.png": {
+    "mtime": 1675614554.0,
+    "seen": 1792379706.3397493,
+    "ast_hash": "4cb633132952f8b5e7ec6531a80ffe39",
+    "semantic_hash": "4cb633132952f8b5e7ec6531a80ffe39"
+  },
+  "Referensi/qeducato/img/bg/an-img-20.png": {
+    "mtime": 1675755084.0,
+    "seen": 1792379706.3397503,
+    "ast_hash": "32015ef0ded46a1b0c6f518372cd584e",
+    "semantic_hash": "32015ef0ded46a1b0c6f518372cd584e"
+  },
+  "Referensi/qeducato/img/bg/bdrc-bg.png": {
+    "mtime": 1676051524.0,
+    "seen": 1792379706.3397515,
+    "ast_hash": "f10a2ef85ad2e489719149d7774ecbb1",
+    "semantic_hash": "f10a2ef85ad2e489719149d7774ecbb1"
+  },
+  "Referensi/qeducato/img/bg/blog_bg.png": {
+    "mtime": 1675353934.0,
+    "seen": 1792379706.3397627,
+    "ast_hash": "90a872ad3de78eccc3a5608272e83d73",
+    "semantic_hash": "90a872ad3de78eccc3a5608272e83d73"
+  },
+  "Referensi/qeducato/img/bg/blog_bg2.png": {
+    "mtime": 1675621042.0,
+    "seen": 1792379706.3397636,
+    "ast_hash": "71a7afd64be533202f83e137477d4f53",
+    "semantic_hash": "71a7afd64be533202f83e137477d4f53"
+  },
+  "Referensi/qeducato/img/bg/call-bg.png": {
+    "mtime": 1650791438.0,
+    "seen": 1792379706.3397648,
+    "ast_hash": "26ea74ffe92538d70f2ad37fed2816bc",
+    "semantic_hash": "26ea74ffe92538d70f2ad37fed2816bc"
+  },
+  "Referensi/qeducato/img/bg/contact-icon01.png": {
+    "mtime": 1676047804.0,
+    "seen": 1792379706.3397655,
+    "ast_hash": "4c2ead6306749853ca7c65186eb4bd4e",
+    "semantic_hash": "4c2ead6306749853ca7c65186eb4bd4e"
+  },
+  "Referensi/qeducato/img/bg/contact-icon02.png": {
+    "mtime": 1676047818.0,
+    "seen": 1792379706.3397665,
+    "ast_hash": "501961518cb9c2570006c886f26c5e59",
+    "semantic_hash": "501961518cb9c2570006c886f26c5e59"
+  },
+  "Referensi/qeducato/img/bg/contact-icon03.png": {
+    "mtime": 1676047828.0,
+    "seen": 1792379706.3397675,
+    "ast_hash": "3d3e725c88b0bfdc89bd00d3e56cbf9b",
+    "semantic_hash": "3d3e725c88b0bfdc89bd00d3e56cbf9b"
+  },
+  "Referensi/qeducato/img/bg/contact-img.png": {
+    "mtime": 1676051492.0,
+    "seen": 1792379706.3397686,
+    "ast_hash": "915306cfad57dabccf5bb788411e18b0",
+    "semantic_hash": "915306cfad57dabccf5bb788411e18b0"
+  },
+  "Referensi/qeducato/img/bg/couress-img-1.jpg": {
+    "mtime": 1676051490.0,
+    "seen": 1792379706.3397694,
+    "ast_hash": "d1c0a076b432b131c3710a75c50ae9c3",
+    "semantic_hash": "d1c0a076b432b131c3710a75c50ae9c3"
+  },
+  "Referensi/qeducato/img/bg/couress-img-2.jpg": {
+    "mtime": 1676051488.0,
+    "seen": 1792379706.3397703,
+    "ast_hash": "8fe4eb3627a02c47d10a34d68a573458",
+    "semantic_hash": "8fe4eb3627a02c47d10a34d68a573458"
+  },
+  "Referensi/qeducato/img/bg/couress-img-3.jpg": {
+    "mtime": 1676051486.0,
+    "seen": 1792379706.3397715,
+    "ast_hash": "3ce87ce07d86b569af13facafbd91817",
+    "semantic_hash": "3ce87ce07d86b569af13facafbd91817"
+  },
+  "Referensi/qeducato/img/bg/couress-img-4.jpg": {
+    "mtime": 1676051482.0,
+    "seen": 1792379706.3397725,
+    "ast_hash": "b90384e96a9cb0c3535a26373fe0e561",
+    "semantic_hash": "b90384e96a9cb0c3535a26373fe0e561"
+  },
+  "Referensi/qeducato/img/bg/couress-img-5.jpg": {
+    "mtime": 1676051480.0,
+    "seen": 1792379706.3397732,
+    "ast_hash": "fa32d11510573053d36d07c7c5fadc55",
+    "semantic_hash": "fa32d11510573053d36d07c7c5fadc55"
+  },
+  "Referensi/qeducato/img/bg/couress-img-6.jpg": {
+    "mtime": 1676051478.0,
+    "seen": 1792379706.3397741,
+    "ast_hash": "050ee8c7b44a4bedb0aff2e561012eef",
+    "semantic_hash": "050ee8c7b44a4bedb0aff2e561012eef"
+  },
+  "Referensi/qeducato/img/bg/cta_bg.png": {
+    "mtime": 1676051474.0,
+    "seen": 1792379706.339775,
+    "ast_hash": "edeca581944f9bfb4c8d81efe4ea6a20",
+    "semantic_hash": "edeca581944f9bfb4c8d81efe4ea6a20"
+  },
+  "Referensi/qeducato/img/bg/cta_bg02.png": {
+    "mtime": 1676051472.0,
+    "seen": 1792379706.339776,
+    "ast_hash": "8a2813c8ae584f80e6fc2edfad5010a2",
+    "semantic_hash": "8a2813c8ae584f80e6fc2edfad5010a2"
+  },
+  "Referensi/qeducato/img/bg/evn-img-01.png": {
+    "mtime": 1676051470.0,
+    "seen": 1792379706.339777,
+    "ast_hash": "54bbaf00e17d05b6e2071b3cf507a00a",
+    "semantic_hash": "54bbaf00e17d05b6e2071b3cf507a00a"
+  },
+  "Referensi/qeducato/img/bg/evn-img-02.png": {
+    "mtime": 1676051466.0,
+    "seen": 1792379706.339778,
+    "ast_hash": "8b911213c8f2a736dd4e136793d07dd1",
+    "semantic_hash": "8b911213c8f2a736dd4e136793d07dd1"
+  },
+  "Referensi/qeducato/img/bg/evn-img-03.png": {
+    "mtime": 1676051462.0,
+    "seen": 1792379706.3397791,
+    "ast_hash": "515350311e2f19dc2d46807a323387e2",
+    "semantic_hash": "515350311e2f19dc2d46807a323387e2"
+  },
+  "Referensi/qeducato/img/bg/evn-img-04.png": {
+    "mtime": 1676051458.0,
+    "seen": 1792379706.3397799,
+    "ast_hash": "83f70fe6fdb4a56479d3ab6a231fbd60",
+    "semantic_hash": "83f70fe6fdb4a56479d3ab6a231fbd60"
+  },
+  "Referensi/qeducato/img/bg/evn-img-1.jpg": {
+    "mtime": 1676051470.0,
+    "seen": 1792379706.3397808,
+    "ast_hash": "2dfe78de1f5ce345ace376688951844a",
+    "semantic_hash": "2dfe78de1f5ce345ace376688951844a"
+  },
+  "Referensi/qeducato/img/bg/evn-img-2.jpg": {
+    "mtime": 1676051466.0,
+    "seen": 1792379706.339782,
+    "ast_hash": "696ce50b457656dfaa76bb8f95dd1ec2",
+    "semantic_hash": "696ce50b457656dfaa76bb8f95dd1ec2"
+  },
+  "Referensi/qeducato/img/bg/evn-img-3.jpg": {
+    "mtime": 1676051460.0,
+    "seen": 1792379706.3397827,
+    "ast_hash": "eef81307851223c5a3256b5f21e338df",
+    "semantic_hash": "eef81307851223c5a3256b5f21e338df"
+  },
+  "Referensi/qeducato/img/bg/evn-img-4.jpg": {
+    "mtime": 1676051458.0,
+    "seen": 1792379706.3397837,
+    "ast_hash": "dfdfa8af20d6b0d83601859be65c5dbe",
+    "semantic_hash": "dfdfa8af20d6b0d83601859be65c5dbe"
+  },
+  "Referensi/qeducato/img/bg/evn-img-5.jpg": {
+    "mtime": 1676051456.0,
+    "seen": 1792379706.3397846,
+    "ast_hash": "1ccc625d43adcf45f5f5524bb10682bb",
+    "semantic_hash": "1ccc625d43adcf45f5f5524bb10682bb"
+  },
+  "Referensi/qeducato/img/bg/evn-img-6.jpg": {
+    "mtime": 1676051454.0,
+    "seen": 1792379706.3397858,
+    "ast_hash": "8e26e56a1426236f5b18a6f6ecec58c9",
+    "semantic_hash": "8e26e56a1426236f5b18a6f6ecec58c9"
+  },
+  "Referensi/qeducato/img/bg/faq-img.jpg": {
+    "mtime": 1676051452.0,
+    "seen": 1792379706.3397865,
+    "ast_hash": "06bd0ba28ebf90665029246439e6a56d",
+    "semantic_hash": "06bd0ba28ebf90665029246439e6a56d"
+  },
+  "Referensi/qeducato/img/bg/feature-bg.png": {
+    "mtime": 1675431804.0,
+    "seen": 1792379706.3397875,
+    "ast_hash": "fe61e95384c00783a1d3df1227ffafa4",
+    "semantic_hash": "fe61e95384c00783a1d3df1227ffafa4"
+  },
+  "Referensi/qeducato/img/bg/footer-bg.png": {
+    "mtime": 1675353488.0,
+    "seen": 1792379706.3397884,
+    "ast_hash": "9524220ec28545c096696dbe922b71b4",
+    "semantic_hash": "9524220ec28545c096696dbe922b71b4"
+  },
+  "Referensi/qeducato/img/bg/play-button.png": {
+    "mtime": 1675333168.0,
+    "seen": 1792379706.3397894,
+    "ast_hash": "3bfc5f80263efbafb41244ba066efe41",
+    "semantic_hash": "3bfc5f80263efbafb41244ba066efe41"
+  },
+  "Referensi/qeducato/img/bg/play-button2.png": {
+    "mtime": 1675435628.0,
+    "seen": 1792379706.3397903,
+    "ast_hash": "2a2bf38af12c2cdc9ce1217ccaac2c34",
+    "semantic_hash": "2a2bf38af12c2cdc9ce1217ccaac2c34"
+  },
+  "Referensi/qeducato/img/bg/quote_bg.png": {
+    "mtime": 1646224112.0,
+    "seen": 1792379706.339791,
+    "ast_hash": "a3b35b886211b890782d0c3a5b7e228a",
+    "semantic_hash": "a3b35b886211b890782d0c3a5b7e228a"
+  },
+  "Referensi/qeducato/img/bg/search_bg.png": {
+    "mtime": 1676051604.0,
+    "seen": 1792379706.339792,
+    "ast_hash": "ae7b89415f090790be588c235cef626d",
+    "semantic_hash": "ae7b89415f090790be588c235cef626d"
+  },
+  "Referensi/qeducato/img/bg/slider_shape01.png": {
+    "mtime": 1675397582.0,
+    "seen": 1792379706.3397932,
+    "ast_hash": "345e37faea42e602719b4825addd63c6",
+    "semantic_hash": "345e37faea42e602719b4825addd63c6"
+  },
+  "Referensi/qeducato/img/bg/slider_shape02.png": {
+    "mtime": 1675397602.0,
+    "seen": 1792379706.339794,
+    "ast_hash": "064c9ac63298935478508b0044ccd590",
+    "semantic_hash": "064c9ac63298935478508b0044ccd590"
+  },
+  "Referensi/qeducato/img/bg/slider_shape03.png": {
+    "mtime": 1675397618.0,
+    "seen": 1792379706.3397949,
+    "ast_hash": "3785bdb9d13854a3779b2a4084bc760e",
+    "semantic_hash": "3785bdb9d13854a3779b2a4084bc760e"
+  },
+  "Referensi/qeducato/img/bg/slider_shape04.png": {
+    "mtime": 1675397628.0,
+    "seen": 1792379706.3397958,
+    "ast_hash": "31778f89bb77f2b4c2c7bb2083cdf398",
+    "semantic_hash": "31778f89bb77f2b4c2c7bb2083cdf398"
+  },
+  "Referensi/qeducato/img/bg/star.png": {
+    "mtime": 1675756324.0,
+    "seen": 1792379706.3397968,
+    "ast_hash": "5b1f2976284bd01139db5778aff2555e",
+    "semantic_hash": "5b1f2976284bd01139db5778aff2555e"
+  },
+  "Referensi/qeducato/img/bg/steps-img-2.png": {
+    "mtime": 1676051576.0,
+    "seen": 1792379706.3397977,
+    "ast_hash": "da51decc979f6936ffa1f93eec53e30c",
+    "semantic_hash": "da51decc979f6936ffa1f93eec53e30c"
+  },
+  "Referensi/qeducato/img/bg/steps-img-3.png": {
+    "mtime": 1676051576.0,
+    "seen": 1792379706.3397985,
+    "ast_hash": "9a3cf4c68f4fb6ff2499426379d766c8",
+    "semantic_hash": "9a3cf4c68f4fb6ff2499426379d766c8"
+  },
+  "Referensi/qeducato/img/bg/steps-img.png": {
+    "mtime": 1676051578.0,
+    "seen": 1792379706.3397996,
+    "ast_hash": "cc07e935ced443079d66c094adb751a7",
+    "semantic_hash": "cc07e935ced443079d66c094adb751a7"
+  },
+  "Referensi/qeducato/img/bg/testi_avatar.png": {
+    "mtime": 1676051614.0,
+    "seen": 1792379706.3398004,
+    "ast_hash": "74f79b28ad84cf7cd92a5ee9be6d80bd",
+    "semantic_hash": "74f79b28ad84cf7cd92a5ee9be6d80bd"
+  },
+  "Referensi/qeducato/img/bg/testimonial-bg.png": {
+    "mtime": 1676051574.0,
+    "seen": 1792379706.3398013,
+    "ast_hash": "5ac797b03ba69100bd3ce3cfef196d87",
+    "semantic_hash": "5ac797b03ba69100bd3ce3cfef196d87"
+  },
+  "Referensi/qeducato/img/bg/testimonial-bg2.png": {
+    "mtime": 1676051572.0,
+    "seen": 1792379706.3398023,
+    "ast_hash": "f4bfb2cedf4f0c817d788fa297e81f8d",
+    "semantic_hash": "f4bfb2cedf4f0c817d788fa297e81f8d"
+  },
+  "Referensi/qeducato/img/bg/top-m-icon.png": {
+    "mtime": 1658565528.0,
+    "seen": 1792379706.3398032,
+    "ast_hash": "fd95412817a3206d72d74228b0e5be9b",
+    "semantic_hash": "fd95412817a3206d72d74228b0e5be9b"
+  },
+  "Referensi/qeducato/img/bg/video-img.png": {
+    "mtime": 1676051570.0,
+    "seen": 1792379706.3398042,
+    "ast_hash": "b1229793ddbd7f8dca8034ee42173403",
+    "semantic_hash": "b1229793ddbd7f8dca8034ee42173403"
+  },
+  "Referensi/qeducato/img/bg/video-img2.png": {
+    "mtime": 1676051566.0,
+    "seen": 1792379706.3398051,
+    "ast_hash": "76b4947b97b3a28ecb23615581061b36",
+    "semantic_hash": "76b4947b97b3a28ecb23615581061b36"
+  },
+  "Referensi/qeducato/img/bg/video-img3.png": {
+    "mtime": 1676051564.0,
+    "seen": 1792379706.3398058,
+    "ast_hash": "44ba45def064533b1b9d9f8f7e5e3de6",
+    "semantic_hash": "44ba45def064533b1b9d9f8f7e5e3de6"
+  },
+  "Referensi/qeducato/img/blog/ad-banner.png": {
+    "mtime": 1617306580.0,
+    "seen": 1792379706.339807,
+    "ast_hash": "db162cd0efc116de223fb40b60d4b5db",
+    "semantic_hash": "db162cd0efc116de223fb40b60d4b5db"
+  },
+  "Referensi/qeducato/img/blog/admin-img.png": {
+    "mtime": 1610782794.0,
+    "seen": 1792379706.3398077,
+    "ast_hash": "68999b213ae438604c4dd3b4ba92f4f3",
+    "semantic_hash": "68999b213ae438604c4dd3b4ba92f4f3"
+  },
+  "Referensi/qeducato/img/blog/b_details01.jpg": {
+    "mtime": 1610782786.0,
+    "seen": 1792379706.3398087,
+    "ast_hash": "091aae6f82eae0beaa2e00fd7ba786f7",
+    "semantic_hash": "091aae6f82eae0beaa2e00fd7ba786f7"
+  },
+  "Referensi/qeducato/img/blog/b_details02.jpg": {
+    "mtime": 1610782784.0,
+    "seen": 1792379706.33981,
+    "ast_hash": "da64b3bddd06d56244e2690452a2b537",
+    "semantic_hash": "da64b3bddd06d56244e2690452a2b537"
+  },
+  "Referensi/qeducato/img/blog/b_details03.jpg": {
+    "mtime": 1610782778.0,
+    "seen": 1792379706.3398106,
+    "ast_hash": "4e6a1ed1cc3c3a0e9573ab1e3f7b457e",
+    "semantic_hash": "4e6a1ed1cc3c3a0e9573ab1e3f7b457e"
+  },
+  "Referensi/qeducato/img/blog/b_details04.jpg": {
+    "mtime": 1610782776.0,
+    "seen": 1792379706.3398116,
+    "ast_hash": "390a6beb913f3c879395e52fedbdeabc",
+    "semantic_hash": "390a6beb913f3c879395e52fedbdeabc"
+  },
+  "Referensi/qeducato/img/blog/blog_img01.jpg": {
+    "mtime": 1610782772.0,
+    "seen": 1792379706.3398125,
+    "ast_hash": "362f87fc196cd77afb2981d1e44b3bd6",
+    "semantic_hash": "362f87fc196cd77afb2981d1e44b3bd6"
+  },
+  "Referensi/qeducato/img/blog/blog_img01.png": {
+    "mtime": 1610782770.0,
+    "seen": 1792379706.3398137,
+    "ast_hash": "47e395b95d8687430c66f94e9c607b98",
+    "semantic_hash": "47e395b95d8687430c66f94e9c607b98"
+  },
+  "Referensi/qeducato/img/blog/blog_img02.jpg": {
+    "mtime": 1610782804.0,
+    "seen": 1792379706.3398144,
+    "ast_hash": "820ed30fd06d85b89984476c0c3a8211",
+    "semantic_hash": "820ed30fd06d85b89984476c0c3a8211"
+  },
+  "Referensi/qeducato/img/blog/blog_img02.png": {
+    "mtime": 1610782766.0,
+    "seen": 1792379706.3398154,
+    "ast_hash": "949ea6a7bf19f9723630b0e68886f53d",
+    "semantic_hash": "949ea6a7bf19f9723630b0e68886f53d"
+  },
+  "Referensi/qeducato/img/blog/blog_img03.jpg": {
+    "mtime": 1610782766.0,
+    "seen": 1792379706.3398163,
+    "ast_hash": "ddefeca8baafc184c0808b0313835f2e",
+    "semantic_hash": "ddefeca8baafc184c0808b0313835f2e"
+  },
+  "Referensi/qeducato/img/blog/blog_img03.png": {
+    "mtime": 1610782764.0,
+    "seen": 1792379706.3398173,
+    "ast_hash": "2c69d12cd364f8e765d61d8284f72cc4",
+    "semantic_hash": "2c69d12cd364f8e765d61d8284f72cc4"
+  },
+  "Referensi/qeducato/img/blog/comment/avatar.png": {
+    "mtime": 1618650236.0,
+    "seen": 1792379706.3398182,
+    "ast_hash": "7692bdc7ab5587c60613b33e27a28ce9",
+    "semantic_hash": "7692bdc7ab5587c60613b33e27a28ce9"
+  },
+  "Referensi/qeducato/img/blog/comment/c_01.png": {
+    "mtime": 1618650232.0,
+    "seen": 1792379706.3398192,
+    "ast_hash": "f3c8ba9cf5cf5395c89701cb598b0c7d",
+    "semantic_hash": "f3c8ba9cf5cf5395c89701cb598b0c7d"
+  },
+  "Referensi/qeducato/img/blog/comment/c_02.png": {
+    "mtime": 1618650114.0,
+    "seen": 1792379706.3398204,
+    "ast_hash": "b4ae2c46bf74215a96ea8c3fea41297a",
+    "semantic_hash": "b4ae2c46bf74215a96ea8c3fea41297a"
+  },
+  "Referensi/qeducato/img/blog/comment/c_03.png": {
+    "mtime": 1618650108.0,
+    "seen": 1792379706.3398213,
+    "ast_hash": "03ac5176dfac325067f9f18186fbafe9",
+    "semantic_hash": "03ac5176dfac325067f9f18186fbafe9"
+  },
+  "Referensi/qeducato/img/blog/inner_b1.jpg": {
+    "mtime": 1610782762.0,
+    "seen": 1792379706.3398223,
+    "ast_hash": "40d91a6cf231ccc420639f9a9eef51ba",
+    "semantic_hash": "40d91a6cf231ccc420639f9a9eef51ba"
+  },
+  "Referensi/qeducato/img/blog/inner_b2.jpg": {
+    "mtime": 1610782760.0,
+    "seen": 1792379706.3398232,
+    "ast_hash": "70bf2b1affaa07287a2bc1a801468ec1",
+    "semantic_hash": "70bf2b1affaa07287a2bc1a801468ec1"
+  },
+  "Referensi/qeducato/img/blog/inner_b3.jpg": {
+    "mtime": 1610782760.0,
+    "seen": 1792379706.3398244,
+    "ast_hash": "bfc387495066a1aa7037bf602e35bc5b",
+    "semantic_hash": "bfc387495066a1aa7037bf602e35bc5b"
+  },
+  "Referensi/qeducato/img/blog/inner_b4.jpg": {
+    "mtime": 1623438160.0,
+    "seen": 1792379706.3398252,
+    "ast_hash": "e8f94b2ad9efc2060ac0d35473a14c75",
+    "semantic_hash": "e8f94b2ad9efc2060ac0d35473a14c75"
+  },
+  "Referensi/qeducato/img/blog/inner_b5.jpg": {
+    "mtime": 1676051412.0,
+    "seen": 1792379706.339826,
+    "ast_hash": "cae9b40204d5ed88fb118236cc0073cb",
+    "semantic_hash": "cae9b40204d5ed88fb118236cc0073cb"
+  },
+  "Referensi/qeducato/img/blog/inner_b6.jpg": {
+    "mtime": 1676051412.0,
+    "seen": 1792379706.3398273,
+    "ast_hash": "96e736603938601328fb4a244c3793a2",
+    "semantic_hash": "96e736603938601328fb4a244c3793a2"
+  },
+  "Referensi/qeducato/img/blog/inner_b7.jpg": {
+    "mtime": 1676051410.0,
+    "seen": 1792379706.339828,
+    "ast_hash": "f24a42f5fe40ebb1d390b9df7eb4498c",
+    "semantic_hash": "f24a42f5fe40ebb1d390b9df7eb4498c"
+  },
+  "Referensi/qeducato/img/blog/inner_b8.jpg": {
+    "mtime": 1676051408.0,
+    "seen": 1792379706.339829,
+    "ast_hash": "eb6a924aa413b5b8435f069dc2485747",
+    "semantic_hash": "eb6a924aa413b5b8435f069dc2485747"
+  },
+  "Referensi/qeducato/img/blog/inner_b9.jpg": {
+    "mtime": 1676051404.0,
+    "seen": 1792379706.3398297,
+    "ast_hash": "328e1d5ac7b87c4c86ac5f5363a1597f",
+    "semantic_hash": "328e1d5ac7b87c4c86ac5f5363a1597f"
+  },
+  "Referensi/qeducato/img/blog/s-blogimg-01.png": {
+    "mtime": 1633063490.0,
+    "seen": 1792379706.3398309,
+    "ast_hash": "3aab4603070881819c4d68f6043041af",
+    "semantic_hash": "3aab4603070881819c4d68f6043041af"
+  },
+  "Referensi/qeducato/img/blog/s-blogimg-02.png": {
+    "mtime": 1633063488.0,
+    "seen": 1792379706.3398316,
+    "ast_hash": "dcd1c0de193e08b956f02759204714ae",
+    "semantic_hash": "dcd1c0de193e08b956f02759204714ae"
+  },
+  "Referensi/qeducato/img/brand/b-logo1.png": {
+    "mtime": 1676051634.0,
+    "seen": 1792379706.3398325,
+    "ast_hash": "23254d6dc733d0109ee4af6e063d05ce",
+    "semantic_hash": "23254d6dc733d0109ee4af6e063d05ce"
+  },
+  "Referensi/qeducato/img/brand/b-logo2.png": {
+    "mtime": 1676051634.0,
+    "seen": 1792379706.3398335,
+    "ast_hash": "173668d2030c1a6c7b4ee2d45f011d5e",
+    "semantic_hash": "173668d2030c1a6c7b4ee2d45f011d5e"
+  },
+  "Referensi/qeducato/img/brand/b-logo3.png": {
+    "mtime": 1676051632.0,
+    "seen": 1792379706.3398347,
+    "ast_hash": "88407e37267108fb51e8fbb3d5bf6a8d",
+    "semantic_hash": "88407e37267108fb51e8fbb3d5bf6a8d"
+  },
+  "Referensi/qeducato/img/brand/b-logo4.png": {
+    "mtime": 1676051632.0,
+    "seen": 1792379706.3398354,
+    "ast_hash": "db13affd144fdb27c271ee8fb20b9e5c",
+    "semantic_hash": "db13affd144fdb27c271ee8fb20b9e5c"
+  },
+  "Referensi/qeducato/img/brand/b-logo5.png": {
+    "mtime": 1676051630.0,
+    "seen": 1792379706.3398364,
+    "ast_hash": "2d5c81fa9a238a3881abedf07f89a242",
+    "semantic_hash": "2d5c81fa9a238a3881abedf07f89a242"
+  },
+  "Referensi/qeducato/img/brand/b-logo7.png": {
+    "mtime": 1676051628.0,
+    "seen": 1792379706.3398376,
+    "ast_hash": "c0fe1b1a9b35e5f5b0549ecb43f56e22",
+    "semantic_hash": "c0fe1b1a9b35e5f5b0549ecb43f56e22"
+  },
+  "Referensi/qeducato/img/class/class-1.jpg": {
+    "mtime": 1676051668.0,
+    "seen": 1792379706.3398385,
+    "ast_hash": "3db57086d014547a978e4b7b9118b208",
+    "semantic_hash": "3db57086d014547a978e4b7b9118b208"
+  },
+  "Referensi/qeducato/img/class/class-10.jpg": {
+    "mtime": 1676051652.0,
+    "seen": 1792379706.3398392,
+    "ast_hash": "5685a279451e16650ed3f9a437792b7c",
+    "semantic_hash": "5685a279451e16650ed3f9a437792b7c"
+  },
+  "Referensi/qeducato/img/class/class-11.jpg": {
+    "mtime": 1676051652.0,
+    "seen": 1792379706.3398402,
+    "ast_hash": "078969b7f611911e19882f7f282dbf05",
+    "semantic_hash": "078969b7f611911e19882f7f282dbf05"
+  },
+  "Referensi/qeducato/img/class/class-12.jpg": {
+    "mtime": 1676051668.0,
+    "seen": 1792379706.3398411,
+    "ast_hash": "0df9fff51e1d99716dc57c4efa44ec15",
+    "semantic_hash": "0df9fff51e1d99716dc57c4efa44ec15"
+  },
+  "Referensi/qeducato/img/class/class-2.jpg": {
+    "mtime": 1676051666.0,
+    "seen": 1792379706.339842,
+    "ast_hash": "ee460cc157265912a2c74992c8a41ec4",
+    "semantic_hash": "ee460cc157265912a2c74992c8a41ec4"
+  },
+  "Referensi/qeducato/img/class/class-3.jpg": {
+    "mtime": 1676051664.0,
+    "seen": 1792379706.339843,
+    "ast_hash": "53caa042d1812f5cdae57883260cdfec",
+    "semantic_hash": "53caa042d1812f5cdae57883260cdfec"
+  },
+  "Referensi/qeducato/img/class/class-4.jpg": {
+    "mtime": 1676051662.0,
+    "seen": 1792379706.3398438,
+    "ast_hash": "b1f80a7b4dce830de91e5b4797c9b0fe",
+    "semantic_hash": "b1f80a7b4dce830de91e5b4797c9b0fe"
+  },
+  "Referensi/qeducato/img/class/class-5.jpg": {
+    "mtime": 1676051660.0,
+    "seen": 1792379706.339845,
+    "ast_hash": "795faacb030a35cb3031b62a352432cd",
+    "semantic_hash": "795faacb030a35cb3031b62a352432cd"
+  },
+  "Referensi/qeducato/img/class/class-6.jpg": {
+    "mtime": 1676051658.0,
+    "seen": 1792379706.339846,
+    "ast_hash": "8a1fb28544b39483b2badb5701c93af3",
+    "semantic_hash": "8a1fb28544b39483b2badb5701c93af3"
+  },
+  "Referensi/qeducato/img/class/class-7.jpg": {
+    "mtime": 1676051658.0,
+    "seen": 1792379706.3398468,
+    "ast_hash": "5aafb72c1ad67f8c4a8637b2f12ab3fd",
+    "semantic_hash": "5aafb72c1ad67f8c4a8637b2f12ab3fd"
+  },
+  "Referensi/qeducato/img/class/class-8.jpg": {
+    "mtime": 1676051656.0,
+    "seen": 1792379706.3398476,
+    "ast_hash": "1f64f9eda085a137b1cdd6535b66d6fa",
+    "semantic_hash": "1f64f9eda085a137b1cdd6535b66d6fa"
+  },
+  "Referensi/qeducato/img/class/class-9.jpg": {
+    "mtime": 1676051654.0,
+    "seen": 1792379706.3398488,
+    "ast_hash": "bcc94308f46722ae76fe4290c2984ab3",
+    "semantic_hash": "bcc94308f46722ae76fe4290c2984ab3"
+  },
+  "Referensi/qeducato/img/features/about_img.png": {
+    "mtime": 1676051862.0,
+    "seen": 1792379706.3398497,
+    "ast_hash": "58b78784e48e575cf4ab72b53552e3b8",
+    "semantic_hash": "58b78784e48e575cf4ab72b53552e3b8"
+  },
+  "Referensi/qeducato/img/features/about_img_02.png": {
+    "mtime": 1676051856.0,
+    "seen": 1792379706.3398504,
+    "ast_hash": "ecd1773334c722d3ab967632439ef879",
+    "semantic_hash": "ecd1773334c722d3ab967632439ef879"
+  },
+  "Referensi/qeducato/img/features/about_img_03.png": {
+    "mtime": 1676051750.0,
+    "seen": 1792379706.3398516,
+    "ast_hash": "5931a9446d7bc3e6237a7be125f44d26",
+    "semantic_hash": "5931a9446d7bc3e6237a7be125f44d26"
+  },
+  "Referensi/qeducato/img/features/about_img_04.png": {
+    "mtime": 1676051722.0,
+    "seen": 1792379706.3398523,
+    "ast_hash": "f9c1ea17a88ef6736d5c1760f67234b7",
+    "semantic_hash": "f9c1ea17a88ef6736d5c1760f67234b7"
+  },
+  "Referensi/qeducato/img/features/about_img_05.png": {
+    "mtime": 1676051866.0,
+    "seen": 1792379706.3398533,
+    "ast_hash": "63eed93f32ac929f22b0f4de7c5a2415",
+    "semantic_hash": "63eed93f32ac929f22b0f4de7c5a2415"
+  },
+  "Referensi/qeducato/img/gallery/protfolio-img01.jpg": {
+    "mtime": 1676051890.0,
+    "seen": 1792379706.339854,
+    "ast_hash": "1ef4d7a311e657b480402dc05f7ca9c3",
+    "semantic_hash": "1ef4d7a311e657b480402dc05f7ca9c3"
+  },
+  "Referensi/qeducato/img/gallery/protfolio-img02.jpg": {
+    "mtime": 1676051890.0,
+    "seen": 1792379706.3398552,
+    "ast_hash": "0a3b495d951d952efdd233c54a6ee9ab",
+    "semantic_hash": "0a3b495d951d952efdd233c54a6ee9ab"
+  },
+  "Referensi/qeducato/img/gallery/protfolio-img03.jpg": {
+    "mtime": 1676051888.0,
+    "seen": 1792379706.3398561,
+    "ast_hash": "7082be276f2af5757086952a0f6f77d5",
+    "semantic_hash": "7082be276f2af5757086952a0f6f77d5"
+  },
+  "Referensi/qeducato/img/gallery/protfolio-img04.jpg": {
+    "mtime": 1676051886.0,
+    "seen": 1792379706.339857,
+    "ast_hash": "2e5781505884a479c27a6651510dcd6f",
+    "semantic_hash": "2e5781505884a479c27a6651510dcd6f"
+  },
+  "Referensi/qeducato/img/gallery/protfolio-img05.jpg": {
+    "mtime": 1676051884.0,
+    "seen": 1792379706.3398583,
+    "ast_hash": "998d996e2d1f2225b3aa2da23d5c1368",
+    "semantic_hash": "998d996e2d1f2225b3aa2da23d5c1368"
+  },
+  "Referensi/qeducato/img/gallery/protfolio-img06.jpg": {
+    "mtime": 1676051884.0,
+    "seen": 1792379706.3398592,
+    "ast_hash": "df29301e0087d41db3276bfd42d6b04d",
+    "semantic_hash": "df29301e0087d41db3276bfd42d6b04d"
+  },
+  "Referensi/qeducato/img/icon/blockquote.png": {
+    "mtime": 1659804408.0,
+    "seen": 1792379706.33986,
+    "ast_hash": "d80063f525030536877ccfde04ac06fb",
+    "semantic_hash": "d80063f525030536877ccfde04ac06fb"
+  },
+  "Referensi/qeducato/img/icon/blockquote_d.png": {
+    "mtime": 1611388518.0,
+    "seen": 1792379706.339861,
+    "ast_hash": "a6ddba9d915fcece9a05a4ac42833695",
+    "semantic_hash": "a6ddba9d915fcece9a05a4ac42833695"
+  },
+  "Referensi/qeducato/img/icon/c_d01.png": {
+    "mtime": 1611388518.0,
+    "seen": 1792379706.3398619,
+    "ast_hash": "c5eeaa2b4fcfb59f89928769ea59af43",
+    "semantic_hash": "c5eeaa2b4fcfb59f89928769ea59af43"
+  },
+  "Referensi/qeducato/img/icon/clock-icon.png": {
+    "mtime": 1648230710.0,
+    "seen": 1792379706.3398628,
+    "ast_hash": "784b29cdb855bc84e922515135071ed4",
+    "semantic_hash": "784b29cdb855bc84e922515135071ed4"
+  },
+  "Referensi/qeducato/img/icon/cou-icon.png": {
+    "mtime": 1675226970.0,
+    "seen": 1792379706.3398638,
+    "ast_hash": "7ddd507bc667cb12776eae099daca893",
+    "semantic_hash": "7ddd507bc667cb12776eae099daca893"
+  },
+  "Referensi/qeducato/img/icon/fea-icon01.png": {
+    "mtime": 1675269136.0,
+    "seen": 1792379706.3398645,
+    "ast_hash": "601c2336fd243f90032b9be4572128de",
+    "semantic_hash": "601c2336fd243f90032b9be4572128de"
+  },
+  "Referensi/qeducato/img/icon/fea-icon02.png": {
+    "mtime": 1675269218.0,
+    "seen": 1792379706.3398657,
+    "ast_hash": "22bbfc5ae88e210b201c95964c796efc",
+    "semantic_hash": "22bbfc5ae88e210b201c95964c796efc"
+  },
+  "Referensi/qeducato/img/icon/fea-icon03.png": {
+    "mtime": 1675269232.0,
+    "seen": 1792379706.3398666,
+    "ast_hash": "5c584285d46fc7dbf6bfae906fa1b8b4",
+    "semantic_hash": "5c584285d46fc7dbf6bfae906fa1b8b4"
+  },
+  "Referensi/qeducato/img/icon/mailing.png": {
+    "mtime": 1674797256.0,
+    "seen": 1792379706.3398674,
+    "ast_hash": "2b356d91f9bb96779996845408b868da",
+    "semantic_hash": "2b356d91f9bb96779996845408b868da"
+  },
+  "Referensi/qeducato/img/icon/phone-call.png": {
+    "mtime": 1674797216.0,
+    "seen": 1792379706.3398683,
+    "ast_hash": "2c842692f176c08c0bd9201285d8c9c3",
+    "semantic_hash": "2c842692f176c08c0bd9201285d8c9c3"
+  },
+  "Referensi/qeducato/img/icon/se-icon4.png": {
+    "mtime": 1659627444.0,
+    "seen": 1792379706.3398695,
+    "ast_hash": "7df2842a86b2157d69af44016b74a588",
+    "semantic_hash": "7df2842a86b2157d69af44016b74a588"
+  },
+  "Referensi/qeducato/img/icon/se-icon5.png": {
+    "mtime": 1659627544.0,
+    "seen": 1792379706.3398705,
+    "ast_hash": "bd5826a47f0672ea5c5d4ed84eb1d737",
+    "semantic_hash": "bd5826a47f0672ea5c5d4ed84eb1d737"
+  },
+  "Referensi/qeducato/img/icon/se-icon6.png": {
+    "mtime": 1659627516.0,
+    "seen": 1792379706.3398714,
+    "ast_hash": "bb6478b8e7c43557aeae4f5876024f1e",
+    "semantic_hash": "bb6478b8e7c43557aeae4f5876024f1e"
+  },
+  "Referensi/qeducato/img/icon/se-icon7.png": {
+    "mtime": 1659627574.0,
+    "seen": 1792379706.3398726,
+    "ast_hash": "64f1fa92b25cb4209c1183e441dafd42",
+    "semantic_hash": "64f1fa92b25cb4209c1183e441dafd42"
+  },
+  "Referensi/qeducato/img/icon/send-mail.png": {
+    "mtime": 1675353030.0,
+    "seen": 1792379706.3398733,
+    "ast_hash": "be15648f55a80f68f3dea90c8350fa1f",
+    "semantic_hash": "be15648f55a80f68f3dea90c8350fa1f"
+  },
+  "Referensi/qeducato/img/icon/sve-icon1.png": {
+    "mtime": 1675432076.0,
+    "seen": 1792379706.3398743,
+    "ast_hash": "94c9f4d860ff4bce599f4598a336ebd8",
+    "semantic_hash": "94c9f4d860ff4bce599f4598a336ebd8"
+  },
+  "Referensi/qeducato/img/icon/sve-icon10.png": {
+    "mtime": 1675618056.0,
+    "seen": 1792379706.3398752,
+    "ast_hash": "8f0e7ca98c4f55f6e75acc17e5e9b651",
+    "semantic_hash": "8f0e7ca98c4f55f6e75acc17e5e9b651"
+  },
+  "Referensi/qeducato/img/icon/sve-icon2.png": {
+    "mtime": 1675432094.0,
+    "seen": 1792379706.3398762,
+    "ast_hash": "6d6d08b9ab1d4ef50815d0580b8c670f",
+    "semantic_hash": "6d6d08b9ab1d4ef50815d0580b8c670f"
+  },
+  "Referensi/qeducato/img/icon/sve-icon3.png": {
+    "mtime": 1675432118.0,
+    "seen": 1792379706.3398771,
+    "ast_hash": "b3ef6baa2813ae12ef0b85850302e437",
+    "semantic_hash": "b3ef6baa2813ae12ef0b85850302e437"
+  },
+  "Referensi/qeducato/img/icon/sve-icon4.png": {
+    "mtime": 1675187152.0,
+    "seen": 1792379706.339878,
+    "ast_hash": "afe655ffa03501afe031f1cb518a8c0d",
+    "semantic_hash": "afe655ffa03501afe031f1cb518a8c0d"
+  },
+  "Referensi/qeducato/img/icon/sve-icon5.png": {
+    "mtime": 1675187188.0,
+    "seen": 1792379706.3398788,
+    "ast_hash": "c7f765f025f78922be26aaed3b6d7153",
+    "semantic_hash": "c7f765f025f78922be26aaed3b6d7153"
+  },
+  "Referensi/qeducato/img/icon/sve-icon6.png": {
+    "mtime": 1675187228.0,
+    "seen": 1792379706.3398802,
+    "ast_hash": "f32124a1e0ff64ba69188f2bf4f5cb7f",
+    "semantic_hash": "f32124a1e0ff64ba69188f2bf4f5cb7f"
+  },
+  "Referensi/qeducato/img/icon/sve-icon7.png": {
+    "mtime": 1675618026.0,
+    "seen": 1792379706.3398812,
+    "ast_hash": "94c9f4d860ff4bce599f4598a336ebd8",
+    "semantic_hash": "94c9f4d860ff4bce599f4598a336ebd8"
+  },
+  "Referensi/qeducato/img/icon/sve-icon8.png": {
+    "mtime": 1675618038.0,
+    "seen": 1792379706.339882,
+    "ast_hash": "f7111b00ad7945274bcd0cf9ee74df4c",
+    "semantic_hash": "f7111b00ad7945274bcd0cf9ee74df4c"
+  },
+  "Referensi/qeducato/img/icon/sve-icon9.png": {
+    "mtime": 1675618048.0,
+    "seen": 1792379706.339883,
+    "ast_hash": "0774f7e49fddb91000ee48db76ef6b01",
+    "semantic_hash": "0774f7e49fddb91000ee48db76ef6b01"
+  },
+  "Referensi/qeducato/img/logo/f_logo.png": {
+    "mtime": 1675356256.0,
+    "seen": 1792379706.339884,
+    "ast_hash": "4c9fa995c7454fc5a47b84a5463646e9",
+    "semantic_hash": "4c9fa995c7454fc5a47b84a5463646e9"
+  },
+  "Referensi/qeducato/img/logo/logo.png": {
+    "mtime": 1674795978.0,
+    "seen": 1792379706.3398848,
+    "ast_hash": "492a9760eb2f2654d3b4ca4b30cb68a3",
+    "semantic_hash": "492a9760eb2f2654d3b4ca4b30cb68a3"
+  },
+  "Referensi/qeducato/img/slider/slider_bg.png": {
+    "mtime": 1676052320.0,
+    "seen": 1792379706.3398862,
+    "ast_hash": "44e2093346820a62c971ce4c012492f0",
+    "semantic_hash": "44e2093346820a62c971ce4c012492f0"
+  },
+  "Referensi/qeducato/img/slider/slider_bg_01.png": {
+    "mtime": 1676137324.0,
+    "seen": 1792379706.3398871,
+    "ast_hash": "1ebe4fc1470cc790885d31c1e6518f7c",
+    "semantic_hash": "1ebe4fc1470cc790885d31c1e6518f7c"
+  },
+  "Referensi/qeducato/img/slider/slider_img02.png": {
+    "mtime": 1676052350.0,
+    "seen": 1792379706.3398879,
+    "ast_hash": "731c55ccad27b91fc83eaf7f36f124c8",
+    "semantic_hash": "731c55ccad27b91fc83eaf7f36f124c8"
+  },
+  "Referensi/qeducato/img/slider/slider_img03.png": {
+    "mtime": 1676052342.0,
+    "seen": 1792379706.3398888,
+    "ast_hash": "05192a1fe5f5efdc15b8f7cba1af22c5",
+    "semantic_hash": "05192a1fe5f5efdc15b8f7cba1af22c5"
+  },
+  "Referensi/qeducato/img/team/._team01.png": {
+    "mtime": 1597553864.0,
+    "seen": 1792379706.33989,
+    "ast_hash": "d8f9c0781d1943ab8f3a02d310c5a6b2",
+    "semantic_hash": "d8f9c0781d1943ab8f3a02d310c5a6b2"
+  },
+  "Referensi/qeducato/img/team/._team02.png": {
+    "mtime": 1597553864.0,
+    "seen": 1792379706.339891,
+    "ast_hash": "d8f9c0781d1943ab8f3a02d310c5a6b2",
+    "semantic_hash": "d8f9c0781d1943ab8f3a02d310c5a6b2"
+  },
+  "Referensi/qeducato/img/team/._team03.png": {
+    "mtime": 1597553864.0,
+    "seen": 1792379706.339892,
+    "ast_hash": "d8f9c0781d1943ab8f3a02d310c5a6b2",
+    "semantic_hash": "d8f9c0781d1943ab8f3a02d310c5a6b2"
+  },
+  "Referensi/qeducato/img/team/team01.jpg": {
+    "mtime": 1676051934.0,
+    "seen": 1792379706.3398926,
+    "ast_hash": "cc995e47d132dae15f07e7769d9a5c3c",
+    "semantic_hash": "cc995e47d132dae15f07e7769d9a5c3c"
+  },
+  "Referensi/qeducato/img/team/team02.jpg": {
+    "mtime": 1676051932.0,
+    "seen": 1792379706.3398938,
+    "ast_hash": "07a5ff2b31cd26b71a617b1bc58b7cee",
+    "semantic_hash": "07a5ff2b31cd26b71a617b1bc58b7cee"
+  },
+  "Referensi/qeducato/img/team/team03.jpg": {
+    "mtime": 1676051930.0,
+    "seen": 1792379706.3398948,
+    "ast_hash": "eb2cddd36522b157f64aa4a2301ed61a",
+    "semantic_hash": "eb2cddd36522b157f64aa4a2301ed61a"
+  },
+  "Referensi/qeducato/img/team/team04.jpg": {
+    "mtime": 1676051928.0,
+    "seen": 1792379706.3398955,
+    "ast_hash": "8b2f6cfdda5c47bbf9e2bb6dcd235956",
+    "semantic_hash": "8b2f6cfdda5c47bbf9e2bb6dcd235956"
+  },
+  "Referensi/qeducato/img/team/team05.jpg": {
+    "mtime": 1676051926.0,
+    "seen": 1792379706.3398967,
+    "ast_hash": "83bdc9278334c53ea2a2547245081a34",
+    "semantic_hash": "83bdc9278334c53ea2a2547245081a34"
+  },
+  "Referensi/qeducato/img/team/team05.png": {
+    "mtime": 1676051924.0,
+    "seen": 1792379706.3398976,
+    "ast_hash": "ddda3adaf2e7b42826b241c25750c7a4",
+    "semantic_hash": "ddda3adaf2e7b42826b241c25750c7a4"
+  },
+  "Referensi/qeducato/img/team/team06.png": {
+    "mtime": 1676051924.0,
+    "seen": 1792379706.3398983,
+    "ast_hash": "e97fbfdb8204da609d0bde49b96689ad",
+    "semantic_hash": "e97fbfdb8204da609d0bde49b96689ad"
+  },
+  "Referensi/qeducato/img/team/team07.png": {
+    "mtime": 1676051922.0,
+    "seen": 1792379706.3398993,
+    "ast_hash": "2e110e167c36f4b8645aba8fa236464f",
+    "semantic_hash": "2e110e167c36f4b8645aba8fa236464f"
+  },
+  "Referensi/qeducato/img/team/team08.png": {
+    "mtime": 1676051920.0,
+    "seen": 1792379706.3399005,
+    "ast_hash": "d7677c47b1ebfae1248adbbd5edf955a",
+    "semantic_hash": "d7677c47b1ebfae1248adbbd5edf955a"
+  },
+  "Referensi/qeducato/img/team/team09.png": {
+    "mtime": 1676051918.0,
+    "seen": 1792379706.3399012,
+    "ast_hash": "5852310a45cc6383b0e93cad5839e3db",
+    "semantic_hash": "5852310a45cc6383b0e93cad5839e3db"
+  },
+  "Referensi/qeducato/img/team/team10.png": {
+    "mtime": 1676051916.0,
+    "seen": 1792379706.3399022,
+    "ast_hash": "28f0bc027dfe8a0f6ef43a9cb7f5a186",
+    "semantic_hash": "28f0bc027dfe8a0f6ef43a9cb7f5a186"
+  },
+  "Referensi/qeducato/img/team/team11.png": {
+    "mtime": 1676051914.0,
+    "seen": 1792379706.339903,
+    "ast_hash": "56b87709d87a1ae576574c2caff98c82",
+    "semantic_hash": "56b87709d87a1ae576574c2caff98c82"
+  },
+  "Referensi/qeducato/img/team/team12.png": {
+    "mtime": 1676051912.0,
+    "seen": 1792379706.3399043,
+    "ast_hash": "2eb46aa00b5fbbc406802332a2f59dad",
+    "semantic_hash": "2eb46aa00b5fbbc406802332a2f59dad"
+  },
+  "Referensi/qeducato/img/testimonial/c_01.png": {
+    "mtime": 1676051952.0,
+    "seen": 1792379706.339905,
+    "ast_hash": "b03528bfec7bc992e96e214edc04fa25",
+    "semantic_hash": "b03528bfec7bc992e96e214edc04fa25"
+  },
+  "Referensi/qeducato/img/testimonial/c_02.png": {
+    "mtime": 1676051950.0,
+    "seen": 1792379706.339906,
+    "ast_hash": "5dc7cfc21a964a99113477f1340b6600",
+    "semantic_hash": "5dc7cfc21a964a99113477f1340b6600"
+  },
+  "Referensi/qeducato/img/testimonial/qt-icon.png": {
+    "mtime": 1675334178.0,
+    "seen": 1792379706.3399072,
+    "ast_hash": "82a8c47beed7cd9087f4a3fb5a1eb35c",
+    "semantic_hash": "82a8c47beed7cd9087f4a3fb5a1eb35c"
+  },
+  "Referensi/qeducato/img/testimonial/review-icon.png": {
+    "mtime": 1650358518.0,
+    "seen": 1792379706.3399081,
+    "ast_hash": "2befedb3827888d00c12893bf4d7d4a3",
+    "semantic_hash": "2befedb3827888d00c12893bf4d7d4a3"
+  },
+  "Referensi/qeducato/img/testimonial/testi_avatar.png": {
+    "mtime": 1676052426.0,
+    "seen": 1792379706.3399088,
+    "ast_hash": "5dc2151aba4a6fda2ea2edb844af285c",
+    "semantic_hash": "5dc2151aba4a6fda2ea2edb844af285c"
+  },
+  "Referensi/qeducato/img/testimonial/testi_avatar_02.png": {
+    "mtime": 1676052422.0,
+    "seen": 1792379706.3399098,
+    "ast_hash": "c6e13fb075428b59741c8832ffcd29bf",
+    "semantic_hash": "c6e13fb075428b59741c8832ffcd29bf"
+  },
+  "Referensi/qeducato/img/testimonial/testi_avatar_03.png": {
+    "mtime": 1676052414.0,
+    "seen": 1792379706.339911,
+    "ast_hash": "dc3cfbe851e79a7fe12ad67207cf02ca",
+    "semantic_hash": "dc3cfbe851e79a7fe12ad67207cf02ca"
+  },
+  "docs/Design/akreditasi_institusi_program_studi_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399117,
+    "ast_hash": "270150e793a54cf1eb1a4da49c8f37e1",
+    "semantic_hash": "270150e793a54cf1eb1a4da49c8f37e1"
+  },
+  "docs/Design/akreditasi_mobile_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399127,
+    "ast_hash": "5bcc9c4cf4608e568923cfe6734a84ee",
+    "semantic_hash": "5bcc9c4cf4608e568923cfe6734a84ee"
+  },
+  "docs/Design/beranda_layanan_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399138,
+    "ast_hash": "c8faa66de2d48b207df4f4848e91c92c",
+    "semantic_hash": "c8faa66de2d48b207df4f4848e91c92c"
+  },
+  "docs/Design/beranda_mobile_layanan_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399148,
+    "ast_hash": "c0df96ee72a926ef553a077935bc4912",
+    "semantic_hash": "c0df96ee72a926ef553a077935bc4912"
+  },
+  "docs/Design/buku_wisuda_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399158,
+    "ast_hash": "5b7422172bbe6bdc4a9ce323b8667828",
+    "semantic_hash": "5b7422172bbe6bdc4a9ce323b8667828"
+  },
+  "docs/Design/dasbor_admin_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399167,
+    "ast_hash": "aa77afe1b527f970a46012f82d2acdce",
+    "semantic_hash": "aa77afe1b527f970a46012f82d2acdce"
+  },
+  "docs/Design/detail_pengumuman_wisuda_periode_i_2026_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.339918,
+    "ast_hash": "a8522479d53ef46470287869b023aeb4",
+    "semantic_hash": "a8522479d53ef46470287869b023aeb4"
+  },
+  "docs/Design/dokumen_akademik_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399186,
+    "ast_hash": "e3db7d57c7047a4783b2761ca644f86e",
+    "semantic_hash": "e3db7d57c7047a4783b2761ca644f86e"
+  },
+  "docs/Design/dokumen_akademik_mobile_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399196,
+    "ast_hash": "1c1716ac3db614038215b555fc4c83eb",
+    "semantic_hash": "1c1716ac3db614038215b555fc4c83eb"
+  },
+  "docs/Design/kalender_akademik_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399203,
+    "ast_hash": "0ea201e603af2941854e003e06ad7229",
+    "semantic_hash": "0ea201e603af2941854e003e06ad7229"
+  },
+  "docs/Design/kalender_akademik_mobile_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399215,
+    "ast_hash": "936bc1b7c8b665de2bedc3e026f76ab8",
+    "semantic_hash": "936bc1b7c8b665de2bedc3e026f76ab8"
+  },
+  "docs/Design/kelola_pengumuman_admin_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399224,
+    "ast_hash": "319c2c2c8d5c05d41ac405a4fcdb3099",
+    "semantic_hash": "319c2c2c8d5c05d41ac405a4fcdb3099"
+  },
+  "docs/Design/kurikulum_mobile_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399236,
+    "ast_hash": "bc40374927c4059f127a546d6bd2227a",
+    "semantic_hash": "bc40374927c4059f127a546d6bd2227a"
+  },
+  "docs/Design/kurikulum_program_studi_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399248,
+    "ast_hash": "3c9b70c7e6890288f0efa9950c8764f0",
+    "semantic_hash": "3c9b70c7e6890288f0efa9950c8764f0"
+  },
+  "docs/Design/logo_lambang_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399258,
+    "ast_hash": "87b50ecea155c4828dd06d4cb70f440c",
+    "semantic_hash": "87b50ecea155c4828dd06d4cb70f440c"
+  },
+  "docs/Design/pengumuman_akademik_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399267,
+    "ast_hash": "ffb8b6ea3a7122a589d6e43c10f9aaf1",
+    "semantic_hash": "ffb8b6ea3a7122a589d6e43c10f9aaf1"
+  },
+  "docs/Design/pimpinan_dan_staf_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.339928,
+    "ast_hash": "4acf102638f4238bad8364524550cacb",
+    "semantic_hash": "4acf102638f4238bad8364524550cacb"
+  },
+  "docs/Design/tambah_akreditasi_admin_bidang_akademik_unjani/screen.png": {
+    "mtime": 1790816278.0,
+    "seen": 1792379706.3399286,
+    "ast_hash": "3005b1b0b629bd77634d44b68f22a2f3",
+    "semantic_hash": "3005b1b0b629bd77634d44b68f22a2f3"
+  },
+  "public/assets/landing-page/images/logo.png": {
+    "mtime": 1790900361.445815,
+    "seen": 1792379706.3399296,
+    "ast_hash": "3c02b41a8da8a3407ca54ad0deed796a",
+    "semantic_hash": "3c02b41a8da8a3407ca54ad0deed796a"
+  },
+  "public/img/hero-kampus-800.webp": {
+    "mtime": 1791273195.021819,
+    "seen": 1792379706.3399305,
+    "ast_hash": "0225c7f00e68af5de1af7a0fe9ce68ca",
+    "semantic_hash": "0225c7f00e68af5de1af7a0fe9ce68ca"
+  },
+  "public/img/hero-kampus.webp": {
+    "mtime": 1790900361.4590786,
+    "seen": 1792379706.3399317,
+    "ast_hash": "b31e2f24fc295ff168ef4aace38016e3",
+    "semantic_hash": "b31e2f24fc295ff168ef4aace38016e3"
+  },
+  "public/img/lambang-unjani.png": {
+    "mtime": 1790900361.4600623,
+    "seen": 1792379706.3399327,
+    "ast_hash": "3c02b41a8da8a3407ca54ad0deed796a",
+    "semantic_hash": "3c02b41a8da8a3407ca54ad0deed796a"
+  }
+}

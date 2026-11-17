@@ -131,84 +131,94 @@
 - Settings: alamat/kontakEmail berubah; quick link bertambah lalu terhapus. `namaSitus` bukan field form existing dan tidak diklaim berubah.
 - **Blocker pre-existing:** gagal hapus Fakultas berelasi hanya diuji dengan failure injection (record tetap, redirect error tanpa success). Guard relasi nyata tidak ada; Step 5 tidak dapat dinyatakan lengkap tanpa pekerjaan backend terpisah. Tidak menambah guard dalam audit UI yang melarang perubahan route/model/kontrak.
 
+### Audit visual baru — Task 9 Step 2, 2026-11-17
+
+- **69/69 pasangan acuan/runtime dibaca visual pada 1440px**: publikasi 18, akademik 24, organisasi 17, dasbor/sistem/profil 10. Kelima runner Task 4–8 dijalankan ulang, seluruhnya exit 0; pemeriksaan source melengkapi field yang tidak tergambar. [Indeks dan laporan terperinci](audit/task-9-step-2/README.md) memuat route/state, file acuan/runtime dan temuan per frame. Tidak mengubah aplikasi untuk memaksa hasil menyerupai mock.
+- Hasil **bukan PASS desain menyeluruh**. Matriks lama “sesuai pola” diganti hasil konservatif “beda (audit fixture)” beserta alasan: tabel shared memberi kolom judul/nama terlalu dominan sehingga header/tanggal/email/kategori membungkus; form pendek lebih lebar/stack; metadata, back-link dan aksi inline acuan tidak seluruhnya direproduksi. Buku full-page tetap dua kolom, bukan Data buku/Berkas satu kolom. Detail per frame berada di empat laporan, bukan disamarkan sebagai data dinamis.
+- Adaptasi resmi: **Inter** menggantikan Swis721; data/count/tanggal fiktif bukan data pribadi atau jam palsu; **toast tanpa undo**; trigger **Cari menu** mempertahankan pencarian modul; **dark** memakai token existing, bukan inversi mock; **slide-over** 560px/fullscreen HP tetap stacked, bukan layout full-page yang dipersempit. Native select/checkbox/upload tidak menjanjikan drag-and-drop. Field tambahan seperti keepAttachment, status aktif akun, foto profil, deskripsi dan fakultas manual tetap ada.
+- Dialog hapus **bulk tiga item** Berita/Pengumuman dicapture ulang (bukan single-delete); Batal/Escape tidak menghapus. Toast sukses dicapture sesudah POST publish fixture 303; redirect membersihkan seleksi, berbeda komposit acuan. Kategori fixture dipopulasikan untuk membedakan label kosong fixture dari wrap kolom nyata.
+- State gagal publikasi: title/body menghasilkan summary dua error. Lampiran DOCX invalid ditolak multipart HTTP 400 **sebelum** controller, sehingga summary gabungan tiga error acuan tidak direproduksi. Dua screenshot `invalid-upload` menampilkan handler stack **fixture**, bukan bukti kebocoran stack produksi; handler pusat `server.js` hanya diperiksa sumber, bukan dieksekusi runner tersebut. Fakultas gagal hapus tetap failure injection + toast, bukan panel relasi atau bukti guard backend.
+- Klarifikasi capture: viewport scrolled Profil/Staf/Unit, Akreditasi tambah/ubah dan Buku Wisuda ubah memperlihatkan kontrol terakhir di atas bar; sidebar Kategori/Pengaturan dapat digulir dan diakses. Pengaturan top/video/upload/quick-link expanded tidak tertutup; password baru pendek menghasilkan 422 min8, semua nilai password kosong. Persilangan fixed bar pada full-page bukan bug occlusion terkonfirmasi. Ini tidak menggantikan audit seluruh kontrol/enam viewport Step 3.
+- Verifikasi regresi sesi ini: `npm test` **307 lulus, 0 gagal, 0 skip**; `npm run build:css:admin` sukses. Tidak ada perubahan source aplikasi, route/model/role/dependency. Laporan/screenshot/matriks adalah hasil audit, bukan perbaikan seluruh selisih.
+
 ### Status checklist
 
-- Step 1 dan 6 terverifikasi; Step 7 commit hanya bukti/fix task.
-- Step 2: cakupan state lewat rerun dan matriks Task 4–8; bukan audit visual manual baru atas seluruh 69 pasangan PNG. Step 3: overflow/error coverage lulus, audit occlusion semua kontrol belum lengkap. Step 4: sebagian sebagaimana rincian di atas. Step 5: HTTP/fixture lulus untuk alur tercatat, guard relasi/MongoDB belum terverifikasi. Checkbox langkah-langkah tersebut tetap kosong, bukan PASS terselubung.
+- Step 1 dan 6 terverifikasi; Step 7 commit hanya bukti/fix task sebelumnya.
+- Step 2: audit visual 69 pasangan selesai pada fixture, deviasi dan batas bukti dicatat; bukan penerimaan pixel-identical atau bukti MongoDB/produksi. Step 3: overflow/error coverage lulus, audit occlusion semua kontrol belum lengkap. Step 4: sebagian sebagaimana rincian di atas. Step 5: HTTP/fixture lulus untuk alur tercatat, guard relasi/MongoDB belum terverifikasi. Step 3–5 tetap kosong, bukan PASS terselubung.
 - Akses browser lokal tersedia. Akun uji aplikasi dengan MongoDB disposable belum digunakan/tersedia dalam audit ini; login/end-to-end persistensi DB tetap perlu verifikasi sebelum klaim selesai penuh.
 
 ## Matriks frame
 
-Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.
+Status audit Step 2: **beda (audit fixture)** berarti pasangan sudah dibaca visual, tetapi masih memiliki selisih desain/kontrak/data yang dirinci; bukan PASS maupun klaim 69 cacat runtime. Seluruh 69 pasangan diperiksa pada 1440px. Laporan per kelompok memuat route/state, nama PNG acuan/runtime tepat, field existing dan koreksi capture. Bukti baseline Task 4–8 di `screenshots/`; tambahan memakai prefix `task-9-step2-`.
 
 | # | Frame | Status | Catatan |
 |---|---|---|---|
-| 1 | Akreditasi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 2 | Akreditasi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 3 | Akreditasi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 4 | Akun Pengguna _ Atur ulang password | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 5 | Akun Pengguna _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 6 | Akun Pengguna _ Konfirmasi nonaktif | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 7 | Akun Pengguna _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 8 | Akun Pengguna _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 9 | Berita _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 10 | Berita _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 11 | Berita _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 12 | Berita _ Pilih massal | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 13 | Berita _ Tambah — gagal validasi | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 14 | Berita _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 15 | Berita _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 16 | Buku _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 17 | Buku _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 18 | Buku _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 19 | Buku _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 20 | Buku Wisuda _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 21 | Buku Wisuda _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 22 | Buku Wisuda _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 23 | Dasbor _ Desktop 1440 | sesuai komposisi (fixture) | 1440/390 light/dark; tambahan 1024/820/768/320 tanpa overflow. Data fiktif, tanpa jam/tanggal palsu; lihat Task 4. |
-| 24 | Data Lulusan _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 25 | Data Lulusan _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 26 | Data Lulusan _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 27 | Dokumen Akademik _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 28 | Dokumen Akademik _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 29 | Dokumen Akademik _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 30 | Dokumen RPL _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 31 | Dokumen RPL _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 32 | Dokumen RPL _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 33 | Fakultas _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 34 | Fakultas _ Gagal hapus | beda; error path diuji (injection) | 1440/390; toast error existing, bukan panel relasi PNG. Guard relasi backend belum ada; lihat konflik Task 7. |
-| 35 | Fakultas _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 36 | Fakultas _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 37 | Kalender Akademik _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 38 | Kalender Akademik _ Kelola 2026-2027 | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 39 | Kalender Akademik _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 40 | Kategori _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 41 | Kategori _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 42 | Kategori _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 43 | Kurikulum _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 44 | Kurikulum _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 45 | Kurikulum _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 46 | Lembaga Akreditasi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 47 | Lembaga Akreditasi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 48 | Lembaga Akreditasi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 6. |
-| 49 | Pengaturan Situs _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 50 | Pengumuman _ Daftar | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 51 | Pengumuman _ Hasil kosong | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 52 | Pengumuman _ Konfirmasi hapus | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 53 | Pengumuman _ Pilih massal | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 54 | Pengumuman _ Tambah — gagal validasi | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 55 | Pengumuman _ Tambah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 56 | Pengumuman _ Ubah | sesuai pola (fixture) | 1440px; form juga 1360/1024/390/320px, dark dan slide-over Buku; lihat Task 5. |
-| 57 | Pimpinan & Staf _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 58 | Pimpinan & Staf _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 59 | Pimpinan & Staf _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 60 | Profil Bidang _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 61 | Profil Saya _ Ringkasan | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 62 | Profil Saya _ Ubah password | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 63 | Profil Saya _ Ubah profil | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320; adaptasi dan bukti Task 8. |
-| 64 | Program Studi _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 65 | Program Studi _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 66 | Program Studi _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 67 | Unit _ Daftar | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 68 | Unit _ Tambah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
-| 69 | Unit _ Ubah | sesuai pola (fixture) | 1440/390; route juga 1024/820/768/320, long/null/dark/no-JS; adaptasi dan bukti Task 7. |
+| 1 | Akreditasi _ Daftar | beda (audit fixture) | 1440px visual; Tiga panel; nama unit/catatan existing tetap. Aktif pada acuan tidak ada sejak parent, bukan regresi; metadata/filter berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 2 | Akreditasi _ Tambah | beda (audit fixture) | 1440px visual; Tiga panel; nama unit/catatan existing tetap. Aktif pada acuan tidak ada sejak parent, bukan regresi; metadata/filter berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 3 | Akreditasi _ Ubah | beda (audit fixture) | 1440px visual; Tiga panel; nama unit/catatan existing tetap. Aktif pada acuan tidak ada sejak parent, bukan regresi; metadata/filter berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 4 | Akun Pengguna _ Atur ulang password | beda (audit fixture) | 1440px visual; Kolom email/role/tanggal sempit dan wrap; form 880px vs acuan 640px, pengelompokan/aksi berbeda. Role native/min8 existing tetap. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 5 | Akun Pengguna _ Daftar | beda (audit fixture) | 1440px visual; Kolom email/role/tanggal sempit dan wrap; form 880px vs acuan 640px, pengelompokan/aksi berbeda. Role native/min8 existing tetap. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 6 | Akun Pengguna _ Konfirmasi nonaktif | beda (audit fixture) | 1440px visual; Kolom email/role/tanggal sempit dan wrap; form 880px vs acuan 640px, pengelompokan/aksi berbeda. Role native/min8 existing tetap. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 7 | Akun Pengguna _ Tambah | beda (audit fixture) | 1440px visual; Kolom email/role/tanggal sempit dan wrap; form 880px vs acuan 640px, pengelompokan/aksi berbeda. Role native/min8 existing tetap. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 8 | Akun Pengguna _ Ubah | beda (audit fixture) | 1440px visual; Kolom email/role/tanggal sempit dan wrap; form 880px vs acuan 640px, pengelompokan/aksi berbeda. Role native/min8 existing tetap. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 9 | Berita _ Daftar | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 10 | Berita _ Hasil kosong | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 11 | Berita _ Konfirmasi hapus | beda (audit fixture) | 1440px visual; Dialog bulk 3 item dicapture ulang; Batal/Escape tanpa delete. Posisi/copy berbeda; lihat addendum A1/A2. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 12 | Berita _ Pilih massal | beda (audit fixture) | 1440px visual; Seleksi + POST publish/toast aktif diuji; tanpa undo. Redirect menghapus seleksi, berbeda komposit acuan; addendum A3/A4. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 13 | Berita _ Tambah — gagal validasi | beda (audit fixture) | 1440px visual; EJS dua error title/body; upload invalid ditolak multipart HTTP 400 sebelum controller. Summary tiga error acuan tidak tercapai; handler stack hanya fixture. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 14 | Berita _ Tambah | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 15 | Berita _ Ubah | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 16 | Buku _ Daftar | beda (audit fixture) | 1440px visual; Form full-page dua kolom, bukan Data buku/Berkas satu kolom; year opsional/cover wajib sesuai kontrak existing. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 17 | Buku _ Konfirmasi hapus | beda (audit fixture) | 1440px visual; Form full-page dua kolom, bukan Data buku/Berkas satu kolom; year opsional/cover wajib sesuai kontrak existing. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 18 | Buku _ Tambah | beda (audit fixture) | 1440px visual; Form full-page dua kolom, bukan Data buku/Berkas satu kolom; year opsional/cover wajib sesuai kontrak existing. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 19 | Buku _ Ubah | beda (audit fixture) | 1440px visual; Form full-page dua kolom, bukan Data buku/Berkas satu kolom; year opsional/cover wajib sesuai kontrak existing. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 20 | Buku Wisuda _ Daftar | beda (audit fixture) | 1440px visual; Data/Berkas tetap; metadata/thumbnail/filter daftar berbeda; file/sampul existing tetap. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 21 | Buku Wisuda _ Tambah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; metadata/thumbnail/filter daftar berbeda; file/sampul existing tetap. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 22 | Buku Wisuda _ Ubah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; metadata/thumbnail/filter daftar berbeda; file/sampul existing tetap. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 23 | Dasbor _ Desktop 1440 | beda (audit fixture) | 1440px visual; Komposisi band + 660/396 sesuai; ritme vertikal/aktivitas/warna angka berbeda. Salam/data fixture tanpa jam palsu. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 24 | Data Lulusan _ Daftar | beda (audit fixture) | 1440px visual; Fakultas terpisah dan nilai 0 tetap; CSV disclosure; filter/field stack berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 25 | Data Lulusan _ Tambah | beda (audit fixture) | 1440px visual; Fakultas terpisah dan nilai 0 tetap; CSV disclosure; filter/field stack berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 26 | Data Lulusan _ Ubah | beda (audit fixture) | 1440px visual; Fakultas terpisah dan nilai 0 tetap; CSV disclosure; filter/field stack berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 27 | Dokumen Akademik _ Daftar | beda (audit fixture) | 1440px visual; Data/Berkas tetap; pinned/keterangan existing tetap. Metadata file/filter kategori acuan tidak lengkap. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 28 | Dokumen Akademik _ Tambah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; pinned/keterangan existing tetap. Metadata file/filter kategori acuan tidak lengkap. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 29 | Dokumen Akademik _ Ubah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; pinned/keterangan existing tetap. Metadata file/filter kategori acuan tidak lengkap. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 30 | Dokumen RPL _ Daftar | beda (audit fixture) | 1440px visual; Data/Berkas tetap; deskripsi/aktif existing tetap. Metadata file/kolom Diperbarui acuan berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 31 | Dokumen RPL _ Tambah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; deskripsi/aktif existing tetap. Metadata file/kolom Diperbarui acuan berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 32 | Dokumen RPL _ Ubah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; deskripsi/aktif existing tetap. Metadata file/kolom Diperbarui acuan berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 33 | Fakultas _ Daftar | beda (audit fixture) | 1440px visual; Nama/singkatan tetap; Urutan/count prodi acuan tidak didukung existing; field stack. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 34 | Fakultas _ Gagal hapus | beda (audit fixture) | 1440px visual; Failure injection: toast error, bukan panel relasi. Guard relasi tidak ada; tidak membuktikan proteksi hapus. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 35 | Fakultas _ Tambah | beda (audit fixture) | 1440px visual; Nama/singkatan tetap; Urutan/count prodi acuan tidak didukung existing; field stack. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 36 | Fakultas _ Ubah | beda (audit fixture) | 1440px visual; Nama/singkatan tetap; Urutan/count prodi acuan tidak didukung existing; field stack. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 37 | Kalender Akademik _ Daftar | beda (audit fixture) | 1440px visual; Kelola memakai empat panel terbuka + anchor, bukan tab eksklusif; aksi Ubah dan metadata daftar berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 38 | Kalender Akademik _ Kelola 2026-2027 | beda (audit fixture) | 1440px visual; Kelola memakai empat panel terbuka + anchor, bukan tab eksklusif; aksi Ubah dan metadata daftar berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 39 | Kalender Akademik _ Tambah | beda (audit fixture) | 1440px visual; Kelola memakai empat panel terbuka + anchor, bukan tab eksklusif; aksi Ubah dan metadata daftar berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 40 | Kategori _ Daftar | beda (audit fixture) | 1440px visual; Jenis memakai tab/select native, status/filter/urutan berbeda; field existing tetap. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 41 | Kategori _ Tambah | beda (audit fixture) | 1440px visual; Jenis memakai tab/select native, status/filter/urutan berbeda; field existing tetap. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 42 | Kategori _ Ubah | beda (audit fixture) | 1440px visual; Jenis memakai tab/select native, status/filter/urutan berbeda; field existing tetap. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 43 | Kurikulum _ Daftar | beda (audit fixture) | 1440px visual; Data/Berkas tetap; tahun teks existing tetap. Filter prodi mengganti fakultas; metadata berkas berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 44 | Kurikulum _ Tambah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; tahun teks existing tetap. Filter prodi mengganti fakultas; metadata berkas berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 45 | Kurikulum _ Ubah | beda (audit fixture) | 1440px visual; Data/Berkas tetap; tahun teks existing tetap. Filter prodi mengganti fakultas; metadata berkas berbeda. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 46 | Lembaga Akreditasi _ Daftar | beda (audit fixture) | 1440px visual; Panel pendek lebih lebar; field stack, judul disingkat, footer terpisah. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 47 | Lembaga Akreditasi _ Tambah | beda (audit fixture) | 1440px visual; Panel pendek lebih lebar; field stack, judul disingkat, footer terpisah. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 48 | Lembaga Akreditasi _ Ubah | beda (audit fixture) | 1440px visual; Panel pendek lebih lebar; field stack, judul disingkat, footer terpisah. [Rincian/bukti](audit/task-9-step-2/academic.md). |
+| 49 | Pengaturan Situs _ Ubah | beda (audit fixture) | 1440px visual; Panel/grouping dan quick links berbeda; tanpa editor inline. Viewport top/video/upload/quick-link expanded terverifikasi; shell bergeser pada fullPage hanya artefak capture. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 50 | Pengumuman _ Daftar | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 51 | Pengumuman _ Hasil kosong | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 52 | Pengumuman _ Konfirmasi hapus | beda (audit fixture) | 1440px visual; Dialog bulk 3 item dicapture ulang; Batal/Escape tanpa delete. Posisi/copy berbeda; lihat addendum A1/A2. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 53 | Pengumuman _ Pilih massal | beda (audit fixture) | 1440px visual; Seleksi + POST publish/toast aktif diuji; tanpa undo. Redirect menghapus seleksi, berbeda komposit acuan; addendum A3/A4. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 54 | Pengumuman _ Tambah — gagal validasi | beda (audit fixture) | 1440px visual; EJS dua error title/body; upload invalid ditolak multipart HTTP 400 sebelum controller. Summary tiga error acuan tidak tercapai; handler stack hanya fixture. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 55 | Pengumuman _ Tambah | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 56 | Pengumuman _ Ubah | beda (audit fixture) | 1440px visual; Grid 720/336; panel lampiran/sampul digabung, footer aksi; metadata/date/category wrap berbeda. [Rincian/bukti](audit/task-9-step-2/publication.md). |
+| 57 | Pimpinan & Staf _ Daftar | beda (audit fixture) | 1440px visual; Tingkat native/field stack; avatar/NIP daftar dan metadata berbeda; upload/nomorUrut existing tetap. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 58 | Pimpinan & Staf _ Tambah | beda (audit fixture) | 1440px visual; Tingkat native/field stack; avatar/NIP daftar dan metadata berbeda; upload/nomorUrut existing tetap. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 59 | Pimpinan & Staf _ Ubah | beda (audit fixture) | 1440px visual; Tingkat native/field stack; avatar/NIP daftar dan metadata berbeda; upload/nomorUrut existing tetap. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 60 | Profil Bidang _ Ubah | beda (audit fixture) | 1440px visual; Empat grup tetap; textarea baris mengganti editor berulang, field kontak stack; footer/back-link berbeda. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 61 | Profil Saya _ Ringkasan | beda (audit fixture) | 1440px visual; Ringkasan/tanggal/aksi berbeda; form lebih lebar, upload foto existing tetap. Password tanpa echo/min8 existing. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 62 | Profil Saya _ Ubah password | beda (audit fixture) | 1440px visual; Ringkasan/tanggal/aksi berbeda; form lebih lebar, upload foto existing tetap. Password tanpa echo/min8 existing. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 63 | Profil Saya _ Ubah profil | beda (audit fixture) | 1440px visual; Ringkasan/tanggal/aksi berbeda; form lebih lebar, upload foto existing tetap. Password tanpa echo/min8 existing. [Rincian/bukti](audit/task-9-step-2/system.md). |
+| 64 | Program Studi _ Daftar | beda (audit fixture) | 1440px visual; Nama/singkatan/fakultas tetap; CSV disclosure, filter dan field stack berbeda. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 65 | Program Studi _ Tambah | beda (audit fixture) | 1440px visual; Nama/singkatan/fakultas tetap; CSV disclosure, filter dan field stack berbeda. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 66 | Program Studi _ Ubah | beda (audit fixture) | 1440px visual; Nama/singkatan/fakultas tetap; CSV disclosure, filter dan field stack berbeda. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 67 | Unit _ Daftar | beda (audit fixture) | 1440px visual; Data/gambar tetap; metadata gambar/URL daftar dan current-file card berbeda; form lebih lebar. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 68 | Unit _ Tambah | beda (audit fixture) | 1440px visual; Data/gambar tetap; metadata gambar/URL daftar dan current-file card berbeda; form lebih lebar. [Rincian/bukti](audit/task-9-step-2/organization.md). |
+| 69 | Unit _ Ubah | beda (audit fixture) | 1440px visual; Data/gambar tetap; metadata gambar/URL daftar dan current-file card berbeda; form lebih lebar. [Rincian/bukti](audit/task-9-step-2/organization.md). |
