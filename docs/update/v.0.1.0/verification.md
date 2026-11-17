@@ -99,6 +99,44 @@
 - Adaptasi acuan: peran tetap select native (bukan segmented), checkbox `isActive` tetap di form ubah, tanpa toggle "Tampilkan" password, tanpa baris "Password diubah"/panel samping settings atau editor tautan inline (butuh model/route baru). Minimal 8 karakter mengikuti validasi existing, bukan 12 pada PNG.
 - Bukti: `screenshots/task-8-users-{1440,390}-{list,new,edit,reset}.png`, `task-8-users-1440-{confirm-deactivate,reset-error}.png`, `task-8-settings-{1440,390}-edit.png`, `task-8-profile-{1440,390}-{summary,edit,password,password-error}.png`.
 
+## Task 9: audit akhir — 17 November 2026
+
+### Hasil dan batas bukti
+
+- Awal: `npm run build:css:admin` sukses; `npm test` **306 lulus, 0 gagal, 0 skip**. Akhir setelah fix: build sukses, **307 lulus, 0 gagal, 0 skip**; `git diff --check` bersih. Tidak mengubah publik/login, route, model, role, dependency atau kontrak POST.
+- Chromium headless lokal, middleware/CSP/EJS dan route admin nyata, DB **fixture in-memory**, akun/data fiktif. Tidak memakai sesi login, MongoDB, hashing hook atau DB produksi. Assertion “tersimpan” di bawah berarti mutasi `Model.docs`, bukan persistensi MongoDB. Tidak ada operasi destruktif terhadap data produksi.
+- Runner Task 4–8 dijalankan ulang pada HEAD Task 8: **69 state matriks tercakup kembali** (68 mengikuti pola; Fakultas gagal hapus berbeda). Dashboard memakai view/layout fixture, modul lain memakai route fixture. Semua runner selesai exit 0; screenshot ulang ditaruh di temp agar bukti Task 4–8 tidak tertimpa. Matriks di bawah tetap menunjuk bukti visual Task pemilik, bukan klaim pemeriksaan pixel-identical baru.
+- Audit tambahan Pengumuman/Berita/Buku: daftar, tambah, ubah, bulk dan dialog hapus pada **1440/1024/820/768/390/320px**, judul tanpa spasi 490+ karakter. Assert `document.documentElement.scrollWidth <= innerWidth`, tidak ada page error maupun respons file/font ≥400 (422 validasi dipisahkan). Route admin lainnya pada 390px tercakup rerun Task 6–8; dashboard rerun Task 4.
+- Pratinjau publik `/:id/preview` **belum terverifikasi** oleh audit tambahan: fixture tidak menyediakan seluruh locals layout publik sehingga HTTP 500; tidak diubah karena publik di luar cakupan redesign admin. Tidak menganggap kegagalan fixture ini sebagai bukti regresi produksi atau route lulus.
+
+### Cacat ditemukan dan diperbaiki
+
+- Pointer coarse pada desktop: tombol **Pilih semua … hasil filter** hanya 40px, sementara aksi bulk lain 44px. Browser mereproduksi 1440px; tes baru `bulk select-all only shrinks to 40px for fine pointers` gagal sebelum fix, lulus setelahnya.
+- `views/admin/_ui/bulk-bar.ejs`: `lg:min-h-10` menjadi `lg:pointer-fine:min-h-10`. Tanpa perubahan semantik/POST; fine pointer tetap 40px desktop, coarse tetap 44px. Build `public/css/admin.css` disertakan. Browser ulang seluruh tiga modul/enam viewport: kontrol bulk ≥44px dan tombol terakhir tidak melewati tinggi viewport 1000px.
+- Bukti terpilih: `screenshots/task-9-{pengumuman,news,books}-{390,320}-long-list.png`. Gambar full-page menangkap shell fixed di tengah halaman panjang; ini artefak capture. Menu aksi tetap terbuka setelah Escape dialog, fokus kembali ke pemicu Hapus di menu.
+
+### Keyboard, preferensi dan fallback
+
+- Ketiga modul publikasi: Tab pertama ke skip link; Tab/Enter membuka drawer, Escape menutup dan fokus kembali ke Buka menu. Ctrl+K dan Meta+K memfokuskan `#cari-modul`; Escape menutup. Menu akun dibuka, Escape mengembalikan fokus ke pemicu.
+- Light/dark/system × emulasi OS terang/gelap: computed `color-scheme` sesuai; collapse persisten setelah reload, sidebar 64px lalu bisa dibuka lagi. Reduced motion diemulasi selama cek preferensi; **belum mengukur seluruh durasi animasi secara runtime**.
+- Ctrl+S dan Meta+S memicu submit form tiap modul (listener mencegah POST untuk isolasi shortcut); POST/data diuji terpisah di bawah. Buku slide-over: ubah judul, Batal membuka dirty guard, Lanjut mengedit mempertahankan nilai, Escape lalu Buang perubahan menutup panel.
+- JS nonaktif: tombol Hapus tersedia dalam form konfirmasi terbuka, Batal tidak menghapus record; form tambah tetap POST/full-page. Rerun Task 5–8 juga memeriksa fallback form/link. **Audit semua target touch, semua menu/dialog melalui Tab, seluruh kontrol vs sticky bar dan dirty guard full-page Batal belum lengkap**; tidak diberi PASS menyeluruh.
+
+### Alur disposable (HTTP/fixture, bukan toast)
+
+- Pengumuman: create status published, update judul/pinned, delete; assert 303 dan record berubah/hilang. Retensi lampiran existing diperiksa; multipart PDF baru mengganti lampiran lama, file baru benar-benar ada di `public/uploads/pengumuman`, delete menghapus record dan file baru. File uji baru dibersihkan melalui delete controller.
+- Filter draft dirender; sort title asc mulai `Urut 01`, desc mulai `Urut 30`; halaman 2 mulai `Urut 26` (25 baris/halaman). Bulk delete dua ID berulang mengurangi 30 menjadi 28 record dan kedua ID tidak tersisa.
+- Impor prodi CSV invalid menghasilkan `Baris 2` tanpa menambah record; valid menambah Teknik Sipil/TS dengan referensi Fakultas fixture. Rerun kalender/lulusan memeriksa invalid CSV dan retensi data.
+- Nonaktif akun target: hanya target menjadi `isActive=false`, akun sendiri tetap aktif. Reset mismatch 422 tidak mengubah password; valid 303 mengubah nilai fixture. Profil: nama/email berubah; password lama salah 422 tidak mengubah nilai; benar 303 mengubahnya. Ini tidak menguji hashing Mongoose karena metode `save` di-stub.
+- Settings: alamat/kontakEmail berubah; quick link bertambah lalu terhapus. `namaSitus` bukan field form existing dan tidak diklaim berubah.
+- **Blocker pre-existing:** gagal hapus Fakultas berelasi hanya diuji dengan failure injection (record tetap, redirect error tanpa success). Guard relasi nyata tidak ada; Step 5 tidak dapat dinyatakan lengkap tanpa pekerjaan backend terpisah. Tidak menambah guard dalam audit UI yang melarang perubahan route/model/kontrak.
+
+### Status checklist
+
+- Step 1 dan 6 terverifikasi; Step 7 commit hanya bukti/fix task.
+- Step 2: cakupan state lewat rerun dan matriks Task 4–8; bukan audit visual manual baru atas seluruh 69 pasangan PNG. Step 3: overflow/error coverage lulus, audit occlusion semua kontrol belum lengkap. Step 4: sebagian sebagaimana rincian di atas. Step 5: HTTP/fixture lulus untuk alur tercatat, guard relasi/MongoDB belum terverifikasi. Checkbox langkah-langkah tersebut tetap kosong, bukan PASS terselubung.
+- Akses browser lokal tersedia. Akun uji aplikasi dengan MongoDB disposable belum digunakan/tersedia dalam audit ini; login/end-to-end persistensi DB tetap perlu verifikasi sebelum klaim selesai penuh.
+
 ## Matriks frame
 
 Status: belum diuji / sesuai / beda (catat). Kolom catatan untuk lebar layar yang dicek dan selisih.

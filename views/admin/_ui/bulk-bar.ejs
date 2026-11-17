@@ -13,7 +13,7 @@
   <% Object.entries(locals.state || {}).forEach(([name, value]) => { %><input type="hidden" name="<%= name %>" value="<%= value %>"><% }) %>
   <div class="flex flex-wrap items-center gap-3">
     <p class="text-sm font-semibold" x-text="selectionLabel">0 <%= locals.noun %> dipilih</p>
-    <button type="button" class="min-h-11 text-left text-sm text-white underline disabled:cursor-not-allowed disabled:opacity-60 lg:min-h-10" x-show="canSelectAll" x-bind:disabled="tooManyResults" x-on:click="selectAll" x-text="selectAllLabel"></button>
+    <button type="button" class="min-h-11 text-left text-sm text-white underline disabled:cursor-not-allowed disabled:opacity-60 lg:pointer-fine:min-h-10" x-show="canSelectAll" x-bind:disabled="tooManyResults" x-on:click="selectAll" x-text="selectAllLabel"></button>
     <div class="flex flex-wrap gap-2 lg:ml-auto">
       <% (locals.actions || []).forEach(action => { %>
         <% if (action.value === 'delete') { %>

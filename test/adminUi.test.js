@@ -263,3 +263,11 @@ test('row action menus stack their items and allow wrapping inside nowrap table 
     for (const cls of ['flex', 'flex-col', 'whitespace-normal']) assert.ok(menu[1].split(' ').includes(cls), `${file}: menu tanpa ${cls}`);
   }
 });
+
+test('bulk select-all only shrinks to 40px for fine pointers', async () => {
+  const html = await render('bulk-bar', { action: '/admin/news/bulk', noun: 'berita', total: 3 });
+  const button = html.match(/<button[^>]*x-on:click="selectAll"[^>]*>/)[0];
+  assert.match(button, /class="min-h-11\s/);
+  assert.match(button, /lg:pointer-fine:min-h-10/);
+  assert.doesNotMatch(button, /(?:\s|^)lg:min-h-10/);
+});
