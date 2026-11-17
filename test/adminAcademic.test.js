@@ -165,6 +165,20 @@ test('Buku Wisuda accepts a 150 MB PDF, replaces it, and cleans files rejected a
  await post('/bulk',{action:'delete',ids:item._id});assert.equal(Model.docs.length,0);
  await assert.rejects(fs.access(path.join(__dirname,'../public',current)),{code:'ENOENT'});
 });
+test('Buku Wisuda compresses each uploaded PDF once before persistence; failure still saves',async t=>{
+ const {Model,post}=await setup(t,'graduation-books');
+ const calls=[];t.mock.method(require('../utils/pdfCompress'),'compressPdf',async file=>{await fs.access(file);calls.push(file);return {compressed:false,before:9,after:9};});
+ const png=await require('sharp')({create:{width:2,height:2,channels:3,background:'#ffffff'}}).png().toBuffer();
+ const fields={title:'Kompres gagal tetap simpan',year:'2026',periode:'I'};
+ const create=multipart(fields);create.set('cover',new Blob([png],{type:'image/png'}),`f3-test-${randomUUID()}.png`);
+ const actual=require('../models/GraduationBook'),createOriginal=actual.create;
+ t.mock.method(actual,'create',async data=>{assert.equal(calls.length,1);return createOriginal(data);});
+ let r=await post('',create);assert.equal(r.status,303);assert.equal(Model.docs.length,1);assert.equal(calls.length,1);
+ const item=Model.docs[0],save=item.save;
+ item.save=async()=>{assert.equal(calls.length,2);return save.call(item);};
+ r=await post(`/${item._id}`,multipart(fields));assert.equal(r.status,303);assert.equal(calls.length,2);
+ r=await post(`/${item._id}`,fields);assert.equal(r.status,303);assert.equal(calls.length,2);
+});
 test('Buku Wisuda create/edit advertise 200 MB PDFs with 5 MB covers',async t=>{
  const {get}=await setup(t,'graduation-books',[{_id:id(1),title:'Buku uji',year:2026,periode:'I'}]);
  for(const url of ['/new',`/${id(1)}/edit`]){

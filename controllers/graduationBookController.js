@@ -3,6 +3,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const GraduationBook = require('../models/GraduationBook');
+const pdfCompress = require('../utils/pdfCompress');
 const { removeUploadFiles } = require('../utils/upload');
 const { validate, schemas } = require('../validators');
 const ADMIN_LAYOUT = 'layouts/admin-v2';
@@ -33,6 +34,7 @@ exports.create = async (req, res) => {
     await removeUploaded(req);
     return res.status(422).renderPage('admin/graduation-books/form', { title: 'Tambah Buku Wisuda', mode: 'create', values: req.body, errors: fieldErrors }, ADMIN_LAYOUT);
   }
+  await pdfCompress.compressPdf(file.path);
   try { await GraduationBook.create({ ...data, src: toPublicUrl(file.path), cover: toPublicUrl(cover.path), createdBy: req.user._id, updatedBy: req.user._id }); } catch (err) { await removeUploaded(req); throw err; }
   admin.success(req, res, 'Buku wisuda berhasil ditambahkan.');
 };
@@ -63,7 +65,10 @@ exports.update = async (req, res) => {
   const previousFiles = [item.src, item.cover];
   const file = req.files?.file?.[0];
   const cover = req.files?.cover?.[0];
-  if (file) item.src = toPublicUrl(file.path);
+  if (file) {
+    await pdfCompress.compressPdf(file.path);
+    item.src = toPublicUrl(file.path);
+  }
   if (cover) item.cover = toPublicUrl(cover.path);
   Object.assign(item, data, { updatedBy: req.user._id });
   try { await item.save(); } catch (err) { await removeUploaded(req); throw err; }

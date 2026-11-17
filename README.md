@@ -28,6 +28,31 @@ Starter template dengan Express, MongoDB (Mongoose), EJS, JWT, dan bcrypt. Layou
 
 Server akan mem-baca `PORT` dari `.env` (default 3000).
 
+### Kompres PDF Buku Wisuda (ADM-10)
+
+PDF Buku Wisuda (maksimal 200 MB) dikompres setelah validasi upload, sebelum simpan DB. Hanya hasil valid dengan jumlah halaman sama dan ukuran lebih kecil yang mengganti file asli. Teks/vektor tidak dirasterisasi; gambar di atas 200 dpi diturunkan ke 150 dpi, kualitas JPEG 75. Timeout 600000 ms; Python hilang, error, atau timeout tetap menyimpan file asli. Ukuran sebelum/sesudah dan kegagalan masuk log server. Modul PDF lain tidak berubah.
+
+**Lisensi:** PyMuPDF memakai AGPL-3.0 atau lisensi komersial. Konfirmasi kepatuhan/lisensi sebelum mengaktifkan di produksi.
+
+CentOS Stream 9 x86_64, jalankan dari root repo (tanpa pip global):
+
+```bash
+sudo dnf install -y python3.11
+sudo python3.11 -m venv /opt/akademik-pdf/venv
+sudo /opt/akademik-pdf/venv/bin/pip install --upgrade pip
+sudo /opt/akademik-pdf/venv/bin/pip install -r requirements-pdf.txt
+/opt/akademik-pdf/venv/bin/python -c "import pymupdf; print(pymupdf.__version__)"
+/opt/akademik-pdf/venv/bin/python scripts/compress-pdf.py contoh.pdf /tmp/contoh-kecil.pdf
+```
+
+Versi harus `1.28.0`. Bila wheel tidak tersedia, cek `uname -m` harus `x86_64`; jangan build source tanpa keputusan baru. CLI membutuhkan path output baru, berbeda dari input. Wrapper Node membuat file sementara unik di folder upload dan membersihkannya setelah proses.
+
+Set `PDF_PYTHON=/opt/akademik-pdf/venv/bin/python` pada environment service aplikasi, lalu restart melalui pengelola service yang dipakai. Tanpa env ini executable default `python3`. Pastikan user service boleh menjalankan Python serta menulis/rename di folder upload. Proxy harus mengizinkan body **lebih dari 200 MB** untuk overhead multipart dan waktu request lebih dari 10 menit; sesuaikan juga timeout service/load balancer. Proses sinkron terhadap request; beberapa upload bersamaan menambah kebutuhan RAM/CPU.
+
+Verifikasi deployment dengan data disposable: unggah PDF bergambar sekitar 150 MB melalui tambah dan ubah, buka hasil, bandingkan halaman, cek ukuran sebelum/sesudah pada log, durasi dan puncak RAM. Uji Python tidak tersedia untuk memastikan fallback menyimpan asli. Jangan menganggap tes lokal sebagai bukti server produksi.
+
+Bukti lokal 2026-11-17: Windows, Python 3.14.3, PyMuPDF 1.28.0; PDF sintetis bergambar 12003905 byte menjadi 736682 byte, 1 halaman tetap dan teks dapat diekstrak. CentOS Python 3.11, upload produksi 150 MB, durasi/RAM belum diverifikasi karena akses server tidak tersedia.
+
 ### Aset frontend (design system baru)
 
 Hasil build **di-commit**, sehingga server produksi tidak perlu menjalankan build atau menginstal devDependencies.
